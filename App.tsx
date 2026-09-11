@@ -11,866 +11,407 @@ import {
 } from 'react-native';
 
 import { mockPeople } from './src/data/mockPeople';
+import { usePersistentPeople } from './src/hooks/usePersistentPeople';
 import { MemoryPerson } from './src/types';
 import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
 
 type Screen = 'home' | 'detail' | 'add';
 
 export default function App() {
-  const [people, setPeople] = useState<MemoryPerson[]>(mockPeople);
+  const [people, setPeople, storageReady] = usePersistentPeople(mockPeople);
   const [screen, setScreen] = useState<Screen>('home');
   const [query, setQuery] = useState('');
-  const [selectedPersonId, setSelectedPersonId] = useState<string | null>(mockPeople[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState<string | null>(mockPeople[0]?.id ?? null);
   const [briefing, setBriefing] = useState('');
   const [interactionText, setInteractionText] = useState('');
+  const [form, setForm] = useState({
+    name: '',
+    role: '',
+    company: '',
+    relationship: '',
+    note: '',
+    followUp: '',
+  });
 
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('');
-  const [company, setCompany] = useState('');
-  const [relationship, setRelationship] = useState('');
-  const [firstNote, setFirstNote] = useState('');
-  const [followUp, setFollowUp] = useState('');
-
-  const selectedPerson = useMemo(
-    () => people.find((person) => person.id === selectedPersonId) ?? null,
-    [people, selectedPersonId],
+  const selected = useMemo(
+    () => people.find((person) => person.id === selectedId) ?? null,
+    [people, selectedId],
   );
 
-  const filteredPeople = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-    if (!normalized) return people;
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return people;
 
-    return people.filter((person) => {
-      const searchable = [
+    return people.filter((person) =>
+      [
         person.name,
         person.role,
         person.company,
         person.relationship,
         person.followUp,
         ...person.notes,
-        ...person.interactions.map((interaction) => interaction.summary),
+        ...person.interactions.map((item) => item.summary),
       ]
         .filter(Boolean)
         .join(' ')
-        .toLowerCase();
-
-      return searchable.includes(normalized);
-    });
+        .toLowerCase()
+        .includes(q),
+    );
   }, [people, query]);
 
-  const openPerson = (id: string) => {
-    setSelectedPersonId(id);
+  function openPerson(id: string) {
+    setSelectedId(id);
     setBriefing('');
     setInteractionText('');
     setScreen('detail');
-  };
+  }
 
-  const resetPersonForm = () => {
-    setName('');
-    setRole('');
-    setCompany('');
-    setRelationship('');
-    setFirstNote('');
-    setFollowUp('');
-  };
-
-  const addPerson = () => {
-    const cleanName = name.trim();
-    if (!cleanName) return;
+  function addPerson() {
+    if (!form.name.trim()) return;
 
     const id = `person-${Date.now()}`;
-    const newPerson: MemoryPerson = {
+    const person: MemoryPerson = {
       id,
-      name: cleanName,
-      role: role.trim() || undefined,
-      company: company.trim() || undefined,
+      name: form.name.trim(),
+      role: form.role.trim() || undefined,
+      company: form.company.trim() || undefined,
+      relationship: form.relationship.trim() || 'New contact',
       lastInteraction: 'No interactions yet',
-      relationship: relationship.trim() || 'New contact',
-      notes: firstNote.trim() ? [firstNote.trim()] : [],
-      followUp: followUp.trim() || undefined,
+      notes: form.note.trim() ? [form.note.trim()] : [],
+      followUp: form.followUp.trim() || undefined,
       interactions: [],
     };
 
-    setPeople((current) => [newPerson, ...current]);
-    setSelectedPersonId(id);
+    setPeople((current) => [person, ...current]);
+    setForm({ name: '', role: '', company: '', relationship: '', note: '', followUp: '' });
+    setSelectedId(id);
     setBriefing('');
-    resetPersonForm();
     setScreen('detail');
-  };
+  }
 
-  const addInteraction = () => {
-    const cleanText = interactionText.trim();
-    if (!selectedPerson || !cleanText) return;
+  function addInteraction() {
+    const text = interactionText.trim();
+    if (!selected || !text) return;
 
     setPeople((current) =>
-      current.map((person) => {
-        if (person.id !== selectedPerson.id) return person;
-
-        return {
-          ...person,
-          lastInteraction: 'Just now',
-          interactions: [
-            {
-              id: `interaction-${Date.now()}`,
-              date: 'Just now',
-              summary: cleanText,
-              source: 'manual',
-            },
-            ...person.interactions,
-          ],
-        };
-      }),
+      current.map((person) =>
+        person.id === selected.id
+          ? {
+              ...person,
+              lastInteraction: 'Just now',
+              interactions: [
+                {
+                  id: `interaction-${Date.now()}`,
+                  date: 'Just now',
+                  summary: text,
+                  source: 'manual',
+                },
+                ...person.interactions,
+              ],
+            }
+          : person,
+      ),
     );
-
     setInteractionText('');
     setBriefing('');
-  };
+  }
 
   if (screen === 'add') {
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <StatusBar barStyle="light-content" />
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <BackButton label="People" onPress={() => setScreen('home')} />
+      <Page>
+        <Back onPress={() => setScreen('home')} />
+        <Text style={styles.titleSmall}>Add a person</Text>
+        <Text style={styles.sub}>Save the context now so you do not have to rely on memory later.</Text>
 
-          <Text style={styles.pageTitle}>Add a person</Text>
-          <Text style={styles.pageSubtitle}>
-            Save the context now so you do not have to rely on memory later.
-          </Text>
-
-          <View style={styles.formCard}>
-            <Field label="NAME *" value={name} onChangeText={setName} placeholder="e.g. Alex Morgan" />
-            <Field label="ROLE" value={role} onChangeText={setRole} placeholder="e.g. Sales Director" />
-            <Field label="COMPANY" value={company} onChangeText={setCompany} placeholder="e.g. Northstar Labs" />
-            <Field
-              label="HOW DO YOU KNOW THEM?"
-              value={relationship}
-              onChangeText={setRelationship}
-              placeholder="e.g. Met at an industry event"
-            />
-            <Field
-              label="FIRST MEMORY"
-              value={firstNote}
-              onChangeText={setFirstNote}
-              placeholder="Something important to remember"
-              multiline
-            />
-            <Field
-              label="FOLLOW-UP"
-              value={followUp}
-              onChangeText={setFollowUp}
-              placeholder="What should you do next?"
-              multiline
-            />
-
-            <Pressable
-              onPress={addPerson}
-              disabled={!name.trim()}
-              style={[styles.primaryButton, !name.trim() && styles.primaryButtonDisabled]}
-            >
-              <Text style={styles.primaryButtonText}>Save person</Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+        <Card>
+          <Field label="NAME *" value={form.name} onChange={(name) => setForm({ ...form, name })} />
+          <Field label="ROLE" value={form.role} onChange={(role) => setForm({ ...form, role })} />
+          <Field label="COMPANY" value={form.company} onChange={(company) => setForm({ ...form, company })} />
+          <Field
+            label="HOW DO YOU KNOW THEM?"
+            value={form.relationship}
+            onChange={(relationship) => setForm({ ...form, relationship })}
+          />
+          <Field
+            label="FIRST MEMORY"
+            value={form.note}
+            onChange={(note) => setForm({ ...form, note })}
+            multiline
+          />
+          <Field
+            label="FOLLOW-UP"
+            value={form.followUp}
+            onChange={(followUp) => setForm({ ...form, followUp })}
+            multiline
+          />
+          <Action label="Save person" onPress={addPerson} disabled={!form.name.trim()} />
+        </Card>
+      </Page>
     );
   }
 
-  if (screen === 'detail' && selectedPerson) {
+  if (screen === 'detail' && selected) {
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <StatusBar barStyle="light-content" />
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <BackButton label="People" onPress={() => setScreen('home')} />
+      <Page>
+        <Back onPress={() => setScreen('home')} />
 
-          <View style={styles.profileHeader}>
-            <View style={styles.largeAvatar}>
-              <Text style={styles.largeAvatarText}>{selectedPerson.name.slice(0, 1).toUpperCase()}</Text>
+        <View style={styles.profile}>
+          <View style={styles.avatarLarge}>
+            <Text style={styles.avatarTextLarge}>{selected.name[0]?.toUpperCase()}</Text>
+          </View>
+          <Text style={styles.profileName}>{selected.name}</Text>
+          <Text style={styles.subCenter}>
+            {[selected.role, selected.company].filter(Boolean).join(' · ') || 'Contact'}
+          </Text>
+          <Text style={styles.mutedCenter}>{selected.relationship}</Text>
+        </View>
+
+        <Card>
+          <Label text="WHAT TO REMEMBER" />
+          {selected.notes.length ? (
+            selected.notes.map((note) => (
+              <Text key={note} style={styles.note}>• {note}</Text>
+            ))
+          ) : (
+            <Text style={styles.muted}>No memory notes yet.</Text>
+          )}
+          {selected.followUp ? (
+            <View style={styles.followUp}>
+              <Text style={styles.followUpLabel}>NEXT STEP</Text>
+              <Text style={styles.followUpText}>{selected.followUp}</Text>
             </View>
-            <Text style={styles.profileName}>{selectedPerson.name}</Text>
-            <Text style={styles.profileRole}>
-              {[selectedPerson.role, selectedPerson.company].filter(Boolean).join(' · ') || 'Contact'}
-            </Text>
-            <Text style={styles.profileRelationship}>{selectedPerson.relationship}</Text>
-          </View>
+          ) : null}
+        </Card>
 
-          <View style={styles.memoryCard}>
-            <Text style={styles.sectionLabel}>WHAT TO REMEMBER</Text>
-            {selectedPerson.notes.length ? (
-              selectedPerson.notes.map((note) => (
-                <View key={note} style={styles.noteRow}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={styles.noteText}>{note}</Text>
-                </View>
-              ))
-            ) : (
-              <Text style={styles.emptyText}>No saved memory notes yet.</Text>
-            )}
+        <Card>
+          <Label text="MEMORY BRIEFING · LOCAL PREVIEW" />
+          <Text style={styles.cardTitle}>Who was this person?</Text>
+          <Text style={styles.body}>
+            {briefing || 'Build a quick briefing from the memories already saved for this person.'}
+          </Text>
+          <OutlineAction label="Generate briefing" onPress={() => setBriefing(buildMemoryBriefing(selected))} />
+        </Card>
 
-            {selectedPerson.followUp ? (
-              <View style={styles.followUpBox}>
-                <Text style={styles.followUpLabel}>NEXT STEP</Text>
-                <Text style={styles.followUpText}>{selectedPerson.followUp}</Text>
-              </View>
-            ) : null}
-          </View>
+        <Card>
+          <Label text="NEW INTERACTION" />
+          <TextInput
+            value={interactionText}
+            onChangeText={setInteractionText}
+            multiline
+            placeholder="What happened? What should you remember?"
+            placeholderTextColor="#727D89"
+            style={[styles.input, styles.multiline]}
+          />
+          <Action label="Add interaction" onPress={addInteraction} disabled={!interactionText.trim()} />
+        </Card>
 
-          <View style={styles.briefingCard}>
-            <View style={styles.sectionHeaderCompact}>
-              <View style={styles.flexOne}>
-                <Text style={styles.sectionLabel}>MEMORY BRIEFING</Text>
-                <Text style={styles.cardTitle}>“Who was this person?”</Text>
-              </View>
-              <View style={styles.prototypeBadge}>
-                <Text style={styles.prototypeBadgeText}>LOCAL PREVIEW</Text>
-              </View>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>History</Text>
+          <Text style={styles.muted}>{selected.interactions.length} interactions</Text>
+        </View>
+
+        {selected.interactions.length ? (
+          selected.interactions.map((item) => (
+            <View key={item.id} style={styles.historyCard}>
+              <Text style={styles.historyDate}>{item.date}</Text>
+              <Text style={styles.historyText}>{item.summary}</Text>
+              <Text style={styles.source}>SOURCE: {item.source}</Text>
             </View>
-
-            {briefing ? (
-              <Text style={styles.briefingText}>{briefing}</Text>
-            ) : (
-              <Text style={styles.cardBody}>
-                Build a quick briefing from the memories already saved for this person.
-              </Text>
-            )}
-
-            <Pressable
-              onPress={() => setBriefing(buildMemoryBriefing(selectedPerson))}
-              style={styles.secondaryButton}
-            >
-              <Text style={styles.secondaryButtonText}>Generate briefing</Text>
-            </Pressable>
-          </View>
-
-          <View style={styles.formCard}>
-            <Text style={styles.sectionLabel}>NEW INTERACTION</Text>
-            <Text style={styles.cardTitle}>What happened?</Text>
-            <TextInput
-              value={interactionText}
-              onChangeText={setInteractionText}
-              placeholder="e.g. We discussed the pilot. He wants pricing next week."
-              placeholderTextColor="#727D89"
-              multiline
-              style={[styles.input, styles.multilineInput]}
-            />
-            <Pressable
-              onPress={addInteraction}
-              disabled={!interactionText.trim()}
-              style={[styles.primaryButton, !interactionText.trim() && styles.primaryButtonDisabled]}
-            >
-              <Text style={styles.primaryButtonText}>Add interaction</Text>
-            </Pressable>
-          </View>
-
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>History</Text>
-            <Text style={styles.sectionMeta}>{selectedPerson.interactions.length} interactions</Text>
-          </View>
-
-          <View style={styles.timeline}>
-            {selectedPerson.interactions.length ? (
-              selectedPerson.interactions.map((interaction) => (
-                <View key={interaction.id} style={styles.timelineCard}>
-                  <View style={styles.timelineDot} />
-                  <View style={styles.flexOne}>
-                    <Text style={styles.timelineDate}>{interaction.date}</Text>
-                    <Text style={styles.timelineText}>{interaction.summary}</Text>
-                    <Text style={styles.timelineSource}>Source: {interaction.source}</Text>
-                  </View>
-                </View>
-              ))
-            ) : (
-              <View style={styles.emptyCard}>
-                <Text style={styles.emptyText}>No interactions yet. Add the first one above.</Text>
-              </View>
-            )}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+          ))
+        ) : (
+          <Card><Text style={styles.muted}>No interactions yet.</Text></Card>
+        )}
+      </Page>
     );
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <Page>
+      <View style={styles.hero}>
+        <Text style={styles.brand}>AI MEMORY</Text>
+        <Text style={styles.title}>Remember people. Remember context.</Text>
+        <Text style={styles.sub}>Your private social memory layer for conversations and follow-ups.</Text>
+      </View>
+
+      <View style={styles.stats}>
+        <Stat value={people.length} label="People" />
+        <Stat value={people.reduce((sum, p) => sum + p.interactions.length, 0)} label="Interactions" />
+        <Stat value={people.filter((p) => p.followUp).length} label="Follow-ups" />
+      </View>
+
+      <Card>
+        <Label text="SEARCH YOUR MEMORY" />
+        <TextInput
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Name, company, note or conversation..."
+          placeholderTextColor="#727D89"
+          style={styles.input}
+        />
+      </Card>
+
+      <View style={styles.sectionHeader}>
+        <View>
+          <Text style={styles.sectionTitle}>People</Text>
+          <Text style={styles.muted}>{filtered.length} matching memories</Text>
+        </View>
+        <Pressable style={styles.addButton} onPress={() => setScreen('add')}>
+          <Text style={styles.addButtonText}>+ Add person</Text>
+        </Pressable>
+      </View>
+
+      {filtered.map((person) => (
+        <Pressable key={person.id} style={styles.personCard} onPress={() => openPerson(person.id)}>
+          <View style={styles.avatar}><Text style={styles.avatarText}>{person.name[0]?.toUpperCase()}</Text></View>
+          <View style={styles.flex}>
+            <Text style={styles.personName}>{person.name}</Text>
+            <Text style={styles.personMeta}>
+              {[person.role, person.company].filter(Boolean).join(' · ') || person.relationship}
+            </Text>
+            <Text style={styles.muted}>Last interaction: {person.lastInteraction}</Text>
+          </View>
+          <Text style={styles.chevron}>›</Text>
+        </Pressable>
+      ))}
+
+      {!filtered.length ? <Card><Text style={styles.muted}>No memories found.</Text></Card> : null}
+
+      <Card>
+        <Label text="MVP STATUS" />
+        <Text style={styles.cardTitle}>Phone first. Glasses later.</Text>
+        <Text style={styles.body}>
+          {storageReady
+            ? 'Your people and interactions are now saved on this device. Cloud sync, real AI and smart-glasses input are the next layers.'
+            : 'Loading your saved memories on this device...'}
+        </Text>
+        <View style={styles.pills}>
+          <Pill text="Local save ✓" active={storageReady} />
+          <Pill text="Cloud sync next" />
+          <Pill text="Real AI next" />
+          <Pill text="Glasses later" />
+        </View>
+      </Card>
+    </Page>
+  );
+}
+
+function Page({ children }: { children: React.ReactNode }) {
+  return (
+    <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="light-content" />
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <View style={styles.header}>
-          <Text style={styles.eyebrow}>AI MEMORY</Text>
-          <Text style={styles.title}>Remember people. Remember context.</Text>
-          <Text style={styles.subtitle}>
-            A private social memory layer for conversations, relationships and follow-ups.
-          </Text>
-        </View>
-
-        <View style={styles.statsRow}>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{people.length}</Text>
-            <Text style={styles.statLabel}>People</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>
-              {people.reduce((total, person) => total + person.interactions.length, 0)}
-            </Text>
-            <Text style={styles.statLabel}>Interactions</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Text style={styles.statValue}>{people.filter((person) => person.followUp).length}</Text>
-            <Text style={styles.statLabel}>Follow-ups</Text>
-          </View>
-        </View>
-
-        <View style={styles.searchCard}>
-          <Text style={styles.sectionLabel}>SEARCH YOUR MEMORY</Text>
-          <TextInput
-            value={query}
-            onChangeText={setQuery}
-            placeholder="Name, company, note or conversation..."
-            placeholderTextColor="#77808C"
-            style={styles.input}
-          />
-        </View>
-
-        <View style={styles.sectionHeader}>
-          <View>
-            <Text style={styles.sectionTitle}>People</Text>
-            <Text style={styles.sectionMeta}>{filteredPeople.length} matching memories</Text>
-          </View>
-          <Pressable onPress={() => setScreen('add')} style={styles.addButton}>
-            <Text style={styles.addButtonText}>+ Add person</Text>
-          </Pressable>
-        </View>
-
-        <View style={styles.peopleList}>
-          {filteredPeople.length ? (
-            filteredPeople.map((person) => (
-              <Pressable key={person.id} onPress={() => openPerson(person.id)} style={styles.personCard}>
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarText}>{person.name.slice(0, 1).toUpperCase()}</Text>
-                </View>
-                <View style={styles.personInfo}>
-                  <Text style={styles.personName}>{person.name}</Text>
-                  <Text style={styles.personRole}>
-                    {[person.role, person.company].filter(Boolean).join(' · ') || person.relationship}
-                  </Text>
-                  <Text style={styles.lastSeen}>Last interaction: {person.lastInteraction}</Text>
-                </View>
-                <Text style={styles.chevron}>›</Text>
-              </Pressable>
-            ))
-          ) : (
-            <View style={styles.emptyCard}>
-              <Text style={styles.emptyTitle}>No memories found</Text>
-              <Text style={styles.emptyText}>Try another search or add a new person.</Text>
-            </View>
-          )}
-        </View>
-
-        <View style={styles.productCard}>
-          <Text style={styles.sectionLabel}>PRODUCT DIRECTION</Text>
-          <Text style={styles.productTitle}>Phone first. Glasses optional.</Text>
-          <Text style={styles.productText}>
-            This MVP starts with deliberate, user-controlled memory capture on the phone. Camera, voice and smart-glasses inputs can be added later with explicit consent and privacy controls.
-          </Text>
-          <View style={styles.statusRow}>
-            <StatusPill text="Phone MVP" active />
-            <StatusPill text="Cloud sync next" />
-            <StatusPill text="Glasses later" />
-          </View>
-        </View>
+        {children}
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-function BackButton({ label, onPress }: { label: string; onPress: () => void }) {
-  return (
-    <Pressable onPress={onPress} style={styles.backButton}>
-      <Text style={styles.backButtonText}>‹ {label}</Text>
-    </Pressable>
-  );
+function Card({ children }: { children: React.ReactNode }) {
+  return <View style={styles.card}>{children}</View>;
 }
 
-function Field({
-  label,
-  value,
-  onChangeText,
-  placeholder,
-  multiline = false,
-}: {
+function Back({ onPress }: { onPress: () => void }) {
+  return <Pressable onPress={onPress}><Text style={styles.back}>‹ People</Text></Pressable>;
+}
+
+function Label({ text }: { text: string }) {
+  return <Text style={styles.label}>{text}</Text>;
+}
+
+function Field({ label, value, onChange, multiline = false }: {
   label: string;
   value: string;
-  onChangeText: (value: string) => void;
-  placeholder: string;
+  onChange: (value: string) => void;
   multiline?: boolean;
 }) {
   return (
-    <View style={styles.fieldWrap}>
-      <Text style={styles.fieldLabel}>{label}</Text>
+    <View style={styles.field}>
+      <Label text={label} />
       <TextInput
         value={value}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-        placeholderTextColor="#727D89"
+        onChangeText={onChange}
         multiline={multiline}
-        style={[styles.input, multiline && styles.multilineInput]}
+        placeholder={`Enter ${label.toLowerCase().replace(' *', '')}`}
+        placeholderTextColor="#727D89"
+        style={[styles.input, multiline && styles.multiline]}
       />
     </View>
   );
 }
 
-function StatusPill({ text, active = false }: { text: string; active?: boolean }) {
+function Action({ label, onPress, disabled = false }: { label: string; onPress: () => void; disabled?: boolean }) {
   return (
-    <View style={[styles.statusPill, active && styles.statusPillActive]}>
-      <Text style={[styles.statusPillText, active && styles.statusPillTextActive]}>{text}</Text>
-    </View>
+    <Pressable onPress={onPress} disabled={disabled} style={[styles.action, disabled && styles.disabled]}>
+      <Text style={styles.actionText}>{label}</Text>
+    </Pressable>
   );
 }
 
+function OutlineAction({ label, onPress }: { label: string; onPress: () => void }) {
+  return <Pressable onPress={onPress} style={styles.outline}><Text style={styles.outlineText}>{label}</Text></Pressable>;
+}
+
+function Stat({ value, label }: { value: number; label: string }) {
+  return <View style={styles.stat}><Text style={styles.statValue}>{value}</Text><Text style={styles.muted}>{label}</Text></View>;
+}
+
+function Pill({ text, active = false }: { text: string; active?: boolean }) {
+  return <View style={[styles.pill, active && styles.pillActive]}><Text style={[styles.pillText, active && styles.pillTextActive]}>{text}</Text></View>;
+}
+
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#0B0F14',
-  },
-  container: {
-    padding: 20,
-    paddingBottom: 52,
-  },
-  flexOne: {
-    flex: 1,
-  },
-  header: {
-    marginTop: 12,
-    marginBottom: 22,
-  },
-  eyebrow: {
-    color: '#7DE2C3',
-    fontSize: 12,
-    fontWeight: '800',
-    letterSpacing: 2,
-    marginBottom: 10,
-  },
-  title: {
-    color: '#F4F7FA',
-    fontSize: 34,
-    lineHeight: 40,
-    fontWeight: '800',
-    maxWidth: 340,
-  },
-  subtitle: {
-    color: '#9BA5B2',
-    marginTop: 12,
-    fontSize: 16,
-    lineHeight: 23,
-  },
-  pageTitle: {
-    color: '#F4F7FA',
-    fontSize: 31,
-    lineHeight: 38,
-    fontWeight: '800',
-    marginTop: 12,
-  },
-  pageSubtitle: {
-    color: '#929EAA',
-    fontSize: 15,
-    lineHeight: 22,
-    marginTop: 8,
-    marginBottom: 22,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    gap: 10,
-    marginBottom: 16,
-  },
-  statCard: {
-    flex: 1,
-    backgroundColor: '#111820',
-    borderRadius: 17,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: '#1E2833',
-  },
-  statValue: {
-    color: '#F4F7FA',
-    fontSize: 22,
-    fontWeight: '800',
-  },
-  statLabel: {
-    color: '#7C8794',
-    fontSize: 11,
-    marginTop: 5,
-  },
-  searchCard: {
-    backgroundColor: '#121820',
-    borderRadius: 20,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#1E2833',
-  },
-  sectionLabel: {
-    color: '#7DE2C3',
-    fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 1.4,
-    marginBottom: 9,
-  },
-  input: {
-    backgroundColor: '#0E141B',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#25303C',
-    color: '#F4F7FA',
-    paddingHorizontal: 14,
-    paddingVertical: 13,
-    fontSize: 15,
-  },
-  multilineInput: {
-    minHeight: 92,
-    textAlignVertical: 'top',
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 28,
-    marginBottom: 12,
-    gap: 12,
-  },
-  sectionHeaderCompact: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-  },
-  sectionTitle: {
-    color: '#F4F7FA',
-    fontSize: 22,
-    fontWeight: '800',
-  },
-  sectionMeta: {
-    color: '#798492',
-    fontSize: 12,
-    marginTop: 3,
-  },
-  addButton: {
-    backgroundColor: '#7DE2C3',
-    borderRadius: 13,
-    paddingHorizontal: 13,
-    paddingVertical: 10,
-  },
-  addButtonText: {
-    color: '#07100D',
-    fontWeight: '900',
-    fontSize: 12,
-  },
-  peopleList: {
-    gap: 10,
-  },
-  personCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#111820',
-    borderRadius: 18,
-    padding: 14,
-    borderWidth: 1,
-    borderColor: '#1D2731',
-  },
-  avatar: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    backgroundColor: '#1A2D2B',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  avatarText: {
-    color: '#7DE2C3',
-    fontSize: 19,
-    fontWeight: '800',
-  },
-  personInfo: {
-    flex: 1,
-  },
-  personName: {
-    color: '#F4F7FA',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  personRole: {
-    color: '#A1ABB7',
-    marginTop: 3,
-    fontSize: 13,
-  },
-  lastSeen: {
-    color: '#687380',
-    marginTop: 5,
-    fontSize: 12,
-  },
-  chevron: {
-    color: '#5F6B78',
-    fontSize: 28,
-    marginLeft: 8,
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    paddingVertical: 8,
-    paddingRight: 14,
-  },
-  backButtonText: {
-    color: '#7DE2C3',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  profileHeader: {
-    alignItems: 'center',
-    paddingVertical: 22,
-  },
-  largeAvatar: {
-    width: 78,
-    height: 78,
-    borderRadius: 25,
-    backgroundColor: '#17302B',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 14,
-  },
-  largeAvatarText: {
-    color: '#7DE2C3',
-    fontSize: 32,
-    fontWeight: '900',
-  },
-  profileName: {
-    color: '#F4F7FA',
-    fontSize: 28,
-    fontWeight: '800',
-    textAlign: 'center',
-  },
-  profileRole: {
-    color: '#A1ABB7',
-    fontSize: 14,
-    marginTop: 5,
-    textAlign: 'center',
-  },
-  profileRelationship: {
-    color: '#6F7B88',
-    fontSize: 13,
-    marginTop: 6,
-    textAlign: 'center',
-  },
-  memoryCard: {
-    backgroundColor: '#141B24',
-    borderRadius: 22,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: '#24303C',
-  },
-  noteRow: {
-    flexDirection: 'row',
-    marginBottom: 9,
-    paddingRight: 8,
-  },
-  bullet: {
-    color: '#7DE2C3',
-    marginRight: 8,
-    fontWeight: '900',
-  },
-  noteText: {
-    color: '#AFB8C3',
-    flex: 1,
-    lineHeight: 20,
-  },
-  followUpBox: {
-    backgroundColor: '#10251F',
-    borderRadius: 16,
-    padding: 14,
-    marginTop: 12,
-  },
-  followUpLabel: {
-    color: '#65D7B4',
-    fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 1.4,
-    marginBottom: 6,
-  },
-  followUpText: {
-    color: '#D9F5EC',
-    lineHeight: 20,
-  },
-  briefingCard: {
-    backgroundColor: '#111820',
-    borderRadius: 22,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: '#21303A',
-    marginTop: 14,
-  },
-  prototypeBadge: {
-    backgroundColor: '#241F12',
-    borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 6,
-  },
-  prototypeBadgeText: {
-    color: '#D8BB6B',
-    fontSize: 8,
-    fontWeight: '900',
-    letterSpacing: 0.8,
-  },
-  cardTitle: {
-    color: '#F4F7FA',
-    fontSize: 18,
-    fontWeight: '800',
-  },
-  cardBody: {
-    color: '#929DA9',
-    marginTop: 8,
-    lineHeight: 20,
-  },
-  briefingText: {
-    color: '#D9E2E9',
-    marginTop: 10,
-    fontSize: 15,
-    lineHeight: 23,
-  },
-  formCard: {
-    backgroundColor: '#121820',
-    borderRadius: 22,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: '#202B36',
-    marginTop: 14,
-  },
-  fieldWrap: {
-    marginBottom: 15,
-  },
-  fieldLabel: {
-    color: '#8995A1',
-    fontSize: 10,
-    fontWeight: '800',
-    letterSpacing: 1.1,
-    marginBottom: 7,
-  },
-  primaryButton: {
-    backgroundColor: '#7DE2C3',
-    borderRadius: 14,
-    alignItems: 'center',
-    paddingVertical: 14,
-    marginTop: 14,
-  },
-  primaryButtonDisabled: {
-    opacity: 0.35,
-  },
-  primaryButtonText: {
-    color: '#07100D',
-    fontSize: 14,
-    fontWeight: '900',
-  },
-  secondaryButton: {
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#3B665B',
-    alignItems: 'center',
-    paddingVertical: 13,
-    marginTop: 16,
-  },
-  secondaryButtonText: {
-    color: '#7DE2C3',
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  timeline: {
-    gap: 10,
-  },
-  timelineCard: {
-    flexDirection: 'row',
-    gap: 12,
-    backgroundColor: '#10171E',
-    borderRadius: 17,
-    padding: 15,
-    borderWidth: 1,
-    borderColor: '#1C2630',
-  },
-  timelineDot: {
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-    backgroundColor: '#7DE2C3',
-    marginTop: 5,
-  },
-  timelineDate: {
-    color: '#7DE2C3',
-    fontSize: 11,
-    fontWeight: '800',
-    marginBottom: 6,
-  },
-  timelineText: {
-    color: '#C1C9D2',
-    lineHeight: 20,
-  },
-  timelineSource: {
-    color: '#606C78',
-    fontSize: 10,
-    marginTop: 8,
-    textTransform: 'uppercase',
-  },
-  emptyCard: {
-    backgroundColor: '#10161D',
-    borderRadius: 17,
-    padding: 18,
-    borderWidth: 1,
-    borderColor: '#1E2730',
-  },
-  emptyTitle: {
-    color: '#E1E6EB',
-    fontSize: 15,
-    fontWeight: '700',
-    marginBottom: 5,
-  },
-  emptyText: {
-    color: '#7E8995',
-    lineHeight: 20,
-  },
-  productCard: {
-    marginTop: 26,
-    padding: 18,
-    borderRadius: 20,
-    backgroundColor: '#0E141B',
-    borderWidth: 1,
-    borderColor: '#202A35',
-  },
-  productTitle: {
-    color: '#F4F7FA',
-    fontWeight: '800',
-    fontSize: 18,
-  },
-  productText: {
-    color: '#8F9AA7',
-    marginTop: 8,
-    lineHeight: 20,
-  },
-  statusRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 16,
-  },
-  statusPill: {
-    backgroundColor: '#141B22',
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderWidth: 1,
-    borderColor: '#242F3A',
-  },
-  statusPillActive: {
-    backgroundColor: '#10251F',
-    borderColor: '#315B4F',
-  },
-  statusPillText: {
-    color: '#727E8A',
-    fontSize: 10,
-    fontWeight: '700',
-  },
-  statusPillTextActive: {
-    color: '#7DE2C3',
-  },
+  safe: { flex: 1, backgroundColor: '#0B0F14' },
+  container: { padding: 20, paddingBottom: 52, gap: 12 },
+  flex: { flex: 1 },
+  hero: { marginTop: 10, marginBottom: 8 },
+  brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 2, marginBottom: 10 },
+  title: { color: '#F4F7FA', fontSize: 34, lineHeight: 40, fontWeight: '800' },
+  titleSmall: { color: '#F4F7FA', fontSize: 30, fontWeight: '800', marginTop: 10 },
+  sub: { color: '#98A3AF', fontSize: 15, lineHeight: 22, marginTop: 8 },
+  subCenter: { color: '#A6B0BA', fontSize: 14, marginTop: 5, textAlign: 'center' },
+  muted: { color: '#75818D', fontSize: 12, lineHeight: 18 },
+  mutedCenter: { color: '#75818D', fontSize: 12, marginTop: 5, textAlign: 'center' },
+  card: { backgroundColor: '#121820', borderRadius: 20, borderWidth: 1, borderColor: '#202B36', padding: 16, marginTop: 2 },
+  label: { color: '#7DE2C3', fontSize: 10, fontWeight: '900', letterSpacing: 1.2, marginBottom: 8 },
+  cardTitle: { color: '#F4F7FA', fontSize: 18, fontWeight: '800' },
+  body: { color: '#A5AFB9', fontSize: 14, lineHeight: 21, marginTop: 8 },
+  input: { backgroundColor: '#0E141B', borderRadius: 14, borderWidth: 1, borderColor: '#293541', color: '#F4F7FA', fontSize: 15, paddingHorizontal: 13, paddingVertical: 12 },
+  multiline: { minHeight: 90, textAlignVertical: 'top' },
+  field: { marginBottom: 14 },
+  action: { backgroundColor: '#7DE2C3', borderRadius: 14, alignItems: 'center', paddingVertical: 14, marginTop: 10 },
+  disabled: { opacity: 0.35 },
+  actionText: { color: '#07100D', fontWeight: '900', fontSize: 14 },
+  outline: { borderRadius: 14, borderWidth: 1, borderColor: '#3E6A5E', alignItems: 'center', paddingVertical: 13, marginTop: 15 },
+  outlineText: { color: '#7DE2C3', fontWeight: '800' },
+  back: { color: '#7DE2C3', fontSize: 15, fontWeight: '800', paddingVertical: 8 },
+  stats: { flexDirection: 'row', gap: 9 },
+  stat: { flex: 1, backgroundColor: '#111820', borderRadius: 16, borderWidth: 1, borderColor: '#202A34', padding: 13 },
+  statValue: { color: '#F4F7FA', fontSize: 22, fontWeight: '900', marginBottom: 3 },
+  sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 14, gap: 10 },
+  sectionTitle: { color: '#F4F7FA', fontSize: 22, fontWeight: '800' },
+  addButton: { backgroundColor: '#7DE2C3', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 9 },
+  addButtonText: { color: '#07100D', fontWeight: '900', fontSize: 12 },
+  personCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#111820', borderRadius: 18, borderWidth: 1, borderColor: '#1E2933', padding: 14 },
+  avatar: { width: 46, height: 46, borderRadius: 15, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  avatarText: { color: '#7DE2C3', fontWeight: '900', fontSize: 19 },
+  personName: { color: '#F4F7FA', fontSize: 16, fontWeight: '800' },
+  personMeta: { color: '#A7B0BA', fontSize: 13, marginTop: 3, marginBottom: 4 },
+  chevron: { color: '#66727E', fontSize: 27, marginLeft: 8 },
+  profile: { alignItems: 'center', paddingVertical: 18 },
+  avatarLarge: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
+  avatarTextLarge: { color: '#7DE2C3', fontSize: 31, fontWeight: '900' },
+  profileName: { color: '#F4F7FA', fontSize: 27, fontWeight: '900', textAlign: 'center' },
+  note: { color: '#BCC5CE', fontSize: 14, lineHeight: 21, marginBottom: 7 },
+  followUp: { backgroundColor: '#10251F', borderRadius: 14, padding: 13, marginTop: 8 },
+  followUpLabel: { color: '#67D9B6', fontSize: 9, fontWeight: '900', letterSpacing: 1.2, marginBottom: 5 },
+  followUpText: { color: '#D9F5EC', lineHeight: 20 },
+  historyCard: { backgroundColor: '#10171E', borderRadius: 17, borderWidth: 1, borderColor: '#1D2832', padding: 15 },
+  historyDate: { color: '#7DE2C3', fontSize: 11, fontWeight: '900', marginBottom: 6 },
+  historyText: { color: '#C0C9D2', lineHeight: 20 },
+  source: { color: '#66727E', fontSize: 9, marginTop: 8, fontWeight: '800' },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 14 },
+  pill: { backgroundColor: '#151C23', borderRadius: 999, borderWidth: 1, borderColor: '#29333D', paddingHorizontal: 9, paddingVertical: 6 },
+  pillActive: { backgroundColor: '#10251F', borderColor: '#315B4F' },
+  pillText: { color: '#7B8792', fontSize: 10, fontWeight: '800' },
+  pillTextActive: { color: '#7DE2C3' },
 });
