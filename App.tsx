@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  Alert,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -15,7 +16,24 @@ import { usePersistentPeople } from './src/hooks/usePersistentPeople';
 import { MemoryPerson } from './src/types';
 import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
 
-type Screen = 'home' | 'detail' | 'add';
+type Screen = 'home' | 'detail' | 'add' | 'edit';
+type PersonForm = {
+  name: string;
+  role: string;
+  company: string;
+  relationship: string;
+  note: string;
+  followUp: string;
+};
+
+const emptyForm: PersonForm = {
+  name: '',
+  role: '',
+  company: '',
+  relationship: '',
+  note: '',
+  followUp: '',
+};
 
 export default function App() {
   const [people, setPeople, storageReady] = usePersistentPeople(mockPeople);
@@ -24,14 +42,8 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(mockPeople[0]?.id ?? null);
   const [briefing, setBriefing] = useState('');
   const [interactionText, setInteractionText] = useState('');
-  const [form, setForm] = useState({
-    name: '',
-    role: '',
-    company: '',
-    relationship: '',
-    note: '',
-    followUp: '',
-  });
+  const [memoryText, setMemoryText] = useState('');
+  const [form, setForm] = useState<PersonForm>(emptyForm);
 
   const selected = useMemo(
     () => people.find((person) => person.id === selectedId) ?? null,
@@ -63,7 +75,27 @@ export default function App() {
     setSelectedId(id);
     setBriefing('');
     setInteractionText('');
+    setMemoryText('');
     setScreen('detail');
+  }
+
+  function openAddPerson() {
+    setForm(emptyForm);
+    setScreen('add');
+  }
+
+  function openEditPerson() {
+    if (!selected) return;
+
+    setForm({
+      name: selected.name,
+      role: selected.role ?? '',
+      company: selected.company ?? '',
+      relationship: selected.relationship,
+      note: selected.notes[0] ?? '',
+      followUp: selected.followUp ?? '',
+    });
+    setScreen('edit');
   }
 
   function addPerson() {
@@ -83,8 +115,33 @@ export default function App() {
     };
 
     setPeople((current) => [person, ...current]);
-    setForm({ name: '', role: '', company: '', relationship: '', note: '', followUp: '' });
+    setForm(emptyForm);
     setSelectedId(id);
+    setBriefing('');
+    setScreen('detail');
+  }
+
+  function saveEditedPerson() {
+    if (!selected || !form.name.trim()) return;
+
+    setPeople((current) =>
+      current.map((person) => {
+        if (person.id !== selected.id) return person;
+
+        const firstNote = form.note.trim();
+        const restOfNotes = person.notes.slice(1);
+
+        return {
+          ...person,
+          name: form.name.trim(),
+          role: form.role.trim() || undefined,
+          company: form.company.trim() || undefined,
+          relationship: form.relationship.trim() || 'Contact',
+          notes: firstNote ? [firstNote, ...restOfNotes] : restOfNotes,
+          followUp: form.followUp.trim() || undefined,
+        };
+      }),
+    );
     setBriefing('');
     setScreen('detail');
   }
@@ -116,12 +173,66 @@ export default function App() {
     setBriefing('');
   }
 
-  if (screen === 'add') {
+  function addMemoryNote() {
+    const text = memoryText.trim();
+    if (!selected || !text) return;
+
+    setPeople((current) =>
+      current.map((person) =>
+        person.id === selected.id
+          ? { ...person, notes: [text, ...person.notes] }
+          : person,
+      ),
+    );
+    setMemoryText('');
+    setBriefing('');
+  }
+
+  function completeFollowUp() {
+    if (!selected) return;
+
+    setPeople((current) =>
+      current.map((person) =>
+        person.id === selected.id ? { ...person, followUp: undefined } : person,
+      ),
+    );
+    setBriefing('');
+  }
+
+  function deleteSelectedPerson() {
+    if (!selected) return;
+
+    Alert.alert(
+      'Delete person?',
+      `${selected.name} and all saved interactions on this device will be removed.`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            setPeople((current) => current.filter((person) => person.id !== selected.id));
+            setSelectedId(null);
+            setBriefing('');
+            setScreen('home');
+          },
+        },
+      ],
+    );
+  }
+
+  if (screen === 'add' || screen === 'edit') {
+    const isEdit = screen === 'edit';
+
     return (
       <Page>
-        <Back onPress={() => setScreen('home')} />
-        <Text style={styles.titleSmall}>Add a person</Text>
-        <Text style={styles.sub}>Save the context now so you do not have to rely on memory later.</Text>
+        <Back onPress={() => setScreen(isEdit ? 'detail' : 'home')} />
+        <Text style={styles.titleSmall}>{isEdit ? 'Edit person' : 'Add a person'}</Text>
+        <Text style={styles.sub}>
+          {isEdit
+            ? 'Keep the profile accurate as your relationship and context change.'
+            : 'Save the context now so you do not have to rely on memory later.'}
+        </Text>
 
         <Card>
           <Field label="NAME *" value={form.name} onChange={(name) => setForm({ ...form, name })} />
@@ -133,7 +244,7 @@ export default function App() {
             onChange={(relationship) => setForm({ ...form, relationship })}
           />
           <Field
-            label="FIRST MEMORY"
+            label={isEdit ? 'PRIMARY MEMORY' : 'FIRST MEMORY'}
             value={form.note}
             onChange={(note) => setForm({ ...form, note })}
             multiline
@@ -144,7 +255,11 @@ export default function App() {
             onChange={(followUp) => setForm({ ...form, followUp })}
             multiline
           />
-          <Action label="Save person" onPress={addPerson} disabled={!form.name.trim()} />
+          <Action
+            label={isEdit ? 'Save changes' : 'Save person'}
+            onPress={isEdit ? saveEditedPerson : addPerson}
+            disabled={!form.name.trim()}
+          />
         </Card>
       </Page>
     );
@@ -164,23 +279,43 @@ export default function App() {
             {[selected.role, selected.company].filter(Boolean).join(' · ') || 'Contact'}
           </Text>
           <Text style={styles.mutedCenter}>{selected.relationship}</Text>
+          <View style={styles.profileActions}>
+            <MiniAction label="Edit" onPress={openEditPerson} />
+            <MiniAction label="Delete" onPress={deleteSelectedPerson} danger />
+          </View>
         </View>
 
         <Card>
           <Label text="WHAT TO REMEMBER" />
           {selected.notes.length ? (
-            selected.notes.map((note) => (
-              <Text key={note} style={styles.note}>• {note}</Text>
+            selected.notes.map((note, index) => (
+              <Text key={`${note}-${index}`} style={styles.note}>• {note}</Text>
             ))
           ) : (
             <Text style={styles.muted}>No memory notes yet.</Text>
           )}
+
+          <TextInput
+            value={memoryText}
+            onChangeText={setMemoryText}
+            multiline
+            placeholder="Add another thing you want to remember..."
+            placeholderTextColor="#727D89"
+            style={[styles.input, styles.multilineSmall]}
+          />
+          <OutlineAction label="Add memory note" onPress={addMemoryNote} disabled={!memoryText.trim()} />
+
           {selected.followUp ? (
             <View style={styles.followUp}>
               <Text style={styles.followUpLabel}>NEXT STEP</Text>
               <Text style={styles.followUpText}>{selected.followUp}</Text>
+              <Pressable onPress={completeFollowUp} style={styles.followUpDone}>
+                <Text style={styles.followUpDoneText}>✓ Mark completed</Text>
+              </Pressable>
             </View>
-          ) : null}
+          ) : (
+            <Text style={styles.followUpComplete}>No open follow-up.</Text>
+          )}
         </Card>
 
         <Card>
@@ -255,7 +390,7 @@ export default function App() {
           <Text style={styles.sectionTitle}>People</Text>
           <Text style={styles.muted}>{filtered.length} matching memories</Text>
         </View>
-        <Pressable style={styles.addButton} onPress={() => setScreen('add')}>
+        <Pressable style={styles.addButton} onPress={openAddPerson}>
           <Text style={styles.addButtonText}>+ Add person</Text>
         </Pressable>
       </View>
@@ -281,7 +416,7 @@ export default function App() {
         <Text style={styles.cardTitle}>Phone first. Glasses later.</Text>
         <Text style={styles.body}>
           {storageReady
-            ? 'Your people and interactions are now saved on this device. Cloud sync, real AI and smart-glasses input are the next layers.'
+            ? 'Your people and interactions are saved on this device. Cloud sync, real AI and smart-glasses input are the next layers.'
             : 'Loading your saved memories on this device...'}
         </Text>
         <View style={styles.pills}>
@@ -347,8 +482,28 @@ function Action({ label, onPress, disabled = false }: { label: string; onPress: 
   );
 }
 
-function OutlineAction({ label, onPress }: { label: string; onPress: () => void }) {
-  return <Pressable onPress={onPress} style={styles.outline}><Text style={styles.outlineText}>{label}</Text></Pressable>;
+function OutlineAction({
+  label,
+  onPress,
+  disabled = false,
+}: {
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <Pressable onPress={onPress} disabled={disabled} style={[styles.outline, disabled && styles.disabled]}>
+      <Text style={styles.outlineText}>{label}</Text>
+    </Pressable>
+  );
+}
+
+function MiniAction({ label, onPress, danger = false }: { label: string; onPress: () => void; danger?: boolean }) {
+  return (
+    <Pressable onPress={onPress} style={[styles.miniAction, danger && styles.miniActionDanger]}>
+      <Text style={[styles.miniActionText, danger && styles.miniActionTextDanger]}>{label}</Text>
+    </Pressable>
+  );
 }
 
 function Stat({ value, label }: { value: number; label: string }) {
@@ -377,11 +532,12 @@ const styles = StyleSheet.create({
   body: { color: '#A5AFB9', fontSize: 14, lineHeight: 21, marginTop: 8 },
   input: { backgroundColor: '#0E141B', borderRadius: 14, borderWidth: 1, borderColor: '#293541', color: '#F4F7FA', fontSize: 15, paddingHorizontal: 13, paddingVertical: 12 },
   multiline: { minHeight: 90, textAlignVertical: 'top' },
+  multilineSmall: { minHeight: 70, textAlignVertical: 'top', marginTop: 10 },
   field: { marginBottom: 14 },
   action: { backgroundColor: '#7DE2C3', borderRadius: 14, alignItems: 'center', paddingVertical: 14, marginTop: 10 },
   disabled: { opacity: 0.35 },
   actionText: { color: '#07100D', fontWeight: '900', fontSize: 14 },
-  outline: { borderRadius: 14, borderWidth: 1, borderColor: '#3E6A5E', alignItems: 'center', paddingVertical: 13, marginTop: 15 },
+  outline: { borderRadius: 14, borderWidth: 1, borderColor: '#3E6A5E', alignItems: 'center', paddingVertical: 13, marginTop: 12 },
   outlineText: { color: '#7DE2C3', fontWeight: '800' },
   back: { color: '#7DE2C3', fontSize: 15, fontWeight: '800', paddingVertical: 8 },
   stats: { flexDirection: 'row', gap: 9 },
@@ -401,10 +557,18 @@ const styles = StyleSheet.create({
   avatarLarge: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
   avatarTextLarge: { color: '#7DE2C3', fontSize: 31, fontWeight: '900' },
   profileName: { color: '#F4F7FA', fontSize: 27, fontWeight: '900', textAlign: 'center' },
+  profileActions: { flexDirection: 'row', gap: 8, marginTop: 14 },
+  miniAction: { borderRadius: 999, borderWidth: 1, borderColor: '#355348', paddingHorizontal: 15, paddingVertical: 7 },
+  miniActionDanger: { borderColor: '#5B3437' },
+  miniActionText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
+  miniActionTextDanger: { color: '#F18B91' },
   note: { color: '#BCC5CE', fontSize: 14, lineHeight: 21, marginBottom: 7 },
-  followUp: { backgroundColor: '#10251F', borderRadius: 14, padding: 13, marginTop: 8 },
+  followUp: { backgroundColor: '#10251F', borderRadius: 14, padding: 13, marginTop: 12 },
   followUpLabel: { color: '#67D9B6', fontSize: 9, fontWeight: '900', letterSpacing: 1.2, marginBottom: 5 },
   followUpText: { color: '#D9F5EC', lineHeight: 20 },
+  followUpDone: { alignSelf: 'flex-start', marginTop: 10, borderRadius: 10, borderWidth: 1, borderColor: '#315B4F', paddingHorizontal: 10, paddingVertical: 7 },
+  followUpDoneText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
+  followUpComplete: { color: '#75818D', fontSize: 12, marginTop: 12 },
   historyCard: { backgroundColor: '#10171E', borderRadius: 17, borderWidth: 1, borderColor: '#1D2832', padding: 15 },
   historyDate: { color: '#7DE2C3', fontSize: 11, fontWeight: '900', marginBottom: 6 },
   historyText: { color: '#C0C9D2', lineHeight: 20 },
