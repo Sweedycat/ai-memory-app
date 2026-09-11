@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "AI Memory",
+    "slug": "ai-memory-app",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0B0F14"
+    },
+    "android": {
+      "package": "com.sweedycat.aimemory"
+    },
+    "ios": {
+      "bundleIdentifier": "com.sweedycat.aimemory"
+    }
+  }
+}
