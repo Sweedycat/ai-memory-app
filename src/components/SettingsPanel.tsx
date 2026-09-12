@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Pressable,
   SafeAreaView,
@@ -9,6 +9,8 @@ import {
   View,
 } from 'react-native';
 
+import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
+
 type SettingsPanelProps = {
   displayName: string;
   role?: string;
@@ -17,6 +19,18 @@ type SettingsPanelProps = {
   onReportBug: () => void;
 };
 
+type DelayOption = {
+  seconds: LockDelaySeconds;
+  label: string;
+};
+
+const DELAY_OPTIONS: DelayOption[] = [
+  { seconds: 0, label: 'Immediately' },
+  { seconds: 30, label: '30 sec' },
+  { seconds: 60, label: '1 min' },
+  { seconds: 300, label: '5 min' },
+];
+
 export function SettingsPanel({
   displayName,
   role = '',
@@ -24,13 +38,56 @@ export function SettingsPanel({
   onEditProfile,
   onReportBug,
 }: SettingsPanelProps) {
-  const initials = displayName
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('') || 'ME';
+  const {
+    appLockEnabled,
+    lockDelaySeconds,
+    setAppLockEnabled,
+    setLockDelaySeconds,
+    lockNow,
+  } = usePrivacyControls();
+  const [changingLock, setChangingLock] = useState(false);
+  const [privacyMessage, setPrivacyMessage] = useState('');
+
+  const initials =
+    displayName
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join('') || 'ME';
+
+  async function toggleAppLock() {
+    if (changingLock) return;
+
+    setChangingLock(true);
+    setPrivacyMessage('');
+
+    const target = !appLockEnabled;
+    const changed = await setAppLockEnabled(target);
+
+    if (!changed) {
+      setPrivacyMessage(
+        target
+          ? 'Could not enable the app lock. Please try again.'
+          : 'App lock stayed on because owner authentication was cancelled or failed.',
+      );
+    } else {
+      setPrivacyMessage(target ? 'App lock enabled.' : 'App lock disabled for this device.');
+    }
+
+    setChangingLock(false);
+  }
+
+  async function chooseDelay(seconds: LockDelaySeconds) {
+    setPrivacyMessage('');
+
+    try {
+      await setLockDelaySeconds(seconds);
+    } catch {
+      setPrivacyMessage('Could not save the lock delay. Please try again.');
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -62,12 +119,81 @@ export function SettingsPanel({
 
         <View style={styles.card}>
           <Text style={styles.label}>PRIVACY</Text>
-          <SettingStatus
-            icon="🔒"
-            title="App lock"
-            value="On"
-            text="AI Memory locks again whenever it leaves the foreground."
-          />
+
+          <View style={styles.statusRow}>
+            <View style={styles.statusIconWrap}>
+              <Text style={styles.statusIcon}>🔒</Text>
+            </View>
+            <View style={styles.flex}>
+              <View style={styles.statusTop}>
+                <View style={styles.flex}>
+                  <Text style={styles.statusTitle}>App lock</Text>
+                  <Text style={styles.statusText}>
+                    {appLockEnabled
+                      ? 'Protect AI Memory with your phone owner authentication.'
+                      : 'AI Memory opens without its separate privacy lock.'}
+                  </Text>
+                </View>
+                <Pressable
+                  accessibilityRole="switch"
+                  accessibilityLabel="App lock"
+                  accessibilityState={{ checked: appLockEnabled, disabled: changingLock }}
+                  disabled={changingLock}
+                  onPress={() => void toggleAppLock()}
+                  style={[
+                    styles.switchTrack,
+                    appLockEnabled && styles.switchTrackOn,
+                    changingLock && styles.switchDisabled,
+                  ]}
+                >
+                  <View style={[styles.switchThumb, appLockEnabled && styles.switchThumbOn]} />
+                </Pressable>
+              </View>
+            </View>
+          </View>
+
+          {appLockEnabled ? (
+            <>
+              <Divider />
+              <View>
+                <View style={styles.delayHeader}>
+                  <View>
+                    <Text style={styles.statusTitle}>Lock after leaving app</Text>
+                    <Text style={styles.statusText}>Choose how quickly AI Memory locks in the background.</Text>
+                  </View>
+                </View>
+                <View style={styles.delayOptions}>
+                  {DELAY_OPTIONS.map((option) => {
+                    const selected = lockDelaySeconds === option.seconds;
+                    return (
+                      <Pressable
+                        key={option.seconds}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected }}
+                        accessibilityLabel={`Lock ${option.label.toLowerCase()} after leaving app`}
+                        onPress={() => void chooseDelay(option.seconds)}
+                        style={[styles.delayChip, selected && styles.delayChipActive]}
+                      >
+                        <Text style={[styles.delayChipText, selected && styles.delayChipTextActive]}>
+                          {option.label}
+                        </Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Lock AI Memory now"
+                  onPress={lockNow}
+                  style={styles.lockNowButton}
+                >
+                  <Text style={styles.lockNowText}>Lock now</Text>
+                </Pressable>
+              </View>
+            </>
+          ) : null}
+
           <Divider />
           <SettingStatus
             icon="◉"
@@ -82,6 +208,8 @@ export function SettingsPanel({
             value="Protected"
             text="Saved people, notes and conversations are never attached automatically."
           />
+
+          {privacyMessage ? <Text style={styles.privacyMessage}>{privacyMessage}</Text> : null}
         </View>
 
         <View style={styles.card}>
@@ -196,11 +324,56 @@ const styles = StyleSheet.create({
     marginRight: 11,
   },
   statusIcon: { fontSize: 16, color: '#7DE2C3' },
-  statusTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+  statusTop: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 },
   statusTitle: { color: '#E7EDF2', fontSize: 14, fontWeight: '800' },
   statusValue: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
   statusText: { color: '#7F8B97', fontSize: 12, lineHeight: 18, marginTop: 4 },
   divider: { height: 1, backgroundColor: '#202B36', marginVertical: 12, marginLeft: 49 },
+  switchTrack: {
+    width: 48,
+    height: 28,
+    borderRadius: 999,
+    backgroundColor: '#29333D',
+    borderWidth: 1,
+    borderColor: '#394651',
+    padding: 3,
+    justifyContent: 'center',
+  },
+  switchTrackOn: { backgroundColor: '#315B4F', borderColor: '#4B8877' },
+  switchThumb: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#AAB5BE',
+    alignSelf: 'flex-start',
+  },
+  switchThumbOn: { backgroundColor: '#7DE2C3', alignSelf: 'flex-end' },
+  switchDisabled: { opacity: 0.55 },
+  delayHeader: { marginLeft: 49 },
+  delayOptions: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 11, marginLeft: 49 },
+  delayChip: {
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#293541',
+    backgroundColor: '#0E141B',
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  delayChipActive: { borderColor: '#4B8877', backgroundColor: '#17352D' },
+  delayChipText: { color: '#7F8B97', fontSize: 10, fontWeight: '800' },
+  delayChipTextActive: { color: '#7DE2C3' },
+  lockNowButton: {
+    alignSelf: 'flex-start',
+    marginLeft: 49,
+    marginTop: 12,
+    borderRadius: 11,
+    borderWidth: 1,
+    borderColor: '#355348',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  lockNowText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
+  privacyMessage: { color: '#9CC9BC', fontSize: 11, lineHeight: 17, marginTop: 13, marginLeft: 49 },
   actionRow: { flexDirection: 'row', alignItems: 'center' },
   actionIconWrap: {
     width: 42,
