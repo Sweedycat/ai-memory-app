@@ -13,6 +13,8 @@ import {
   View,
 } from 'react-native';
 
+import { BugReportPanel } from './BugReportPanel';
+
 type OwnerProfileGateProps = {
   children: React.ReactNode;
 };
@@ -49,6 +51,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   const [draft, setDraft] = useState<OwnerProfile>(emptyProfile);
   const [ready, setReady] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [reportingBug, setReportingBug] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -125,6 +128,10 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
         </View>
       </SafeAreaView>
     );
+  }
+
+  if (profile && reportingBug) {
+    return <BugReportPanel reporterName={displayName} onClose={() => setReportingBug(false)} />;
   }
 
   if (!profile || editing) {
@@ -234,6 +241,14 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   return (
     <View style={styles.appWrap}>
       {children}
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Report a bug"
+        onPress={() => setReportingBug(true)}
+        style={styles.bugBadge}
+      >
+        <Text style={styles.bugIcon}>🐞</Text>
+      </Pressable>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`Open owner profile for ${displayName}`}
@@ -370,6 +385,27 @@ const styles = StyleSheet.create({
   appWrap: {
     flex: 1,
     backgroundColor: '#0B0F14',
+  },
+  bugBadge: {
+    position: 'absolute',
+    right: 18,
+    bottom: 82,
+    width: 48,
+    height: 48,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#201A12',
+    borderWidth: 1,
+    borderColor: '#66532F',
+    shadowColor: '#000000',
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 7,
+  },
+  bugIcon: {
+    fontSize: 20,
   },
   ownerBadge: {
     position: 'absolute',
