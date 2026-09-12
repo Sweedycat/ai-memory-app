@@ -9,6 +9,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#0B0F14"
     },
+    "plugins": [
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow AI Memory to use Face ID to protect your private memories."
+        }
+      ]
+    ],
     "android": {
       "package": "com.sweedycat.aimemory"
     },
