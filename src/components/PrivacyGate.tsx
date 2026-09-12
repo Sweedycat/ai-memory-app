@@ -19,10 +19,16 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   const [locked, setLocked] = useState(true);
   const [message, setMessage] = useState('');
   const authenticating = useRef(false);
+  const lockedRef = useRef(true);
   const appState = useRef<AppStateStatus>(AppState.currentState);
 
+  const applyLocked = useCallback((value: boolean) => {
+    lockedRef.current = value;
+    setLocked(value);
+  }, []);
+
   const unlock = useCallback(async () => {
-    if (authenticating.current) return;
+    if (authenticating.current || !lockedRef.current) return;
 
     authenticating.current = true;
     setMessage('');
@@ -36,7 +42,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
       });
 
       if (result.success) {
-        setLocked(false);
+        applyLocked(false);
       } else if (result.error === 'not_enrolled') {
         setMessage('Set up fingerprint, face unlock or a device screen lock first.');
       } else if (result.error !== 'user_cancel' && result.error !== 'system_cancel') {
@@ -47,7 +53,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
     } finally {
       authenticating.current = false;
     }
-  }, []);
+  }, [applyLocked]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,25 +64,35 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   }, [unlock]);
 
   useEffect(() => {
+    let resumeTimer: ReturnType<typeof setTimeout> | undefined;
+
     const subscription = AppState.addEventListener('change', (nextState) => {
       const previousState = appState.current;
       appState.current = nextState;
 
       if (nextState === 'inactive' || nextState === 'background') {
-        setLocked(true);
+        applyLocked(true);
         setMessage('');
         return;
       }
 
-      if (nextState === 'active' && previousState !== 'active') {
-        setTimeout(() => {
+      if (
+        nextState === 'active' &&
+        previousState !== 'active' &&
+        lockedRef.current &&
+        !authenticating.current
+      ) {
+        resumeTimer = setTimeout(() => {
           void unlock();
         }, 200);
       }
     });
 
-    return () => subscription.remove();
-  }, [unlock]);
+    return () => {
+      if (resumeTimer) clearTimeout(resumeTimer);
+      subscription.remove();
+    };
+  }, [applyLocked, unlock]);
 
   if (!locked) {
     return <>{children}</>;
@@ -86,7 +102,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="light-content" />
       <View style={styles.container}>
-        <View style={styles.iconWrap}>
+        <View style={styles.iconWrap} accessibilityElementsHidden>
           <Text style={styles.icon}>🔒</Text>
         </View>
         <Text style={styles.brand}>AI MEMORY</Text>
@@ -97,7 +113,12 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
 
         {message ? <Text style={styles.message}>{message}</Text> : null}
 
-        <Pressable style={styles.button} onPress={() => void unlock()}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Unlock AI Memory"
+          style={styles.button}
+          onPress={() => void unlock()}
+        >
           <Text style={styles.buttonText}>Unlock privately</Text>
         </Pressable>
         <Text style={styles.caption}>The app locks again whenever it leaves the foreground.</Text>
