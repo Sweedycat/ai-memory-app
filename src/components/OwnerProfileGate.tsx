@@ -1,8 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -28,11 +31,26 @@ const emptyProfile: OwnerProfile = {
   role: '',
 };
 
+function normalizeProfile(value: unknown): OwnerProfile | null {
+  if (!value || typeof value !== 'object') return null;
+
+  const candidate = value as Partial<OwnerProfile>;
+  if (typeof candidate.name !== 'string' || !candidate.name.trim()) return null;
+
+  return {
+    name: candidate.name.trim(),
+    preferredName: typeof candidate.preferredName === 'string' ? candidate.preferredName.trim() : '',
+    role: typeof candidate.role === 'string' ? candidate.role.trim() : '',
+  };
+}
+
 export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   const [profile, setProfile] = useState<OwnerProfile | null>(null);
   const [draft, setDraft] = useState<OwnerProfile>(emptyProfile);
   const [ready, setReady] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     let mounted = true;
@@ -41,12 +59,14 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
       try {
         const saved = await AsyncStorage.getItem(STORAGE_KEY);
         if (saved && mounted) {
-          const parsed = JSON.parse(saved) as OwnerProfile;
-          setProfile(parsed);
-          setDraft(parsed);
+          const parsed = normalizeProfile(JSON.parse(saved));
+          if (parsed) {
+            setProfile(parsed);
+            setDraft(parsed);
+          }
         }
       } catch {
-        // If local profile data cannot be read, onboarding is shown again.
+        // Corrupt or unavailable local data safely falls back to onboarding.
       } finally {
         if (mounted) setReady(true);
       }
@@ -72,7 +92,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   }, [displayName]);
 
   async function saveProfile() {
-    if (!draft.name.trim()) return;
+    if (!draft.name.trim() || saving) return;
 
     const next: OwnerProfile = {
       name: draft.name.trim(),
@@ -80,10 +100,19 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
       role: draft.role.trim(),
     };
 
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    setProfile(next);
-    setDraft(next);
-    setEditing(false);
+    setSaving(true);
+    setError('');
+
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setProfile(next);
+      setDraft(next);
+      setEditing(false);
+    } catch {
+      setError('Could not save your private profile on this device. Please try again.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!ready) {
@@ -100,77 +129,104 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
 
   if (!profile || editing) {
     const isFirstRun = !profile;
+    const saveDisabled = !draft.name.trim() || saving;
 
     return (
       <SafeAreaView style={styles.safe}>
         <StatusBar barStyle="light-content" />
-        <View style={styles.formWrap}>
-          <Text style={styles.brand}>AI MEMORY</Text>
-          <Text style={styles.title}>{isFirstRun ? 'Make this memory yours.' : 'Your private profile'}</Text>
-          <Text style={styles.body}>
-            {isFirstRun
-              ? 'Tell AI Memory who owns this phone. This profile stays on this device for now.'
-              : 'Update how AI Memory should address you. Your profile remains local on this device.'}
-          </Text>
+        <KeyboardAvoidingView
+          style={styles.safe}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <ScrollView
+            contentContainerStyle={styles.formWrap}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={styles.brand}>AI MEMORY</Text>
+            <Text style={styles.title}>{isFirstRun ? 'Make this memory yours.' : 'Your private profile'}</Text>
+            <Text style={styles.body}>
+              {isFirstRun
+                ? 'Tell AI Memory who owns this phone. This profile stays on this device for now.'
+                : 'Update how AI Memory should address you. Your profile remains local on this device.'}
+            </Text>
 
-          <View style={styles.card}>
-            <Text style={styles.label}>YOUR NAME *</Text>
-            <TextInput
-              value={draft.name}
-              onChangeText={(name) => setDraft((current) => ({ ...current, name }))}
-              placeholder="Your full name"
-              placeholderTextColor="#727D89"
-              autoCapitalize="words"
-              style={styles.input}
-            />
+            <View style={styles.card}>
+              <Text style={styles.label}>YOUR NAME *</Text>
+              <TextInput
+                accessibilityLabel="Your full name"
+                value={draft.name}
+                onChangeText={(name) => setDraft((current) => ({ ...current, name }))}
+                placeholder="Your full name"
+                placeholderTextColor="#727D89"
+                autoCapitalize="words"
+                autoCorrect={false}
+                returnKeyType="next"
+                style={styles.input}
+              />
 
-            <Text style={styles.label}>WHAT SHOULD AI MEMORY CALL YOU?</Text>
-            <TextInput
-              value={draft.preferredName}
-              onChangeText={(preferredName) => setDraft((current) => ({ ...current, preferredName }))}
-              placeholder="First name or nickname"
-              placeholderTextColor="#727D89"
-              autoCapitalize="words"
-              style={styles.input}
-            />
+              <Text style={styles.label}>WHAT SHOULD AI MEMORY CALL YOU?</Text>
+              <TextInput
+                accessibilityLabel="Preferred name or nickname"
+                value={draft.preferredName}
+                onChangeText={(preferredName) => setDraft((current) => ({ ...current, preferredName }))}
+                placeholder="First name or nickname"
+                placeholderTextColor="#727D89"
+                autoCapitalize="words"
+                autoCorrect={false}
+                returnKeyType="next"
+                style={styles.input}
+              />
 
-            <Text style={styles.label}>ROLE / ABOUT YOU</Text>
-            <TextInput
-              value={draft.role}
-              onChangeText={(role) => setDraft((current) => ({ ...current, role }))}
-              placeholder="Founder, engineer, student…"
-              placeholderTextColor="#727D89"
-              style={styles.input}
-            />
+              <Text style={styles.label}>ROLE / ABOUT YOU</Text>
+              <TextInput
+                accessibilityLabel="Role or short description"
+                value={draft.role}
+                onChangeText={(role) => setDraft((current) => ({ ...current, role }))}
+                placeholder="Founder, engineer, student…"
+                placeholderTextColor="#727D89"
+                returnKeyType="done"
+                style={styles.input}
+              />
 
-            <View style={styles.privacyBox}>
-              <Text style={styles.privacyTitle}>🔒 Private by default</Text>
-              <Text style={styles.privacyText}>
-                This owner profile is stored locally and is hidden behind the app lock.
-              </Text>
-            </View>
+              <View style={styles.privacyBox}>
+                <Text style={styles.privacyTitle}>🔒 Private by default</Text>
+                <Text style={styles.privacyText}>
+                  This owner profile is stored locally and is hidden behind the app lock.
+                </Text>
+              </View>
 
-            <Pressable
-              onPress={() => void saveProfile()}
-              disabled={!draft.name.trim()}
-              style={[styles.primaryButton, !draft.name.trim() && styles.disabled]}
-            >
-              <Text style={styles.primaryButtonText}>{isFirstRun ? 'Create my private profile' : 'Save changes'}</Text>
-            </Pressable>
+              {error ? <Text style={styles.error}>{error}</Text> : null}
 
-            {!isFirstRun ? (
               <Pressable
-                onPress={() => {
-                  setDraft(profile);
-                  setEditing(false);
-                }}
-                style={styles.secondaryButton}
+                accessibilityRole="button"
+                accessibilityLabel={isFirstRun ? 'Create private owner profile' : 'Save owner profile changes'}
+                onPress={() => void saveProfile()}
+                disabled={saveDisabled}
+                style={[styles.primaryButton, saveDisabled && styles.disabled]}
               >
-                <Text style={styles.secondaryButtonText}>Cancel</Text>
+                <Text style={styles.primaryButtonText}>
+                  {saving ? 'Saving securely…' : isFirstRun ? 'Create my private profile' : 'Save changes'}
+                </Text>
               </Pressable>
-            ) : null}
-          </View>
-        </View>
+
+              {!isFirstRun ? (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Cancel editing owner profile"
+                  onPress={() => {
+                    setDraft(profile);
+                    setError('');
+                    setEditing(false);
+                  }}
+                  style={styles.secondaryButton}
+                >
+                  <Text style={styles.secondaryButtonText}>Cancel</Text>
+                </Pressable>
+              ) : null}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
@@ -179,9 +235,11 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
     <View style={styles.appWrap}>
       {children}
       <Pressable
-        accessibilityLabel="Open owner profile"
+        accessibilityRole="button"
+        accessibilityLabel={`Open owner profile for ${displayName}`}
         onPress={() => {
           setDraft(profile);
+          setError('');
           setEditing(true);
         }}
         style={styles.ownerBadge}
@@ -204,7 +262,7 @@ const styles = StyleSheet.create({
     padding: 28,
   },
   formWrap: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 22,
     paddingVertical: 28,
@@ -276,6 +334,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 18,
     marginTop: 5,
+  },
+  error: {
+    color: '#F2B8B5',
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: 12,
   },
   primaryButton: {
     backgroundColor: '#7DE2C3',
