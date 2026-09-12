@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 
+import { useOwnerControls } from './src/components/OwnerProfileGate';
 import { mockPeople } from './src/data/mockPeople';
 import { usePersistentPeople } from './src/hooks/usePersistentPeople';
 import { MemoryPerson } from './src/types';
@@ -36,7 +37,8 @@ const emptyForm: PersonForm = {
 };
 
 export default function App() {
-  const [people, setPeople, storageReady] = usePersistentPeople(mockPeople);
+  const [people, setPeople] = usePersistentPeople(mockPeople);
+  const { openSettings } = useOwnerControls();
   const [screen, setScreen] = useState<Screen>('home');
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(mockPeople[0]?.id ?? null);
@@ -70,6 +72,19 @@ export default function App() {
         .includes(q),
     );
   }, [people, query]);
+
+  const openFollowUps = useMemo(
+    () => people.filter((person) => Boolean(person.followUp)),
+    [people],
+  );
+
+  const recentMemory = useMemo(() => {
+    for (const person of people) {
+      const interaction = person.interactions[0];
+      if (interaction) return { person, interaction };
+    }
+    return null;
+  }, [people]);
 
   function openPerson(id: string) {
     setSelectedId(id);
@@ -363,7 +378,17 @@ export default function App() {
   return (
     <Page>
       <View style={styles.hero}>
-        <Text style={styles.brand}>AI MEMORY</Text>
+        <View style={styles.heroTop}>
+          <Text style={styles.brand}>AI MEMORY</Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Open settings"
+            onPress={openSettings}
+            style={styles.settingsButton}
+          >
+            <Text style={styles.settingsIcon}>⚙</Text>
+          </Pressable>
+        </View>
         <Text style={styles.title}>Remember people. Remember context.</Text>
         <Text style={styles.sub}>Your private social memory layer for conversations and follow-ups.</Text>
       </View>
@@ -371,7 +396,7 @@ export default function App() {
       <View style={styles.stats}>
         <Stat value={people.length} label="People" />
         <Stat value={people.reduce((sum, p) => sum + p.interactions.length, 0)} label="Interactions" />
-        <Stat value={people.filter((p) => p.followUp).length} label="Follow-ups" />
+        <Stat value={openFollowUps.length} label="Follow-ups" />
       </View>
 
       <Card>
@@ -412,19 +437,46 @@ export default function App() {
       {!filtered.length ? <Card><Text style={styles.muted}>No memories found.</Text></Card> : null}
 
       <Card>
-        <Label text="MVP STATUS" />
-        <Text style={styles.cardTitle}>Phone first. Glasses later.</Text>
-        <Text style={styles.body}>
-          {storageReady
-            ? 'Your people and interactions are saved on this device. Cloud sync, real AI and smart-glasses input are the next layers.'
-            : 'Loading your saved memories on this device...'}
+        <Label text="TODAY" />
+        <Text style={styles.cardTitle}>
+          {openFollowUps.length
+            ? `${openFollowUps.length} follow-up${openFollowUps.length === 1 ? '' : 's'} waiting for you.`
+            : 'You are caught up.'}
         </Text>
-        <View style={styles.pills}>
-          <Pill text="Local save ✓" active={storageReady} />
-          <Pill text="Cloud sync next" />
-          <Pill text="Real AI next" />
-          <Pill text="Glasses later" />
-        </View>
+        <Text style={styles.body}>
+          {openFollowUps.length
+            ? 'Keep the relationships that matter moving forward.'
+            : 'No open follow-ups right now. Add one from any person profile.'}
+        </Text>
+
+        {openFollowUps.slice(0, 2).map((person) => (
+          <Pressable
+            key={`follow-up-${person.id}`}
+            onPress={() => openPerson(person.id)}
+            style={styles.todayRow}
+          >
+            <View style={styles.todayDot} />
+            <View style={styles.flex}>
+              <Text style={styles.todayName}>{person.name}</Text>
+              <Text style={styles.todayText} numberOfLines={2}>{person.followUp}</Text>
+            </View>
+            <Text style={styles.todayChevron}>›</Text>
+          </Pressable>
+        ))}
+
+        {recentMemory ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Open recent memory for ${recentMemory.person.name}`}
+            onPress={() => openPerson(recentMemory.person.id)}
+            style={styles.recentMemory}
+          >
+            <Text style={styles.recentLabel}>RECENT MEMORY</Text>
+            <Text style={styles.recentName}>{recentMemory.person.name}</Text>
+            <Text style={styles.recentText} numberOfLines={3}>{recentMemory.interaction.summary}</Text>
+            <Text style={styles.recentDate}>{recentMemory.interaction.date}</Text>
+          </Pressable>
+        ) : null}
       </Card>
     </Page>
   );
@@ -510,16 +562,24 @@ function Stat({ value, label }: { value: number; label: string }) {
   return <View style={styles.stat}><Text style={styles.statValue}>{value}</Text><Text style={styles.muted}>{label}</Text></View>;
 }
 
-function Pill({ text, active = false }: { text: string; active?: boolean }) {
-  return <View style={[styles.pill, active && styles.pillActive]}><Text style={[styles.pillText, active && styles.pillTextActive]}>{text}</Text></View>;
-}
-
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#0B0F14' },
   container: { padding: 20, paddingBottom: 52, gap: 12 },
   flex: { flex: 1 },
   hero: { marginTop: 10, marginBottom: 8 },
-  brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 2, marginBottom: 10 },
+  heroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44, marginBottom: 4 },
+  brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 2 },
+  settingsButton: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#121820',
+    borderWidth: 1,
+    borderColor: '#293541',
+  },
+  settingsIcon: { color: '#AAB5BE', fontSize: 21, fontWeight: '900' },
   title: { color: '#F4F7FA', fontSize: 34, lineHeight: 40, fontWeight: '800' },
   titleSmall: { color: '#F4F7FA', fontSize: 30, fontWeight: '800', marginTop: 10 },
   sub: { color: '#98A3AF', fontSize: 15, lineHeight: 22, marginTop: 8 },
@@ -573,9 +633,30 @@ const styles = StyleSheet.create({
   historyDate: { color: '#7DE2C3', fontSize: 11, fontWeight: '900', marginBottom: 6 },
   historyText: { color: '#C0C9D2', lineHeight: 20 },
   source: { color: '#66727E', fontSize: 9, marginTop: 8, fontWeight: '800' },
-  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 14 },
-  pill: { backgroundColor: '#151C23', borderRadius: 999, borderWidth: 1, borderColor: '#29333D', paddingHorizontal: 9, paddingVertical: 6 },
-  pillActive: { backgroundColor: '#10251F', borderColor: '#315B4F' },
-  pillText: { color: '#7B8792', fontSize: 10, fontWeight: '800' },
-  pillTextActive: { color: '#7DE2C3' },
+  todayRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#0E151B',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#223039',
+    padding: 12,
+    marginTop: 10,
+  },
+  todayDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#7DE2C3', marginRight: 11 },
+  todayName: { color: '#E9EEF2', fontSize: 13, fontWeight: '900' },
+  todayText: { color: '#8E9AA5', fontSize: 12, lineHeight: 18, marginTop: 3 },
+  todayChevron: { color: '#66727E', fontSize: 24, marginLeft: 8 },
+  recentMemory: {
+    backgroundColor: '#10251F',
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#315B4F',
+    padding: 13,
+    marginTop: 12,
+  },
+  recentLabel: { color: '#67D9B6', fontSize: 9, fontWeight: '900', letterSpacing: 1.2 },
+  recentName: { color: '#E7F8F2', fontSize: 14, fontWeight: '900', marginTop: 6 },
+  recentText: { color: '#9FC2B8', fontSize: 12, lineHeight: 18, marginTop: 4 },
+  recentDate: { color: '#668F83', fontSize: 10, fontWeight: '800', marginTop: 8 },
 });
