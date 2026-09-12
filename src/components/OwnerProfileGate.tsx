@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 import { BugReportPanel } from './BugReportPanel';
+import { SettingsPanel } from './SettingsPanel';
 
 type OwnerProfileGateProps = {
   children: React.ReactNode;
@@ -24,6 +25,20 @@ type OwnerProfile = {
   preferredName: string;
   role: string;
 };
+
+type OwnerControls = {
+  displayName: string;
+  openSettings: () => void;
+};
+
+const OwnerControlsContext = createContext<OwnerControls>({
+  displayName: 'Owner',
+  openSettings: () => undefined,
+});
+
+export function useOwnerControls() {
+  return useContext(OwnerControlsContext);
+}
 
 const STORAGE_KEY = '@ai-memory/owner-profile/v1';
 
@@ -51,7 +66,9 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   const [draft, setDraft] = useState<OwnerProfile>(emptyProfile);
   const [ready, setReady] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [reportingBug, setReportingBug] = useState(false);
+  const [returnToSettingsAfterEdit, setReturnToSettingsAfterEdit] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -87,12 +104,13 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
     [profile],
   );
 
-  const initials = useMemo(() => {
-    const source = displayName.trim();
-    if (!source) return 'ME';
-    const parts = source.split(/\s+/).filter(Boolean);
-    return parts.slice(0, 2).map((part) => part[0]?.toUpperCase()).join('') || 'ME';
-  }, [displayName]);
+  const controls = useMemo<OwnerControls>(
+    () => ({
+      displayName,
+      openSettings: () => setSettingsOpen(true),
+    }),
+    [displayName],
+  );
 
   async function saveProfile() {
     if (!draft.name.trim() || saving) return;
@@ -111,10 +129,34 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
       setProfile(next);
       setDraft(next);
       setEditing(false);
+      if (returnToSettingsAfterEdit) {
+        setReturnToSettingsAfterEdit(false);
+        setSettingsOpen(true);
+      }
     } catch {
       setError('Could not save your private profile on this device. Please try again.');
     } finally {
       setSaving(false);
+    }
+  }
+
+  function openProfileFromSettings() {
+    if (!profile) return;
+    setDraft(profile);
+    setError('');
+    setSettingsOpen(false);
+    setReturnToSettingsAfterEdit(true);
+    setEditing(true);
+  }
+
+  function cancelProfileEdit() {
+    if (!profile) return;
+    setDraft(profile);
+    setError('');
+    setEditing(false);
+    if (returnToSettingsAfterEdit) {
+      setReturnToSettingsAfterEdit(false);
+      setSettingsOpen(true);
     }
   }
 
@@ -131,7 +173,30 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   }
 
   if (profile && reportingBug) {
-    return <BugReportPanel reporterName={displayName} onClose={() => setReportingBug(false)} />;
+    return (
+      <BugReportPanel
+        reporterName={displayName}
+        onClose={() => {
+          setReportingBug(false);
+          setSettingsOpen(true);
+        }}
+      />
+    );
+  }
+
+  if (profile && settingsOpen && !editing) {
+    return (
+      <SettingsPanel
+        displayName={displayName}
+        role={profile.role}
+        onClose={() => setSettingsOpen(false)}
+        onEditProfile={openProfileFromSettings}
+        onReportBug={() => {
+          setSettingsOpen(false);
+          setReportingBug(true);
+        }}
+      />
+    );
   }
 
   if (!profile || editing) {
@@ -199,7 +264,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
               <View style={styles.privacyBox}>
                 <Text style={styles.privacyTitle}>🔒 Private by default</Text>
                 <Text style={styles.privacyText}>
-                  This owner profile is stored locally and is hidden behind the app lock.
+                  This owner profile is stored locally and hidden behind the app lock.
                 </Text>
               </View>
 
@@ -213,7 +278,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
                 style={[styles.primaryButton, saveDisabled && styles.disabled]}
               >
                 <Text style={styles.primaryButtonText}>
-                  {saving ? 'Saving securely…' : isFirstRun ? 'Create my private profile' : 'Save changes'}
+                  {saving ? 'Saving…' : isFirstRun ? 'Create my private profile' : 'Save changes'}
                 </Text>
               </Pressable>
 
@@ -221,11 +286,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel="Cancel editing owner profile"
-                  onPress={() => {
-                    setDraft(profile);
-                    setError('');
-                    setEditing(false);
-                  }}
+                  onPress={cancelProfileEdit}
                   style={styles.secondaryButton}
                 >
                   <Text style={styles.secondaryButtonText}>Cancel</Text>
@@ -239,29 +300,9 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   }
 
   return (
-    <View style={styles.appWrap}>
-      {children}
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Report a bug"
-        onPress={() => setReportingBug(true)}
-        style={styles.bugBadge}
-      >
-        <Text style={styles.bugIcon}>🐞</Text>
-      </Pressable>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`Open owner profile for ${displayName}`}
-        onPress={() => {
-          setDraft(profile);
-          setError('');
-          setEditing(true);
-        }}
-        style={styles.ownerBadge}
-      >
-        <Text style={styles.ownerInitials}>{initials}</Text>
-      </Pressable>
-    </View>
+    <OwnerControlsContext.Provider value={controls}>
+      <View style={styles.appWrap}>{children}</View>
+    </OwnerControlsContext.Provider>
   );
 }
 
@@ -385,50 +426,5 @@ const styles = StyleSheet.create({
   appWrap: {
     flex: 1,
     backgroundColor: '#0B0F14',
-  },
-  bugBadge: {
-    position: 'absolute',
-    right: 18,
-    bottom: 82,
-    width: 48,
-    height: 48,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#201A12',
-    borderWidth: 1,
-    borderColor: '#66532F',
-    shadowColor: '#000000',
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 7,
-  },
-  bugIcon: {
-    fontSize: 20,
-  },
-  ownerBadge: {
-    position: 'absolute',
-    right: 18,
-    bottom: 22,
-    width: 48,
-    height: 48,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#13231F',
-    borderWidth: 1,
-    borderColor: '#4B8877',
-    shadowColor: '#000000',
-    shadowOpacity: 0.28,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
-  },
-  ownerInitials: {
-    color: '#7DE2C3',
-    fontSize: 14,
-    fontWeight: '900',
-    letterSpacing: 0.4,
   },
 });
