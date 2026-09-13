@@ -45,7 +45,7 @@ export async function scheduleFollowUpNotification(args: {
     const allowed = await ensureNotificationPermission();
     if (!allowed) return null;
 
-    const trigger =
+    const trigger: Notifications.DateTriggerInput =
       Platform.OS === 'android'
         ? {
             type: Notifications.SchedulableTriggerInputTypes.DATE,
