@@ -1,9 +1,49 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import { MemoryPerson } from '../types';
+import { MemoryFollowUp, MemoryPerson } from '../types';
 
 const STORAGE_KEY = '@ai-memory/people-v1';
+
+type LegacyPerson = Omit<MemoryPerson, 'followUp'> & {
+  followUp?: MemoryFollowUp | string;
+};
+
+function normalizeFollowUp(value: MemoryFollowUp | string | undefined): MemoryFollowUp | undefined {
+  if (!value) return undefined;
+
+  if (typeof value === 'string') {
+    const text = value.trim();
+    if (!text) return undefined;
+
+    return {
+      id: `follow-up-migrated-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      text,
+      createdAt: new Date().toISOString(),
+    };
+  }
+
+  if (!value.text?.trim()) return undefined;
+
+  return {
+    ...value,
+    text: value.text.trim(),
+    createdAt: value.createdAt || new Date().toISOString(),
+  };
+}
+
+function normalizePeople(value: unknown): MemoryPerson[] | null {
+  if (!Array.isArray(value)) return null;
+
+  return value.map((item) => {
+    const person = item as LegacyPerson;
+    return {
+      ...person,
+      followUp: normalizeFollowUp(person.followUp),
+      followUpHistory: Array.isArray(person.followUpHistory) ? person.followUpHistory : [],
+    } as MemoryPerson;
+  });
+}
 
 export function usePersistentPeople(
   initialPeople: MemoryPerson[],
@@ -19,8 +59,8 @@ export function usePersistentPeople(
         const stored = await AsyncStorage.getItem(STORAGE_KEY);
         if (!mounted || !stored) return;
 
-        const parsed = JSON.parse(stored) as MemoryPerson[];
-        if (Array.isArray(parsed)) {
+        const parsed = normalizePeople(JSON.parse(stored));
+        if (parsed) {
           setPeople(parsed);
         }
       } catch (error) {
@@ -30,7 +70,7 @@ export function usePersistentPeople(
       }
     }
 
-    restore();
+    void restore();
 
     return () => {
       mounted = false;
