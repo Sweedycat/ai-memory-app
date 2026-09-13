@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
 
-const CHANNEL_ID = 'follow-ups';
+const CHANNEL_ID = 'follow-ups-v2';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -18,7 +18,6 @@ async function ensureNotificationPermission(): Promise<boolean> {
       name: 'Follow-up reminders',
       importance: Notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 150, 250],
-      sound: 'default',
     });
   }
 
