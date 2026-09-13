@@ -21,11 +21,18 @@
     "android": {
       "package": "com.sweedycat.aimemory",
       "permissions": [
+        "android.permission.USE_BIOMETRIC",
+        "android.permission.USE_FINGERPRINT",
         "SCHEDULE_EXACT_ALARM"
       ]
     },
     "ios": {
       "bundleIdentifier": "com.sweedycat.aimemory"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "16c767fa-215f-497e-a7eb-55ff9435b428"
+      }
     }
   }
 }
