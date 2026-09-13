@@ -10,7 +10,7 @@ export function buildMemoryBriefing(person: MemoryPerson): string {
     person.relationship ? `Context: ${person.relationship}.` : '',
     latest ? `Last conversation: ${latest}` : '',
     notes ? `Remember: ${notes}` : '',
-    person.followUp ? `Next step: ${person.followUp}.` : '',
+    person.followUp ? `Next step: ${person.followUp.text}.` : '',
   ].filter(Boolean);
 
   return parts.join(' ');
