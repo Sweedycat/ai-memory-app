@@ -7,6 +7,15 @@ export type MemoryInteraction = {
   source: MemorySource;
 };
 
+export type MemoryFollowUp = {
+  id: string;
+  text: string;
+  createdAt: string;
+  reminderAt?: string;
+  notificationId?: string;
+  completedAt?: string;
+};
+
 export type MemoryPerson = {
   id: string;
   name: string;
@@ -15,6 +24,7 @@ export type MemoryPerson = {
   lastInteraction: string;
   relationship: string;
   notes: string[];
-  followUp?: string;
+  followUp?: MemoryFollowUp;
+  followUpHistory?: MemoryFollowUp[];
   interactions: MemoryInteraction[];
 };
