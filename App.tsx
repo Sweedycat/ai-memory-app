@@ -1,6 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import * as Notifications from 'expo-notifications';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -14,10 +17,15 @@ import {
 import { useOwnerControls } from './src/components/OwnerProfileGate';
 import { mockPeople } from './src/data/mockPeople';
 import { usePersistentPeople } from './src/hooks/usePersistentPeople';
-import { MemoryPerson } from './src/types';
+import { MemoryFollowUp, MemoryPerson } from './src/types';
 import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
+import {
+  cancelFollowUpNotification,
+  scheduleFollowUpNotification,
+} from './src/utils/followUpNotifications';
 
 type Screen = 'home' | 'detail' | 'add' | 'edit';
+type PickerMode = 'date' | 'time' | 'datetime' | null;
 type PersonForm = {
   name: string;
   role: string;
@@ -25,6 +33,7 @@ type PersonForm = {
   relationship: string;
   note: string;
   followUp: string;
+  followUpReminderAt: string;
 };
 
 const emptyForm: PersonForm = {
@@ -34,7 +43,73 @@ const emptyForm: PersonForm = {
   relationship: '',
   note: '',
   followUp: '',
+  followUpReminderAt: '',
 };
+
+function reminderAtTomorrow(hour = 9) {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+  date.setHours(hour, 0, 0, 0);
+  return date;
+}
+
+function reminderAtDaysFromNow(days: number, hour = 9) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  date.setHours(hour, 0, 0, 0);
+  return date;
+}
+
+function defaultCustomReminder() {
+  const date = new Date(Date.now() + 60 * 60 * 1000);
+  date.setSeconds(0, 0);
+  return date;
+}
+
+function sameCalendarDay(a: Date, b: Date) {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
+}
+
+function formatReminder(iso?: string) {
+  if (!iso) return 'No reminder';
+
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return 'No reminder';
+
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+
+  const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const dateText = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+  if (date.getTime() < now.getTime()) return `Overdue · ${dateText} · ${time}`;
+  if (sameCalendarDay(date, now)) return `Today · ${time}`;
+  if (sameCalendarDay(date, tomorrow)) return `Tomorrow · ${time}`;
+  return `${dateText} · ${time}`;
+}
+
+function reminderStatus(iso?: string) {
+  if (!iso) return 'NO REMINDER';
+
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return 'NO REMINDER';
+
+  const now = new Date();
+  if (date.getTime() < now.getTime()) return 'OVERDUE';
+  if (sameCalendarDay(date, now)) return 'TODAY';
+  return 'UPCOMING';
+}
+
+function sortFollowUps(a: MemoryPerson, b: MemoryPerson) {
+  const aTime = a.followUp?.reminderAt ? new Date(a.followUp.reminderAt).getTime() : Number.MAX_SAFE_INTEGER;
+  const bTime = b.followUp?.reminderAt ? new Date(b.followUp.reminderAt).getTime() : Number.MAX_SAFE_INTEGER;
+  return aTime - bTime;
+}
 
 export default function App() {
   const [people, setPeople] = usePersistentPeople(mockPeople);
@@ -46,6 +121,7 @@ export default function App() {
   const [interactionText, setInteractionText] = useState('');
   const [memoryText, setMemoryText] = useState('');
   const [form, setForm] = useState<PersonForm>(emptyForm);
+  const [pickerMode, setPickerMode] = useState<PickerMode>(null);
 
   const selected = useMemo(
     () => people.find((person) => person.id === selectedId) ?? null,
@@ -62,7 +138,7 @@ export default function App() {
         person.role,
         person.company,
         person.relationship,
-        person.followUp,
+        person.followUp?.text,
         ...person.notes,
         ...person.interactions.map((item) => item.summary),
       ]
@@ -74,7 +150,7 @@ export default function App() {
   }, [people, query]);
 
   const openFollowUps = useMemo(
-    () => people.filter((person) => Boolean(person.followUp)),
+    () => people.filter((person) => Boolean(person.followUp)).sort(sortFollowUps),
     [people],
   );
 
@@ -86,6 +162,27 @@ export default function App() {
     return null;
   }, [people]);
 
+  useEffect(() => {
+    function openFromNotification(response: Notifications.NotificationResponse) {
+      const data = response.notification.request.content.data;
+      const personId = typeof data?.personId === 'string' ? data.personId : null;
+      if (!personId) return;
+
+      setSelectedId(personId);
+      setBriefing('');
+      setInteractionText('');
+      setMemoryText('');
+      setScreen('detail');
+    }
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(openFromNotification);
+    void Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (response) openFromNotification(response);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   function openPerson(id: string) {
     setSelectedId(id);
     setBriefing('');
@@ -96,6 +193,7 @@ export default function App() {
 
   function openAddPerson() {
     setForm(emptyForm);
+    setPickerMode(null);
     setScreen('add');
   }
 
@@ -108,15 +206,55 @@ export default function App() {
       company: selected.company ?? '',
       relationship: selected.relationship,
       note: selected.notes[0] ?? '',
-      followUp: selected.followUp ?? '',
+      followUp: selected.followUp?.text ?? '',
+      followUpReminderAt: selected.followUp?.reminderAt ?? '',
     });
+    setPickerMode(null);
     setScreen('edit');
   }
 
-  function addPerson() {
+  async function buildFollowUp(
+    personId: string,
+    personName: string,
+    existing?: MemoryFollowUp,
+  ): Promise<MemoryFollowUp | undefined> {
+    const text = form.followUp.trim();
+    if (!text) return undefined;
+
+    const followUp: MemoryFollowUp = {
+      id: existing?.id ?? `follow-up-${Date.now()}`,
+      text,
+      createdAt: existing?.createdAt ?? new Date().toISOString(),
+      reminderAt: form.followUpReminderAt || undefined,
+    };
+
+    if (followUp.reminderAt) {
+      const notificationId = await scheduleFollowUpNotification({
+        personId,
+        personName,
+        followUpId: followUp.id,
+        text: followUp.text,
+        reminderAt: followUp.reminderAt,
+      });
+
+      if (notificationId) {
+        followUp.notificationId = notificationId;
+      } else if (new Date(followUp.reminderAt).getTime() > Date.now()) {
+        Alert.alert(
+          'Reminder saved',
+          'The follow-up was saved, but the phone could not schedule a notification. Check notification permission for AI Memory.',
+        );
+      }
+    }
+
+    return followUp;
+  }
+
+  async function addPerson() {
     if (!form.name.trim()) return;
 
     const id = `person-${Date.now()}`;
+    const followUp = await buildFollowUp(id, form.name.trim());
     const person: MemoryPerson = {
       id,
       name: form.name.trim(),
@@ -125,19 +263,24 @@ export default function App() {
       relationship: form.relationship.trim() || 'New contact',
       lastInteraction: 'No interactions yet',
       notes: form.note.trim() ? [form.note.trim()] : [],
-      followUp: form.followUp.trim() || undefined,
+      followUp,
+      followUpHistory: [],
       interactions: [],
     };
 
     setPeople((current) => [person, ...current]);
     setForm(emptyForm);
+    setPickerMode(null);
     setSelectedId(id);
     setBriefing('');
     setScreen('detail');
   }
 
-  function saveEditedPerson() {
+  async function saveEditedPerson() {
     if (!selected || !form.name.trim()) return;
+
+    await cancelFollowUpNotification(selected.followUp?.notificationId);
+    const nextFollowUp = await buildFollowUp(selected.id, form.name.trim(), selected.followUp);
 
     setPeople((current) =>
       current.map((person) => {
@@ -153,11 +296,12 @@ export default function App() {
           company: form.company.trim() || undefined,
           relationship: form.relationship.trim() || 'Contact',
           notes: firstNote ? [firstNote, ...restOfNotes] : restOfNotes,
-          followUp: form.followUp.trim() || undefined,
+          followUp: nextFollowUp,
         };
       }),
     );
     setBriefing('');
+    setPickerMode(null);
     setScreen('detail');
   }
 
@@ -203,12 +347,28 @@ export default function App() {
     setBriefing('');
   }
 
-  function completeFollowUp() {
-    if (!selected) return;
+  async function completeFollowUp() {
+    if (!selected?.followUp) return;
+
+    const completed = selected.followUp;
+    await cancelFollowUpNotification(completed.notificationId);
 
     setPeople((current) =>
       current.map((person) =>
-        person.id === selected.id ? { ...person, followUp: undefined } : person,
+        person.id === selected.id
+          ? {
+              ...person,
+              followUp: undefined,
+              followUpHistory: [
+                {
+                  ...completed,
+                  completedAt: new Date().toISOString(),
+                  notificationId: undefined,
+                },
+                ...(person.followUpHistory ?? []),
+              ],
+            }
+          : person,
       ),
     );
     setBriefing('');
@@ -226,18 +386,72 @@ export default function App() {
           text: 'Delete',
           style: 'destructive',
           onPress: () => {
-            setPeople((current) => current.filter((person) => person.id !== selected.id));
-            setSelectedId(null);
-            setBriefing('');
-            setScreen('home');
+            void cancelFollowUpNotification(selected.followUp?.notificationId).finally(() => {
+              setPeople((current) => current.filter((person) => person.id !== selected.id));
+              setSelectedId(null);
+              setBriefing('');
+              setScreen('home');
+            });
           },
         },
       ],
     );
   }
 
+  function setReminder(date?: Date) {
+    setForm((current) => ({
+      ...current,
+      followUpReminderAt: date ? date.toISOString() : '',
+    }));
+  }
+
+  function openCustomReminderPicker() {
+    if (!form.followUpReminderAt) setReminder(defaultCustomReminder());
+    setPickerMode(Platform.OS === 'ios' ? 'datetime' : 'date');
+  }
+
+  function handleReminderPicker(event: DateTimePickerEvent, picked?: Date) {
+    if (event.type === 'dismissed' || !picked) {
+      if (Platform.OS === 'android') setPickerMode(null);
+      return;
+    }
+
+    const current = form.followUpReminderAt
+      ? new Date(form.followUpReminderAt)
+      : defaultCustomReminder();
+
+    if (pickerMode === 'datetime') {
+      setReminder(picked);
+      return;
+    }
+
+    if (pickerMode === 'date') {
+      const next = new Date(picked);
+      next.setHours(current.getHours(), current.getMinutes(), 0, 0);
+      setReminder(next);
+      setPickerMode('time');
+      return;
+    }
+
+    if (pickerMode === 'time') {
+      const next = new Date(current);
+      next.setHours(picked.getHours(), picked.getMinutes(), 0, 0);
+      setPickerMode(null);
+
+      if (next.getTime() <= Date.now()) {
+        Alert.alert('Choose a future time', 'The reminder time needs to be in the future.');
+        return;
+      }
+
+      setReminder(next);
+    }
+  }
+
   if (screen === 'add' || screen === 'edit') {
     const isEdit = screen === 'edit';
+    const pickerValue = form.followUpReminderAt
+      ? new Date(form.followUpReminderAt)
+      : defaultCustomReminder();
 
     return (
       <Page>
@@ -250,29 +464,70 @@ export default function App() {
         </Text>
 
         <Card>
-          <Field label="NAME *" value={form.name} onChange={(name) => setForm({ ...form, name })} />
-          <Field label="ROLE" value={form.role} onChange={(role) => setForm({ ...form, role })} />
-          <Field label="COMPANY" value={form.company} onChange={(company) => setForm({ ...form, company })} />
+          <Field label="NAME *" value={form.name} onChange={(name) => setForm((current) => ({ ...current, name }))} />
+          <Field label="ROLE" value={form.role} onChange={(role) => setForm((current) => ({ ...current, role }))} />
+          <Field label="COMPANY" value={form.company} onChange={(company) => setForm((current) => ({ ...current, company }))} />
           <Field
             label="HOW DO YOU KNOW THEM?"
             value={form.relationship}
-            onChange={(relationship) => setForm({ ...form, relationship })}
+            onChange={(relationship) => setForm((current) => ({ ...current, relationship }))}
           />
           <Field
             label={isEdit ? 'PRIMARY MEMORY' : 'FIRST MEMORY'}
             value={form.note}
-            onChange={(note) => setForm({ ...form, note })}
+            onChange={(note) => setForm((current) => ({ ...current, note }))}
             multiline
           />
           <Field
             label="FOLLOW-UP"
             value={form.followUp}
-            onChange={(followUp) => setForm({ ...form, followUp })}
+            onChange={(followUp) => setForm((current) => ({ ...current, followUp }))}
             multiline
           />
+
+          {form.followUp.trim() ? (
+            <View style={styles.reminderBox}>
+              <View style={styles.reminderHeader}>
+                <View style={styles.flex}>
+                  <Text style={styles.followUpLabel}>REMIND ME</Text>
+                  <Text style={styles.reminderValue}>{formatReminder(form.followUpReminderAt)}</Text>
+                </View>
+                {form.followUpReminderAt ? (
+                  <Pressable onPress={() => setReminder()} style={styles.clearReminder}>
+                    <Text style={styles.clearReminderText}>Clear</Text>
+                  </Pressable>
+                ) : null}
+              </View>
+
+              <View style={styles.reminderChips}>
+                <ReminderChip label="In 1 hour" onPress={() => setReminder(new Date(Date.now() + 60 * 60 * 1000))} />
+                <ReminderChip label="Tomorrow 09:00" onPress={() => setReminder(reminderAtTomorrow())} />
+                <ReminderChip label="In 3 days" onPress={() => setReminder(reminderAtDaysFromNow(3))} />
+                <ReminderChip label="Pick date & time" onPress={openCustomReminderPicker} />
+              </View>
+
+              {pickerMode ? (
+                <View style={styles.pickerWrap}>
+                  <DateTimePicker
+                    value={pickerValue}
+                    mode={pickerMode}
+                    minimumDate={new Date()}
+                    onChange={handleReminderPicker}
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  />
+                  {Platform.OS === 'ios' ? (
+                    <Pressable style={styles.pickerDone} onPress={() => setPickerMode(null)}>
+                      <Text style={styles.pickerDoneText}>Done</Text>
+                    </Pressable>
+                  ) : null}
+                </View>
+              ) : null}
+            </View>
+          ) : null}
+
           <Action
             label={isEdit ? 'Save changes' : 'Save person'}
-            onPress={isEdit ? saveEditedPerson : addPerson}
+            onPress={isEdit ? () => void saveEditedPerson() : () => void addPerson()}
             disabled={!form.name.trim()}
           />
         </Card>
@@ -322,11 +577,25 @@ export default function App() {
 
           {selected.followUp ? (
             <View style={styles.followUp}>
-              <Text style={styles.followUpLabel}>NEXT STEP</Text>
-              <Text style={styles.followUpText}>{selected.followUp}</Text>
-              <Pressable onPress={completeFollowUp} style={styles.followUpDone}>
-                <Text style={styles.followUpDoneText}>✓ Mark completed</Text>
-              </Pressable>
+              <View style={styles.followUpTopRow}>
+                <Text style={styles.followUpLabel}>NEXT STEP</Text>
+                <Text style={[
+                  styles.followUpStatus,
+                  reminderStatus(selected.followUp.reminderAt) === 'OVERDUE' && styles.followUpStatusOverdue,
+                ]}>
+                  {reminderStatus(selected.followUp.reminderAt)}
+                </Text>
+              </View>
+              <Text style={styles.followUpText}>{selected.followUp.text}</Text>
+              <Text style={styles.followUpReminder}>⏰ {formatReminder(selected.followUp.reminderAt)}</Text>
+              <View style={styles.followUpActions}>
+                <Pressable onPress={() => void completeFollowUp()} style={styles.followUpDone}>
+                  <Text style={styles.followUpDoneText}>✓ Mark completed</Text>
+                </Pressable>
+                <Pressable onPress={openEditPerson} style={styles.followUpEdit}>
+                  <Text style={styles.followUpEditText}>Edit reminder</Text>
+                </Pressable>
+              </View>
             </View>
           ) : (
             <Text style={styles.followUpComplete}>No open follow-up.</Text>
@@ -371,6 +640,24 @@ export default function App() {
         ) : (
           <Card><Text style={styles.muted}>No interactions yet.</Text></Card>
         )}
+
+        {selected.followUpHistory?.length ? (
+          <>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Completed follow-ups</Text>
+              <Text style={styles.muted}>{selected.followUpHistory.length} done</Text>
+            </View>
+            {selected.followUpHistory.slice(0, 5).map((item) => (
+              <View key={item.id} style={styles.historyCard}>
+                <Text style={styles.historyDate}>✓ COMPLETED</Text>
+                <Text style={styles.historyText}>{item.text}</Text>
+                <Text style={styles.source}>
+                  {item.completedAt ? new Date(item.completedAt).toLocaleString() : 'Completed'}
+                </Text>
+              </View>
+            ))}
+          </>
+        ) : null}
       </Page>
     );
   }
@@ -396,7 +683,7 @@ export default function App() {
       <View style={styles.stats}>
         <Stat value={people.length} label="People" />
         <Stat value={people.reduce((sum, p) => sum + p.interactions.length, 0)} label="Interactions" />
-        <Stat value={openFollowUps.length} label="Follow-ups" />
+        <Stat value={openFollowUps.length} label="Open follow-ups" />
       </View>
 
       <Card>
@@ -437,28 +724,40 @@ export default function App() {
       {!filtered.length ? <Card><Text style={styles.muted}>No memories found.</Text></Card> : null}
 
       <Card>
-        <Label text="TODAY" />
+        <Label text="FOLLOW-UPS" />
         <Text style={styles.cardTitle}>
           {openFollowUps.length
-            ? `${openFollowUps.length} follow-up${openFollowUps.length === 1 ? '' : 's'} waiting for you.`
+            ? `${openFollowUps.length} open follow-up${openFollowUps.length === 1 ? '' : 's'}.`
             : 'You are caught up.'}
         </Text>
         <Text style={styles.body}>
           {openFollowUps.length
-            ? 'Keep the relationships that matter moving forward.'
+            ? 'Overdue and time-sensitive follow-ups are shown first.'
             : 'No open follow-ups right now. Add one from any person profile.'}
         </Text>
 
-        {openFollowUps.slice(0, 2).map((person) => (
+        {openFollowUps.slice(0, 3).map((person) => (
           <Pressable
             key={`follow-up-${person.id}`}
             onPress={() => openPerson(person.id)}
             style={styles.todayRow}
           >
-            <View style={styles.todayDot} />
+            <View style={[
+              styles.todayDot,
+              reminderStatus(person.followUp?.reminderAt) === 'OVERDUE' && styles.todayDotOverdue,
+            ]} />
             <View style={styles.flex}>
-              <Text style={styles.todayName}>{person.name}</Text>
-              <Text style={styles.todayText} numberOfLines={2}>{person.followUp}</Text>
+              <View style={styles.todayTopRow}>
+                <Text style={styles.todayName}>{person.name}</Text>
+                <Text style={[
+                  styles.todayStatus,
+                  reminderStatus(person.followUp?.reminderAt) === 'OVERDUE' && styles.todayStatusOverdue,
+                ]}>
+                  {reminderStatus(person.followUp?.reminderAt)}
+                </Text>
+              </View>
+              <Text style={styles.todayText} numberOfLines={2}>{person.followUp?.text}</Text>
+              <Text style={styles.todayReminder}>{formatReminder(person.followUp?.reminderAt)}</Text>
             </View>
             <Text style={styles.todayChevron}>›</Text>
           </Pressable>
@@ -486,7 +785,11 @@ function Page({ children }: { children: React.ReactNode }) {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="light-content" />
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         {children}
       </ScrollView>
     </SafeAreaView>
@@ -523,6 +826,14 @@ function Field({ label, value, onChange, multiline = false }: {
         style={[styles.input, multiline && styles.multiline]}
       />
     </View>
+  );
+}
+
+function ReminderChip({ label, onPress }: { label: string; onPress: () => void }) {
+  return (
+    <Pressable onPress={onPress} style={styles.reminderChip}>
+      <Text style={styles.reminderChipText}>{label}</Text>
+    </Pressable>
   );
 }
 
@@ -564,7 +875,7 @@ function Stat({ value, label }: { value: number; label: string }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#0B0F14' },
-  container: { padding: 20, paddingBottom: 52, gap: 12 },
+  container: { padding: 20, paddingBottom: 72, gap: 12 },
   flex: { flex: 1 },
   hero: { marginTop: 10, marginBottom: 8 },
   heroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44, marginBottom: 4 },
@@ -624,11 +935,29 @@ const styles = StyleSheet.create({
   miniActionTextDanger: { color: '#F18B91' },
   note: { color: '#BCC5CE', fontSize: 14, lineHeight: 21, marginBottom: 7 },
   followUp: { backgroundColor: '#10251F', borderRadius: 14, padding: 13, marginTop: 12 },
+  followUpTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
   followUpLabel: { color: '#67D9B6', fontSize: 9, fontWeight: '900', letterSpacing: 1.2, marginBottom: 5 },
+  followUpStatus: { color: '#7DE2C3', fontSize: 9, fontWeight: '900', letterSpacing: 0.8 },
+  followUpStatusOverdue: { color: '#F18B91' },
   followUpText: { color: '#D9F5EC', lineHeight: 20 },
-  followUpDone: { alignSelf: 'flex-start', marginTop: 10, borderRadius: 10, borderWidth: 1, borderColor: '#315B4F', paddingHorizontal: 10, paddingVertical: 7 },
+  followUpReminder: { color: '#8FB4A9', fontSize: 11, fontWeight: '800', marginTop: 8 },
+  followUpActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10 },
+  followUpDone: { borderRadius: 10, borderWidth: 1, borderColor: '#315B4F', paddingHorizontal: 10, paddingVertical: 7 },
   followUpDoneText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
+  followUpEdit: { borderRadius: 10, borderWidth: 1, borderColor: '#293541', paddingHorizontal: 10, paddingVertical: 7 },
+  followUpEditText: { color: '#AAB5BE', fontSize: 11, fontWeight: '900' },
   followUpComplete: { color: '#75818D', fontSize: 12, marginTop: 12 },
+  reminderBox: { backgroundColor: '#0E151B', borderRadius: 16, borderWidth: 1, borderColor: '#24323C', padding: 13, marginTop: 2, marginBottom: 8 },
+  reminderHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+  reminderValue: { color: '#D9F5EC', fontSize: 13, fontWeight: '800', marginTop: 2 },
+  reminderChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 10 },
+  reminderChip: { backgroundColor: '#13231F', borderRadius: 999, borderWidth: 1, borderColor: '#315B4F', paddingHorizontal: 10, paddingVertical: 8 },
+  reminderChipText: { color: '#7DE2C3', fontSize: 11, fontWeight: '800' },
+  clearReminder: { paddingHorizontal: 8, paddingVertical: 6 },
+  clearReminderText: { color: '#F18B91', fontSize: 11, fontWeight: '800' },
+  pickerWrap: { backgroundColor: '#0B0F14', borderRadius: 14, marginTop: 10, overflow: 'hidden' },
+  pickerDone: { alignSelf: 'flex-end', paddingHorizontal: 14, paddingVertical: 9 },
+  pickerDoneText: { color: '#7DE2C3', fontWeight: '900' },
   historyCard: { backgroundColor: '#10171E', borderRadius: 17, borderWidth: 1, borderColor: '#1D2832', padding: 15 },
   historyDate: { color: '#7DE2C3', fontSize: 11, fontWeight: '900', marginBottom: 6 },
   historyText: { color: '#C0C9D2', lineHeight: 20 },
@@ -644,8 +973,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   todayDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#7DE2C3', marginRight: 11 },
+  todayDotOverdue: { backgroundColor: '#F18B91' },
+  todayTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
   todayName: { color: '#E9EEF2', fontSize: 13, fontWeight: '900' },
+  todayStatus: { color: '#7DE2C3', fontSize: 9, fontWeight: '900', letterSpacing: 0.6 },
+  todayStatusOverdue: { color: '#F18B91' },
   todayText: { color: '#8E9AA5', fontSize: 12, lineHeight: 18, marginTop: 3 },
+  todayReminder: { color: '#668F83', fontSize: 10, fontWeight: '800', marginTop: 5 },
   todayChevron: { color: '#66727E', fontSize: 24, marginLeft: 8 },
   recentMemory: {
     backgroundColor: '#10251F',
