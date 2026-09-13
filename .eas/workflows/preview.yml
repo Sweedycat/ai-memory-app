@@ -1,0 +1,27 @@
+name: Android preview build
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  fingerprint:
+    name: Fingerprint
+    type: fingerprint
+    environment: preview
+
+  get_android_build:
+    name: Check for existing Android preview build
+    needs: [fingerprint]
+    type: get-build
+    params:
+      fingerprint_hash: ${{ needs.fingerprint.outputs.android_fingerprint_hash }}
+      profile: preview
+
+  build_android:
+    name: Build Android preview
+    needs: [get_android_build]
+    if: ${{ !needs.get_android_build.outputs.build_id }}
+    type: build
+    params:
+      platform: android
+      profile: preview
