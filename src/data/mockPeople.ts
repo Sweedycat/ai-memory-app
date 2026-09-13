@@ -13,7 +13,12 @@ export const mockPeople: MemoryPerson[] = [
       'Prefers concise follow-up messages',
       'Building a design system for a mobile product',
     ],
-    followUp: 'Send the smart-glasses UX article on Friday',
+    followUp: {
+      id: 'maya-follow-up-1',
+      text: 'Send the smart-glasses UX article on Friday',
+      createdAt: '2026-09-12T09:00:00.000Z',
+    },
+    followUpHistory: [],
     interactions: [
       {
         id: 'maya-1',
@@ -41,7 +46,12 @@ export const mockPeople: MemoryPerson[] = [
       'Asked about privacy and team permissions',
       'May pilot with a 10-person sales team',
     ],
-    followUp: 'Prepare a short B2B demo outline',
+    followUp: {
+      id: 'daniel-follow-up-1',
+      text: 'Prepare a short B2B demo outline',
+      createdAt: '2026-09-11T09:00:00.000Z',
+    },
+    followUpHistory: [],
     interactions: [
       {
         id: 'daniel-1',
