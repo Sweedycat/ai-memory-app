@@ -23,7 +23,7 @@
       "permissions": [
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT",
-        "SCHEDULE_EXACT_ALARM"
+        "android.permission.SCHEDULE_EXACT_ALARM"
       ]
     },
     "ios": {
