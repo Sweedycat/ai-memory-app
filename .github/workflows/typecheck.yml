@@ -23,3 +23,6 @@ jobs:
 
       - name: Type-check app
         run: npm run typecheck
+
+      - name: Test local-memory restoration
+        run: npm run test:unit
