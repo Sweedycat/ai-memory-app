@@ -112,7 +112,7 @@ function sortFollowUps(a: MemoryPerson, b: MemoryPerson) {
 }
 
 export default function App() {
-  const [people, setPeople] = usePersistentPeople(mockPeople);
+  const [people, setPeople, isReady, loadError] = usePersistentPeople(mockPeople);
   const { openSettings } = useOwnerControls();
   const [screen, setScreen] = useState<Screen>('home');
   const [query, setQuery] = useState('');
@@ -445,6 +445,28 @@ export default function App() {
 
       setReminder(next);
     }
+  }
+
+  if (loadError) {
+    return (
+      <Page>
+        <Text style={styles.titleSmall}>Could not load saved memories</Text>
+        <Text style={styles.sub}>
+          AI Memory stopped before writing changes to protect your existing data.
+          Do not clear app storage or reinstall the app. Close and reopen AI Memory;
+          if this warning remains, seek help recovering the saved records.
+        </Text>
+      </Page>
+    );
+  }
+
+  if (!isReady) {
+    return (
+      <Page>
+        <Text style={styles.titleSmall}>Loading private memories…</Text>
+        <Text style={styles.sub}>Your saved people and notes are being restored on this device.</Text>
+      </Page>
+    );
   }
 
   if (screen === 'add' || screen === 'edit') {
