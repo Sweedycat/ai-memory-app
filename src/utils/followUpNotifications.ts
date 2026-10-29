@@ -58,8 +58,10 @@ export async function scheduleFollowUpNotification(args: {
 
     return await Notifications.scheduleNotificationAsync({
       content: {
-        title: args.personName,
-        body: args.text,
+        // Keep personal identity and follow-up details off the device lock screen.
+        // The notification data still routes the user to the correct person after unlock.
+        title: 'AI Memory reminder',
+        body: 'Open AI Memory to view your private follow-up.',
         sound: 'default',
         data: {
           type: 'follow-up',
