@@ -53,9 +53,11 @@ function validPerson(value: unknown): value is LegacyPerson {
       Array.isArray(person.interactions) &&
       person.interactions.every(validInteraction) &&
       validFollowUp(person.followUp) &&
-      (person.followUpHistory === undefined ||
+      (person.followUpHistory == null ||
         (Array.isArray(person.followUpHistory) &&
-          person.followUpHistory.every(validFollowUp))),
+          person.followUpHistory.every(
+            (item: unknown) => record(item) !== null && validFollowUp(item),
+          ))),
   );
 }
 
