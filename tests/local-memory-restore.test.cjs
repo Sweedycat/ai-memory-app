@@ -78,3 +78,14 @@ test('rejects invalid interactions before persisting a partial migration', () =>
   const invalid = { ...savedPerson, interactions: [{ id: 'bad', summary: 12 }] };
   assert.equal(normalizeStoredPeople([invalid]), null);
 });
+
+test('rejects malformed completed follow-ups rather than silently keeping them', () => {
+  const bad = { ...savedPerson, followUpHistory: [null, 'accidental string'] };
+  assert.equal(normalizeStoredPeople([bad]), null);
+});
+
+test('converts missing legacy follow-up history to an empty list', () => {
+  const old = { ...savedPerson, followUpHistory: null };
+  const restored = normalizeStoredPeople([old]);
+  assert.deepEqual(restored[0].followUpHistory, []);
+});
