@@ -1,0 +1,33 @@
+name: Temporary refresh of Expo permission module lockfile
+
+on:
+  push:
+    branches:
+      - fix/fail-closed-local-memory-restore
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.repository == 'Sweedycat/ai-memory-app'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out working branch
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Resolve npm lockfile without package scripts
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Commit updated lockfile if needed
+        shell: bash
+        run: |
+          git add package-lock.json
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Lock Expo Android permission module dependencies"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
