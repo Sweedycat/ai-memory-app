@@ -12,8 +12,9 @@ import {
 } from 'react-native';
 
 import { ReminderPermissionActions } from './ReminderPermissionActions';
+import { PermissionOverview } from './PermissionOverview';
 
-const SEEN_KEY = '@ai-memory/reminder-permission-setup/v1';
+const SEEN_KEY = '@ai-memory/permission-transparency-setup/v2';
 
 /**
  * Shows permission guidance once after a device owner profile exists, but
@@ -67,29 +68,38 @@ export function ReminderPermissionGate({ children }: { children: React.ReactNode
     <SafeAreaView style={styles.screen}>
       <StatusBar barStyle="light-content" />
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.brand}>AI MEMORY · SETUP</Text>
-        <Text style={styles.title}>Make reminders reliable.</Text>
+        <Text style={styles.brand}>AI MEMORY · FIRST RUN</Text>
+        <Text style={styles.title}>Your permissions. Your choice.</Text>
         <Text style={styles.sub}>
-          Choose which permissions to allow. Android handles these choices;
-          your saved memories stay on this phone.
+          Before you use reminders, here is what this beta asks from Android and
+          why. Permissions are not granted automatically when you install the app.
         </Text>
+
         <View style={styles.card}>
+          <Text style={styles.sectionLabel}>CHOOSE REMINDER ACCESS</Text>
           <ReminderPermissionActions />
         </View>
+
+        <View style={styles.card}>
+          <Text style={styles.sectionLabel}>FULL PERMISSION DETAILS</Text>
+          <PermissionOverview />
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Finish reminder setup and open AI Memory"
+          accessibilityLabel="Continue to AI Memory without requiring permissions"
           style={styles.primary}
           onPress={() => void continueToApp()}
         >
           <Text style={styles.primaryText}>Continue to AI Memory</Text>
         </Pressable>
         <Text style={styles.note}>
-          You can skip either permission and still use AI Memory. Reminders may
-          be delayed or hidden until permissions are enabled. Change them later
-          in Settings → Reminder permissions.
+          All these permissions are optional for saving local memories.
+          You can manage them later in Settings.
         </Text>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -97,12 +107,17 @@ export function ReminderPermissionGate({ children }: { children: React.ReactNode
 const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#0B0F14' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  container: { flexGrow: 1, paddingHorizontal: 22, paddingVertical: 28 },
+  container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: 27, paddingBottom: 25 },
   brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 1.7, marginBottom: 13 },
   title: { color: '#F4F7FA', fontSize: 30, lineHeight: 37, fontWeight: '900' },
   sub: { color: '#98A3AF', fontSize: 14, lineHeight: 21, marginTop: 10 },
-  card: { backgroundColor: '#121820', borderRadius: 20, borderColor: '#202B36', borderWidth: 1, padding: 17, marginTop: 20 },
-  primary: { borderRadius: 15, backgroundColor: '#7DE2C3', paddingVertical: 15, alignItems: 'center', marginTop: 20 },
+  sectionLabel: { color: '#7DE2C3', fontSize: 11, fontWeight: '900', letterSpacing: 0.7 },
+  card: { backgroundColor: '#121820', borderRadius: 20, borderColor: '#202B36', borderWidth: 1, padding: 17, marginTop: 17 },
+  footer: {
+    backgroundColor: '#0B0F14', borderTopColor: '#202B36',
+    borderTopWidth: 1, paddingHorizontal: 22, paddingTop: 12, paddingBottom: 12,
+  },
+  primary: { borderRadius: 15, backgroundColor: '#7DE2C3', paddingVertical: 15, alignItems: 'center' },
   primaryText: { color: '#07100D', fontSize: 14, fontWeight: '900' },
-  note: { color: '#8C98A4', fontSize: 12, lineHeight: 18, marginTop: 15, textAlign: 'center' },
+  note: { color: '#8C98A4', fontSize: 11, lineHeight: 17, marginTop: 8, textAlign: 'center' },
 });
