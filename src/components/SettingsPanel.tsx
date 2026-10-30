@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
+import { ReminderPermissionActions } from './ReminderPermissionActions';
 
 type SettingsPanelProps = {
   displayName: string;
@@ -210,6 +211,15 @@ export function SettingsPanel({
           />
 
           {privacyMessage ? <Text style={styles.privacyMessage}>{privacyMessage}</Text> : null}
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.label}>REMINDER PERMISSIONS</Text>
+          <Text style={styles.statusText}>
+            Manage Android notification and precise alarm access. If reminders
+            arrive late or do not appear, review these settings.
+          </Text>
+          <ReminderPermissionActions />
         </View>
 
         <View style={styles.card}>
