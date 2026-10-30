@@ -4,12 +4,12 @@
  * Update this catalogue whenever native capabilities are added.
  */
 export type CurrentPermission = {
-  id: 'notifications' | 'exact-alarms' | 'biometrics' | 'reboot';
+  id: 'notifications' | 'exact-alarms' | 'biometrics' | 'reboot' | 'network';
   name: string;
   purpose: string;
   howGranted: string;
   whenUsed: string;
-  optional: boolean;
+  access: 'user-choice' | 'system-managed';
 };
 
 export type FuturePermission = {
@@ -25,7 +25,7 @@ export const CURRENT_PERMISSIONS: readonly CurrentPermission[] = [
     purpose: 'Show follow-up reminders. A reminder may display the person\'s name and your follow-up text on the lock screen.',
     howGranted: 'Android asks only after you choose Allow notifications or schedule a reminder.',
     whenUsed: 'Only when using timed follow-ups.',
-    optional: true,
+    access: 'user-choice',
   },
   {
     id: 'exact-alarms',
@@ -33,7 +33,7 @@ export const CURRENT_PERMISSIONS: readonly CurrentPermission[] = [
     purpose: 'Helps Android deliver scheduled follow-ups closer to the selected time. Android can still delay some reminders.',
     howGranted: 'On Android 12+, you enable separate special access in the system settings.',
     whenUsed: 'When scheduling reminders at a specific time.',
-    optional: true,
+    access: 'user-choice',
   },
   {
     id: 'biometrics',
@@ -41,7 +41,7 @@ export const CURRENT_PERMISSIONS: readonly CurrentPermission[] = [
     purpose: 'Protect access to your private AI Memory content with Android\'s own authentication screen.',
     howGranted: 'Android displays a fingerprint or device-lock prompt when you unlock. No separate install-time permission pop-up.',
     whenUsed: 'When App Lock is enabled.',
-    optional: true,
+    access: 'user-choice',
   },
   {
     id: 'reboot',
@@ -49,7 +49,15 @@ export const CURRENT_PERMISSIONS: readonly CurrentPermission[] = [
     purpose: 'Android lets the notification library restore scheduled reminders after the phone restarts.',
     howGranted: 'A standard app capability declared by the notification library; no user approval screen.',
     whenUsed: 'When the phone restarts and a reminder is scheduled.',
-    optional: true,
+    access: 'system-managed',
+  },
+  {
+    id: 'network',
+    name: 'Internet / network connection',
+    purpose: 'Android supports network connectivity for app development or optional sharing. Core locally saved people and notes do not need an internet connection.',
+    howGranted: 'A standard Android app capability; it does not show a runtime permission dialog.',
+    whenUsed: 'When a feature explicitly uses connectivity; no cloud account is required for local memories.',
+    access: 'system-managed',
   },
 ];
 
