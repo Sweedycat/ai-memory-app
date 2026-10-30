@@ -19,6 +19,7 @@ import { mockPeople } from './src/data/mockPeople';
 import { usePersistentPeople } from './src/hooks/usePersistentPeople';
 import { MemoryFollowUp, MemoryPerson } from './src/types';
 import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
+import { planReminderEdit } from './src/utils/reminderEditDecision';
 import {
   cancelFollowUpNotification,
   scheduleFollowUpNotification,
@@ -122,6 +123,7 @@ export default function App() {
   const [memoryText, setMemoryText] = useState('');
   const [form, setForm] = useState<PersonForm>(emptyForm);
   const [pickerMode, setPickerMode] = useState<PickerMode>(null);
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const selected = useMemo(
     () => people.find((person) => person.id === selectedId) ?? null,
@@ -277,32 +279,98 @@ export default function App() {
   }
 
   async function saveEditedPerson() {
-    if (!selected || !form.name.trim()) return;
+    if (!selected || !form.name.trim() || savingEdit) return;
 
-    await cancelFollowUpNotification(selected.followUp?.notificationId);
-    const nextFollowUp = await buildFollowUp(selected.id, form.name.trim(), selected.followUp);
+    const nextName = form.name.trim();
+    const nextText = form.followUp.trim();
+    const nextReminderAt = form.followUpReminderAt || undefined;
+    const oldFollowUp = selected.followUp;
 
-    setPeople((current) =>
-      current.map((person) => {
-        if (person.id !== selected.id) return person;
+    const reminderPlan = planReminderEdit({
+      current: oldFollowUp,
+      nextText,
+      nextReminderAt,
+      personNameChanged: nextName !== selected.name,
+      nowMs: Date.now(),
+    });
 
-        const firstNote = form.note.trim();
-        const restOfNotes = person.notes.slice(1);
+    if (reminderPlan === 'invalid' || reminderPlan === 'expired') {
+      Alert.alert(
+        'Choose a future reminder',
+        'This reminder time has passed. Select a new future time to set another alarm, or clear the reminder time.',
+      );
+      return;
+    }
 
-        return {
-          ...person,
-          name: form.name.trim(),
-          role: form.role.trim() || undefined,
-          company: form.company.trim() || undefined,
-          relationship: form.relationship.trim() || 'Contact',
-          notes: firstNote ? [firstNote, ...restOfNotes] : restOfNotes,
-          followUp: nextFollowUp,
+    setSavingEdit(true);
+    try {
+      let nextFollowUp: MemoryFollowUp | undefined;
+
+      if (nextText) {
+        nextFollowUp = {
+          id: oldFollowUp?.id ?? `follow-up-${Date.now()}`,
+          text: nextText,
+          createdAt: oldFollowUp?.createdAt ?? new Date().toISOString(),
+          reminderAt: nextReminderAt,
         };
-      }),
-    );
-    setBriefing('');
-    setPickerMode(null);
-    setScreen('detail');
+
+        if (reminderPlan === 'reuse') {
+          nextFollowUp.notificationId = oldFollowUp?.notificationId;
+        } else if (reminderPlan === 'schedule' && nextReminderAt) {
+          // Schedule first: an error must never cancel a valid existing reminder.
+          const newNotificationId = await scheduleFollowUpNotification({
+            personId: selected.id,
+            personName: nextName,
+            followUpId: nextFollowUp.id,
+            text: nextFollowUp.text,
+            reminderAt: nextReminderAt,
+          });
+
+          if (!newNotificationId) {
+            Alert.alert(
+              'Reminder not updated',
+              'The phone could not schedule the new notification. Your previous reminder has not been cancelled. Check notification permissions and try again.',
+            );
+            return;
+          }
+
+          nextFollowUp.notificationId = newNotificationId;
+        }
+      }
+
+      setPeople((current) =>
+        current.map((person) => {
+          if (person.id !== selected.id) return person;
+
+          const firstNote = form.note.trim();
+          const restOfNotes = person.notes.slice(1);
+
+          return {
+            ...person,
+            name: nextName,
+            role: form.role.trim() || undefined,
+            company: form.company.trim() || undefined,
+            relationship: form.relationship.trim() || 'Contact',
+            notes: firstNote ? [firstNote, ...restOfNotes] : restOfNotes,
+            followUp: nextFollowUp,
+          };
+        }),
+      );
+
+      if (oldFollowUp?.notificationId && oldFollowUp.notificationId !== nextFollowUp?.notificationId) {
+        await cancelFollowUpNotification(oldFollowUp.notificationId);
+      }
+
+      setBriefing('');
+      setPickerMode(null);
+      setScreen('detail');
+
+      if (reminderPlan === 'schedule' && oldFollowUp?.reminderAt) {
+        Alert.alert('Reminder updated', 'The follow-up notification was scheduled for the new reminder time.');
+      }
+    } finally {
+      setSavingEdit(false);
+    }
   }
 
   function addInteraction() {
@@ -521,7 +589,13 @@ export default function App() {
                 ) : null}
               </View>
 
+              {isEdit && form.followUpReminderAt && new Date(form.followUpReminderAt).getTime() <= Date.now() ? (
+                <Text style={styles.muted}>
+                  Previous reminder has passed. Choose a new future time to schedule it again.
+                </Text>
+              ) : null}
               <View style={styles.reminderChips}>
+                <ReminderChip label="In 10 minutes" onPress={() => setReminder(new Date(Date.now() + 10 * 60 * 1000))} />
                 <ReminderChip label="In 1 hour" onPress={() => setReminder(new Date(Date.now() + 60 * 60 * 1000))} />
                 <ReminderChip label="Tomorrow 09:00" onPress={() => setReminder(reminderAtTomorrow())} />
                 <ReminderChip label="In 3 days" onPress={() => setReminder(reminderAtDaysFromNow(3))} />
@@ -548,9 +622,9 @@ export default function App() {
           ) : null}
 
           <Action
-            label={isEdit ? 'Save changes' : 'Save person'}
+            label={isEdit && savingEdit ? 'Saving…' : isEdit ? 'Save changes' : 'Save person'}
             onPress={isEdit ? () => void saveEditedPerson() : () => void addPerson()}
-            disabled={!form.name.trim()}
+            disabled={!form.name.trim() || (isEdit && savingEdit)}
           />
         </Card>
       </Page>
