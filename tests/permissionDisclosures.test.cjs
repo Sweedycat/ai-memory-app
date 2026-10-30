@@ -71,7 +71,7 @@ test('onboarding is first-run, non-blocking and offers all permission descriptio
   assert.match(gate, /permission-transparency-setup\/v2/);
   assert.match(gate, /<PermissionOverview \/>/);
   assert.match(gate, /Continue to AI Memory/);
-  assert.match(gate, /showSetup\(false\)/);
+  assert.match(gate, /setShowSetup\(false\)/);
 });
 
 test('all permission details can be reopened from Settings', () => {
