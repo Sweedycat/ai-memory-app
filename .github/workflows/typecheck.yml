@@ -19,7 +19,10 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Verify Expo SDK dependency alignment
+        run: npm run doctor
 
       - name: Type-check app
         run: npm run typecheck
