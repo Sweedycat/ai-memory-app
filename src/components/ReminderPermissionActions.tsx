@@ -47,6 +47,15 @@ export function ReminderPermissionActions() {
     setBusy(true);
     setMessage('');
     try {
+      // Android 13+ requires a notification channel before requesting permission.
+      // Use the same follow-up channel as the actual reminder scheduler.
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('follow-ups-v2', {
+          name: 'Follow-up reminders',
+          importance: Notifications.AndroidImportance.HIGH,
+          vibrationPattern: [0, 250, 150, 250],
+        });
+      }
       const status = await Notifications.getPermissionsAsync();
       if (status.granted) {
         await Linking.openSettings();
