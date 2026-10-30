@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 
 import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
+import { ReminderPermissionActions } from './ReminderPermissionActions';
+import { PermissionOverview } from './PermissionOverview';
 
 type SettingsPanelProps = {
   displayName: string;
@@ -47,6 +49,7 @@ export function SettingsPanel({
   } = usePrivacyControls();
   const [changingLock, setChangingLock] = useState(false);
   const [privacyMessage, setPrivacyMessage] = useState('');
+  const [showPermissionDetails, setShowPermissionDetails] = useState(false);
 
   const initials =
     displayName
@@ -213,6 +216,27 @@ export function SettingsPanel({
         </View>
 
         <View style={styles.card}>
+          <Text style={styles.label}>PERMISSIONS & PRIVACY</Text>
+          <Text style={styles.statusText}>
+            See what AI Memory can access today, why it needs permission, and
+            which future features are not requesting access.
+          </Text>
+          <ReminderPermissionActions />
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={showPermissionDetails ? 'Hide all permission details' : 'Show all permission details'}
+            accessibilityState={{ expanded: showPermissionDetails }}
+            onPress={() => setShowPermissionDetails((value) => !value)}
+            style={styles.permissionDisclosureToggle}
+          >
+            <Text style={styles.permissionDisclosureText}>
+              {showPermissionDetails ? 'Hide full permission details' : 'View all permissions and future access'}
+            </Text>
+          </Pressable>
+          {showPermissionDetails ? <PermissionOverview /> : null}
+        </View>
+
+        <View style={styles.card}>
           <Text style={styles.label}>SUPPORT & BETA</Text>
           <Pressable
             accessibilityRole="button"
@@ -374,6 +398,8 @@ const styles = StyleSheet.create({
   },
   lockNowText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
   privacyMessage: { color: '#9CC9BC', fontSize: 11, lineHeight: 17, marginTop: 13, marginLeft: 49 },
+  permissionDisclosureToggle: { paddingVertical: 14, marginTop: 12, borderTopColor: '#293541', borderTopWidth: 1 },
+  permissionDisclosureText: { color: '#7DE2C3', fontWeight: '900', fontSize: 12 },
   actionRow: { flexDirection: 'row', alignItems: 'center' },
   actionIconWrap: {
     width: 42,

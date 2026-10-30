@@ -1,55 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import { MemoryFollowUp, MemoryPerson } from '../types';
+import type { MemoryPerson } from '../types';
+import { decodeStoredPeople } from '../utils/normalizeStoredPeople';
 
 const STORAGE_KEY = '@ai-memory/people-v1';
 
-type LegacyPerson = Omit<MemoryPerson, 'followUp'> & {
-  followUp?: MemoryFollowUp | string;
-};
-
-function normalizeFollowUp(value: MemoryFollowUp | string | undefined): MemoryFollowUp | undefined {
-  if (!value) return undefined;
-
-  if (typeof value === 'string') {
-    const text = value.trim();
-    if (!text) return undefined;
-
-    return {
-      id: `follow-up-migrated-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      text,
-      createdAt: new Date().toISOString(),
-    };
-  }
-
-  if (!value.text?.trim()) return undefined;
-
-  return {
-    ...value,
-    text: value.text.trim(),
-    createdAt: value.createdAt || new Date().toISOString(),
-  };
-}
-
-function normalizePeople(value: unknown): MemoryPerson[] | null {
-  if (!Array.isArray(value)) return null;
-
-  return value.map((item) => {
-    const person = item as LegacyPerson;
-    return {
-      ...person,
-      followUp: normalizeFollowUp(person.followUp),
-      followUpHistory: Array.isArray(person.followUpHistory) ? person.followUpHistory : [],
-    } as MemoryPerson;
-  });
-}
-
 export function usePersistentPeople(
   initialPeople: MemoryPerson[],
-): [MemoryPerson[], Dispatch<SetStateAction<MemoryPerson[]>>, boolean] {
+): [MemoryPerson[], Dispatch<SetStateAction<MemoryPerson[]>>, boolean, boolean] {
   const [people, setPeople] = useState<MemoryPerson[]>(initialPeople);
   const [isReady, setIsReady] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -57,16 +19,16 @@ export function usePersistentPeople(
     async function restore() {
       try {
         const stored = await AsyncStorage.getItem(STORAGE_KEY);
-        if (!mounted || !stored) return;
+        if (!mounted) return;
 
-        const parsed = normalizePeople(JSON.parse(stored));
-        if (parsed) {
-          setPeople(parsed);
+        if (stored !== null) {
+          setPeople(decodeStoredPeople(stored));
         }
-      } catch (error) {
-        console.warn('Could not restore saved memories', error);
-      } finally {
-        if (mounted) setIsReady(true);
+        setIsReady(true);
+      } catch {
+        // Never overwrite existing storage after a read or validation failure.
+        // The app stays blocked until the saved data can be safely recovered.
+        if (mounted) setLoadError(true);
       }
     }
 
@@ -85,5 +47,5 @@ export function usePersistentPeople(
     });
   }, [isReady, people]);
 
-  return [people, setPeople, isReady];
+  return [people, setPeople, isReady, loadError];
 }

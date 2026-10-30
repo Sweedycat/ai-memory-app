@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 
 import { BugReportPanel } from './BugReportPanel';
+import { ReminderPermissionGate } from './ReminderPermissionGate';
 import { SettingsPanel } from './SettingsPanel';
 
 type OwnerProfileGateProps = {
@@ -301,7 +302,9 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
 
   return (
     <OwnerControlsContext.Provider value={controls}>
-      <View style={styles.appWrap}>{children}</View>
+      <ReminderPermissionGate>
+        <View style={styles.appWrap}>{children}</View>
+      </ReminderPermissionGate>
     </OwnerControlsContext.Provider>
   );
 }
