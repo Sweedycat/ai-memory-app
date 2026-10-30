@@ -24,7 +24,7 @@ export function PermissionOverview() {
         <View key={item.id} style={styles.item}>
           <View style={styles.titleRow}>
             <Text style={styles.title}>{item.name}</Text>
-            <Text style={styles.kind}>{item.optional ? 'OPTIONAL' : 'REQUIRED'}</Text>
+            <Text style={styles.kind}>{item.access === 'user-choice' ? 'YOUR CHOICE' : 'SYSTEM'}</Text>
           </View>
           <Text style={styles.description}>{item.purpose}</Text>
           <Text style={styles.how}>{item.howGranted}</Text>
