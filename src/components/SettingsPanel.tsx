@@ -12,6 +12,7 @@ import {
 import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
 import { ReminderPermissionActions } from './ReminderPermissionActions';
 import { PermissionOverview } from './PermissionOverview';
+import { SCREEN_TOP_PADDING } from '../utils/screenInsets';
 
 type SettingsPanelProps = {
   displayName: string;
@@ -297,7 +298,7 @@ function Divider() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#0B0F14' },
-  container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: 16, paddingBottom: 44 },
+  container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: SCREEN_TOP_PADDING, paddingBottom: 44 },
   back: { color: '#7DE2C3', fontSize: 15, fontWeight: '800', paddingVertical: 8, marginBottom: 14 },
   brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 2, marginBottom: 10 },
   title: { color: '#F4F7FA', fontSize: 34, lineHeight: 40, fontWeight: '900' },
