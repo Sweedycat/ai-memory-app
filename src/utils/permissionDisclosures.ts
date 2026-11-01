@@ -22,7 +22,7 @@ export const CURRENT_PERMISSIONS: readonly CurrentPermission[] = [
   {
     id: 'notifications',
     name: 'Notifications',
-    purpose: 'Show follow-up reminders. A reminder may display the person\'s name and your follow-up text on the lock screen.',
+    purpose: 'New follow-up notifications show a generic AI Memory reminder without the person\'s name or follow-up text. Older reminders already scheduled by a prior app version may keep their original preview until delivered or replaced. Android lock-screen settings also apply.',
     howGranted: 'Android asks only after you choose Allow notifications or schedule a reminder.',
     whenUsed: 'Only when using timed follow-ups.',
     access: 'user-choice',
