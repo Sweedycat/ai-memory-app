@@ -14,6 +14,8 @@ import {
   View,
 } from 'react-native';
 
+import { SCREEN_TOP_PADDING } from '../utils/screenInsets';
+
 type BugReportPanelProps = {
   onClose: () => void;
   reporterName?: string;
@@ -204,7 +206,7 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#0B0F14' },
-  container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: 20, paddingBottom: 42 },
+  container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: SCREEN_TOP_PADDING, paddingBottom: 42 },
   back: { color: '#7DE2C3', fontSize: 15, fontWeight: '800', paddingVertical: 8, marginBottom: 12 },
   brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 2, marginBottom: 10 },
   title: { color: '#F4F7FA', fontSize: 31, lineHeight: 37, fontWeight: '900' },
