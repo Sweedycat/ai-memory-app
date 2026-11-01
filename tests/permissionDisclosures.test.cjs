@@ -84,7 +84,7 @@ test('all permission details can be reopened from Settings', () => {
 
 test('Android notification channel is set up before requesting runtime permission', () => {
   const actions = read('src/components/ReminderPermissionActions.tsx');
-  const channel = actions.indexOf("setNotificationChannelAsync('follow-ups-v2'");
+  const channel = actions.indexOf('await ensurePrivateFollowUpChannel()');
   const ask = actions.indexOf('Notifications.requestPermissionsAsync()');
   assert.ok(channel > 0 && ask > channel);
   assert.match(actions, /REQUEST_SCHEDULE_EXACT_ALARM/);
