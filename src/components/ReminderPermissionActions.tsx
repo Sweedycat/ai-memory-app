@@ -1,6 +1,7 @@
 import * as Application from 'expo-application';
 import * as IntentLauncher from 'expo-intent-launcher';
 import * as Notifications from 'expo-notifications';
+import { ensurePrivateFollowUpChannel } from '../utils/followUpNotifications';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   AppState,
@@ -49,13 +50,7 @@ export function ReminderPermissionActions() {
     try {
       // Android 13+ requires a notification channel before requesting permission.
       // Use the same follow-up channel as the actual reminder scheduler.
-      if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('follow-ups-v2', {
-          name: 'Follow-up reminders',
-          importance: Notifications.AndroidImportance.HIGH,
-          vibrationPattern: [0, 250, 150, 250],
-        });
-      }
+      await ensurePrivateFollowUpChannel();
       const status = await Notifications.getPermissionsAsync();
       if (status.granted) {
         await Linking.openSettings();
