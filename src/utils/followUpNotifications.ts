@@ -1,7 +1,9 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
-
-const CHANNEL_ID = 'follow-ups-v2';
+import {
+  buildPrivateFollowUpContent,
+  PRIVATE_FOLLOW_UP_CHANNEL_ID,
+} from './reminderNotificationPrivacy';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -12,14 +14,20 @@ Notifications.setNotificationHandler({
   }),
 });
 
-async function ensureNotificationPermission(): Promise<boolean> {
+export async function ensurePrivateFollowUpChannel(): Promise<void> {
   if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync(CHANNEL_ID, {
-      name: 'Follow-up reminders',
+    await Notifications.setNotificationChannelAsync(PRIVATE_FOLLOW_UP_CHANNEL_ID, {
+      name: 'Private follow-up reminders',
+      description: 'Reminders with personal details hidden from the notification preview',
       importance: Notifications.AndroidImportance.HIGH,
+      lockscreenVisibility: Notifications.AndroidNotificationVisibility.PRIVATE,
       vibrationPattern: [0, 250, 150, 250],
     });
   }
+}
+
+async function ensureNotificationPermission(): Promise<boolean> {
+  await ensurePrivateFollowUpChannel();
 
   const current = await Notifications.getPermissionsAsync();
   if (current.granted) return true;
@@ -49,7 +57,7 @@ export async function scheduleFollowUpNotification(args: {
         ? {
             type: Notifications.SchedulableTriggerInputTypes.DATE,
             date: reminderDate,
-            channelId: CHANNEL_ID,
+            channelId: PRIVATE_FOLLOW_UP_CHANNEL_ID,
           }
         : {
             type: Notifications.SchedulableTriggerInputTypes.DATE,
@@ -57,16 +65,10 @@ export async function scheduleFollowUpNotification(args: {
           };
 
     return await Notifications.scheduleNotificationAsync({
-      content: {
-        title: args.personName,
-        body: args.text,
-        sound: 'default',
-        data: {
-          type: 'follow-up',
-          personId: args.personId,
-          followUpId: args.followUpId,
-        },
-      },
+      content: buildPrivateFollowUpContent({
+        personId: args.personId,
+        followUpId: args.followUpId,
+      }),
       trigger,
     });
   } catch (error) {
