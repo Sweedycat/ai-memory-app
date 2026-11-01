@@ -20,6 +20,7 @@ import { usePersistentPeople } from './src/hooks/usePersistentPeople';
 import { MemoryFollowUp, MemoryPerson } from './src/types';
 import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
 import { planReminderEdit } from './src/utils/reminderEditDecision';
+import { SCREEN_TOP_PADDING } from './src/utils/screenInsets';
 import {
   cancelFollowUpNotification,
   scheduleFollowUpNotification,
@@ -897,7 +898,17 @@ function Card({ children }: { children: React.ReactNode }) {
 }
 
 function Back({ onPress }: { onPress: () => void }) {
-  return <Pressable onPress={onPress}><Text style={styles.back}>‹ People</Text></Pressable>;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel="Back to people"
+      onPress={onPress}
+      style={styles.backButton}
+      hitSlop={8}
+    >
+      <Text style={styles.back}>‹ People</Text>
+    </Pressable>
+  );
 }
 
 function Label({ text }: { text: string }) {
@@ -971,7 +982,7 @@ function Stat({ value, label }: { value: number; label: string }) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#0B0F14' },
-  container: { padding: 20, paddingBottom: 72, gap: 12 },
+  container: { padding: 20, paddingTop: SCREEN_TOP_PADDING, paddingBottom: 72, gap: 12 },
   flex: { flex: 1 },
   hero: { marginTop: 10, marginBottom: 8 },
   heroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44, marginBottom: 4 },
@@ -1006,6 +1017,7 @@ const styles = StyleSheet.create({
   actionText: { color: '#07100D', fontWeight: '900', fontSize: 14 },
   outline: { borderRadius: 14, borderWidth: 1, borderColor: '#3E6A5E', alignItems: 'center', paddingVertical: 13, marginTop: 12 },
   outlineText: { color: '#7DE2C3', fontWeight: '800' },
+  backButton: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center' },
   back: { color: '#7DE2C3', fontSize: 15, fontWeight: '800', paddingVertical: 8 },
   stats: { flexDirection: 'row', gap: 9 },
   stat: { flex: 1, backgroundColor: '#111820', borderRadius: 16, borderWidth: 1, borderColor: '#202A34', padding: 13 },
