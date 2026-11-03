@@ -19,6 +19,7 @@ import {
   View,
 } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { persistPrivacySettingBeforeApplying } from '../utils/privacySettingsPersistence';
 
 type PrivacyGateProps = {
   children: React.ReactNode;
@@ -108,9 +109,15 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   }, []);
 
   const persistSettings = useCallback(async (next: PrivacySettings) => {
-    settingsRef.current = next;
-    setSettings(next);
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    // Fail closed: do not reflect privacy changes if storing them fails.
+    await persistPrivacySettingBeforeApplying(
+      next,
+      (serialized) => AsyncStorage.setItem(STORAGE_KEY, serialized),
+      (saved) => {
+        settingsRef.current = saved;
+        setSettings(saved);
+      },
+    );
   }, []);
 
   useEffect(() => {
