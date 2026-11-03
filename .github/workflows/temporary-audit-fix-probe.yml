@@ -1,9 +1,8 @@
 name: Temporary dependency remediation probe
 
 on:
-  push:
-    branches:
-      - fix/fail-closed-local-memory-restore
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: read
