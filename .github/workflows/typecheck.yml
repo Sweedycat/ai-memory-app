@@ -29,3 +29,33 @@ jobs:
 
       - name: Test local-memory restoration
         run: npm run test:unit
+
+      - name: List dependency security advisories (informational)
+        shell: bash
+        run: |
+          npm audit --json > "$RUNNER_TEMP/ai-memory-audit.json" || true
+          node - "$RUNNER_TEMP/ai-memory-audit.json" <<'NODE'
+          const fs = require('node:fs');
+          let report;
+          try {
+            report = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+          } catch (error) {
+            console.log('Could not read npm audit report: ' + error.message);
+            process.exit(0);
+          }
+          console.log('Dependency audit inventory (not yet a release gate):');
+          console.log(JSON.stringify(report.metadata?.vulnerabilities || {}, null, 2));
+          for (const [name, info] of Object.entries(report.vulnerabilities || {})) {
+            const via = (info.via || [])
+              .filter((v) => typeof v === 'object')
+              .map((v) => ({ title: v.title, url: v.url, range: v.range }));
+            console.log(JSON.stringify({
+              name,
+              severity: info.severity,
+              direct: info.isDirect,
+              range: info.range,
+              fixAvailable: info.fixAvailable,
+              via,
+            }));
+          }
+          NODE
