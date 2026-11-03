@@ -21,7 +21,7 @@ jobs:
       - name: Resolve non-breaking audit fixes in disposable runner
         shell: bash
         run: |
-          npm audit fix --package-lock-only --no-fund --no-audit
+          npm audit fix --package-lock-only --no-fund --no-audit || true
           echo "--- Package-lock change summary ---"
           git diff --numstat -- package-lock.json
           echo "--- Audit after non-breaking lock update ---"
