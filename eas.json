@@ -13,7 +13,8 @@
         "APP_VARIANT": "preview"
       },
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "image": "latest"
       }
     },
     "production": {}
