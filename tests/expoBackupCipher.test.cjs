@@ -13,7 +13,7 @@ function load(relative, modules) {
   const code = ts.transpileModule(raw, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
   }).outputText;
-  const context = { module: { exports: {} }, TextEncoder, TextDecoder,
+  const context = { module: { exports: {} }, TextEncoder, TextDecoder, Uint8Array,
     require(name) { if (modules[name]) return modules[name]; throw Error('Unexpected import: ' + name); } };
   context.exports = context.module.exports;
   vm.runInNewContext(code, context);
@@ -125,5 +125,6 @@ test('key and plaintext cannot be written to cloud or logs by native adapter', (
   const source = fs.readFileSync(path.join(root, 'src/utils/expoBackupCipher.ts'), 'utf8');
   assert.match(source, /AESEncryptionKey\.generate\(256\)/);
   assert.match(source, /AESSealedData\.fromCombined/);
-  assert.doesNotMatch(source, /console\.|fetch\s*\(|AsyncStorage|SecureStore|Share\.share\(/);
+  const executable = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  assert.doesNotMatch(executable, /console\.|fetch\s*\(|AsyncStorage|SecureStore|Share\.share\(/);
 });
