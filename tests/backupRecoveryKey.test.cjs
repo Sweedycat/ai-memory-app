@@ -38,7 +38,9 @@ test('recovery confirmation accepts correctly re-entered key, case and whitespac
 
 test('recovery confirmation rejects wrong, truncated and malformed keys', () => {
   const changed = key.slice(0, -1) + (key.endsWith('f') ? '0' : 'f');
-  for (const attempt of [changed, key.slice(0, -1), key + '0', 'not-a-key',
+  assert.equal(recoveryKeyConfirmationMatches(key, changed), false);
+  assert.equal(normalizeRecoveryKeyInput(changed), changed); // valid format, wrong secret
+  for (const attempt of [key.slice(0, -1), key + '0', 'not-a-key',
     'a'.repeat(63) + 'q', '0x' + key, '']) {
     assert.equal(recoveryKeyConfirmationMatches(key, attempt), false);
     assert.throws(() => normalizeRecoveryKeyInput(attempt), /64 hexadecimal|exactly 64|Invalid recovery key/);
