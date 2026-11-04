@@ -19,6 +19,7 @@ import { mockPeople } from './src/data/mockPeople';
 import { usePersistentPeople } from './src/hooks/usePersistentPeople';
 import { MemoryFollowUp, MemoryPerson } from './src/types';
 import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
+import { createInteractionTimestamp, formatInteractionDate } from './src/utils/interactionDates';
 import { planReminderEdit } from './src/utils/reminderEditDecision';
 import { SCREEN_TOP_PADDING } from './src/utils/screenInsets';
 import {
@@ -378,16 +379,17 @@ export default function App() {
     const text = interactionText.trim();
     if (!selected || !text) return;
 
+    const timestamp = createInteractionTimestamp();
     setPeople((current) =>
       current.map((person) =>
         person.id === selected.id
           ? {
               ...person,
-              lastInteraction: 'Just now',
+              lastInteraction: timestamp,
               interactions: [
                 {
                   id: `interaction-${Date.now()}`,
-                  date: 'Just now',
+                  date: timestamp,
                   summary: text,
                   source: 'manual',
                 },
@@ -729,7 +731,7 @@ export default function App() {
         {selected.interactions.length ? (
           selected.interactions.map((item) => (
             <View key={item.id} style={styles.historyCard}>
-              <Text style={styles.historyDate}>{item.date}</Text>
+              <Text style={styles.historyDate}>{formatInteractionDate(item.date)}</Text>
               <Text style={styles.historyText}>{item.summary}</Text>
               <Text style={styles.source}>SOURCE: {item.source}</Text>
             </View>
@@ -812,7 +814,9 @@ export default function App() {
             <Text style={styles.personMeta}>
               {[person.role, person.company].filter(Boolean).join(' · ') || person.relationship}
             </Text>
-            <Text style={styles.muted}>Last interaction: {person.lastInteraction}</Text>
+            <Text style={styles.muted}>Last interaction: {person.interactions[0]
+                ? formatInteractionDate(person.interactions[0].date)
+                : 'No interactions yet'}</Text>
           </View>
           <Text style={styles.chevron}>›</Text>
         </Pressable>
@@ -870,7 +874,7 @@ export default function App() {
             <Text style={styles.recentLabel}>RECENT MEMORY</Text>
             <Text style={styles.recentName}>{recentMemory.person.name}</Text>
             <Text style={styles.recentText} numberOfLines={3}>{recentMemory.interaction.summary}</Text>
-            <Text style={styles.recentDate}>{recentMemory.interaction.date}</Text>
+            <Text style={styles.recentDate}>{formatInteractionDate(recentMemory.interaction.date)}</Text>
           </Pressable>
         ) : null}
       </Card>
