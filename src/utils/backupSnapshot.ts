@@ -173,7 +173,7 @@ export function prepareInMemoryBackupSnapshot(input: {
   people: MemoryPerson[];
   createdAt?: string;
 }): BackupSnapshotV1 {
-  const snapshot = {
+  const snapshot: BackupSnapshotV1 = {
     kind: BACKUP_SNAPSHOT_KIND,
     version: BACKUP_SNAPSHOT_VERSION,
     createdAt: input.createdAt ?? new Date().toISOString(),
