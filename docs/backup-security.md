@@ -57,6 +57,34 @@ app-data-only OAuth scope. Google Drive login alone is NOT a decryption key.
 8. Prove manual export/import, device migration, backup retention and
    recovery-key loss behavior before enabling background/automatic backups.
 
+## Large backups: no 5 MB product limit
+
+Google Drive allows resumable uploads for files above 5 MB, with non-final
+chunk sizes divisible by 256 KiB. The 5 MB guard in
+`driveBackupProtocol.ts` is ONLY for the single-request multipart route.
+
+- `driveResumableProtocol.ts` adds transport request builders for large,
+  already-encrypted files. Automated simulations use **3 GiB logical file
+  sizes**, without allocating large buffers or sending user data.
+- The new protocol uses a start request to obtain a Google session URI,
+  per-chunk `Content-Range` requests (default 8 MiB), and status queries.
+  On HTTP 308, resume from the server-confirmed `Range` byte offset. On
+  uncertain network errors, query status before sending another chunk.
+- Never log or share the upload session URL; validate that it belongs to the
+  expected Google endpoint. A session can expire and require a new upload.
+- **This is NOT actual multi-GB backup support yet.** Current snapshot
+  preparation still serializes memory data in JavaScript and has restrictive
+  safety caps; large archives will require native encrypted streaming-to-file,
+  bounded temporary disk storage, chunked upload/download, and incremental
+  authenticated restore. Do not increase in-memory JSON limits to gigabytes.
+- Backups should eventually include optional attachments/voice/images in a
+  separately versioned archival manifest. Compression may help, but must not
+  replace authenticated encryption and limits on decompression/restoration.
+- Before enabling, verify 100 MB, 1 GB and 3 GB synthetic archives on Android:
+  memory pressure, power loss, low disk space, interrupted network, Drive
+  quota/auth expiry, checksum/authentication, retries, full rollback and
+  accurate progress reporting. No actual user data may be deleted for tests.
+
 ## Release blockers
 
 - No in-app backup or restore UI.
