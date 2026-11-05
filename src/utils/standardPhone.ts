@@ -3,9 +3,9 @@
  * user formatting (country codes, spaces and extensions).
  *
  * The number stays in the AI Memory person record (not the Android phone Contacts).
- * App Lock already gates the UI, but this release does NOT yet encrypt the
- * saved local AsyncStorage record at rest. Do not enter sensitive real data
- * before whole-record encryption and cross-device recovery are verified.
+ * App Lock gates the UI; local AsyncStorage records are not separately
+ * encrypted by the app. Per the owner's MVP choice, additional on-device
+ * encryption is not a requirement. External backups remain AES-GCM encrypted.
  */
 export function normalizeStandardPhone(raw: string): string | undefined {
   if (typeof raw !== 'string') throw new Error('Invalid phone input');
