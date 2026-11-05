@@ -100,11 +100,11 @@ test('invalid stored phone type fails closed, instead of silently dropping or ov
 test('UI explains app-only phone and accurately discloses current local security', () => {
   const app = fs.readFileSync(path.join(root, 'App.tsx'), 'utf8');
   assert.ok(app.includes('PHONE NUMBER'));
-  assert.ok(app.includes('not added to your phone Contacts'));
+  assert.ok(app.includes('not in your phone Contacts'));
   assert.ok(app.includes('local records are not separately encrypted'));
   assert.match(app, /phone: selected\.phone \?\? ''/);
   assert.match(app, /phone,\n\s+relationship: form\.relationship/);
   assert.match(app, /normalizeStandardPhone\(form\.phone\)/);
-  // We must never implement a fake secret flag and leave it in plaintext AsyncStorage.
+  // No separate secret phone/vault field: App Lock covers the whole AI Memory address book.
   assert.doesNotMatch(app, /secretPhone|privatePhone|confidentialPhone/);
 });
