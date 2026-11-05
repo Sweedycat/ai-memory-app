@@ -100,7 +100,8 @@ test('invalid stored phone type fails closed, instead of silently dropping or ov
 test('UI explains private app-only phone and accurately warns about unfinished local encryption', () => {
   const app = fs.readFileSync(path.join(root, 'App.tsx'), 'utf8');
   assert.ok(app.includes('PHONE NUMBER'));
-  assert.ok(app.includes('not added to your phone Contacts'));\n  assert.ok(app.includes('encryption of local records is still being developed'));
+  assert.ok(app.includes('not added to your phone Contacts'));
+  assert.ok(app.includes('encryption of local records is still being developed'));
   assert.match(app, /phone: selected\.phone \?\? ''/);
   assert.match(app, /phone,\n\s+relationship: form\.relationship/);
   assert.match(app, /normalizeStandardPhone\(form\.phone\)/);
