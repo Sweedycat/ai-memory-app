@@ -22,6 +22,7 @@ import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
 import { createInteractionTimestamp, formatInteractionDate } from './src/utils/interactionDates';
 import { planReminderEdit } from './src/utils/reminderEditDecision';
 import { SCREEN_TOP_PADDING } from './src/utils/screenInsets';
+import { normalizeStandardPhone } from './src/utils/standardPhone';
 import {
   cancelFollowUpNotification,
   scheduleFollowUpNotification,
@@ -33,6 +34,7 @@ type PersonForm = {
   name: string;
   role: string;
   company: string;
+  phone: string;
   relationship: string;
   note: string;
   followUp: string;
@@ -43,6 +45,7 @@ const emptyForm: PersonForm = {
   name: '',
   role: '',
   company: '',
+  phone: '',
   relationship: '',
   note: '',
   followUp: '',
@@ -141,6 +144,7 @@ export default function App() {
         person.name,
         person.role,
         person.company,
+        person.phone,
         person.relationship,
         person.followUp?.text,
         ...person.notes,
@@ -208,6 +212,7 @@ export default function App() {
       name: selected.name,
       role: selected.role ?? '',
       company: selected.company ?? '',
+      phone: selected.phone ?? '',
       relationship: selected.relationship,
       note: selected.notes[0] ?? '',
       followUp: selected.followUp?.text ?? '',
@@ -256,6 +261,13 @@ export default function App() {
 
   async function addPerson() {
     if (!form.name.trim()) return;
+    let phone: string | undefined;
+    try {
+      phone = normalizeStandardPhone(form.phone);
+    } catch {
+      Alert.alert('Check phone number', 'Enter a single-line phone number (3–20 digits) or leave it blank.');
+      return;
+    }
 
     const id = `person-${Date.now()}`;
     const followUp = await buildFollowUp(id, form.name.trim());
@@ -264,6 +276,7 @@ export default function App() {
       name: form.name.trim(),
       role: form.role.trim() || undefined,
       company: form.company.trim() || undefined,
+      phone,
       relationship: form.relationship.trim() || 'New contact',
       lastInteraction: 'No interactions yet',
       notes: form.note.trim() ? [form.note.trim()] : [],
@@ -282,6 +295,13 @@ export default function App() {
 
   async function saveEditedPerson() {
     if (!selected || !form.name.trim() || savingEdit) return;
+    let phone: string | undefined;
+    try {
+      phone = normalizeStandardPhone(form.phone);
+    } catch {
+      Alert.alert('Check phone number', 'Enter a single-line phone number (3–20 digits) or leave it blank.');
+      return;
+    }
 
     const nextName = form.name.trim();
     const nextText = form.followUp.trim();
@@ -352,6 +372,7 @@ export default function App() {
             name: nextName,
             role: form.role.trim() || undefined,
             company: form.company.trim() || undefined,
+            phone,
             relationship: form.relationship.trim() || 'Contact',
             notes: firstNote ? [firstNote, ...restOfNotes] : restOfNotes,
             followUp: nextFollowUp,
@@ -560,6 +581,10 @@ export default function App() {
           <Field label="NAME *" value={form.name} onChange={(name) => setForm((current) => ({ ...current, name }))} />
           <Field label="ROLE" value={form.role} onChange={(role) => setForm((current) => ({ ...current, role }))} />
           <Field label="COMPANY" value={form.company} onChange={(company) => setForm((current) => ({ ...current, company }))} />
+          <Field label="PHONE NUMBER" value={form.phone} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
+          <Text style={styles.muted}>
+            Saved only in AI Memory, not in your phone Contacts. App Lock protects access to the app; its local records are not separately encrypted.
+          </Text>
           <Field
             label="HOW DO YOU KNOW THEM?"
             value={form.relationship}
@@ -648,6 +673,7 @@ export default function App() {
             {[selected.role, selected.company].filter(Boolean).join(' · ') || 'Contact'}
           </Text>
           <Text style={styles.mutedCenter}>{selected.relationship}</Text>
+          {selected.phone ? <Text style={styles.mutedCenter}>Phone: {selected.phone}</Text> : null}
           <View style={styles.profileActions}>
             <MiniAction label="Edit" onPress={openEditPerson} />
             <MiniAction label="Delete" onPress={deleteSelectedPerson} danger />
@@ -919,11 +945,12 @@ function Label({ text }: { text: string }) {
   return <Text style={styles.label}>{text}</Text>;
 }
 
-function Field({ label, value, onChange, multiline = false }: {
+function Field({ label, value, onChange, multiline = false, keyboardType = 'default' }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   multiline?: boolean;
+  keyboardType?: 'default' | 'phone-pad';
 }) {
   return (
     <View style={styles.field}>
@@ -932,6 +959,7 @@ function Field({ label, value, onChange, multiline = false }: {
         value={value}
         onChangeText={onChange}
         multiline={multiline}
+        keyboardType={keyboardType}
         placeholder={`Enter ${label.toLowerCase().replace(' *', '')}`}
         placeholderTextColor="#727D89"
         style={[styles.input, multiline && styles.multiline]}

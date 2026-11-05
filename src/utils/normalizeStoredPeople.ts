@@ -48,6 +48,8 @@ function validPerson(value: unknown): value is LegacyPerson {
       typeof person.relationship === 'string' &&
       (person.role === undefined || typeof person.role === 'string') &&
       (person.company === undefined || typeof person.company === 'string') &&
+      (person.phone === undefined ||
+        (typeof person.phone === 'string' && person.phone.length <= 64)) &&
       Array.isArray(person.notes) &&
       person.notes.every((note: unknown) => typeof note === 'string') &&
       Array.isArray(person.interactions) &&
