@@ -1,9 +1,11 @@
 /**
- * Standard (non-vault) phone-number input, deliberately preserving the exact
+ * Private AI Memory address-book phone input, preserving the exact
  * user formatting (country codes, spaces and extensions).
  *
- * This is NOT a confidential phone field: it will be stored with the existing
- * person record in local AsyncStorage, which is not an encrypted vault.
+ * The number stays in the AI Memory person record (not the Android phone Contacts).
+ * App Lock already gates the UI, but this release does NOT yet encrypt the
+ * saved local AsyncStorage record at rest. Do not enter sensitive real data
+ * before whole-record encryption and cross-device recovery are verified.
  */
 export function normalizeStandardPhone(raw: string): string | undefined {
   if (typeof raw !== 'string') throw new Error('Invalid phone input');
