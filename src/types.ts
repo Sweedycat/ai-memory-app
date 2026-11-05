@@ -21,7 +21,7 @@ export type MemoryPerson = {
   name: string;
   role?: string;
   company?: string;
-  /** Ordinary number only; confidential numbers must use a separate encrypted vault. */
+  /** Optional AI Memory contact phone, never synced to device Contacts. Local-at-rest encryption is a separate security requirement. */
   phone?: string;
   lastInteraction: string;
   relationship: string;
