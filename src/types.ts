@@ -21,6 +21,8 @@ export type MemoryPerson = {
   name: string;
   role?: string;
   company?: string;
+  /** Ordinary number only; confidential numbers must use a separate encrypted vault. */
+  phone?: string;
   lastInteraction: string;
   relationship: string;
   notes: string[];
