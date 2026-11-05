@@ -583,7 +583,7 @@ export default function App() {
           <Field label="COMPANY" value={form.company} onChange={(company) => setForm((current) => ({ ...current, company }))} />
           <Field label="PHONE NUMBER" value={form.phone} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
           <Text style={styles.muted}>
-            Stored in AI Memory only — not added to your phone Contacts. Your app is protected by App Lock, but encryption of local records is still being developed. Use test numbers until it is ready.
+            Saved only in AI Memory, not in your phone Contacts. App Lock protects access to the app; its local records are not separately encrypted.
           </Text>
           <Field
             label="HOW DO YOU KNOW THEM?"
