@@ -92,6 +92,7 @@ function copyPortablePerson(person: MemoryPerson): MemoryPerson {
     name: person.name,
     ...(person.role === undefined ? {} : { role: person.role }),
     ...(person.company === undefined ? {} : { company: person.company }),
+    ...(person.phone === undefined ? {} : { phone: person.phone }),
     lastInteraction: person.lastInteraction,
     relationship: person.relationship,
     notes: [...person.notes],
