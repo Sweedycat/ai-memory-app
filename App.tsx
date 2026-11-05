@@ -581,9 +581,9 @@ export default function App() {
           <Field label="NAME *" value={form.name} onChange={(name) => setForm((current) => ({ ...current, name }))} />
           <Field label="ROLE" value={form.role} onChange={(role) => setForm((current) => ({ ...current, role }))} />
           <Field label="COMPANY" value={form.company} onChange={(company) => setForm((current) => ({ ...current, company }))} />
-          <Field label="PHONE (STANDARD ONLY)" value={form.phone} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
+          <Field label="PHONE NUMBER" value={form.phone} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
           <Text style={styles.muted}>
-            Standard phone is stored with your local person record. Do not enter confidential numbers here. Encrypted Private Vault is being developed.
+            Stored in AI Memory only — not added to your phone Contacts. Your app is protected by App Lock, but encryption of local records is still being developed. Use test numbers until it is ready.
           </Text>
           <Field
             label="HOW DO YOU KNOW THEM?"
@@ -673,7 +673,7 @@ export default function App() {
             {[selected.role, selected.company].filter(Boolean).join(' · ') || 'Contact'}
           </Text>
           <Text style={styles.mutedCenter}>{selected.relationship}</Text>
-          {selected.phone ? <Text style={styles.mutedCenter}>Standard phone: {selected.phone}</Text> : null}
+          {selected.phone ? <Text style={styles.mutedCenter}>Phone: {selected.phone}</Text> : null}
           <View style={styles.profileActions}>
             <MiniAction label="Edit" onPress={openEditPerson} />
             <MiniAction label="Delete" onPress={deleteSelectedPerson} danger />
