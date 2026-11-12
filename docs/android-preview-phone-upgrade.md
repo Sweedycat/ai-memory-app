@@ -13,9 +13,14 @@ existing AI Memory Preview or clear its app data.
   `android.buildType=apk`, `android.image=latest`,
   `APP_VARIANT=preview`.
 - Automated Expo Doctor, TypeScript and unit checks have passed on preview.
-- The current source does **not** specify an explicit Android `versionCode`
-  nor an explicit `cli.appVersionSource`/preview `autoIncrement` setting.
-  The installed app's `versionCode` is not yet verified.
+- The owner supplied an Expo screenshot of the prior successful **Preview** build:
+  `0.1.0 (1)`, profile `preview`, commit `35f5238`. Therefore the previously
+  built Preview APK used Android `versionCode: 1`.
+- `app.config.js` now specifies Android `versionCode: 2` **only** when
+  `APP_VARIANT=preview`. `eas.json` explicitly uses local version source.
+  The new expected visible build version is **0.0.2 (2)**.
+- The screenshot's Expo build **fingerprint is not an Android signing certificate**;
+  verify the new APK's signing identity before an in-place install.
 - GitHub tests do not produce an APK and cannot validate EAS signing keys.
 
 ## Before requesting/building an upgrade
