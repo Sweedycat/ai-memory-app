@@ -258,7 +258,7 @@ export function SettingsPanel({
 
         <View style={styles.versionBox}>
           <Text style={styles.versionTitle}>AI Memory · Private Beta</Text>
-          <Text style={styles.versionText}>Version 0.1.0 · Phone first, smart-glasses ready later.</Text>
+          <Text style={styles.versionText}>Version 0.0.2 · Phone first, smart-glasses ready later.</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
