@@ -61,6 +61,11 @@ export function createGenerationStore<T>(
         if (current !== null) {
           // Never replace a missing or corrupted active generation.
           await this.readActive();
+          // The active dataset must still be the one observed at the start.
+          // A concurrent activation must not be overwritten by this restore.
+          if (await storage.getItem(POINTER) !== current) {
+            throw new Error('Active generation changed before staging');
+          }
         }
         const id = newGenerationId();
         const key = generationKey(id);
