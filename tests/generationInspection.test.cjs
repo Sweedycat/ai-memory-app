@@ -62,3 +62,27 @@ test('untrusted generation identifier is refused', async () => {
 test('inspection module cannot write or delete personal records', () => {
   assert.doesNotMatch(source, /setItem\s*\(|removeItem\s*\(|fetch\s*\(|console\./);
 });
+
+test('pointer initialization between reads cannot be mistaken for empty store', async () => {
+  let reads = 0;
+  const storage = {
+    async getItem(k) {
+      if (k !== pointer) throw Error('Unexpected key');
+      reads += 1;
+      return reads === 1 ? null : id;
+    },
+  };
+  assert.equal((await inspectActiveGeneration(storage, codec)).status, 'pointer-changed');
+});
+
+test('invalid pointer replaced during inspection is reported as a race', async () => {
+  let reads = 0;
+  const storage = {
+    async getItem(k) {
+      if (k !== pointer) throw Error('Unexpected key');
+      reads += 1;
+      return reads === 1 ? '../bad' : id;
+    },
+  };
+  assert.equal((await inspectActiveGeneration(storage, codec)).status, 'pointer-changed');
+});
