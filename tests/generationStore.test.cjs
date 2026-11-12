@@ -148,3 +148,28 @@ test('pointer mutation after activation is reported as uncertain', async () => {
   );
   assert.equal(h.values.has(key(B)), true);
 });
+
+test('concurrent pointer switch during preflight cannot overwrite newer generation', async () => {
+  const h = harness();
+  h.values.set(POINTER, A);
+  h.values.set(key(A), '{"old":true}');
+  h.values.set(key(C), '{"other":true}');
+  let pointerReads = 0;
+  const storage = {
+    ...h.store,
+    async getItem(k) {
+      if (k === POINTER) {
+        pointerReads += 1;
+        // First read captures A; the next read in readActive observes C.
+        if (pointerReads === 2) h.values.set(POINTER, C);
+      }
+      return h.store.getItem(k);
+    },
+  };
+  await assert.rejects(
+    createGenerationStore(storage, codec, () => B).stageAndActivate({ new: true }),
+    /changed before staging/,
+  );
+  assert.equal(h.values.get(POINTER), C);
+  assert.equal(h.values.has(key(B)), false);
+});
