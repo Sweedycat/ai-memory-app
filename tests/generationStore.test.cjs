@@ -116,3 +116,35 @@ test('invalid id and corrupted staged read fail before pointer activation', asyn
 test('experimental adapter never reads or writes legacy people-v1 key', () => {
   assert.doesNotMatch(source, /@ai-memory\/people-v1|removeItem|multiRemove/);
 });
+
+test('active pointer changing during read refuses torn snapshot', async () => {
+  const h = harness();
+  h.values.set(POINTER, A);
+  h.values.set(key(A), '{"old":true}');
+  const storage = {
+    ...h.store,
+    async getItem(k) {
+      if (k === key(A)) {
+        h.values.set(POINTER, C);
+      }
+      return h.store.getItem(k);
+    },
+  };
+  await assert.rejects(createGenerationStore(storage, codec, () => B).readActive(), /changed during read/);
+});
+
+test('pointer mutation after activation is reported as uncertain', async () => {
+  const h = harness();
+  const storage = {
+    ...h.store,
+    async setItem(k, v) {
+      await h.store.setItem(k, v);
+      if (k === POINTER) h.values.set(POINTER, C);
+    },
+  };
+  await assert.rejects(
+    createGenerationStore(storage, codec, () => B).stageAndActivate({ new: true }),
+    /outcome uncertain/,
+  );
+  assert.equal(h.values.has(key(B)), true);
+});
