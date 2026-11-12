@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+import { BackupSafetyDiagnostics } from './BackupSafetyDiagnostics';
 import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
 import { ReminderPermissionActions } from './ReminderPermissionActions';
 import { PermissionOverview } from './PermissionOverview';
@@ -236,6 +237,8 @@ export function SettingsPanel({
           </Pressable>
           {showPermissionDetails ? <PermissionOverview /> : null}
         </View>
+
+        <BackupSafetyDiagnostics />
 
         <View style={styles.card}>
           <Text style={styles.label}>SUPPORT & BETA</Text>
