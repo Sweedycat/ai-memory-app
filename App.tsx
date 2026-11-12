@@ -672,13 +672,25 @@ export default function App() {
           <Text style={styles.subCenter}>
             {[selected.role, selected.company].filter(Boolean).join(' · ') || 'Contact'}
           </Text>
-          <Text style={styles.mutedCenter}>{selected.relationship}</Text>
-          {selected.phone ? <Text style={styles.mutedCenter}>Phone: {selected.phone}</Text> : null}
           <View style={styles.profileActions}>
             <MiniAction label="Edit" onPress={openEditPerson} />
             <MiniAction label="Delete" onPress={deleteSelectedPerson} danger />
           </View>
         </View>
+
+        <Card>
+          <Label text="PROFILE DETAILS" />
+          <ProfileDetailRow label="Relationship" value={selected.relationship || 'Not added yet'} />
+          <ProfileDetailRow label="Role" value={selected.role || 'Not added yet'} />
+          <ProfileDetailRow label="Company" value={selected.company || 'Not added yet'} />
+          <ProfileDetailRow label="Phone number" value={selected.phone || 'Not added yet'} />
+          <ProfileDetailRow
+            label="Last interaction"
+            value={selected.interactions[0]
+              ? formatInteractionDate(selected.interactions[0].date)
+              : 'No interactions yet'}
+          />
+        </Card>
 
         <Card>
           <Label text="WHAT TO REMEMBER" />
@@ -838,11 +850,26 @@ export default function App() {
           <View style={styles.flex}>
             <Text style={styles.personName}>{person.name}</Text>
             <Text style={styles.personMeta}>
-              {[person.role, person.company].filter(Boolean).join(' · ') || person.relationship}
+              {[person.role, person.company].filter(Boolean).join(' · ') || 'Contact'}
             </Text>
+            {person.relationship.trim() ? (
+              <Text style={styles.personContext} numberOfLines={2}>
+                Relationship: {person.relationship}
+              </Text>
+            ) : null}
+            {person.notes[0] ? (
+              <Text style={styles.personPreview} numberOfLines={2}>
+                Remember: {person.notes[0]}
+              </Text>
+            ) : null}
+            {person.followUp ? (
+              <Text style={styles.personNextStep} numberOfLines={2}>
+                Next: {person.followUp.text} · {formatReminder(person.followUp.reminderAt)}
+              </Text>
+            ) : null}
             <Text style={styles.muted}>Last interaction: {person.interactions[0]
                 ? formatInteractionDate(person.interactions[0].date)
-                : 'No interactions yet'}</Text>
+                : 'No interactions yet'} · {person.notes.length} notes</Text>
           </View>
           <Text style={styles.chevron}>›</Text>
         </Pressable>
@@ -1000,6 +1027,15 @@ function OutlineAction({
   );
 }
 
+function ProfileDetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.profileDetailRow}>
+      <Text style={styles.profileDetailLabel}>{label}</Text>
+      <Text selectable style={styles.profileDetailValue}>{value}</Text>
+    </View>
+  );
+}
+
 function MiniAction({ label, onPress, danger = false }: { label: string; onPress: () => void; danger?: boolean }) {
   return (
     <Pressable onPress={onPress} style={[styles.miniAction, danger && styles.miniActionDanger]}>
@@ -1063,12 +1099,18 @@ const styles = StyleSheet.create({
   avatarText: { color: '#7DE2C3', fontWeight: '900', fontSize: 19 },
   personName: { color: '#F4F7FA', fontSize: 16, fontWeight: '800' },
   personMeta: { color: '#A7B0BA', fontSize: 13, marginTop: 3, marginBottom: 4 },
+  personContext: { color: '#98A3AF', fontSize: 12, lineHeight: 18, marginBottom: 4 },
+  personPreview: { color: '#CED8DF', fontSize: 12, lineHeight: 18, marginBottom: 4 },
+  personNextStep: { color: '#7DE2C3', fontSize: 12, lineHeight: 18, marginBottom: 5 },
   chevron: { color: '#66727E', fontSize: 27, marginLeft: 8 },
   profile: { alignItems: 'center', paddingVertical: 18 },
   avatarLarge: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
   avatarTextLarge: { color: '#7DE2C3', fontSize: 31, fontWeight: '900' },
   profileName: { color: '#F4F7FA', fontSize: 27, fontWeight: '900', textAlign: 'center' },
   profileActions: { flexDirection: 'row', gap: 8, marginTop: 14 },
+  profileDetailRow: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#202B36' },
+  profileDetailLabel: { color: '#7DE2C3', fontSize: 11, fontWeight: '800', marginBottom: 5 },
+  profileDetailValue: { color: '#E0E7EC', fontSize: 15, lineHeight: 22 },
   miniAction: { borderRadius: 999, borderWidth: 1, borderColor: '#355348', paddingHorizontal: 15, paddingVertical: 7 },
   miniActionDanger: { borderColor: '#5B3437' },
   miniActionText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
