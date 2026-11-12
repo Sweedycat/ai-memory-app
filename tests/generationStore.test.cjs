@@ -38,7 +38,7 @@ test('staging and activation preserve old generation for recovery', async () => 
   h.values.set(POINTER, A);
   await s.stageAndActivate({ records: ['new'] });
   assert.equal(h.values.get(POINTER), B);
-  assert.deepEqual(await s.readActive(), { records: ['new'] });
+  assert.equal(JSON.stringify(await s.readActive()), JSON.stringify({ records: ['new'] }));
   assert.deepEqual(JSON.parse(h.values.get(key(A))), { records: ['old'] });
 });
 
