@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import * as Application from 'expo-application';
 import {
   Pressable,
   SafeAreaView,
@@ -13,6 +14,7 @@ import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
 import { ReminderPermissionActions } from './ReminderPermissionActions';
 import { PermissionOverview } from './PermissionOverview';
 import { SCREEN_TOP_PADDING } from '../utils/screenInsets';
+import { runSyntheticBackupCryptoDiagnostic } from '../utils/backupCryptoDiagnostic';
 
 type SettingsPanelProps = {
   displayName: string;
@@ -51,6 +53,8 @@ export function SettingsPanel({
   const [changingLock, setChangingLock] = useState(false);
   const [privacyMessage, setPrivacyMessage] = useState('');
   const [showPermissionDetails, setShowPermissionDetails] = useState(false);
+  const [checkingBackupCrypto, setCheckingBackupCrypto] = useState(false);
+  const [backupCryptoStatus, setBackupCryptoStatus] = useState('');
 
   const initials =
     displayName
@@ -90,6 +94,21 @@ export function SettingsPanel({
       await setLockDelaySeconds(seconds);
     } catch {
       setPrivacyMessage('Could not save the lock delay. Please try again.');
+    }
+  }
+
+  async function testBackupCrypto() {
+    if (checkingBackupCrypto) return;
+    setCheckingBackupCrypto(true);
+    setBackupCryptoStatus('');
+    try {
+      await runSyntheticBackupCryptoDiagnostic();
+      setBackupCryptoStatus('PASS · Synthetic AES-GCM encrypt, decrypt and wrong-key refusal.');
+    } catch {
+      // No encryption key or private contents are logged or reported.
+      setBackupCryptoStatus('FAILED · Native encryption needs investigation before backup can be enabled.');
+    } finally {
+      setCheckingBackupCrypto(false);
     }
   }
 
@@ -236,6 +255,31 @@ export function SettingsPanel({
           </Pressable>
           {showPermissionDetails ? <PermissionOverview /> : null}
         </View>
+
+        {Application.applicationId === 'com.sweedycat.aimemory.preview' ? (
+          <View style={styles.card}>
+            <Text style={styles.label}>ENCRYPTED BACKUP LAB · PREVIEW ONLY</Text>
+            <Text style={styles.statusText}>
+              Tests native encryption using synthetic example records only. No actual
+              memories, Google account, files or uploads are accessed. This does not
+              create a restorable backup yet.
+            </Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Run synthetic encrypted backup diagnostic"
+              onPress={() => void testBackupCrypto()}
+              disabled={checkingBackupCrypto}
+              style={[styles.backupTestButton, checkingBackupCrypto && styles.switchDisabled]}
+            >
+              <Text style={styles.backupTestButtonText}>
+                {checkingBackupCrypto ? 'Checking encryption…' : 'Run encryption self-test'}
+              </Text>
+            </Pressable>
+            {backupCryptoStatus ? (
+              <Text accessibilityRole="alert" style={styles.backupTestResult}>{backupCryptoStatus}</Text>
+            ) : null}
+          </View>
+        ) : null}
 
         <View style={styles.card}>
           <Text style={styles.label}>SUPPORT & BETA</Text>
@@ -398,6 +442,18 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   lockNowText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
+  backupTestButton: {
+    backgroundColor: '#17352D',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#315B4F',
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  backupTestButtonText: { color: '#7DE2C3', fontWeight: '900', fontSize: 13 },
+  backupTestResult: { color: '#C8D7D1', fontSize: 12, lineHeight: 18, marginTop: 12 },
   privacyMessage: { color: '#9CC9BC', fontSize: 11, lineHeight: 17, marginTop: 13, marginLeft: 49 },
   permissionDisclosureToggle: { paddingVertical: 14, marginTop: 12, borderTopColor: '#293541', borderTopWidth: 1 },
   permissionDisclosureText: { color: '#7DE2C3', fontWeight: '900', fontSize: 12 },
