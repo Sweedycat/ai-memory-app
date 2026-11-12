@@ -28,6 +28,25 @@ app-data-only OAuth scope. Google Drive login alone is NOT a decryption key.
   secure storage may be lost when an app is uninstalled or phone is replaced.
 - No logging, analytics, unapproved sharing or automatic data upload.
 
+## 2026-11-12 incremental implementation (draft PR #20 only)
+
+- Added `driveBackupTransport.ts` for Google Drive `appDataFolder` encrypted
+  upload/list/download-for-review over an injected HTTPS fetch adapter.
+  Request bodies must be validated encrypted envelopes; no real tokens,
+  files, people or Google account have been used. The transport is not
+  connected to the Settings UI.
+- Added `backupNativeSelfTest.ts` and the Settings-only
+  `BackupSafetyDiagnostics` button. Pressing it performs an AES-GCM
+  round-trip with **synthetic** owner/person, Turkish Unicode and a fake
+  reminder, verifies notification IDs are excluded, and rejects both a
+  wrong key and a tampered file. No real memories or network are accessed.
+- CI tests are software/simulated checks; they do not replace a physical
+  Android run of the synthetic button before enabling real backup.
+- Google OAuth consent, securely managed access tokens, user recovery-key
+  onboarding, actual export/retention, bounded streaming, backup verification
+  and atomic restore all remain unimplemented. The current button is NOT
+  \"Back up now\" and must not be represented as a completed backup.
+
 ## Current code boundaries
 
 - `backupSnapshot.ts`: strict in-memory snapshot normalization, version
