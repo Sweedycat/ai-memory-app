@@ -164,5 +164,6 @@ test('review helper returns a plan and cannot persist, overwrite or reschedule',
   assert.equal(result.status, 'review-required');
   assert.equal(result.incomingPeople, 0);
   const source = fs.readFileSync(path.join(__dirname, '..', 'src/utils/driveBackupClient.ts'), 'utf8');
-  assert.doesNotMatch(source, /AsyncStorage|setItem\(|SecureStore|scheduleNotification|console\./);
+  const executable = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  assert.doesNotMatch(executable, /AsyncStorage|setItem\(|SecureStore|scheduleNotification|console\./);
 });
