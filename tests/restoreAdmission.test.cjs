@@ -1,0 +1,83 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const ts = require('typescript');
+
+const source = fs.readFileSync(path.join(__dirname, '../src/utils/restoreAdmission.ts'), 'utf8');
+const compiled = ts.transpileModule(source, {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+}).outputText;
+const context = { module: { exports: {} }, require() { throw Error('unexpected runtime import'); } };
+context.exports = context.module.exports;
+vm.runInNewContext(compiled, context);
+const { admitRestoreForStaging } = context.module.exports;
+
+const target = () => ({ workspaceId: 'personal-qa', ownerId: 'owner-qa' });
+const review = () => ({
+  status: 'review-required',
+  createdAt: '2026-11-12T00:00:00Z',
+  incomingPeople: 1,
+  existingPeople: 2,
+  matchingPersonIds: 0,
+  requiresReminderRescheduling: false,
+  candidatePeople: [{ id: 'synthetic-01' }],
+  candidateOwner: { name: 'Synthetic', preferredName: '', role: '' },
+});
+const valid = () => ({
+  review: review(),
+  selectedTarget: target(),
+  activeTarget: target(),
+  backupTarget: target(),
+  confirmedTarget: target(),
+  userConfirmed: true,
+  durableRollbackReady: true,
+  activePeopleCount: 2,
+});
+
+test('matching confirmed synthetic workspace can enter staging without mutation', () => {
+  const input = valid();
+  const before = JSON.stringify(input);
+  const result = admitRestoreForStaging(input);
+  assert.equal(result.approved, true);
+  assert.equal(result.expectedIncomingPeople, 1);
+  assert.equal(JSON.stringify(input), before);
+});
+
+test('cross-workspace, cross-owner and unconfirmed target are rejected', () => {
+  for (const field of ['selectedTarget', 'activeTarget', 'backupTarget', 'confirmedTarget']) {
+    const input = valid();
+    input[field] = { ...target(), workspaceId: 'another-workspace' };
+    assert.throws(() => admitRestoreForStaging(input), /mismatch/);
+  }
+  const input = valid();
+  input.backupTarget = { ...target(), ownerId: 'another-owner' };
+  assert.throws(() => admitRestoreForStaging(input), /mismatch/);
+});
+
+test('missing consent, missing rollback and stale review fail closed', () => {
+  for (const patch of [
+    { userConfirmed: false },
+    { durableRollbackReady: false },
+    { activePeopleCount: 3 },
+  ]) {
+    assert.throws(() => admitRestoreForStaging({ ...valid(), ...patch }));
+  }
+  const input = valid();
+  input.review.incomingPeople = 3;
+  assert.throws(() => admitRestoreForStaging(input), /stale/);
+});
+
+test('invalid target and malformed review fail closed', () => {
+  const input = valid();
+  input.activeTarget.ownerId = '../bad';
+  assert.throws(() => admitRestoreForStaging(input), /invalid/);
+  const other = valid();
+  other.review.status = 'ready';
+  assert.throws(() => admitRestoreForStaging(other), /stale/);
+});
+
+test('admission utility has no storage, network or notification side effects', () => {
+  assert.doesNotMatch(source, /AsyncStorage|fetch\s*\(|setItem|removeItem|scheduleNotification|console\./);
+});
