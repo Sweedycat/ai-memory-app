@@ -672,13 +672,27 @@ export default function App() {
           <Text style={styles.subCenter}>
             {[selected.role, selected.company].filter(Boolean).join(' · ') || 'Contact'}
           </Text>
-          <Text style={styles.mutedCenter}>{selected.relationship}</Text>
-          {selected.phone ? <Text style={styles.mutedCenter}>Phone: {selected.phone}</Text> : null}
+          <Text style={styles.mutedCenter}>{selected.relationship || 'Personal contact'}</Text>
           <View style={styles.profileActions}>
             <MiniAction label="Edit" onPress={openEditPerson} />
             <MiniAction label="Delete" onPress={deleteSelectedPerson} danger />
           </View>
         </View>
+
+        <Card>
+          <Label text="PERSON DETAILS" />
+          <DetailRow label="Role" value={selected.role} />
+          <DetailRow label="Company" value={selected.company} />
+          <DetailRow label="Phone number" value={selected.phone} />
+          <DetailRow label="How you know them" value={selected.relationship} />
+          <DetailRow
+            label="Last interaction"
+            value={selected.interactions[0]
+              ? formatInteractionDate(selected.interactions[0].date)
+              : 'No interactions yet'}
+          />
+          <Text style={styles.detailFootnote}>Read only · Tap Edit above to update this profile.</Text>
+        </Card>
 
         <Card>
           <Label text="WHAT TO REMEMBER" />
@@ -838,9 +852,21 @@ export default function App() {
           <View style={styles.flex}>
             <Text style={styles.personName}>{person.name}</Text>
             <Text style={styles.personMeta}>
-              {[person.role, person.company].filter(Boolean).join(' · ') || person.relationship}
+              {[person.role, person.company].filter(Boolean).join(' · ') || 'Contact'}
             </Text>
-            <Text style={styles.muted}>Last interaction: {person.interactions[0]
+            {person.relationship ? (
+              <Text style={styles.personRelationship} numberOfLines={2}>How you know them: {person.relationship}</Text>
+            ) : null}
+            {person.phone ? (
+              <Text style={styles.personPhone} numberOfLines={1}>Phone: {person.phone}</Text>
+            ) : null}
+            {person.notes[0] ? (
+              <Text style={styles.personMemoryPreview} numberOfLines={2}>Remember: {person.notes[0]}</Text>
+            ) : null}
+            {person.followUp ? (
+              <Text style={styles.personNextStep} numberOfLines={2}>Next: {person.followUp.text} · {formatReminder(person.followUp.reminderAt)}</Text>
+            ) : null}
+            <Text style={styles.personLastInteraction}>Last interaction: {person.interactions[0]
                 ? formatInteractionDate(person.interactions[0].date)
                 : 'No interactions yet'}</Text>
           </View>
@@ -943,6 +969,15 @@ function Back({ onPress }: { onPress: () => void }) {
 
 function Label({ text }: { text: string }) {
   return <Text style={styles.label}>{text}</Text>;
+}
+
+function DetailRow({ label, value }: { label: string; value?: string }) {
+  return (
+    <View style={styles.detailRow}>
+      <Text style={styles.detailRowLabel}>{label}</Text>
+      <Text style={styles.detailRowValue}>{value?.trim() || 'Not added yet'}</Text>
+    </View>
+  );
 }
 
 function Field({ label, value, onChange, multiline = false, keyboardType = 'default' }: {
@@ -1063,6 +1098,15 @@ const styles = StyleSheet.create({
   avatarText: { color: '#7DE2C3', fontWeight: '900', fontSize: 19 },
   personName: { color: '#F4F7FA', fontSize: 16, fontWeight: '800' },
   personMeta: { color: '#A7B0BA', fontSize: 13, marginTop: 3, marginBottom: 4 },
+  personRelationship: { color: '#A6B8B3', fontSize: 12, lineHeight: 17, marginBottom: 4 },
+  personPhone: { color: '#B9D5CD', fontSize: 12, fontWeight: '700', lineHeight: 17, marginBottom: 4 },
+  personMemoryPreview: { color: '#BAC4CE', fontSize: 12, lineHeight: 17, marginBottom: 4 },
+  personNextStep: { color: '#7DE2C3', fontSize: 12, lineHeight: 17, marginBottom: 4 },
+  personLastInteraction: { color: '#75818D', fontSize: 11, lineHeight: 17, marginTop: 4 },
+  detailRow: { borderBottomWidth: 1, borderBottomColor: '#202B36', paddingVertical: 10 },
+  detailRowLabel: { color: '#7DE2C3', fontSize: 10, letterSpacing: 0.7, fontWeight: '900', marginBottom: 5 },
+  detailRowValue: { color: '#E0E7ED', fontSize: 14, lineHeight: 21 },
+  detailFootnote: { color: '#75818D', fontSize: 11, marginTop: 12, lineHeight: 17 },
   chevron: { color: '#66727E', fontSize: 27, marginLeft: 8 },
   profile: { alignItems: 'center', paddingVertical: 18 },
   avatarLarge: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
