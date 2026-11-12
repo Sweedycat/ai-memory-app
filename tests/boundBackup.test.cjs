@@ -12,7 +12,7 @@ function load(file, dependencies = {}) {
   const js = ts.transpileModule(src, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
   }).outputText;
-  const context = { module: { exports: {} }, require(id) {
+  const context = { TextEncoder, module: { exports: {} }, require(id) {
     if (!(id in dependencies)) throw Error('Unexpected dependency: ' + id);
     return dependencies[id];
   } };
@@ -126,4 +126,22 @@ test('oversized authenticated wrapper is rejected before decryption', async () =
     /too large/,
   );
   assert.equal(decryptCalled, true);
+});
+
+test('UTF-8 byte budget rejects oversized multibyte archive before encryption', async () => {
+  const original = input();
+  // 5.7m UTF-16 characters, but over 16 MiB encoded UTF-8.
+  original.people[0].notes = ['漢'.repeat(5_700_000)];
+  let encryptCalled = false;
+  const fakeCipher = {
+    async encryptUtf8ToCombinedBase64() {
+      encryptCalled = true;
+      throw Error('Encryption should not run');
+    },
+  };
+  await assert.rejects(
+    bound.sealBoundBackupInMemory(original, fakeCipher),
+    /UTF-8 byte budget/,
+  );
+  assert.equal(encryptCalled, false);
 });
