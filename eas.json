@@ -18,5 +18,8 @@
       }
     },
     "production": {}
+  },
+  "cli": {
+    "appVersionSource": "local"
   }
 }
