@@ -2,7 +2,7 @@
   "expo": {
     "name": "AI Memory",
     "slug": "ai-memory-app",
-    "version": "0.1.0",
+    "version": "0.0.2",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "plugins": [

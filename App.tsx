@@ -22,6 +22,7 @@ import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
 import { createInteractionTimestamp, formatInteractionDate } from './src/utils/interactionDates';
 import { planReminderEdit } from './src/utils/reminderEditDecision';
 import { SCREEN_TOP_PADDING } from './src/utils/screenInsets';
+import { normalizeStandardPhone } from './src/utils/standardPhone';
 import {
   cancelFollowUpNotification,
   scheduleFollowUpNotification,
@@ -33,6 +34,7 @@ type PersonForm = {
   name: string;
   role: string;
   company: string;
+  phone: string;
   relationship: string;
   note: string;
   followUp: string;
@@ -43,6 +45,7 @@ const emptyForm: PersonForm = {
   name: '',
   role: '',
   company: '',
+  phone: '',
   relationship: '',
   note: '',
   followUp: '',
@@ -141,6 +144,7 @@ export default function App() {
         person.name,
         person.role,
         person.company,
+        person.phone,
         person.relationship,
         person.followUp?.text,
         ...person.notes,
@@ -208,6 +212,7 @@ export default function App() {
       name: selected.name,
       role: selected.role ?? '',
       company: selected.company ?? '',
+      phone: selected.phone ?? '',
       relationship: selected.relationship,
       note: selected.notes[0] ?? '',
       followUp: selected.followUp?.text ?? '',
@@ -256,6 +261,13 @@ export default function App() {
 
   async function addPerson() {
     if (!form.name.trim()) return;
+    let phone: string | undefined;
+    try {
+      phone = normalizeStandardPhone(form.phone);
+    } catch {
+      Alert.alert('Check phone number', 'Enter a single-line phone number (3–20 digits) or leave it blank.');
+      return;
+    }
 
     const id = `person-${Date.now()}`;
     const followUp = await buildFollowUp(id, form.name.trim());
@@ -264,6 +276,7 @@ export default function App() {
       name: form.name.trim(),
       role: form.role.trim() || undefined,
       company: form.company.trim() || undefined,
+      phone,
       relationship: form.relationship.trim() || 'New contact',
       lastInteraction: 'No interactions yet',
       notes: form.note.trim() ? [form.note.trim()] : [],
@@ -282,6 +295,13 @@ export default function App() {
 
   async function saveEditedPerson() {
     if (!selected || !form.name.trim() || savingEdit) return;
+    let phone: string | undefined;
+    try {
+      phone = normalizeStandardPhone(form.phone);
+    } catch {
+      Alert.alert('Check phone number', 'Enter a single-line phone number (3–20 digits) or leave it blank.');
+      return;
+    }
 
     const nextName = form.name.trim();
     const nextText = form.followUp.trim();
@@ -352,6 +372,7 @@ export default function App() {
             name: nextName,
             role: form.role.trim() || undefined,
             company: form.company.trim() || undefined,
+            phone,
             relationship: form.relationship.trim() || 'Contact',
             notes: firstNote ? [firstNote, ...restOfNotes] : restOfNotes,
             followUp: nextFollowUp,
@@ -560,6 +581,10 @@ export default function App() {
           <Field label="NAME *" value={form.name} onChange={(name) => setForm((current) => ({ ...current, name }))} />
           <Field label="ROLE" value={form.role} onChange={(role) => setForm((current) => ({ ...current, role }))} />
           <Field label="COMPANY" value={form.company} onChange={(company) => setForm((current) => ({ ...current, company }))} />
+          <Field label="PHONE NUMBER" value={form.phone} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
+          <Text style={styles.muted}>
+            Saved only in AI Memory, not in your phone Contacts. App Lock protects access to the app; its local records are not separately encrypted.
+          </Text>
           <Field
             label="HOW DO YOU KNOW THEM?"
             value={form.relationship}
@@ -647,12 +672,25 @@ export default function App() {
           <Text style={styles.subCenter}>
             {[selected.role, selected.company].filter(Boolean).join(' · ') || 'Contact'}
           </Text>
-          <Text style={styles.mutedCenter}>{selected.relationship}</Text>
           <View style={styles.profileActions}>
             <MiniAction label="Edit" onPress={openEditPerson} />
             <MiniAction label="Delete" onPress={deleteSelectedPerson} danger />
           </View>
         </View>
+
+        <Card>
+          <Label text="PROFILE DETAILS" />
+          <ProfileDetailRow label="Relationship" value={selected.relationship || 'Not added yet'} />
+          <ProfileDetailRow label="Role" value={selected.role || 'Not added yet'} />
+          <ProfileDetailRow label="Company" value={selected.company || 'Not added yet'} />
+          <ProfileDetailRow label="Phone number" value={selected.phone || 'Not added yet'} />
+          <ProfileDetailRow
+            label="Last interaction"
+            value={selected.interactions[0]
+              ? formatInteractionDate(selected.interactions[0].date)
+              : 'No interactions yet'}
+          />
+        </Card>
 
         <Card>
           <Label text="WHAT TO REMEMBER" />
@@ -812,11 +850,26 @@ export default function App() {
           <View style={styles.flex}>
             <Text style={styles.personName}>{person.name}</Text>
             <Text style={styles.personMeta}>
-              {[person.role, person.company].filter(Boolean).join(' · ') || person.relationship}
+              {[person.role, person.company].filter(Boolean).join(' · ') || 'Contact'}
             </Text>
+            {person.relationship.trim() ? (
+              <Text style={styles.personContext} numberOfLines={2}>
+                Relationship: {person.relationship}
+              </Text>
+            ) : null}
+            {person.notes[0] ? (
+              <Text style={styles.personPreview} numberOfLines={2}>
+                Remember: {person.notes[0]}
+              </Text>
+            ) : null}
+            {person.followUp ? (
+              <Text style={styles.personNextStep} numberOfLines={2}>
+                Next: {person.followUp.text} · {formatReminder(person.followUp.reminderAt)}
+              </Text>
+            ) : null}
             <Text style={styles.muted}>Last interaction: {person.interactions[0]
                 ? formatInteractionDate(person.interactions[0].date)
-                : 'No interactions yet'}</Text>
+                : 'No interactions yet'} · {person.notes.length} notes</Text>
           </View>
           <Text style={styles.chevron}>›</Text>
         </Pressable>
@@ -919,11 +972,12 @@ function Label({ text }: { text: string }) {
   return <Text style={styles.label}>{text}</Text>;
 }
 
-function Field({ label, value, onChange, multiline = false }: {
+function Field({ label, value, onChange, multiline = false, keyboardType = 'default' }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   multiline?: boolean;
+  keyboardType?: 'default' | 'phone-pad';
 }) {
   return (
     <View style={styles.field}>
@@ -932,6 +986,7 @@ function Field({ label, value, onChange, multiline = false }: {
         value={value}
         onChangeText={onChange}
         multiline={multiline}
+        keyboardType={keyboardType}
         placeholder={`Enter ${label.toLowerCase().replace(' *', '')}`}
         placeholderTextColor="#727D89"
         style={[styles.input, multiline && styles.multiline]}
@@ -969,6 +1024,15 @@ function OutlineAction({
     <Pressable onPress={onPress} disabled={disabled} style={[styles.outline, disabled && styles.disabled]}>
       <Text style={styles.outlineText}>{label}</Text>
     </Pressable>
+  );
+}
+
+function ProfileDetailRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.profileDetailRow}>
+      <Text style={styles.profileDetailLabel}>{label}</Text>
+      <Text selectable style={styles.profileDetailValue}>{value}</Text>
+    </View>
   );
 }
 
@@ -1035,12 +1099,18 @@ const styles = StyleSheet.create({
   avatarText: { color: '#7DE2C3', fontWeight: '900', fontSize: 19 },
   personName: { color: '#F4F7FA', fontSize: 16, fontWeight: '800' },
   personMeta: { color: '#A7B0BA', fontSize: 13, marginTop: 3, marginBottom: 4 },
+  personContext: { color: '#98A3AF', fontSize: 12, lineHeight: 18, marginBottom: 4 },
+  personPreview: { color: '#CED8DF', fontSize: 12, lineHeight: 18, marginBottom: 4 },
+  personNextStep: { color: '#7DE2C3', fontSize: 12, lineHeight: 18, marginBottom: 5 },
   chevron: { color: '#66727E', fontSize: 27, marginLeft: 8 },
   profile: { alignItems: 'center', paddingVertical: 18 },
   avatarLarge: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
   avatarTextLarge: { color: '#7DE2C3', fontSize: 31, fontWeight: '900' },
   profileName: { color: '#F4F7FA', fontSize: 27, fontWeight: '900', textAlign: 'center' },
   profileActions: { flexDirection: 'row', gap: 8, marginTop: 14 },
+  profileDetailRow: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#202B36' },
+  profileDetailLabel: { color: '#7DE2C3', fontSize: 11, fontWeight: '800', marginBottom: 5 },
+  profileDetailValue: { color: '#E0E7EC', fontSize: 15, lineHeight: 22 },
   miniAction: { borderRadius: 999, borderWidth: 1, borderColor: '#355348', paddingHorizontal: 15, paddingVertical: 7 },
   miniActionDanger: { borderColor: '#5B3437' },
   miniActionText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },

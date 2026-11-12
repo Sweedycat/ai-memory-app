@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+import { BackupSafetyDiagnostics } from './BackupSafetyDiagnostics';
 import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
 import { ReminderPermissionActions } from './ReminderPermissionActions';
 import { PermissionOverview } from './PermissionOverview';
@@ -237,6 +238,8 @@ export function SettingsPanel({
           {showPermissionDetails ? <PermissionOverview /> : null}
         </View>
 
+        <BackupSafetyDiagnostics />
+
         <View style={styles.card}>
           <Text style={styles.label}>SUPPORT & BETA</Text>
           <Pressable
@@ -258,7 +261,7 @@ export function SettingsPanel({
 
         <View style={styles.versionBox}>
           <Text style={styles.versionTitle}>AI Memory · Private Beta</Text>
-          <Text style={styles.versionText}>Version 0.1.0 · Phone first, smart-glasses ready later.</Text>
+          <Text style={styles.versionText}>Version 0.0.2 · Phone first, smart-glasses ready later.</Text>
         </View>
       </ScrollView>
     </SafeAreaView>

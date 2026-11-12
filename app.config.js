@@ -6,6 +6,9 @@ module.exports = ({ config }) => {
     name: isPreview ? 'AI Memory Preview' : config.name,
     android: {
       ...config.android,
+      // Preview 0.0.2 replaces the previous Preview 0.1.0 (versionCode 1).
+      // Keep production configuration unchanged; never lower Android versionCode.
+      ...(isPreview ? { versionCode: 2 } : {}),
       package: isPreview
         ? 'com.sweedycat.aimemory.preview'
         : config.android?.package,
