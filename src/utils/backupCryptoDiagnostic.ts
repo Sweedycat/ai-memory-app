@@ -9,6 +9,7 @@ import { createExpoAesGcmCipher, generateBackupRecoveryKey } from './expoBackupC
  */
 export async function runSyntheticBackupCryptoDiagnostic(): Promise<boolean> {
   const createdAt = new Date().toISOString();
+  const syntheticNote = 'Türkçe karakter denemesi: ğüşöçı 🛡️';
   const person: MemoryPerson = {
     id: 'synthetic-backup-test-person',
     name: 'Şifreli Örnek 🧠',
@@ -17,7 +18,7 @@ export async function runSyntheticBackupCryptoDiagnostic(): Promise<boolean> {
     phone: '+90 500 000 00 00',
     relationship: 'Synthetic contact',
     lastInteraction: createdAt,
-    notes: ['Türkçe karakter denemesi: ğüşöçı 🛡️'],
+    notes: [syntheticNote],
     interactions: [{
       id: 'synthetic-interaction',
       date: createdAt,
@@ -43,7 +44,7 @@ export async function runSyntheticBackupCryptoDiagnostic(): Promise<boolean> {
   const cipher = await createExpoAesGcmCipher(key);
   const envelope = await sealBackupInMemory({ owner, people: [person], createdAt }, cipher);
   const serialized = JSON.stringify(envelope);
-  if (serialized.includes(person.name) || serialized.includes(person.notes[0])) {
+  if (serialized.includes(person.name) || serialized.includes(syntheticNote)) {
     throw new Error('Synthetic backup encryption privacy check failed');
   }
 
@@ -51,7 +52,7 @@ export async function runSyntheticBackupCryptoDiagnostic(): Promise<boolean> {
   if (review.status !== 'review-required' ||
       review.incomingPeople !== 1 ||
       review.candidatePeople[0]?.name !== person.name ||
-      review.candidatePeople[0]?.notes[0] !== person.notes[0] ||
+      review.candidatePeople[0]?.notes[0] !== syntheticNote ||
       review.candidatePeople[0]?.phone !== person.phone ||
       review.candidatePeople[0]?.followUp?.notificationId !== undefined) {
     throw new Error('Native backup round-trip validation failed');
