@@ -46,7 +46,12 @@ export function createGenerationStore<T>(
       const key = generationKey(id);
       const raw = await storage.getItem(key);
       if (raw === null) throw new Error('Active generation missing; recovery required');
-      return codec.decode(raw);
+      const decoded = codec.decode(raw);
+      // Refuse a torn read when another writer switched generations mid-read.
+      if (await storage.getItem(POINTER) !== id) {
+        throw new Error('Active generation changed during read');
+      }
+      return decoded;
     },
     async stageAndActivate(candidate: T): Promise<void> {
       if (inFlight) throw new Error('Generation activation already in progress');
@@ -75,6 +80,12 @@ export function createGenerationStore<T>(
         }
         // Only this final pointer write activates the staged dataset.
         await storage.setItem(POINTER, id);
+        // Do not claim a completed activation until the pointer is verified.
+        // If verification fails after the write, recovery must inspect both
+        // generations; callers must not retry blindly or delete either one.
+        if (await storage.getItem(POINTER) !== id) {
+          throw new Error('Activation outcome uncertain; recovery required');
+        }
       } finally {
         inFlight = false;
       }
