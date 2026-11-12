@@ -160,8 +160,9 @@ test('concurrent pointer switch during preflight cannot overwrite newer generati
     async getItem(k) {
       if (k === POINTER) {
         pointerReads += 1;
-        // First read captures A; the next read in readActive observes C.
-        if (pointerReads === 2) h.values.set(POINTER, C);
+        // First and second reads observe A; the third read inside
+        // readActive observes A; the fourth preflight read observes C.
+        if (pointerReads === 4) h.values.set(POINTER, C);
       }
       return h.store.getItem(k);
     },
