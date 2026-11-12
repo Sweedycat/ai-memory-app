@@ -108,3 +108,22 @@ test('bound backup has no network, file or storage effects', () => {
   const src = fs.readFileSync(path.join(root, 'src/utils/boundBackup.ts'), 'utf8');
   assert.doesNotMatch(src, /AsyncStorage|fetch\s*\(|setItem|removeItem|Share\.share|console\./);
 });
+
+test('oversized authenticated wrapper is rejected before decryption', async () => {
+  let decryptCalled = false;
+  const fakeCipher = {
+    async decryptCombinedBase64ToUtf8() {
+      decryptCalled = true;
+      return 'x'.repeat(snapshot.MAX_SNAPSHOT_CHARACTERS + 1025);
+    },
+  };
+  const envelopeValue = {
+    kind: envelope.ENCRYPTED_BACKUP_KIND, version: 1,
+    algorithm: 'AES-256-GCM', encryptedPayload: 'A'.repeat(40),
+  };
+  await assert.rejects(
+    bound.reviewBoundBackup(envelopeValue, [], identity(), fakeCipher),
+    /too large/,
+  );
+  assert.equal(decryptCalled, true);
+});
