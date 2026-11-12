@@ -159,3 +159,29 @@ test('decrypted multibyte archive over byte budget fails before parsing', async 
     encryptedPayload: 'A'.repeat(40),
   }, [], identity(), fakeCipher), /UTF-8 byte budget/);
 });
+
+test('missing TextEncoder refuses backup instead of bypassing byte check', async () => {
+  const src = fs.readFileSync(path.join(root, 'src/utils/boundBackup.ts'), 'utf8');
+  const js = ts.transpileModule(src, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
+  }).outputText;
+  const context = {
+    module: { exports: {} },
+    TextEncoder: undefined,
+    require(id) {
+      if (id === './backupSnapshot') return snapshot;
+      if (id === './encryptedBackupEnvelope') return envelope;
+      throw Error('Unexpected dependency: ' + id);
+    },
+  };
+  context.exports = context.module.exports;
+  vm.runInNewContext(js, context);
+  let encrypted = false;
+  await assert.rejects(context.module.exports.sealBoundBackupInMemory(input(), {
+    async encryptUtf8ToCombinedBase64() {
+      encrypted = true;
+      return 'A'.repeat(40);
+    },
+  }), /UTF-8 size validation unavailable/);
+  assert.equal(encrypted, false);
+});
