@@ -1,12 +1,15 @@
 import type { MemoryPerson } from '../types';
 import {
   prepareInMemoryBackupSnapshot,
+  MAX_SNAPSHOT_CHARACTERS,
   planRestoreForReview,
   type BackupOwnerProfile,
   type RestoreReview,
 } from './backupSnapshot';
 import {
   validateEncryptedBackupEnvelope,
+  ENCRYPTED_BACKUP_KIND,
+  ENCRYPTED_BACKUP_VERSION,
   type Aes256GcmBackupCipher,
   type EncryptedBackupEnvelopeV1,
 } from './encryptedBackupEnvelope';
@@ -18,6 +21,8 @@ import {
  */
 export const BOUND_BACKUP_KIND = 'ai-memory-bound-private-snapshot';
 export const BOUND_BACKUP_VERSION = 2;
+// A v1 snapshot can fill its own limit; reserve space for the authenticated wrapper.
+export const MAX_BOUND_BACKUP_CHARACTERS = MAX_SNAPSHOT_CHARACTERS + 1024;
 
 export type BackupIdentity = { ownerId: string; workspaceId: string };
 export type BoundBackupReview = {
@@ -63,10 +68,13 @@ export async function sealBoundBackupInMemory(
     identity: boundIdentity,
     snapshot,
   });
+  if (plaintext.length > MAX_BOUND_BACKUP_CHARACTERS) {
+    throw new Error('Bound backup exceeds supported size');
+  }
   const encryptedPayload = await cipher.encryptUtf8ToCombinedBase64(plaintext);
   return validateEncryptedBackupEnvelope({
-    kind: 'ai-memory-aesgcm-backup',
-    version: 1,
+    kind: ENCRYPTED_BACKUP_KIND,
+    version: ENCRYPTED_BACKUP_VERSION,
     algorithm: 'AES-256-GCM',
     encryptedPayload,
   });
@@ -90,7 +98,7 @@ export async function reviewBoundBackup(
   } catch {
     throw new Error('Cannot authenticate or decrypt this backup');
   }
-  if (typeof plaintext !== 'string' || plaintext.length > 8_000_000) {
+  if (typeof plaintext !== 'string' || plaintext.length > MAX_BOUND_BACKUP_CHARACTERS) {
     throw new Error('Bound backup is invalid or too large');
   }
   let parsed: unknown;
