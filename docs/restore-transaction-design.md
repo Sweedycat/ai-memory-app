@@ -68,3 +68,15 @@ are experimental. They are deliberately **not** connected to
 
 Do not merge or advertise backup/restore as available until the above blockers
 are resolved and CI plus physical-device tests pass.
+
+## Bound archive memory budget (experimental)
+
+`boundBackup.ts` now refuses bound plaintexts exceeding 16 MiB of UTF-8
+bytes in addition to the existing JSON character ceiling. This is a
+conservative fail-closed gate, **not** a guarantee of low peak memory usage:
+JSON serialization, normalization, UTF-8 encoding, AES-GCM, and base64 may
+coexist in memory. The current implementation uses `TextEncoder` and refuses
+operation if that API is unavailable; confirm support on the shipping Hermes
+runtime. Test large Unicode fixtures and Android low-memory behavior before
+enabling backup creation or restore. Streaming or a smaller documented archive
+limit may be necessary.
