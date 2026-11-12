@@ -15,6 +15,7 @@ import {
  */
 export async function runSyntheticBackupCryptoSelfTest(): Promise<void> {
   const createdAt = '2026-11-12T00:00:00.000Z';
+  const syntheticNote = 'Türkçe: Şifreli not ✅ — synthetic data only';
   const syntheticPerson: MemoryPerson = {
     id: 'synthetic-person-qa-01',
     name: 'Synthetic Test Person',
@@ -23,7 +24,7 @@ export async function runSyntheticBackupCryptoSelfTest(): Promise<void> {
     phone: '+1 202 555 0100',
     relationship: 'Synthetic only',
     lastInteraction: createdAt,
-    notes: ['Türkçe: Şifreli not ✅ — synthetic data only'],
+    notes: [syntheticNote],
     interactions: [{
       id: 'synthetic-interaction-qa-01',
       date: createdAt,
@@ -49,7 +50,7 @@ export async function runSyntheticBackupCryptoSelfTest(): Promise<void> {
 
   const serialized = JSON.stringify(sealed);
   if (serialized.includes(syntheticPerson.name) ||
-    serialized.includes(syntheticPerson.notes[0]) ||
+    serialized.includes(syntheticNote) ||
     serialized.includes(syntheticPerson.phone ?? '')) {
     throw new Error('Backup safety check failed');
   }
