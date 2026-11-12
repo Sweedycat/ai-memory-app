@@ -145,3 +145,17 @@ test('UTF-8 byte budget rejects oversized multibyte archive before encryption', 
   );
   assert.equal(encryptCalled, false);
 });
+
+test('decrypted multibyte archive over byte budget fails before parsing', async () => {
+  const fakeCipher = {
+    async decryptCombinedBase64ToUtf8() {
+      return '漢'.repeat(5_700_000);
+    },
+  };
+  await assert.rejects(bound.reviewBoundBackup({
+    kind: envelope.ENCRYPTED_BACKUP_KIND,
+    version: 1,
+    algorithm: 'AES-256-GCM',
+    encryptedPayload: 'A'.repeat(40),
+  }, [], identity(), fakeCipher), /UTF-8 byte budget/);
+});
