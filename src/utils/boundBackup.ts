@@ -23,6 +23,17 @@ export const BOUND_BACKUP_KIND = 'ai-memory-bound-private-snapshot';
 export const BOUND_BACKUP_VERSION = 2;
 // A v1 snapshot can fill its own limit; reserve space for the authenticated wrapper.
 export const MAX_BOUND_BACKUP_CHARACTERS = MAX_SNAPSHOT_CHARACTERS + 1024;
+// Conservative UTF-8 ceiling. Character checks alone undercount Unicode bytes.
+export const MAX_BOUND_BACKUP_UTF8_BYTES = 16 * 1024 * 1024;
+
+function utf8Bytes(value: string): number {
+  // TextEncoder is available in modern React Native runtimes, but must be
+  // verified on the target Hermes/Android build before enabling restore.
+  if (typeof TextEncoder === 'undefined') {
+    throw new Error('UTF-8 size validation unavailable');
+  }
+  return new TextEncoder().encode(value).byteLength;
+}
 
 export type BackupIdentity = { ownerId: string; workspaceId: string };
 export type BoundBackupReview = {
@@ -71,6 +82,9 @@ export async function sealBoundBackupInMemory(
   if (plaintext.length > MAX_BOUND_BACKUP_CHARACTERS) {
     throw new Error('Bound backup exceeds supported size');
   }
+  if (utf8Bytes(plaintext) > MAX_BOUND_BACKUP_UTF8_BYTES) {
+    throw new Error('Bound backup exceeds UTF-8 byte budget');
+  }
   const encryptedPayload = await cipher.encryptUtf8ToCombinedBase64(plaintext);
   return validateEncryptedBackupEnvelope({
     kind: ENCRYPTED_BACKUP_KIND,
@@ -100,6 +114,9 @@ export async function reviewBoundBackup(
   }
   if (typeof plaintext !== 'string' || plaintext.length > MAX_BOUND_BACKUP_CHARACTERS) {
     throw new Error('Bound backup is invalid or too large');
+  }
+  if (utf8Bytes(plaintext) > MAX_BOUND_BACKUP_UTF8_BYTES) {
+    throw new Error('Bound backup exceeds UTF-8 byte budget');
   }
   let parsed: unknown;
   try {
