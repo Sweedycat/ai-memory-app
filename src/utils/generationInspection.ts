@@ -48,8 +48,18 @@ export async function inspectActiveGeneration<T>(
   | GenerationInspection
 > {
   const before = await storage.getItem(POINTER);
-  if (before === null) return { status: 'uninitialized' };
-  if (!validId(before)) return { status: 'pointer-invalid' };
+  if (before === null) {
+    // A writer may initialize the pointer between reads. Do not report an
+    // empty store while an activation is underway.
+    return await storage.getItem(POINTER) === null
+      ? { status: 'uninitialized' }
+      : { status: 'pointer-changed' };
+  }
+  if (!validId(before)) {
+    return await storage.getItem(POINTER) === before
+      ? { status: 'pointer-invalid' }
+      : { status: 'pointer-changed' };
+  }
   const inspected = await inspectKnownGeneration(storage, codec, before);
   if (await storage.getItem(POINTER) !== before) {
     return { status: 'pointer-changed' };
