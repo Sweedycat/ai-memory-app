@@ -185,3 +185,13 @@ test('missing TextEncoder refuses backup instead of bypassing byte check', async
   }), /UTF-8 size validation unavailable/);
   assert.equal(encrypted, false);
 });
+
+test('UTF-8 chunks preserve surrogate pairs across chunk boundaries', async () => {
+  const original = input();
+  // The emoji straddles the nominal 16,384-code-unit chunk boundary.
+  original.people[0].notes = ['a'.repeat(16_383) + '🧠' + 'z'];
+  const adapter = cipher(crypto.randomBytes(32));
+  const encrypted = await bound.sealBoundBackupInMemory(original, adapter);
+  const restored = await bound.reviewBoundBackup(encrypted, [], identity(), adapter);
+  assert.equal(restored.review.candidatePeople[0].notes[0], original.people[0].notes[0]);
+});
