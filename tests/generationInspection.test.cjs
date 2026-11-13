@@ -108,3 +108,14 @@ test('generation changing between inspection reads is invalid', async () => {
   };
   assert.equal((await inspectKnownGeneration(storage, codec, id)).status, 'invalid');
 });
+
+test('pointer changing before data inspection is detected', async () => {
+  let reads = 0;
+  const storage = {
+    async getItem(k) {
+      if (k === pointer) return ++reads === 1 ? id : 'b'.repeat(32);
+      throw Error('Data must not be read after pointer change');
+    },
+  };
+  assert.equal((await inspectActiveGeneration(storage, codec)).status, 'pointer-changed');
+});
