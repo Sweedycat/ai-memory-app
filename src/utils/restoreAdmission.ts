@@ -99,6 +99,7 @@ export function admitRestoreForStaging(input: {
       new Set(review.candidatePeople.map(person => person.id)).size !== review.incomingPeople) {
     throw new Error('Restore review is stale or invalid');
   }
+  // Admission is a pure preflight decision, never a storage commit.
   return {
     approved: true,
     target: { ...selectedTarget },
