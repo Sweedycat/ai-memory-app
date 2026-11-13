@@ -28,12 +28,14 @@ export async function inspectKnownGeneration<T>(
   generationId: string,
 ): Promise<GenerationInspection> {
   if (!validId(generationId)) throw new Error('Invalid generation identifier');
-  const raw = await storage.getItem(ROOT + 'data/' + generationId);
+  const dataKey = ROOT + 'data/' + generationId;
+  const raw = await storage.getItem(dataKey);
   if (raw === null) return { status: 'missing', generationId };
   if (typeof raw !== 'string' || raw.length === 0) return { status: 'invalid', generationId };
   try {
     const decoded = codec.decode(raw);
     if (codec.encode(decoded) !== raw) return { status: 'invalid', generationId };
+    if (await storage.getItem(dataKey) !== raw) return { status: 'invalid', generationId };
     return { status: 'valid', generationId };
   } catch {
     return { status: 'invalid', generationId };
