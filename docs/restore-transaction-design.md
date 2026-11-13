@@ -95,3 +95,14 @@ The repo could not be cloned in the current execution environment because
 GitHub DNS resolution was unavailable. Run `npm ci && npm run typecheck &&
 npm run test:unit` in a trusted checkout, inspect failures, and then perform
 low-memory Android tests before permitting any backup UI.
+
+## Additional experimental generation-store checks
+
+The prototype now double-reads an absent active pointer to reject a
+concurrent initialization instead of reporting an empty dataset. Before
+staging it also rejects empty/non-string codec output and noncanonical
+encode/decode roundtrips. Regression tests cover these fail-closed cases.
+These checks **do not** solve cross-instance write races, establish
+AsyncStorage durability, prove lossless semantics for every possible codec,
+or authorize production migration. Do not wire this adapter into
+`@ai-memory/people-v1` until those release blockers are addressed.
