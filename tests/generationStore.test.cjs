@@ -275,7 +275,7 @@ test('staged candidate tampered after initial verification cannot activate', asy
   const storage = {
     ...h.store,
     async getItem(k) {
-      if (k === key(B) && ++stagedReads === 5) h.values.set(key(B), '{"tampered":true}');
+      if (k === key(B) && ++stagedReads === 6) h.values.set(key(B), '{"tampered":true}');
       return h.store.getItem(k);
     },
   };
