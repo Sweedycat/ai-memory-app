@@ -49,8 +49,8 @@ jobs:
         run: npx expo prebuild --platform android --non-interactive --clean
       - name: Assert isolated package identity
         run: |
-          grep -q 'applicationId "com.sweedycat.aimemory.githubtest"' android/app/build.gradle
-          ! grep -q 'applicationId "com.sweedycat.aimemory.preview"' android/app/build.gradle
+          grep -Eq "applicationId[[:space:]]+['\"]com[.]sweedycat[.]aimemory[.]githubtest['\"]" android/app/build.gradle
+          ! grep -Eq "applicationId[[:space:]]+['\"]com[.]sweedycat[.]aimemory[.]preview['\"]" android/app/build.gradle
       - name: Build installable debug APK
         working-directory: android
         run: bash ./gradlew assembleDebug --no-daemon
