@@ -218,3 +218,9 @@ test('timestamp with unsupported timezone grammar is refused', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('valid timezone-offset timestamp is accepted', () => {
+  const input = valid();
+  input.review.createdAt = '2026-11-12T03:00:00+03:00';
+  assert.equal(admitRestoreForStaging(input).approved, true);
+});
