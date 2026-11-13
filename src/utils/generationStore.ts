@@ -52,6 +52,9 @@ export function createGenerationStore<T>(
       const key = generationKey(id);
       const raw = await storage.getItem(key);
       if (raw === null) throw new Error('Active generation missing; recovery required');
+      if (typeof raw !== 'string' || raw.length === 0) {
+        throw new Error('Active generation data invalid; recovery required');
+      }
       const decoded = codec.decode(raw);
       if (codec.encode(decoded) !== raw) {
         throw new Error('Active generation codec roundtrip verification failed');
