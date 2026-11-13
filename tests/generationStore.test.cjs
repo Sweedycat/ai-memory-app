@@ -318,3 +318,14 @@ test('pointer switch during final data verification is uncertain', async () => {
   );
   assert.equal(h.values.has(key(B)), true);
 });
+
+test('noncanonical active data is rejected on read', async () => {
+  const h = harness();
+  h.values.set(POINTER, A);
+  h.values.set(key(A), '{"x":1}');
+  const lossyCodec = { encode: JSON.stringify, decode() { return { x: 2 }; } };
+  await assert.rejects(
+    createGenerationStore(h.store, lossyCodec, () => B).readActive(),
+    /roundtrip verification failed/,
+  );
+});
