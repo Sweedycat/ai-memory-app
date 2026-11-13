@@ -196,3 +196,11 @@ test('unsafe candidate IDs are refused', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('oversized reviewed owner fields are refused', () => {
+  for (const field of ['name', 'preferredName', 'role']) {
+    const input = valid();
+    input.review.candidateOwner[field] = 'x'.repeat(257);
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
