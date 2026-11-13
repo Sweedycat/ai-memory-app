@@ -91,3 +91,9 @@ test('empty generation payload is invalid', async () => {
   const values = new Map([[key, '']]);
   assert.equal((await inspectKnownGeneration(store(values), codec, id)).status, 'invalid');
 });
+
+test('lossy codec cannot mark a generation valid', async () => {
+  const values = new Map([[key, '{"x":1}']]);
+  const lossy = { decode() { return { x: 2 }; }, encode: JSON.stringify };
+  assert.equal((await inspectKnownGeneration(store(values), lossy, id)).status, 'invalid');
+});
