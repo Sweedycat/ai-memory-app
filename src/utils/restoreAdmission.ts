@@ -78,6 +78,9 @@ export function admitRestoreForStaging(input: {
       review.matchingPersonIds < 0 ||
       review.matchingPersonIds > Math.min(review.incomingPeople, review.existingPeople) ||
       typeof review.requiresReminderRescheduling !== 'boolean' ||
+      typeof review.createdAt !== 'string' ||
+      !/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$/.test(review.createdAt) ||
+      !Number.isFinite(Date.parse(review.createdAt)) ||
       review.candidatePeople.some(person => !person || typeof person !== 'object' ||
         typeof person.id !== 'string' || person.id.length === 0) ||
       new Set(review.candidatePeople.map(person => person.id)).size !== review.incomingPeople) {
