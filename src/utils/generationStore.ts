@@ -81,6 +81,10 @@ export function createGenerationStore<T>(
         if (id === current || await storage.getItem(key) !== null) {
           throw new Error('Generation identifier already exists');
         }
+        // Recheck collision before encoding untrusted candidate data.
+        if (await storage.getItem(key) !== null) {
+          throw new Error('Generation identifier already exists');
+        }
         const raw = codec.encode(candidate);
         if (typeof raw !== 'string' || raw.length === 0) {
           throw new Error('Generation codec produced invalid data');
