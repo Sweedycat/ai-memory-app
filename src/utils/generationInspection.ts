@@ -30,7 +30,11 @@ export async function inspectKnownGeneration<T>(
   if (!validId(generationId)) throw new Error('Invalid generation identifier');
   const dataKey = ROOT + 'data/' + generationId;
   const raw = await storage.getItem(dataKey);
-  if (raw === null) return { status: 'missing', generationId };
+  if (raw === null) {
+    return await storage.getItem(dataKey) === null
+      ? { status: 'missing', generationId }
+      : { status: 'invalid', generationId };
+  }
   if (typeof raw !== 'string' || raw.length === 0) return { status: 'invalid', generationId };
   try {
     const decoded = codec.decode(raw);
