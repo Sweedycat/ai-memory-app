@@ -285,3 +285,19 @@ test('staged candidate tampered after initial verification cannot activate', asy
   );
   assert.equal(h.values.has(POINTER), false);
 });
+
+test('post-activation data tampering is reported as uncertain', async () => {
+  const h = harness();
+  const storage = {
+    ...h.store,
+    async setItem(k, v) {
+      await h.store.setItem(k, v);
+      if (k === POINTER) h.values.set(key(B), '{"tampered":true}');
+    },
+  };
+  await assert.rejects(
+    createGenerationStore(storage, codec, () => B).stageAndActivate({ x: 1 }),
+    /outcome uncertain/,
+  );
+  assert.equal(h.values.get(POINTER), B);
+});
