@@ -119,6 +119,8 @@ export function createGenerationStore<T>(
         if (await storage.getItem(key) !== raw) {
           throw new Error('Staged generation changed before activation');
         }
+        // These are defensive checks, not a cross-instance lock or CAS.
+        // A competing writer can still race after the final pointer read.
         // Only this final pointer write activates the staged dataset.
         await storage.setItem(POINTER, id);
         // Do not claim a completed activation until the pointer is verified.
