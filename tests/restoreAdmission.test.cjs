@@ -204,3 +204,9 @@ test('oversized reviewed owner fields are refused', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('oversized fractional timestamp is refused', () => {
+  const input = valid();
+  input.review.createdAt = '2026-11-12T00:00:00.' + '1'.repeat(100) + 'Z';
+  assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+});
