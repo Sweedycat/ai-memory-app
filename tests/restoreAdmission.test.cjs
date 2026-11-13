@@ -81,3 +81,9 @@ test('invalid target and malformed review fail closed', () => {
 test('admission utility has no storage, network or notification side effects', () => {
   assert.doesNotMatch(source, /AsyncStorage|fetch\s*\(|setItem|removeItem|scheduleNotification|console\./);
 });
+
+test('missing candidate array is refused instead of throwing an unsafe property error', () => {
+  const input = valid();
+  input.review.candidatePeople = null;
+  assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+});
