@@ -116,3 +116,12 @@ pointer races and failed writes. **These changes remain unverified by CI**.
 Repeated reads cannot replace a transactional compare-and-swap, and this
 prototype must remain disconnected from real people data until native
 crash-durability, encryption-at-rest, migration, and recovery are validated.
+
+## Read-only generation inspection hardening
+
+The isolated inspector now rejects empty, noncanonical, and changing data;
+it also rechecks pointer stability and distinguishes a transiently missing
+generation from a stable absence. These checks are advisory diagnostics only,
+not cryptographic integrity validation or recovery. They do not make a
+multi-writer AsyncStorage restore safe. CI and Android validation remain
+outstanding, and the production restore UI stays disabled.
