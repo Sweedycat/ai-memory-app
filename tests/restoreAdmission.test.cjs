@@ -112,3 +112,17 @@ test('missing or malformed reminder rescheduling flag fails closed', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('duplicate and malformed candidate IDs are refused', () => {
+  for (const people of [
+    [{ id: 'same' }, { id: 'same' }],
+    [null],
+    [{}],
+    [{ id: '' }],
+  ]) {
+    const input = valid();
+    input.review.candidatePeople = people;
+    input.review.incomingPeople = people.length;
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
