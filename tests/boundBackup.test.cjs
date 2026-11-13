@@ -205,3 +205,11 @@ test('duplicate person identities refuse backup before encryption', async () => 
   }), /duplicated person identities/);
   assert.equal(called, false);
 });
+
+test('recovery-key holder cannot import into a different workspace', async () => {
+  const adapter = cipher(crypto.randomBytes(32));
+  const archive = await bound.sealBoundBackupInMemory(input(), adapter);
+  await assert.rejects(bound.reviewBoundBackup(archive, [], {
+    ownerId: 'synthetic-owner', workspaceId: 'company-synthetic',
+  }, adapter), /workspace mismatch/);
+});
