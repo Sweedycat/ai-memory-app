@@ -155,3 +155,11 @@ test('malformed review timestamp is refused', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('malformed reviewed owner profile is refused', () => {
+  for (const owner of [null, {}, { name: ' ', preferredName: '', role: '' }, { name: 'A', preferredName: null, role: '' }]) {
+    const input = valid();
+    input.review.candidateOwner = owner;
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
