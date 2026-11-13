@@ -147,3 +147,11 @@ test('existing count beyond snapshot limit is rejected', () => {
   input.review.existingPeople = 10_001;
   assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
 });
+
+test('malformed review timestamp is refused', () => {
+  for (const createdAt of [null, 'yesterday', '2026-11-12', '2026-99-99T00:00:00Z']) {
+    const input = valid();
+    input.review.createdAt = createdAt;
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
