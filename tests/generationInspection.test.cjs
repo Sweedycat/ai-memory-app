@@ -138,3 +138,14 @@ test('non-string generation identifiers are rejected', async () => {
     await assert.rejects(inspectKnownGeneration(store(new Map()), codec, invalid), /Invalid/);
   }
 });
+
+test('generation changing on last stability read is invalid', async () => {
+  let reads = 0;
+  const storage = {
+    async getItem(k) {
+      if (k !== key) throw Error('Unexpected key');
+      return ++reads < 3 ? '{"x":1}' : '{"x":2}';
+    },
+  };
+  assert.equal((await inspectKnownGeneration(storage, codec, id)).status, 'invalid');
+});
