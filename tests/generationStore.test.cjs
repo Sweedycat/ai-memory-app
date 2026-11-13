@@ -104,7 +104,7 @@ test('invalid id and corrupted staged read fail before pointer activation', asyn
   const broken = {
     ...h.store,
     async getItem(k) {
-      if (k === key(B)) return '{"tampered":true}';
+      if (k === key(B) && h.values.has(key(B))) return '{"tampered":true}';
       return h.store.getItem(k);
     },
   };
@@ -275,7 +275,7 @@ test('staged candidate tampered after initial verification cannot activate', asy
   const storage = {
     ...h.store,
     async getItem(k) {
-      if (k === key(B) && ++stagedReads === 6) h.values.set(key(B), '{"tampered":true}');
+      if (k === key(B) && ++stagedReads === 5) h.values.set(key(B), '{"tampered":true}');
       return h.store.getItem(k);
     },
   };
