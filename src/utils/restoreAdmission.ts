@@ -63,6 +63,7 @@ export function admitRestoreForStaging(input: {
       !Number.isSafeInteger(input.activePeopleCount) ||
       input.activePeopleCount < 0 ||
       review.existingPeople !== input.activePeopleCount ||
+      !Array.isArray(review.candidatePeople) ||
       review.incomingPeople !== review.candidatePeople.length ||
       !Number.isSafeInteger(review.incomingPeople) ||
       review.incomingPeople < 0) {
