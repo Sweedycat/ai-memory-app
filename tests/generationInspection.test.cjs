@@ -149,3 +149,14 @@ test('generation changing on last stability read is invalid', async () => {
   };
   assert.equal((await inspectKnownGeneration(storage, codec, id)).status, 'invalid');
 });
+
+test('data appearing after missing read cannot be reported missing', async () => {
+  let reads = 0;
+  const storage = {
+    async getItem(k) {
+      if (k !== key) throw Error('Unexpected key');
+      return ++reads === 1 ? null : '{"x":1}';
+    },
+  };
+  assert.equal((await inspectKnownGeneration(storage, codec, id)).status, 'invalid');
+});
