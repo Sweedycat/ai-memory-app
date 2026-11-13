@@ -79,7 +79,7 @@ export function admitRestoreForStaging(input: {
       review.matchingPersonIds > Math.min(review.incomingPeople, review.existingPeople) ||
       typeof review.requiresReminderRescheduling !== 'boolean' ||
       typeof review.createdAt !== 'string' ||
-      !/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$/.test(review.createdAt) ||
+      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(review.createdAt) ||
       !Number.isFinite(Date.parse(review.createdAt)) ||
       !review.candidateOwner ||
       typeof review.candidateOwner.name !== 'string' ||
