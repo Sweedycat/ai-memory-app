@@ -87,3 +87,12 @@ test('missing candidate array is refused instead of throwing an unsafe property 
   input.review.candidatePeople = null;
   assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
 });
+
+test('unsafe and negative existing review counts are rejected', () => {
+  for (const count of [-1, Number.MAX_SAFE_INTEGER + 1, NaN]) {
+    const input = valid();
+    input.review.existingPeople = count;
+    input.activePeopleCount = count;
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
