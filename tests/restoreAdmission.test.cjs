@@ -126,3 +126,11 @@ test('duplicate and malformed candidate IDs are refused', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('missing review and target objects are rejected explicitly', () => {
+  for (const field of ['review', 'selectedTarget', 'activeTarget', 'backupTarget', 'confirmedTarget']) {
+    const input = valid();
+    input[field] = null;
+    assert.throws(() => admitRestoreForStaging(input), /missing/);
+  }
+});
