@@ -86,3 +86,8 @@ test('invalid pointer replaced during inspection is reported as a race', async (
   };
   assert.equal((await inspectActiveGeneration(storage, codec)).status, 'pointer-changed');
 });
+
+test('empty generation payload is invalid', async () => {
+  const values = new Map([[key, '']]);
+  assert.equal((await inspectKnownGeneration(store(values), codec, id)).status, 'invalid');
+});
