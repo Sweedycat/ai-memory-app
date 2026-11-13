@@ -94,6 +94,10 @@ export function createGenerationStore<T>(
         if (codec.encode(codec.decode(raw)) !== raw) {
           throw new Error('Generation codec roundtrip verification failed');
         }
+        // A concurrent writer could have reserved this ID during encoding.
+        if (await storage.getItem(key) !== null) {
+          throw new Error('Generation identifier already exists');
+        }
         await storage.setItem(key, raw);
         const persisted = await storage.getItem(key);
         if (persisted !== raw) throw new Error('Staged generation verification failed');
