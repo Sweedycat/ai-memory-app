@@ -340,3 +340,14 @@ test('empty active payload is rejected without changing pointer', async () => {
   );
   assert.equal(h.values.get(POINTER), A);
 });
+
+test('a failed activation releases the instance guard for later attempts', async () => {
+  const h = harness();
+  h.fail(key(B));
+  const s = createGenerationStore(h.store, codec, () => B);
+  await assert.rejects(s.stageAndActivate({ x: 1 }), /Simulated/);
+  h.fail(null);
+  await s.stageAndActivate({ x: 2 });
+  assert.equal(h.values.get(POINTER), B);
+  assert.deepEqual(JSON.parse(h.values.get(key(B))), { x: 2 });
+});
