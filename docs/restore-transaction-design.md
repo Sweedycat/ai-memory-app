@@ -80,3 +80,18 @@ operation if that API is unavailable; confirm support on the shipping Hermes
 runtime. Test large Unicode fixtures and Android low-memory behavior before
 enabling backup creation or restore. Streaming or a smaller documented archive
 limit may be necessary.
+
+## Memory optimization follow-up
+
+UTF-8 byte-budget validation now encodes in bounded 16,384-code-unit
+chunks, preserving surrogate pairs across boundaries, rather than allocating
+one entire encoded byte buffer for counting. This reduces temporary memory
+used **by the size check only**; it does not eliminate full JSON, encryption,
+or base64 allocations. The added synthetic tests cover emoji boundaries,
+duplicate IDs, and personal/company workspace isolation. These tests have
+been committed but have **not been verified by CI or on Android**.
+
+The repo could not be cloned in the current execution environment because
+GitHub DNS resolution was unavailable. Run `npm ci && npm run typecheck &&
+npm run test:unit` in a trusted checkout, inspect failures, and then perform
+low-memory Android tests before permitting any backup UI.
