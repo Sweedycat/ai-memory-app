@@ -251,3 +251,20 @@ test('late generation collision prevents candidate encoding and writes', async (
   assert.equal(encoded, false);
   assert.equal(h.values.has(POINTER), false);
 });
+
+test('generation collision introduced during encoding is refused', async () => {
+  const h = harness();
+  const guardedCodec = {
+    encode(v) {
+      h.values.set(key(B), '{"other":true}');
+      return JSON.stringify(v);
+    },
+    decode: JSON.parse,
+  };
+  await assert.rejects(
+    createGenerationStore(h.store, guardedCodec, () => B).stageAndActivate({ x: 1 }),
+    /already exists/,
+  );
+  assert.equal(h.values.get(key(B)), '{"other":true}');
+  assert.equal(h.values.has(POINTER), false);
+});
