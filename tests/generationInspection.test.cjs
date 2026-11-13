@@ -164,3 +164,11 @@ test('data appearing after missing read cannot be reported missing', async () =>
 test('inspection never reads legacy people-v1 storage', () => {
   assert.doesNotMatch(source, /@ai-memory\/people-v1/);
 });
+
+test('codec decode failures remain invalid without leaking record data', async () => {
+  const values = new Map([[key, '{"private":"synthetic"}']]);
+  const brokenCodec = { encode: JSON.stringify, decode() { throw Error('secret fixture'); } };
+  const result = await inspectKnownGeneration(store(values), brokenCodec, id);
+  assert.equal(result.status, 'invalid');
+  assert.equal(JSON.stringify(result).includes('secret fixture'), false);
+});
