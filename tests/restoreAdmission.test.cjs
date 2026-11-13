@@ -104,3 +104,11 @@ test('invalid overlap count cannot pass restore admission', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('missing or malformed reminder rescheduling flag fails closed', () => {
+  for (const flag of [undefined, null, 'false']) {
+    const input = valid();
+    input.review.requiresReminderRescheduling = flag;
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
