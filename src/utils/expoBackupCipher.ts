@@ -19,7 +19,7 @@ function decodeUtf8Strict(bytes: Uint8Array): string {
   const chunks: string[] = [];
   let codePoints: number[] = [];
   for (let i = 0; i < bytes.length;) {
-    const first = bytes[i++];
+    const first = bytes[i++]!;
     let codePoint: number;
     let extra = 0;
     let minimum = 0;
@@ -36,7 +36,7 @@ function decodeUtf8Strict(bytes: Uint8Array): string {
     }
     if (i + extra > bytes.length) throw new Error('Truncated UTF-8 in authenticated backup');
     for (let j = 0; j < extra; j++) {
-      const continuation = bytes[i++];
+      const continuation = bytes[i++]!;
       if ((continuation & 0xc0) !== 0x80) throw new Error('Invalid UTF-8 continuation');
       codePoint = (codePoint << 6) | (continuation & 0x3f);
     }
