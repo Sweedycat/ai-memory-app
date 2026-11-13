@@ -268,3 +268,20 @@ test('generation collision introduced during encoding is refused', async () => {
   assert.equal(h.values.get(key(B)), '{"other":true}');
   assert.equal(h.values.has(POINTER), false);
 });
+
+test('staged candidate tampered after initial verification cannot activate', async () => {
+  const h = harness();
+  let stagedReads = 0;
+  const storage = {
+    ...h.store,
+    async getItem(k) {
+      if (k === key(B) && ++stagedReads === 4) h.values.set(key(B), '{"tampered":true}');
+      return h.store.getItem(k);
+    },
+  };
+  await assert.rejects(
+    createGenerationStore(storage, codec, () => B).stageAndActivate({ x: 1 }),
+    /changed before activation/,
+  );
+  assert.equal(h.values.has(POINTER), false);
+});
