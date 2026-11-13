@@ -97,3 +97,14 @@ test('lossy codec cannot mark a generation valid', async () => {
   const lossy = { decode() { return { x: 2 }; }, encode: JSON.stringify };
   assert.equal((await inspectKnownGeneration(store(values), lossy, id)).status, 'invalid');
 });
+
+test('generation changing between inspection reads is invalid', async () => {
+  let reads = 0;
+  const storage = {
+    async getItem(k) {
+      if (k !== key) throw Error('Unexpected key');
+      return ++reads === 1 ? '{"x":1}' : '{"x":2}';
+    },
+  };
+  assert.equal((await inspectKnownGeneration(storage, codec, id)).status, 'invalid');
+});
