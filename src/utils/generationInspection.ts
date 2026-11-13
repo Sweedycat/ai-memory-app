@@ -69,7 +69,8 @@ export async function inspectActiveGeneration<T>(
     return { status: 'pointer-changed' };
   }
   const inspected = await inspectKnownGeneration(storage, codec, before);
-  if (await storage.getItem(POINTER) !== before) {
+  if (await storage.getItem(POINTER) !== before ||
+      await storage.getItem(POINTER) !== before) {
     return { status: 'pointer-changed' };
   }
   return inspected;
