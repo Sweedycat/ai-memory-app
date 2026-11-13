@@ -210,3 +210,11 @@ test('oversized fractional timestamp is refused', () => {
   input.review.createdAt = '2026-11-12T00:00:00.' + '1'.repeat(100) + 'Z';
   assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
 });
+
+test('timestamp with unsupported timezone grammar is refused', () => {
+  for (const createdAt of ['2026-11-12T00:00:00+0000', '2026-11-12 00:00:00Z']) {
+    const input = valid();
+    input.review.createdAt = createdAt;
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
