@@ -53,6 +53,9 @@ export function createGenerationStore<T>(
       const raw = await storage.getItem(key);
       if (raw === null) throw new Error('Active generation missing; recovery required');
       const decoded = codec.decode(raw);
+      if (codec.encode(decoded) !== raw) {
+        throw new Error('Active generation codec roundtrip verification failed');
+      }
       // Refuse a torn read when another writer switched generations mid-read.
       if (await storage.getItem(POINTER) !== id) {
         throw new Error('Active generation changed during read');
