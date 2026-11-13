@@ -32,7 +32,24 @@ function utf8Bytes(value: string): number {
   if (typeof TextEncoder === 'undefined') {
     throw new Error('UTF-8 size validation unavailable');
   }
-  return new TextEncoder().encode(value).byteLength;
+  // Encode in bounded chunks to avoid allocating a second full-size byte
+  // buffer solely for validation. Never split a UTF-16 surrogate pair.
+  const encoder = new TextEncoder();
+  let bytes = 0;
+  const chunkSize = 16_384;
+  for (let start = 0; start < value.length;) {
+    let end = Math.min(start + chunkSize, value.length);
+    if (end < value.length) {
+      const last = value.charCodeAt(end - 1);
+      const next = value.charCodeAt(end);
+      if (last >= 0xD800 && last <= 0xDBFF &&
+          next >= 0xDC00 && next <= 0xDFFF) end--;
+    }
+    bytes += encoder.encode(value.slice(start, end)).byteLength;
+    if (bytes > MAX_BOUND_BACKUP_UTF8_BYTES) return bytes;
+    start = end;
+  }
+  return bytes;
 }
 
 export type BackupIdentity = { ownerId: string; workspaceId: string };
