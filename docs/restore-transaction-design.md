@@ -125,3 +125,12 @@ generation from a stable absence. These checks are advisory diagnostics only,
 not cryptographic integrity validation or recovery. They do not make a
 multi-writer AsyncStorage restore safe. CI and Android validation remain
 outstanding, and the production restore UI stays disabled.
+
+## Restore admission preflight hardening
+
+The pure admission gate now requires literal boolean consent and rollback
+readiness, validates bounded owner/person identifiers and text fields, and
+rejects malformed review timestamps. It remains a preflight check only:
+review data and counts must be revalidated against the actual authenticated
+archive and active storage at commit time. These commits have not been
+verified by CI or physical Android tests; do not enable production restore.
