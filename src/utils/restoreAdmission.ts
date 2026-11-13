@@ -62,7 +62,7 @@ export function admitRestoreForStaging(input: {
       !sameTarget(selectedTarget, confirmedTarget)) {
     throw new Error('Restore identity or workspace mismatch');
   }
-  if (!input.userConfirmed || !input.durableRollbackReady) {
+  if (input.userConfirmed !== true || input.durableRollbackReady !== true) {
     throw new Error('Restore requires confirmation and verified rollback');
   }
   if (review.status !== 'review-required' ||
