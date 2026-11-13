@@ -74,6 +74,7 @@ export function admitRestoreForStaging(input: {
       !Number.isSafeInteger(review.incomingPeople) ||
       review.incomingPeople < 0 ||
       review.incomingPeople > 10_000 ||
+      review.candidatePeople.length > 10_000 ||
       !Number.isSafeInteger(review.existingPeople) ||
       review.existingPeople < 0 ||
       review.existingPeople > 10_000 ||
