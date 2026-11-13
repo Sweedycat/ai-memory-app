@@ -91,7 +91,7 @@ export function admitRestoreForStaging(input: {
       typeof review.candidateOwner.preferredName !== 'string' ||
       typeof review.candidateOwner.role !== 'string' ||
       review.candidatePeople.some(person => !person || typeof person !== 'object' ||
-        typeof person.id !== 'string' || person.id.length === 0) ||
+        !validId(person.id)) ||
       new Set(review.candidatePeople.map(person => person.id)).size !== review.incomingPeople) {
     throw new Error('Restore review is stale or invalid');
   }
