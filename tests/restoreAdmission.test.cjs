@@ -163,3 +163,7 @@ test('malformed reviewed owner profile is refused', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('valid timestamp allows an otherwise approved review', () => {
+  assert.equal(admitRestoreForStaging(valid()).approved, true);
+});
