@@ -171,3 +171,13 @@ test('valid timestamp allows an otherwise approved review', () => {
 test('null admission request is rejected explicitly', () => {
   assert.throws(() => admitRestoreForStaging(null), /missing/);
 });
+
+test('truthy nonboolean approval and rollback values are refused', () => {
+  for (const field of ['userConfirmed', 'durableRollbackReady']) {
+    for (const value of [1, 'yes', {}, []]) {
+      const input = valid();
+      input[field] = value;
+      assert.throws(() => admitRestoreForStaging(input), /confirmation/);
+    }
+  }
+});
