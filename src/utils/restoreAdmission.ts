@@ -45,6 +45,9 @@ export function admitRestoreForStaging(input: {
   activePeopleCount: number;
 }): RestoreAdmission {
   const { review, selectedTarget, activeTarget, backupTarget, confirmedTarget } = input;
+  if (!review || !selectedTarget || !activeTarget || !backupTarget || !confirmedTarget) {
+    throw new Error('Restore review or target is missing');
+  }
   if (!validId(selectedTarget.workspaceId) || !validId(selectedTarget.ownerId) ||
       !validId(activeTarget.workspaceId) || !validId(activeTarget.ownerId) ||
       !validId(backupTarget.workspaceId) || !validId(backupTarget.ownerId) ||
