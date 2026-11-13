@@ -140,3 +140,10 @@ test('incoming count beyond snapshot limit is rejected', () => {
   input.review.incomingPeople = 10_001;
   assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
 });
+
+test('existing count beyond snapshot limit is rejected', () => {
+  const input = valid();
+  input.activePeopleCount = 10_001;
+  input.review.existingPeople = 10_001;
+  assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+});
