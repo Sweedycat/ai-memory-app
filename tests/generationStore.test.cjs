@@ -174,3 +174,19 @@ test('concurrent pointer switch during preflight cannot overwrite newer generati
   assert.equal(h.values.get(POINTER), C);
   assert.equal(h.values.has(key(B)), false);
 });
+
+test('readActive refuses pointer initialization between empty reads', async () => {
+  const h = harness();
+  let reads = 0;
+  const storage = {
+    ...h.store,
+    async getItem(k) {
+      if (k === POINTER && ++reads === 2) h.values.set(POINTER, A);
+      return h.store.getItem(k);
+    },
+  };
+  await assert.rejects(
+    createGenerationStore(storage, codec, () => B).readActive(),
+    /changed during read/,
+  );
+});
