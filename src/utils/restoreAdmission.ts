@@ -88,6 +88,9 @@ export function admitRestoreForStaging(input: {
       !review.candidateOwner ||
       typeof review.candidateOwner.name !== 'string' ||
       !review.candidateOwner.name.trim() ||
+      review.candidateOwner.name.length > 256 ||
+      review.candidateOwner.preferredName.length > 256 ||
+      review.candidateOwner.role.length > 256 ||
       typeof review.candidateOwner.preferredName !== 'string' ||
       typeof review.candidateOwner.role !== 'string' ||
       review.candidatePeople.some(person => !person || typeof person !== 'object' ||
