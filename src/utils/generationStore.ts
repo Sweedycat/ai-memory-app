@@ -119,7 +119,8 @@ export function createGenerationStore<T>(
         // If verification fails after the write, recovery must inspect both
         // generations; callers must not retry blindly or delete either one.
         if (await storage.getItem(POINTER) !== id ||
-            await storage.getItem(key) !== raw) {
+            await storage.getItem(key) !== raw ||
+            await storage.getItem(POINTER) !== id) {
           throw new Error('Activation outcome uncertain; recovery required');
         }
       } finally {
