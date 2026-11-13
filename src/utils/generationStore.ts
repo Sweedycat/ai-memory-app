@@ -64,6 +64,9 @@ export function createGenerationStore<T>(
       inFlight = true;
       try {
         const current = await storage.getItem(POINTER);
+        if (current === null && await storage.getItem(POINTER) !== null) {
+          throw new Error('Active generation changed before staging');
+        }
         if (current !== null) {
           // Never replace a missing or corrupted active generation.
           await this.readActive();
