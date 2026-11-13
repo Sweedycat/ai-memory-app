@@ -86,7 +86,6 @@ export function admitRestoreForStaging(input: {
       !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/.test(review.createdAt) ||
       !Number.isFinite(Date.parse(review.createdAt)) ||
       review.createdAt.length > 40 ||
-      !/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?(?:Z|[+-]\\d{2}:\\d{2})$/.test(review.createdAt) ||
       !review.candidateOwner ||
       typeof review.candidateOwner.name !== 'string' ||
       !review.candidateOwner.name.trim() ||
