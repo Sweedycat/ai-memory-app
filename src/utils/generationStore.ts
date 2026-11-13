@@ -79,12 +79,20 @@ export function createGenerationStore<T>(
           throw new Error('Generation identifier already exists');
         }
         const raw = codec.encode(candidate);
-        // Check the exact encoded representation before writing.
-        codec.decode(raw);
+        if (typeof raw !== 'string' || raw.length === 0) {
+          throw new Error('Generation codec produced invalid data');
+        }
+        // Require a stable canonical encoding; a lossy or unstable codec
+        // must not activate a dataset that cannot roundtrip faithfully.
+        if (codec.encode(codec.decode(raw)) !== raw) {
+          throw new Error('Generation codec roundtrip verification failed');
+        }
         await storage.setItem(key, raw);
         const persisted = await storage.getItem(key);
         if (persisted !== raw) throw new Error('Staged generation verification failed');
-        codec.decode(persisted);
+        if (codec.encode(codec.decode(persisted)) !== persisted) {
+          throw new Error('Staged generation roundtrip verification failed');
+        }
         // Recheck the active pointer to refuse concurrent/external changes.
         if (await storage.getItem(POINTER) !== current) {
           throw new Error('Active generation changed during staging');
