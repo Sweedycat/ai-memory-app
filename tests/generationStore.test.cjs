@@ -329,3 +329,14 @@ test('noncanonical active data is rejected on read', async () => {
     /roundtrip verification failed/,
   );
 });
+
+test('empty active payload is rejected without changing pointer', async () => {
+  const h = harness();
+  h.values.set(POINTER, A);
+  h.values.set(key(A), '');
+  await assert.rejects(
+    createGenerationStore(h.store, codec, () => B).readActive(),
+    /data invalid/,
+  );
+  assert.equal(h.values.get(POINTER), A);
+});
