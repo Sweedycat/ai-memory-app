@@ -108,6 +108,11 @@ export function createGenerationStore<T>(
         if (await storage.getItem(POINTER) !== current) {
           throw new Error('Active generation changed during staging');
         }
+        // Re-read the staged value immediately before activation. A changed
+        // candidate must never be made active even if the pointer is stable.
+        if (await storage.getItem(key) !== raw) {
+          throw new Error('Staged generation changed before activation');
+        }
         // Only this final pointer write activates the staged dataset.
         await storage.setItem(POINTER, id);
         // Do not claim a completed activation until the pointer is verified.
