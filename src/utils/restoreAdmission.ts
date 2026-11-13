@@ -68,7 +68,10 @@ export function admitRestoreForStaging(input: {
       !Number.isSafeInteger(review.incomingPeople) ||
       review.incomingPeople < 0 ||
       !Number.isSafeInteger(review.existingPeople) ||
-      review.existingPeople < 0) {
+      review.existingPeople < 0 ||
+      !Number.isSafeInteger(review.matchingPersonIds) ||
+      review.matchingPersonIds < 0 ||
+      review.matchingPersonIds > Math.min(review.incomingPeople, review.existingPeople)) {
     throw new Error('Restore review is stale or invalid');
   }
   return {
