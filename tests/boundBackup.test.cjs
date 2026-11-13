@@ -195,3 +195,13 @@ test('UTF-8 chunks preserve surrogate pairs across chunk boundaries', async () =
   const restored = await bound.reviewBoundBackup(encrypted, [], identity(), adapter);
   assert.equal(restored.review.candidatePeople[0].notes[0], original.people[0].notes[0]);
 });
+
+test('duplicate person identities refuse backup before encryption', async () => {
+  const original = input();
+  original.people.push({ ...person(), name: 'Duplicate synthetic' });
+  let called = false;
+  await assert.rejects(bound.sealBoundBackupInMemory(original, {
+    async encryptUtf8ToCombinedBase64() { called = true; return 'A'.repeat(40); },
+  }), /duplicated person identities/);
+  assert.equal(called, false);
+});
