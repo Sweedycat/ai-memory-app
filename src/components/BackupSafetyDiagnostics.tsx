@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { runSyntheticBackupCryptoSelfTest } from '../utils/backupNativeSelfTest';
+import { BackupCryptoSelfTestError, runSyntheticBackupCryptoSelfTest } from '../utils/backupNativeSelfTest';
 
 /**
  * Backup QA preflight only. There is deliberately NO user-data export or
@@ -11,15 +11,18 @@ import { runSyntheticBackupCryptoSelfTest } from '../utils/backupNativeSelfTest'
 export function BackupSafetyDiagnostics() {
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<'untested' | 'passed' | 'failed'>('untested');
+  const [failedStage, setFailedStage] = useState('');
 
   async function runCheck() {
     if (checking) return;
     setChecking(true);
     setResult('untested');
+    setFailedStage('');
     try {
       await runSyntheticBackupCryptoSelfTest();
       setResult('passed');
-    } catch {
+    } catch (error) {
+      setFailedStage(error instanceof BackupCryptoSelfTestError ? error.stage : 'unknown');
       setResult('failed');
     } finally {
       setChecking(false);
@@ -50,7 +53,7 @@ export function BackupSafetyDiagnostics() {
         {result === 'passed'
           ? 'Synthetic encryption, decryption, wrong-key and tamper checks passed. No personal data was used.'
           : result === 'failed'
-            ? 'Encryption check failed. Backup remains disabled; no personal data was touched.'
+            ? `Encryption check failed at ${failedStage}. Backup remains disabled; no personal data was touched.`
             : 'Optional diagnostic using synthetic data only. Does not create a backup.'}
       </Text>
     </View>
