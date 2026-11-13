@@ -35,7 +35,8 @@ export async function inspectKnownGeneration<T>(
   try {
     const decoded = codec.decode(raw);
     if (codec.encode(decoded) !== raw) return { status: 'invalid', generationId };
-    if (await storage.getItem(dataKey) !== raw) return { status: 'invalid', generationId };
+    if (await storage.getItem(dataKey) !== raw ||
+        await storage.getItem(dataKey) !== raw) return { status: 'invalid', generationId };
     return { status: 'valid', generationId };
   } catch {
     return { status: 'invalid', generationId };
