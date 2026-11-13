@@ -160,3 +160,7 @@ test('data appearing after missing read cannot be reported missing', async () =>
   };
   assert.equal((await inspectKnownGeneration(storage, codec, id)).status, 'invalid');
 });
+
+test('inspection never reads legacy people-v1 storage', () => {
+  assert.doesNotMatch(source, /@ai-memory\/people-v1/);
+});
