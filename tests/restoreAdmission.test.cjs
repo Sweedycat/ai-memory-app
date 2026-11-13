@@ -134,3 +134,9 @@ test('missing review and target objects are rejected explicitly', () => {
     assert.throws(() => admitRestoreForStaging(input), /missing/);
   }
 });
+
+test('incoming count beyond snapshot limit is rejected', () => {
+  const input = valid();
+  input.review.incomingPeople = 10_001;
+  assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+});
