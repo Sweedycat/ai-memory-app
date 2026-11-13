@@ -42,7 +42,13 @@ export function createGenerationStore<T>(
   return {
     async readActive(): Promise<T | null> {
       const id = await storage.getItem(POINTER);
-      if (id === null) return null;
+      if (id === null) {
+        // Do not mistake a concurrent first activation for an empty store.
+        if (await storage.getItem(POINTER) !== null) {
+          throw new Error('Active generation changed during read');
+        }
+        return null;
+      }
       const key = generationKey(id);
       const raw = await storage.getItem(key);
       if (raw === null) throw new Error('Active generation missing; recovery required');
