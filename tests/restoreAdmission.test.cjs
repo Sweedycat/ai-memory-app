@@ -96,3 +96,11 @@ test('unsafe and negative existing review counts are rejected', () => {
     assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
   }
 });
+
+test('invalid overlap count cannot pass restore admission', () => {
+  for (const overlap of [-1, 2, 0.5, Infinity]) {
+    const input = valid();
+    input.review.matchingPersonIds = overlap;
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
