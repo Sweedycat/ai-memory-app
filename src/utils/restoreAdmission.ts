@@ -72,7 +72,10 @@ export function admitRestoreForStaging(input: {
       !Number.isSafeInteger(review.matchingPersonIds) ||
       review.matchingPersonIds < 0 ||
       review.matchingPersonIds > Math.min(review.incomingPeople, review.existingPeople) ||
-      typeof review.requiresReminderRescheduling !== 'boolean') {
+      typeof review.requiresReminderRescheduling !== 'boolean' ||
+      review.candidatePeople.some(person => !person || typeof person !== 'object' ||
+        typeof person.id !== 'string' || person.id.length === 0) ||
+      new Set(review.candidatePeople.map(person => person.id)).size !== review.incomingPeople) {
     throw new Error('Restore review is stale or invalid');
   }
   return {
