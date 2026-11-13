@@ -118,7 +118,8 @@ export function createGenerationStore<T>(
         // Do not claim a completed activation until the pointer is verified.
         // If verification fails after the write, recovery must inspect both
         // generations; callers must not retry blindly or delete either one.
-        if (await storage.getItem(POINTER) !== id) {
+        if (await storage.getItem(POINTER) !== id ||
+            await storage.getItem(key) !== raw) {
           throw new Error('Activation outcome uncertain; recovery required');
         }
       } finally {
