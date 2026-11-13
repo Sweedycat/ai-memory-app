@@ -132,3 +132,9 @@ test('pointer switching on final verification is detected', async () => {
   };
   assert.equal((await inspectActiveGeneration(storage, codec)).status, 'pointer-changed');
 });
+
+test('non-string generation identifiers are rejected', async () => {
+  for (const invalid of [null, undefined, 123, {}, ['a'.repeat(32)]]) {
+    await assert.rejects(inspectKnownGeneration(store(new Map()), codec, invalid), /Invalid/);
+  }
+});
