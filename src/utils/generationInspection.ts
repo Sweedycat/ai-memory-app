@@ -3,7 +3,8 @@ import type { GenerationCodec, KeyValueStore } from './generationStore';
 /**
  * Read-only diagnostic for a known generation. Does not activate, delete,
  * recover or log personal data. IDs must come from trusted local metadata,
- * never from an untrusted cloud archive.
+ * never from an untrusted cloud archive. A valid result is not a durable
+ * checksum or cryptographic integrity proof; concurrent writers remain unsafe.
  */
 export type GenerationInspection =
   | { status: 'valid'; generationId: string }
