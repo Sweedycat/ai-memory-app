@@ -14,8 +14,8 @@ const ROOT = '@ai-memory/generation-v1/';
 const POINTER = ROOT + 'active';
 const ID_PATTERN = /^[a-f0-9]{32}$/i;
 
-function validId(id: string): boolean {
-  return ID_PATTERN.test(id);
+function validId(id: unknown): id is string {
+  return typeof id === 'string' && ID_PATTERN.test(id);
 }
 
 /**
