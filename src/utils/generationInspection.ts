@@ -32,7 +32,8 @@ export async function inspectKnownGeneration<T>(
   if (raw === null) return { status: 'missing', generationId };
   if (typeof raw !== 'string' || raw.length === 0) return { status: 'invalid', generationId };
   try {
-    codec.decode(raw);
+    const decoded = codec.decode(raw);
+    if (codec.encode(decoded) !== raw) return { status: 'invalid', generationId };
     return { status: 'valid', generationId };
   } catch {
     return { status: 'invalid', generationId };
