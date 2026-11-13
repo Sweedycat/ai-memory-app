@@ -301,3 +301,20 @@ test('post-activation data tampering is reported as uncertain', async () => {
   );
   assert.equal(h.values.get(POINTER), B);
 });
+
+test('pointer switch during final data verification is uncertain', async () => {
+  const h = harness();
+  let pointerReads = 0;
+  const storage = {
+    ...h.store,
+    async getItem(k) {
+      if (k === POINTER && ++pointerReads === 5) h.values.set(POINTER, C);
+      return h.store.getItem(k);
+    },
+  };
+  await assert.rejects(
+    createGenerationStore(storage, codec, () => B).stageAndActivate({ x: 1 }),
+    /outcome uncertain/,
+  );
+  assert.equal(h.values.has(key(B)), true);
+});
