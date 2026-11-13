@@ -44,6 +44,9 @@ export function admitRestoreForStaging(input: {
   durableRollbackReady: boolean;
   activePeopleCount: number;
 }): RestoreAdmission {
+  if (!input || typeof input !== 'object') {
+    throw new Error('Restore request is missing');
+  }
   const { review, selectedTarget, activeTarget, backupTarget, confirmedTarget } = input;
   if (!review || !selectedTarget || !activeTarget || !backupTarget || !confirmedTarget) {
     throw new Error('Restore review or target is missing');
