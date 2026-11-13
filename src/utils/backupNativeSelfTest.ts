@@ -13,7 +13,7 @@ import {
  * No real profile/person data, file I/O, OAuth, network, clipboard or logs.
  * This is a QA gate, NOT proof that cloud backup/restore is ready.
  */
-export type BackupCryptoStage = 'key-generation' | 'key-import' | 'encrypt' | 'decrypt' | 'wrong-key' | 'tamper';
+export type BackupCryptoStage = 'key-generation' | 'key-import' | 'encrypt' | 'crypto-decrypt' | 'restore-review' | 'wrong-key' | 'tamper';
 
 export class BackupCryptoSelfTestError extends Error {
   constructor(readonly stage: BackupCryptoStage) {
@@ -69,13 +69,21 @@ export async function runSyntheticBackupCryptoSelfTest(): Promise<void> {
     throw new BackupCryptoSelfTestError('encrypt');
   }
 
-  const review = await checkStage('decrypt', () => unsealBackupForReview(sealed, [], cipher));
+  // Separate native AES/UTF-8 round-trip from snapshot validation so a
+  // failing Android crypto bridge cannot be mistaken for a restore schema bug.
+  const decryptedJson = await checkStage('crypto-decrypt', () =>
+    cipher.decryptCombinedBase64ToUtf8(sealed.encryptedPayload));
+  const review = await checkStage('restore-review', () =>
+    unsealBackupForReview(sealed, [], cipher));
+  if (!decryptedJson.includes(syntheticNote)) {
+    throw new BackupCryptoSelfTestError('crypto-decrypt');
+  }
   if (review.status !== 'review-required' ||
     review.incomingPeople !== 1 ||
     review.candidatePeople[0]?.notes[0] !== syntheticPerson.notes[0] ||
     review.candidatePeople[0]?.phone !== syntheticPerson.phone ||
     review.candidatePeople[0]?.followUp?.notificationId !== undefined) {
-    throw new BackupCryptoSelfTestError('decrypt');
+    throw new BackupCryptoSelfTestError('restore-review');
   }
 
   const wrongKey = (recoveryKey[0] === 'a' ? 'b' : 'a') + recoveryKey.slice(1);
