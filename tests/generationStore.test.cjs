@@ -231,3 +231,23 @@ test('concurrent first initialization before staging is refused', async () => {
   );
   assert.equal(h.values.has(key(B)), false);
 });
+
+test('late generation collision prevents candidate encoding and writes', async () => {
+  const h = harness();
+  let generationReads = 0;
+  let encoded = false;
+  const storage = {
+    ...h.store,
+    async getItem(k) {
+      if (k === key(B) && ++generationReads === 2) h.values.set(key(B), '{"other":true}');
+      return h.store.getItem(k);
+    },
+  };
+  const guardedCodec = { encode(v) { encoded = true; return JSON.stringify(v); }, decode: JSON.parse };
+  await assert.rejects(
+    createGenerationStore(storage, guardedCodec, () => B).stageAndActivate({ x: 1 }),
+    /already exists/,
+  );
+  assert.equal(encoded, false);
+  assert.equal(h.values.has(POINTER), false);
+});
