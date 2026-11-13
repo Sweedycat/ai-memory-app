@@ -64,6 +64,10 @@ export async function inspectActiveGeneration<T>(
       ? { status: 'pointer-invalid' }
       : { status: 'pointer-changed' };
   }
+  // A stable pointer is required both before and after data inspection.
+  if (await storage.getItem(POINTER) !== before) {
+    return { status: 'pointer-changed' };
+  }
   const inspected = await inspectKnownGeneration(storage, codec, before);
   if (await storage.getItem(POINTER) !== before) {
     return { status: 'pointer-changed' };
