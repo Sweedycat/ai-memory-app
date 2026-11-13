@@ -106,3 +106,13 @@ These checks **do not** solve cross-instance write races, establish
 AsyncStorage durability, prove lossless semantics for every possible codec,
 or authorize production migration. Do not wire this adapter into
 `@ai-memory/people-v1` until those release blockers are addressed.
+
+## November generation-store verification update
+
+Additional defensive reads check candidate ID collisions, staged data
+integrity before and after pointer activation, and canonical codec output
+when reading the active generation. Regression tests also exercise simulated
+pointer races and failed writes. **These changes remain unverified by CI**.
+Repeated reads cannot replace a transactional compare-and-swap, and this
+prototype must remain disconnected from real people data until native
+crash-durability, encryption-at-rest, migration, and recovery are validated.
