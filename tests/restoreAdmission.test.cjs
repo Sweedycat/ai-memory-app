@@ -181,3 +181,10 @@ test('truthy nonboolean approval and rollback values are refused', () => {
     }
   }
 });
+
+test('candidate count is bounded independently of metadata', () => {
+  const input = valid();
+  input.review.candidatePeople = Array.from({ length: 10001 }, (_, i) => ({ id: String(i) }));
+  input.review.incomingPeople = 10001;
+  assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+});
