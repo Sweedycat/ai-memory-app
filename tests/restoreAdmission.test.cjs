@@ -188,3 +188,11 @@ test('candidate count is bounded independently of metadata', () => {
   input.review.incomingPeople = 10001;
   assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
 });
+
+test('unsafe candidate IDs are refused', () => {
+  for (const id of ['../bad', 'has spaces', 'a'.repeat(129), 'a/b']) {
+    const input = valid();
+    input.review.candidatePeople = [{ id }];
+    assert.throws(() => admitRestoreForStaging(input), /stale or invalid/);
+  }
+});
