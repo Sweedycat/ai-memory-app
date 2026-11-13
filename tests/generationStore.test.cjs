@@ -214,3 +214,20 @@ test('lossy codec roundtrip is rejected before pointer activation', async () => 
   assert.equal(h.values.has(POINTER), false);
   assert.equal(h.values.has(key(B)), false);
 });
+
+test('concurrent first initialization before staging is refused', async () => {
+  const h = harness();
+  let reads = 0;
+  const storage = {
+    ...h.store,
+    async getItem(k) {
+      if (k === POINTER && ++reads === 2) h.values.set(POINTER, A);
+      return h.store.getItem(k);
+    },
+  };
+  await assert.rejects(
+    createGenerationStore(storage, codec, () => B).stageAndActivate({ x: 1 }),
+    /changed before staging/,
+  );
+  assert.equal(h.values.has(key(B)), false);
+});
