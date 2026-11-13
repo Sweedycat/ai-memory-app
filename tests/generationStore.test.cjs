@@ -190,3 +190,27 @@ test('readActive refuses pointer initialization between empty reads', async () =
     /changed during read/,
   );
 });
+
+test('invalid codec output is rejected before any generation write', async () => {
+  const h = harness();
+  const badCodec = { encode() { return undefined; }, decode: JSON.parse };
+  await assert.rejects(
+    createGenerationStore(h.store, badCodec, () => B).stageAndActivate({ x: 1 }),
+    /codec produced invalid data/,
+  );
+  assert.equal(h.values.size, 0);
+});
+
+test('lossy codec roundtrip is rejected before pointer activation', async () => {
+  const h = harness();
+  const lossyCodec = {
+    encode: JSON.stringify,
+    decode() { return { lost: true }; },
+  };
+  await assert.rejects(
+    createGenerationStore(h.store, lossyCodec, () => B).stageAndActivate({ original: true }),
+    /roundtrip verification failed/,
+  );
+  assert.equal(h.values.has(POINTER), false);
+  assert.equal(h.values.has(key(B)), false);
+});
