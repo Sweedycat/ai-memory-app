@@ -119,3 +119,16 @@ test('pointer changing before data inspection is detected', async () => {
   };
   assert.equal((await inspectActiveGeneration(storage, codec)).status, 'pointer-changed');
 });
+
+test('pointer switching on final verification is detected', async () => {
+  let reads = 0;
+  const values = new Map([[key, '{"x":1}']]);
+  const storage = {
+    ...store(values),
+    async getItem(k) {
+      if (k === pointer) return ++reads < 4 ? id : 'b'.repeat(32);
+      return values.get(k) ?? null;
+    },
+  };
+  assert.equal((await inspectActiveGeneration(storage, codec)).status, 'pointer-changed');
+});
