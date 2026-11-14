@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Pressable, StyleSheet, Text, View, Switch } from 'react-native';
 
 import { BackupCryptoSelfTestError, runSyntheticBackupCryptoSelfTest } from '../utils/backupNativeSelfTest';
@@ -11,6 +12,29 @@ import { BackupCryptoSelfTestError, runSyntheticBackupCryptoSelfTest } from '../
 export function BackupSafetyDiagnostics() {
   const [frequency, setFrequency] = useState<'Off' | 'Daily' | 'Weekly' | 'Monthly'>('Off');
   const [wifiOnly, setWifiOnly] = useState(true);
+  const [loaded, setLoaded] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+  useEffect(() => {
+    let active = true;
+    void AsyncStorage.getItem('ai-memory.backup.preferences.v1').then(value => {
+      if (!active) return;
+      if (value) {
+        const parsed = JSON.parse(value);
+        if (['Off', 'Daily', 'Weekly', 'Monthly'].includes(parsed.frequency) &&
+            typeof parsed.wifiOnly === 'boolean') {
+          setFrequency(parsed.frequency);
+          setWifiOnly(parsed.wifiOnly);
+        } else { setSaveError(true); return; }
+      }
+      setLoaded(true);
+    }).catch(() => { if (active) setSaveError(true); });
+    return () => { active = false; };
+  }, []);
+  useEffect(() => {
+    if (!loaded) return;
+    void AsyncStorage.setItem('ai-memory.backup.preferences.v1',
+      JSON.stringify({ frequency, wifiOnly })).catch(() => setSaveError(true));
+  }, [loaded, frequency, wifiOnly]);
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<'untested' | 'passed' | 'failed'>('untested');
   const [failedStage, setFailedStage] = useState('');
@@ -44,12 +68,14 @@ export function BackupSafetyDiagnostics() {
       <Text style={styles.description}>Google account: Not connected</Text>
       <Text style={styles.description}>Last backup: Never</Text>
       <Text style={styles.description}>Recovery key: Not configured</Text>
-      <Text style={styles.description}>These preview settings are temporary. No account is connected and no backup is scheduled or uploaded.</Text>
+      <Text style={styles.description}>Preferences are saved on this device only. No account is connected and no backup is scheduled or uploaded.</Text>
+      {saveError && <Text style={styles.status}>Preferences could not be loaded or saved. Backup remains disabled.</Text>}
       <Text style={styles.description}>Automatic backup frequency</Text>
       <View style={styles.options}>
         {(['Off', 'Daily', 'Weekly', 'Monthly'] as const).map((option) => (
           <Pressable key={option} accessibilityRole="radio"
             accessibilityState={{ selected: frequency === option }}
+            disabled={!loaded}
             onPress={() => setFrequency(option)}
             style={[styles.option, frequency === option && styles.selected]}>
             <Text style={styles.buttonText}>{option}</Text>
@@ -58,7 +84,7 @@ export function BackupSafetyDiagnostics() {
       </View>
       <View style={styles.options}>
         <Text style={styles.description}>Wi-Fi only (preview)</Text>
-        <Switch accessibilityLabel="Wi-Fi only preview" value={wifiOnly} onValueChange={setWifiOnly} />
+        <Switch accessibilityLabel="Wi-Fi only preview" disabled={!loaded} value={wifiOnly} onValueChange={setWifiOnly} />
       </View>
       <Text style={styles.description}>Backup now and restore will become available after secure account and recovery setup.</Text>
       <Pressable
