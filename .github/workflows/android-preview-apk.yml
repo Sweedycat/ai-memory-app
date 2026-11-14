@@ -4,6 +4,7 @@ on:
     branches:
       - security/backup-restore-transaction-design
       - security/backup-recovery-key-management
+      - feature/contact-actions
   workflow_dispatch:
 
 permissions:
