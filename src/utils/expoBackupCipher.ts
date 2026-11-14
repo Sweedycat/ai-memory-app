@@ -8,14 +8,11 @@ import {
 import type { Aes256GcmBackupCipher } from './encryptedBackupEnvelope';
 
 /**
- * Strict UTF-8 decoder fallback for Hermes runtimes without TextDecoder.
+ * Runtime-independent strict UTF-8 decoder for Hermes.
  * Rejects malformed, truncated, overlong and surrogate sequences instead of
  * silently corrupting a user's restored notes.
  */
 function decodeUtf8Strict(bytes: Uint8Array): string {
-  if (typeof TextDecoder !== 'undefined') {
-    return new TextDecoder('utf-8', { fatal: true }).decode(bytes);
-  }
   const chunks: string[] = [];
   let codePoints: number[] = [];
   for (let i = 0; i < bytes.length;) {
@@ -98,10 +95,9 @@ export async function createExpoAesGcmCipher(
         ivLength: 12,
         tagLength: 16,
       });
-      const plaintext = await aesDecryptAsync(sealed, key, { output: 'bytes' });
-      if (!(plaintext instanceof Uint8Array)) {
-        throw new Error('AES-GCM failed to decode backup');
-      }
+      const encoded = await aesDecryptAsync(sealed, key, { output: 'base64' });
+      if (typeof encoded !== 'string') throw new Error('Unexpected AES output');
+      const plaintext = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
       return decodeUtf8Strict(plaintext);
     },
   };
