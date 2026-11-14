@@ -5,6 +5,7 @@ on:
       - security/backup-restore-transaction-design
       - security/backup-recovery-key-management
       - feature/contact-actions
+      - feature/contact-export
   workflow_dispatch:
 
 permissions:
