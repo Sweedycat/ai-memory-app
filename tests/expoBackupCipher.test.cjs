@@ -13,7 +13,7 @@ function load(relative, modules) {
   const code = ts.transpileModule(raw, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
   }).outputText;
-  const context = { module: { exports: {} }, TextEncoder, TextDecoder, Uint8Array,
+  const context = { module: { exports: {} }, TextEncoder, TextDecoder, Uint8Array, atob,
     require(name) { if (modules[name]) return modules[name]; throw Error('Unexpected import: ' + name); } };
   context.exports = context.module.exports;
   vm.runInNewContext(code, context);
@@ -54,14 +54,14 @@ function mockExpoCrypto() {
       },
     },
     async aesDecryptAsync(sealed, key, options) {
-      assert.equal(options.output, 'bytes');
+      assert.equal(options.output, 'base64');
       const payload = sealed.payload;
       const nonce = payload.subarray(0, 12);
       const tag = payload.subarray(payload.length - 16);
       const data = payload.subarray(12, payload.length - 16);
       const d = crypto.createDecipheriv('aes-256-gcm', key.bytes, nonce);
       d.setAuthTag(tag);
-      return new Uint8Array(Buffer.concat([d.update(data), d.final()]));
+      return Buffer.concat([d.update(data), d.final()]).toString('base64');
     },
   };
 }
