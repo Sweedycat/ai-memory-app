@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Pressable, StyleSheet, Text, View, Switch } from 'react-native';
+import { Pressable, StyleSheet, Text, View, Switch, TextInput } from 'react-native';
+
+import { formatBackupRecoveryKey, matchesRecoveryKeyConfirmation } from '../utils/backupRecoveryKeyPolicy';
 
 import { BackupCryptoSelfTestError, runSyntheticBackupCryptoSelfTest } from '../utils/backupNativeSelfTest';
 
@@ -35,6 +37,11 @@ export function BackupSafetyDiagnostics() {
     void AsyncStorage.setItem('ai-memory.backup.preferences.v1',
       JSON.stringify({ frequency, wifiOnly })).catch(() => setSaveError(true));
   }, [loaded, frequency, wifiOnly]);
+  // Public fixture only; never use for encryption.
+  const fixture = '0123456789abcdef'.repeat(4);
+  const [practice, setPractice] = useState(false);
+  const [entered, setEntered] = useState('');
+  const [confirmation, setConfirmation] = useState<'idle' | 'passed' | 'failed'>('idle');
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<'untested' | 'passed' | 'failed'>('untested');
   const [failedStage, setFailedStage] = useState('');
@@ -68,6 +75,26 @@ export function BackupSafetyDiagnostics() {
       <Text style={styles.description}>Google account: Not connected</Text>
       <Text style={styles.description}>Last backup: Never</Text>
       <Text style={styles.description}>Recovery key: Not configured</Text>
+      <Pressable accessibilityRole="button" style={styles.button} onPress={() => {
+        setPractice(!practice); setEntered(''); setConfirmation('idle');
+      }}>
+        <Text style={styles.buttonText}>{practice ? 'Close recovery practice' : 'Practice recovery key setup'}</Text>
+      </Pressable>
+      {practice && <View>
+        <Text style={styles.description}>TEST ONLY — public example key. Never enter a real recovery key here. Nothing is saved.</Text>
+        <Text selectable style={styles.status}>{formatBackupRecoveryKey(fixture)}</Text>
+        <TextInput accessibilityLabel="Example recovery key confirmation" value={entered}
+          onChangeText={value => { setEntered(value); setConfirmation('idle'); }}
+          autoCapitalize="none" autoCorrect={false} maxLength={71}
+          style={styles.input} placeholder="Enter example key" placeholderTextColor="#8997A3" />
+        <Pressable accessibilityRole="button" style={styles.button} onPress={() => {
+          setConfirmation(matchesRecoveryKeyConfirmation(fixture, entered) ? 'passed' : 'failed');
+          setEntered('');
+        }}>
+          <Text style={styles.buttonText}>Confirm example key</Text>
+        </Pressable>
+        <Text style={styles.status}>{confirmation === 'passed' ? 'Example confirmation passed. Real recovery remains disabled.' : confirmation === 'failed' ? 'Example key did not match. Try again.' : 'Confirm the public example to practice recovery.'}</Text>
+      </View>}
       <Text style={styles.description}>Preferences are saved on this device only. No account is connected and no backup is scheduled or uploaded.</Text>
       {saveError && <Text style={styles.status}>Preferences could not be loaded or saved. Backup remains disabled.</Text>}
       <Text style={styles.description}>Automatic backup frequency</Text>
@@ -126,5 +153,6 @@ const styles = StyleSheet.create({
   option: { padding: 8, borderWidth: 1, borderColor: '#315B4F', borderRadius: 8 },
   selected: { backgroundColor: '#20483D' },
   disabled: { opacity: 0.5 },
+  input: { color: '#F4F7FA', borderWidth: 1, borderColor: '#315B4F', borderRadius: 8, padding: 10, marginTop: 8 },
   status: { color: '#9BABB4', fontSize: 11, lineHeight: 17, marginTop: 10 },
 });
