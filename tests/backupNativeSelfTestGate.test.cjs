@@ -11,7 +11,10 @@ test('Settings keeps real backups disabled, showing synthetic check only', () =>
   assert.ok(panel.includes('Backup and restore are not yet available'));
   assert.ok(panel.includes('Check encryption on this phone'));
   assert.ok(panel.includes('runSyntheticBackupCryptoSelfTest'));
-  assert.doesNotMatch(panel, /uploadSmallEncryptedBackup|downloadSmallEncryptedBackupForReview|setPeople|setItem|Share\.share/);
+  // Permit exactly one write of the two non-secret preferences; reject all other setItem calls.
+  const allowedWrite = /AsyncStorage\.setItem\('ai-memory\.backup\.preferences\.v1',\s*JSON\.stringify\(\{ frequency, wifiOnly \}\)\)/g;
+  assert.equal([...panel.matchAll(allowedWrite)].length, 1);
+  assert.doesNotMatch(panel.replace(allowedWrite, ''), /uploadSmallEncryptedBackup|downloadSmallEncryptedBackupForReview|setPeople|setItem|multiSet|mergeItem|removeItem|Share\.share|fetch\(|generateBackupRecoveryKey/);
 });
 
 test('native preflight operates only on obvious synthetic objects and verifies fail closed', () => {
