@@ -1,4 +1,5 @@
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import * as IntentLauncher from 'expo-intent-launcher';
 import * as Notifications from 'expo-notifications';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
@@ -223,6 +224,29 @@ export default function App() {
     } catch {
       Alert.alert('Could not open app', 'Check that a compatible app is installed.');
     }
+  }
+
+  function exportContact() {
+    if (!selected || !selected.phone) return;
+    const name = selected.name.replace(/\s*\(AI Memory\)\s*$/i, '').trim() + ' (AI Memory)';
+    const phone = selected.phone.trim();
+    if (!/^\+?[0-9 ()-]+$/.test(phone) || !/^\+?[0-9]{3,15}$/.test(phone.replace(/[ ()-]/g, ''))) {
+      Alert.alert('Check phone number', 'Enter a valid phone number before exporting.');
+      return;
+    }
+    if (Platform.OS !== 'android') {
+      Alert.alert('Not available', 'Contact export is currently available on Android.');
+      return;
+    }
+    Alert.alert('Save to phone contacts?', 'Only the name, phone, company and role will be shared with your contacts app. Check for an existing contact before saving. Private notes stay in AI Memory.', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Open contacts editor', onPress: () => {
+        void IntentLauncher.startActivityAsync('android.intent.action.INSERT', {
+          type: 'vnd.android.cursor.dir/contact',
+          extra: { name, phone, company: selected.company ?? '', job_title: selected.role ?? '' },
+        }).catch(() => Alert.alert('Could not open contacts', 'Open your contacts app and try again.'));
+      } },
+    ]);
   }
 
   function openAddPerson() {
@@ -609,7 +633,7 @@ export default function App() {
           <Field label="COMPANY" value={form.company} onChange={(company) => setForm((current) => ({ ...current, company }))} />
           <Field label="PHONE NUMBER" value={form.phone} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
           <Text style={styles.muted}>
-            Saved only in AI Memory, not in your phone Contacts. App Lock protects access to the app; its local records are not separately encrypted.
+            Saved in AI Memory. You can separately export the contact from its profile. App Lock protects access to the app; its local records are not separately encrypted.
           </Text>
           <Field
             label="HOW DO YOU KNOW THEM?"
@@ -705,6 +729,7 @@ export default function App() {
               <MiniAction label="Call" onPress={() => void openContactAction('call')} />
               <MiniAction label="WhatsApp" onPress={() => void openContactAction('whatsapp')} />
               <MiniAction label="SMS" onPress={() => void openContactAction('sms')} />
+              <MiniAction label="Save to contacts" onPress={exportContact} />
             </View>
           ) : null}
           <View style={styles.profileActions}>
