@@ -149,6 +149,7 @@ export default function App() {
         person.followUp?.text,
         ...person.notes,
         ...person.interactions.map((item) => item.summary),
+        ...(person.followUpHistory ?? []).map((item) => item.text),
       ]
         .filter(Boolean)
         .join(' ')
@@ -840,6 +841,19 @@ export default function App() {
             <Text style={styles.personMeta}>
               {[person.role, person.company].filter(Boolean).join(' · ') || person.relationship}
             </Text>
+            {person.phone ? <Text style={styles.muted}>Phone: {person.phone}</Text> : null}
+            {(person.role || person.company) && person.relationship ? (
+              <Text style={styles.muted}>{person.relationship}</Text>
+            ) : null}
+            {person.notes[0] ? <Text style={styles.body} numberOfLines={2}>{person.notes[0]}</Text> : null}
+            {person.followUp ? (
+              <View>
+                <Text style={styles.followUpLabel}>NEXT STEP</Text>
+                <Text style={styles.body} numberOfLines={2}>{person.followUp.text}</Text>
+                <Text style={styles.muted}>{formatReminder(person.followUp.reminderAt)}</Text>
+              </View>
+            ) : null}
+            <Text style={styles.muted}>{person.notes.length} notes · {person.interactions.length} interactions</Text>
             <Text style={styles.muted}>Last interaction: {person.interactions[0]
                 ? formatInteractionDate(person.interactions[0].date)
                 : 'No interactions yet'}</Text>
