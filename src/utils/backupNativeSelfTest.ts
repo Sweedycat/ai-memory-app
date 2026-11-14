@@ -4,6 +4,8 @@ import {
   unsealBackupForReview,
 } from './encryptedBackupEnvelope';
 import {
+  BackupDecryptError,
+  type BackupDecryptStage,
   createExpoAesGcmCipher,
   generateBackupRecoveryKey,
 } from './expoBackupCipher';
@@ -13,7 +15,7 @@ import {
  * No real profile/person data, file I/O, OAuth, network, clipboard or logs.
  * This is a QA gate, NOT proof that cloud backup/restore is ready.
  */
-export type BackupCryptoStage = 'key-generation' | 'key-import' | 'encrypt' | 'crypto-decrypt' | 'restore-review' | 'wrong-key' | 'tamper';
+export type BackupCryptoStage = 'key-generation' | 'key-import' | 'encrypt' | 'crypto-decrypt' | BackupDecryptStage | 'round-trip-mismatch' | 'restore-review' | 'wrong-key' | 'tamper';
 
 export class BackupCryptoSelfTestError extends Error {
   constructor(readonly stage: BackupCryptoStage) {
@@ -24,7 +26,14 @@ export class BackupCryptoSelfTestError extends Error {
 
 /** Only exposes the failed test stage; never the native error, key, or plaintext. */
 async function checkStage<T>(stage: BackupCryptoStage, operation: () => Promise<T>): Promise<T> {
-  try { return await operation(); } catch { throw new BackupCryptoSelfTestError(stage); }
+  try {
+    return await operation();
+  } catch (error) {
+    if (stage === 'crypto-decrypt' && error instanceof BackupDecryptError) {
+      throw new BackupCryptoSelfTestError(error.stage);
+    }
+    throw new BackupCryptoSelfTestError(stage);
+  }
 }
 
 export async function runSyntheticBackupCryptoSelfTest(): Promise<void> {
@@ -73,11 +82,11 @@ export async function runSyntheticBackupCryptoSelfTest(): Promise<void> {
   // failing Android crypto bridge cannot be mistaken for a restore schema bug.
   const decryptedJson = await checkStage('crypto-decrypt', () =>
     cipher.decryptCombinedBase64ToUtf8(sealed.encryptedPayload));
+  if (!decryptedJson.includes(syntheticNote)) {
+    throw new BackupCryptoSelfTestError('round-trip-mismatch');
+  }
   const review = await checkStage('restore-review', () =>
     unsealBackupForReview(sealed, [], cipher));
-  if (!decryptedJson.includes(syntheticNote)) {
-    throw new BackupCryptoSelfTestError('crypto-decrypt');
-  }
   if (review.status !== 'review-required' ||
     review.incomingPeople !== 1 ||
     review.candidatePeople[0]?.notes[0] !== syntheticPerson.notes[0] ||
