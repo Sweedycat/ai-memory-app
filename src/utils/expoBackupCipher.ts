@@ -12,6 +12,15 @@ import type { Aes256GcmBackupCipher } from './encryptedBackupEnvelope';
  * Rejects malformed, truncated, overlong and surrogate sequences instead of
  * silently corrupting a user's restored notes.
  */
+export type BackupDecryptStage = 'sealed-data' | 'native-aes' | 'base64-output' | 'utf8-output';
+
+export class BackupDecryptError extends Error {
+  constructor(readonly stage: BackupDecryptStage) {
+    super('Backup decryption failed');
+    this.name = 'BackupDecryptError';
+  }
+}
+
 function decodeUtf8Strict(bytes: Uint8Array): string {
   const chunks: string[] = [];
   let codePoints: number[] = [];
@@ -91,14 +100,22 @@ export async function createExpoAesGcmCipher(
     },
 
     async decryptCombinedBase64ToUtf8(combinedBase64: string): Promise<string> {
-      const sealed = AESSealedData.fromCombined(combinedBase64, {
-        ivLength: 12,
-        tagLength: 16,
-      });
-      const encoded = await aesDecryptAsync(sealed, key, { output: 'base64' });
-      if (typeof encoded !== 'string') throw new Error('Unexpected AES output');
-      const plaintext = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
-      return decodeUtf8Strict(plaintext);
+      let stage: BackupDecryptStage = 'sealed-data';
+      try {
+        const sealed = AESSealedData.fromCombined(combinedBase64, {
+          ivLength: 12,
+          tagLength: 16,
+        });
+        stage = 'native-aes';
+        const encoded = await aesDecryptAsync(sealed, key, { output: 'base64' });
+        stage = 'base64-output';
+        if (typeof encoded !== 'string') throw new Error('Unexpected AES output');
+        const plaintext = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+        stage = 'utf8-output';
+        return decodeUtf8Strict(plaintext);
+      } catch {
+        throw new BackupDecryptError(stage);
+      }
     },
   };
 }
