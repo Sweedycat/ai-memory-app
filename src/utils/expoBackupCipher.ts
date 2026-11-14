@@ -102,7 +102,9 @@ export async function createExpoAesGcmCipher(
     async decryptCombinedBase64ToUtf8(combinedBase64: string): Promise<string> {
       let stage: BackupDecryptStage = 'sealed-data';
       try {
-        const sealed = AESSealedData.fromCombined(combinedBase64, {
+        const combined = Uint8Array.from(atob(combinedBase64), (character) => character.charCodeAt(0));
+        if (combined.length < 28) throw new Error('Invalid sealed data length');
+        const sealed = AESSealedData.fromCombined(combined, {
           ivLength: 12,
           tagLength: 16,
         });
