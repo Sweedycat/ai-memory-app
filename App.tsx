@@ -3,6 +3,7 @@ import * as Notifications from 'expo-notifications';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
+  Linking,
   Platform,
   Pressable,
   SafeAreaView,
@@ -198,6 +199,30 @@ export default function App() {
     setInteractionText('');
     setMemoryText('');
     setScreen('detail');
+  }
+
+  async function openContactAction(action: 'call' | 'sms' | 'whatsapp') {
+    const raw = selected?.phone?.trim() ?? '';
+    if (!/^\+?[0-9 ()-]+$/.test(raw)) {
+      Alert.alert('Check phone number', 'Use a phone number without extensions or letters.');
+      return;
+    }
+    const number = raw.replace(/[ ()-]/g, '');
+    if (!/^\+?[0-9]{3,15}$/.test(number)) {
+      Alert.alert('Check phone number', 'Enter a valid phone number.');
+      return;
+    }
+    if (action === 'whatsapp' && !/^\+[1-9][0-9]{6,14}$/.test(number)) {
+      Alert.alert('International number required', 'For WhatsApp, edit the number to include its country code, for example +90.');
+      return;
+    }
+    const url = action === 'call' ? 'tel:' + number :
+      action === 'sms' ? 'sms:' + number : 'https://wa.me/' + number.slice(1);
+    try {
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert('Could not open app', 'Check that a compatible app is installed.');
+    }
   }
 
   function openAddPerson() {
@@ -569,7 +594,7 @@ export default function App() {
       : defaultCustomReminder();
 
     return (
-      <Page>
+      <Page key={screen}>
         <Back onPress={() => setScreen(isEdit ? 'detail' : 'home')} />
         <Text style={styles.titleSmall}>{isEdit ? 'Edit person' : 'Add a person'}</Text>
         <Text style={styles.sub}>
@@ -662,7 +687,7 @@ export default function App() {
 
   if (screen === 'detail' && selected) {
     return (
-      <Page>
+      <Page key={screen}>
         <Back onPress={() => setScreen('home')} />
 
         <View style={styles.profile}>
@@ -675,6 +700,13 @@ export default function App() {
           </Text>
           <Text style={styles.mutedCenter}>{selected.relationship}</Text>
           {selected.phone ? <Text style={styles.mutedCenter}>Phone: {selected.phone}</Text> : null}
+          {selected.phone ? (
+            <View style={styles.contactActions}>
+              <MiniAction label="Call" onPress={() => void openContactAction('call')} />
+              <MiniAction label="WhatsApp" onPress={() => void openContactAction('whatsapp')} />
+              <MiniAction label="SMS" onPress={() => void openContactAction('sms')} />
+            </View>
+          ) : null}
           <View style={styles.profileActions}>
             <MiniAction label="Edit" onPress={openEditPerson} />
             <MiniAction label="Delete" onPress={deleteSelectedPerson} danger />
@@ -789,7 +821,7 @@ export default function App() {
   }
 
   return (
-    <Page>
+    <Page key="home">
       <View style={styles.hero}>
         <View style={styles.heroTop}>
           <Text style={styles.brand}>AI MEMORY</Text>
@@ -853,7 +885,7 @@ export default function App() {
                 <Text style={styles.muted}>{formatReminder(person.followUp.reminderAt)}</Text>
               </View>
             ) : null}
-            <Text style={styles.muted}>{person.notes.length} notes · {person.interactions.length} interactions</Text>
+            <Text style={styles.muted}>{person.notes.length} {person.notes.length === 1 ? 'note' : 'notes'} · {person.interactions.length} {person.interactions.length === 1 ? 'interaction' : 'interactions'}</Text>
             <Text style={styles.muted}>Last interaction: {person.interactions[0]
                 ? formatInteractionDate(person.interactions[0].date)
                 : 'No interactions yet'}</Text>
@@ -1048,8 +1080,8 @@ const styles = StyleSheet.create({
   titleSmall: { color: '#F4F7FA', fontSize: 30, fontWeight: '800', marginTop: 10 },
   sub: { color: '#98A3AF', fontSize: 15, lineHeight: 22, marginTop: 8 },
   subCenter: { color: '#A6B0BA', fontSize: 14, marginTop: 5, textAlign: 'center' },
-  muted: { color: '#75818D', fontSize: 12, lineHeight: 18 },
-  mutedCenter: { color: '#75818D', fontSize: 12, marginTop: 5, textAlign: 'center' },
+  muted: { color: '#9BA7B3', fontSize: 12, lineHeight: 18 },
+  mutedCenter: { color: '#9BA7B3', fontSize: 12, marginTop: 5, textAlign: 'center' },
   card: { backgroundColor: '#121820', borderRadius: 20, borderWidth: 1, borderColor: '#202B36', padding: 16, marginTop: 2 },
   label: { color: '#7DE2C3', fontSize: 10, fontWeight: '900', letterSpacing: 1.2, marginBottom: 8 },
   cardTitle: { color: '#F4F7FA', fontSize: 18, fontWeight: '800' },
@@ -1082,6 +1114,7 @@ const styles = StyleSheet.create({
   avatarLarge: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
   avatarTextLarge: { color: '#7DE2C3', fontSize: 31, fontWeight: '900' },
   profileName: { color: '#F4F7FA', fontSize: 27, fontWeight: '900', textAlign: 'center' },
+  contactActions: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 14 },
   profileActions: { flexDirection: 'row', gap: 8, marginTop: 14 },
   miniAction: { borderRadius: 999, borderWidth: 1, borderColor: '#355348', paddingHorizontal: 15, paddingVertical: 7 },
   miniActionDanger: { borderColor: '#5B3437' },
@@ -1100,7 +1133,7 @@ const styles = StyleSheet.create({
   followUpDoneText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
   followUpEdit: { borderRadius: 10, borderWidth: 1, borderColor: '#293541', paddingHorizontal: 10, paddingVertical: 7 },
   followUpEditText: { color: '#AAB5BE', fontSize: 11, fontWeight: '900' },
-  followUpComplete: { color: '#75818D', fontSize: 12, marginTop: 12 },
+  followUpComplete: { color: '#9BA7B3', fontSize: 12, marginTop: 12 },
   reminderBox: { backgroundColor: '#0E151B', borderRadius: 16, borderWidth: 1, borderColor: '#24323C', padding: 13, marginTop: 2, marginBottom: 8 },
   reminderHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
   reminderValue: { color: '#D9F5EC', fontSize: 13, fontWeight: '800', marginTop: 2 },
