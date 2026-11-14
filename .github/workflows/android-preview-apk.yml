@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - security/backup-restore-transaction-design
+      - security/backup-recovery-key-management
   workflow_dispatch:
 
 permissions:
