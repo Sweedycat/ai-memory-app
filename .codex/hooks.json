@@ -1,0 +1,20 @@
+{
+  "hooks": {
+    "PreToolUse": [{
+      "hooks": [{
+        "type": "command",
+        "command": "node \"C:/Users/raons/Projects/ai-memory-app/.codex/hooks/omega-hooks.cjs\" pre",
+        "timeout": 5,
+        "async": false
+      }]
+    }],
+    "Stop": [{
+      "hooks": [{
+        "type": "command",
+        "command": "node \"C:/Users/raons/Projects/ai-memory-app/.codex/hooks/omega-hooks.cjs\" stop",
+        "timeout": 10,
+        "async": false
+      }]
+    }]
+  }
+}
