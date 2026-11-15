@@ -21,8 +21,9 @@ tier, sandbox and approval settings inherit. No global settings are changed.
 | `independent_reviewer` | Frozen-diff correctness and safety review | Read-only; must not be the implementation author |
 
 All roles must read and preserve `AGENTS.md`. Delegation does not authorize
-implementation, personal-data access, releases or external writes. The owner or
-applicable project/skill instructions must authorize delegation for a task.
+implementation, personal-data access, releases or external writes. Project
+instructions authorize automatic specialist selection within the owner's current
+scope, subject to explicit prohibitions and tighter resource limits.
 Select only the specialists needed; give each a bounded question, paths,
 read/write scope, baseline and required evidence. One writer owns each file;
 parallel writes require disjoint files or an explicitly isolated worktree.
@@ -62,13 +63,32 @@ developer context; it emits SHA-256 identifiers for the twelve TOML files.
 `--strict-config` is supported on `app-server`, not `debug prompt-input`.
 
 Project config is loaded only for a trusted repository. A previously running
-conversation may need a new session to discover new files. This host's current
-`collaboration.spawn_agent` interface exposes `task_name`, not a custom-role
-selector: explicitly reading a role file in its delegation test does not prove
-automatic custom-role application. The native discovery probe is separate
-evidence. No technical role sandbox, Android readiness or application behavior
-is established by these checks. Application tests/device checks are unnecessary
-for this configuration-only change and no build/install is authorized.
+conversation may need a new session to load changed instructions. The Phase 03
+host wrapper lacked a custom-role selector; the Phase 12 host exposes
+`collaboration.spawn_agent.agent_type` with all eleven registered roles. Use the
+exact runtime name. Dispatching a selected role and native discovery are separate
+from proving automatic model selection. No technical role sandbox, Android
+readiness or application behavior is established by these checks. Application
+tests/device checks are unnecessary for this configuration-only change and no
+build/install is authorized.
+
+## Automatic routing and MCP (Phases 11-12)
+
+The Principal Architect selects by task complexity and affected boundary using
+native custom agents and the existing focused skills. Simple tasks remain with
+the Principal Architect. Medium tasks use at most one relevant specialist when
+beneficial. Complex tasks use at most two concurrent specialists; the native cap
+already enforces two open subagent threads, excluding the primary. Reuse existing
+agents sequentially. Rule 11 requires an independent qualified reviewer, including
+for a small critical change; serialize review after freezing implementation.
+All specialists prohibit recursive delegation. One writer owns each file.
+
+Routing is model-followed project guidance, not a deterministic classifier or a
+new native auto-router setting. Skill descriptions retain normal implicit
+selection. No routing model, scheduler, executable skill, extra hook or package
+is needed. Keep inherited permissions/approvals and the two trusted hooks intact.
+See [Phase 11-12 evidence](mcp-orchestration-validation.md) for the actual MCP
+inventory, official candidates, observed native checks and remaining limitations.
 
 ## Phase 03 validation record (2026-11-15)
 
