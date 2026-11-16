@@ -216,3 +216,17 @@ test('CLI accepts actual native command-shaped payload without performing the pa
   assert.deepEqual(JSON.parse(result.stdout), {});
   assert(!fs.existsSync(path.join(root, '.codex/synthetic-native.md')));
 });
+
+test('ancestry reads pass while merge mutations remain denied', () => {
+  for (const command of ['git merge-base A B', 'git merge-base --is-ancestor main preview',
+    'GIT MERGE-BASE A B', 'git merge-base A B; git status --short']) {
+    assert.deepEqual(pre('exec_command', { cmd: command }), {});
+  }
+  for (const command of ['git merge preview', 'git merge --no-ff topic', 'git merge',
+    'git merge; git status', 'git merge\npreview', 'git merge\tpreview',
+    'git merge-file current base other', 'git merge-index driver --all', 'git merge-tree A B',
+    'git merge-base A B; git merge preview', 'git push --force origin engineering/synthetic',
+    'git reset --hard']) {
+    assert(denied(pre('exec_command', { cmd: command })), command);
+  }
+});

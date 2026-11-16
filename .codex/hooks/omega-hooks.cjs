@@ -87,7 +87,7 @@ function preTool(input, getBranch = branch) {
       const command = args?.cmd ?? args?.command;
       if (typeof command !== 'string') throw Error('shell');
       // Deliberately narrow lexical checks, not a shell parser or authorization engine.
-      if (/\bgit\s+(?:push\b[^\r\n]*(?:--force|--delete|\b(?:main|preview)\b)|reset\s+--hard|clean\s+[^\r\n]*-[a-z]*f|(?:checkout|switch)\s+(?:main|preview)\b|merge\b)/i.test(command)) {
+      if (/\bgit\s+(?:push\b[^\r\n]*(?:--force|--delete|\b(?:main|preview)\b)|reset\s+--hard|clean\s+[^\r\n]*-[a-z]*f|(?:checkout|switch)\s+(?:main|preview)\b|merge\b(?!-base\b))/i.test(command)) {
         return deny('Omega: protected branch or destructive Git operation requires a separately reviewed workflow.');
       }
       if (/(?:^|[\s"'\/\\])\.env(?:\.[a-z0-9_-]+)?(?:[\s"';]|$)/i.test(command.replace(/\.env\.example\b/g, 'synthetic-template'))
