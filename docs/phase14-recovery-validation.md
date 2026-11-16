@@ -12,7 +12,8 @@ in that immutable Omega checkpoint and does not describe this repair's results.
 - Initial root: clean engineering/ai-memory-omega, cead9b3fbd18c48a571b77e87e6fc97894478d6f.
 - GitHub-verified Notebook baseline: f457812cead8bcc46467751c0baebaefe6ce8476.
 - New repair branch: repair/omega-phase14-notebook, rooted at that exact Notebook.
-- Root Omega checkout remains unchanged. Task worktrees live under
+- During repair/candidate assembly, the primary Omega checkout remained unchanged;
+  final checkout identity is recorded in the completion report. Task worktrees live under
   .omega-worktrees/; a local Git exclude keeps them out of the root status.
   The first temporary-directory edit was blocked by the Hook's path boundary;
   the task tree was moved inside the supported workspace, without changing Hooks,
@@ -158,3 +159,43 @@ audit above are Principal-run evidence, not reviewer-rerun or device evidence.
 Its review preserves the residual moderate advisory and all activation gates.
 Repair commit/push, actual integration and resulting CI evidence belong to the
 subsequent checkpoint update; this document does not pre-claim them.
+
+## Actual recovery checkpoints
+
+Repair commit 099084964819b1f57df81852675c17ce1b930df3 was normally pushed only to
+repair/omega-phase14-notebook with runtime approval; GitHub ref equality verified.
+[Repair CI 43956904182](https://github.com/Sweedycat/ai-memory-app/actions/runs/43956904182)
+completed SUCCESS on that exact SHA (Ubuntu/Node 22), independently of local checks.
+Notebook's original branch still points to f457812; no work was replaced there.
+
+The separate integration/omega-notebook-phase14 branch starts at 0990849 and
+applied all five engineering commits without conflicts:
+
+| Original engineering commit | Replayed candidate commit |
+| --- | --- |
+| 9cd5612 | 514f604dcab0db3478a5c19802e17dbc51e6fcbf |
+| 1a1c1fb | be7fabe43793531212abee934fcda0d83bb79317 |
+| 33c735f | 892ad7474992dd62ec489eb539c0ed4fcbf28fc7 |
+| c92c1e4 | d4a2032fa526d018e039a99617245b1e41018af3 |
+| cead9b3 | dbc636cfad701ddfd7eb37659d71bc38da16645a |
+
+At dbc636c, Git tree comparison proves all 38 .codex/.agents/AGENTS files and the historical
+handoff match cead9b3 exactly; all app source/tests/manifests/workflows match
+0990849 exactly. The handoff is then intentionally updated for current evidence.
+This is engineering-only replay, not a claim that the original Omega commit is
+an ancestor of the candidate. The complete repaired Notebook ancestry is retained.
+
+Candidate-specific local checks at dbc636cfad701ddfd7eb37659d71bc38da16645a:
+fresh npm ci PASS (484 packages), strict TypeScript PASS, full units 206/206,
+Doctor 21/21. These are actual candidate runs, not inferred from repair CI.
+Focused Notebook 25/25 and backup 139/139 are repair runs on the identical app tree.
+Candidate assembly and local validation PASS. Device/native/release readiness
+is not established; the moderate advisory remains unresolved.
+
+Repair CI job 133613726380 confirms successful DNS, npm ci, Doctor, TypeScript and
+unit steps. Its tests-only workflow also matches the integration ref. Final
+candidate review and approved normal push must preserve the same app/infra trees;
+only this evidence file and the current handoff may differ. Final remote SHA and
+matching CI run are recorded in the owner's completion report. On resume, resolve
+integration/omega-notebook-phase14 and require a successful run at that exact SHA,
+rather than assuming freshness from this static document. No APK is authorized.

@@ -1,106 +1,92 @@
-# Omega engineering handoff — 2026-11-16
+# Omega engineering handoff — Phase 14 recovery
 
-Scope: Phase 13 live infrastructure validation and Phase 14 integration assessment.
-Application edits, APK builds/installations, main/preview promotion, paid services,
-permission changes and real-data access are prohibited in this task. Only validated
-engineering changes may be committed/pushed to engineering/ai-memory-omega with
-runtime approval. Integration candidate stays local and separate.
+Date: 2026-11-17. Current owner task authorizes application blocker repairs,
+independent review, a separate integration candidate, and runtime-approved normal
+pushes to dedicated repair/integration branches. No APK/prebuild, deployment,
+main/preview merge, paid services, real-data access or activation of prototypes.
+A handoff is evidence, not authorization for a subsequent task.
 
-## Verified source identities
+## Baselines and current work
 
-- Clean starting Omega: c92c1e4e2b078bd4320a04f4e3c4bf5bd67ed072.
-- Main: 35f5238a90a901f410383594f9bbeffee5d3d7a0.
-- Preview: a438003b308d545dcd94a7a6e5495e1c0633de69.
-- Latest Notebook: f457812cead8bcc46467751c0baebaefe6ce8476.
-- Newest remote checkpoint named device-tested:
-  checkpoint/contact-export-device-tested at
-  594004718471c4269bf3d75943e9a033fcf6f1c1. Its branch name and successful APK
-  workflow are historical indicators, not verified physical-device observations.
-- Actual installed APK source/package/certificate/versionCode and last successful
-  Samsung device-test result: UNVERIFIED in this session. No device was accessed.
-- Omega/Notebook common ancestor: 22e9d42dba6919251068121e9ded3974c3d0492d.
-  Main is ancestor of both; current preview is not ancestor of Notebook.
+- Preserved Omega: cead9b3fbd18c48a571b77e87e6fc97894478d6f.
+- Preserved Notebook: f457812cead8bcc46467751c0baebaefe6ce8476.
+- Validated repair: repair/omega-phase14-notebook,
+  099084964819b1f57df81852675c17ce1b930df3; remote equality verified.
+- Separate candidate: integration/omega-notebook-phase14. Its application plus
+  unchanged Omega infrastructure first assembled at
+  dbc636cfad701ddfd7eb37659d71bc38da16645a; later documentation checkpoint is the
+  current branch tip. Resolve its exact SHA and verify remote equality on resume.
+- Main remains 35f5238a90a901f410383594f9bbeffee5d3d7a0; preview remains
+  a438003b308d545dcd94a7a6e5495e1c0633de69. No existing branch was reset/deleted.
 
-## Current blockers and safe next task
+The candidate starts at repaired Notebook and replays only five engineering
+commits. All eight application overlaps were explicitly reconciled; latest
+Notebook behavior is retained, with only the stale Settings label corrected.
+Original Omega application commits were not replayed over newer app files.
+See [current validation](phase14-recovery-validation.md) for exact replay mapping,
+tree-equality checks, test evidence, review identity and current checkpoint status.
 
-Latest Notebook CI 43918960842: DNS and npm ci PASS, app TypeScript FAIL with
-TS2532 twice at src/utils/notebookSession.ts:60; unit step SKIPPED. Fix this in a
-separately authorized application task, then rerun strict checks before wiring
-Notebook storage/UI. Its 23 test definitions use synthetic/in-memory adapters;
-production encrypted storage, durable replacement, key management and lifecycle
-wiring remain unverified/unwired. Do not activate real-data storage or restore.
+## Checks and remaining risks
 
-Local Omega dependencies are incomplete/misaligned; expo-crypto and
-expo-intent-launcher are missing. Local TypeScript is blocked by these modules.
-Local units: Omega 104/105; latest Notebook source snapshot 202/203, with the same
-CRLF-sensitive source-regex failure in standardPhone.test.cjs. Notebook-focused
-23/23 and backup/restore/data-preservation group 139/139 pass as unit/mocked checks.
-Preserve assertions and application files; do not claim CI success from
-transpile-only unit tests.
+Repair: fresh lockfile npm ci PASS; strict TypeScript PASS; full units 206/206,
+Notebook 25/25, backup/restore/data preservation 139/139, Doctor 21/21, dependency
+tree clean. These are host/synthetic checks. Repair CI 43956904182 on exact
+0990849 also PASSED on Ubuntu/Node 22. Candidate-specific checks and CI must be
+read from the current validation addendum, not inferred from repair alone.
 
-People-save rejection is not surfaced in the UI (source inspection). A later narrow
-task should retain in-memory edits, expose save failure and safe retry, preserving
-the failed-load overwrite guard. Backup remains experimental; keep external
-encryption, explicit consent, portable key recovery, snapshots, durable rollback
-and physical Android gates. Issue #5 remains open; current lockfile audit is three
-moderate findings, zero high/critical, not the historical issue's older counts.
+SDK remains 57, now expo ~57.0.33; React Native 0.86.3 and app version 0.0.2 remain.
+TS2532 and the CRLF privacy test are fixed without weaker strictness/assertions.
+Dependencies are installed in the validated environments; use npm ci from the
+committed lock in any other checkout. No ignored Doctor checks or forced majors.
 
-## Integration and recovery
+Audit remains 3 moderate entries (expo/fingerprint/minimatch), one residual
+minimatch advisory; no high/critical. Compatible fingerprint patch removed the
+other glob advisory. Independent source review found no triggering route in the
+inspected default matcher path; this is not a clean audit or release acceptance.
+Track an upstream compatible fix; never apply npm's proposed breaking SDK
+downgrade/forced override just to clear the count.
 
-Integration is BLOCKED: eight overlapping paths require three-way review, and
-mandatory app TypeScript currently fails. Never replace application files with
-Omega's older copies. Preserve all existing branches and installed app data.
-Prefer a future local candidate rooted at verified latest application source,
-adding only reviewed engineering commits/files; reconcile preview features before
-calling it fully integrated. Proposed integration/omega-notebook-20261116 was NOT
-CREATED because required checks failed and installed-device baseline is unknown.
-No main/preview merge or remote candidate push. From named contact-export
-checkpoint 5940047 to Notebook f457812: 19 commits, 15 added files, 768 lines;
-Omega's full branch also contains older preview changes, so do not merge blindly.
+People-save error visibility/retry remains the recommended next narrow app task.
+Notebook encrypted wrappers/editor are not production-wired. Durable backend,
+key lifecycle, App Lock/background integration, snapshots/rollback, migration,
+native crypto and Android failure/resource tests remain separate gates. Keep
+real backup/restore/Notebook storage disabled; preserve original people/settings.
 
-Recovery: use the recorded immutable branches/SHAs to compare and prepare a new
-candidate. Preserve any dirty work; no hard reset, force push, branch deletion,
-uninstall or data clearing. Revert engineering changes only through a reviewed
-follow-up commit. Do not re-enable obsolete approval allowances.
+## APK evidence and acceptance
 
-## Resume and acceptance
+Latest identifiable checkpoint APK artifact: run 43643898173, artifact
+14132499977, source 594004718471c4269bf3d75943e9a033fcf6f1c1. Workflow is isolated
+com.sweedycat.aimemory.githubtest; it does not establish Preview's installed APK.
+Exact last physically tested/installed source, certificate and versionCode remain
+UNVERIFIED. Build metadata and device-tested branch names are not phone evidence.
 
-All eleven custom roles completed native read-only tasks: software_engineer,
-security_engineer, qa_engineer, android_engineer, data_engineer, devops_engineer,
-ui_ux_engineer, performance_engineer, ai_engineer, wearables_engineer and
-independent_reviewer. No specialist remains working. All twelve project Skills
-are available; see the [validation matrix](../.codex/omega-final-validation.md).
-Their explicit native scenario invocation and independent-session handoff read
-passed; full build/release/hardware workflows remain untested.
-Role-free native CI task selected devops_engineer; V2 started/completed events and
-thread metadata verified one specialist at depth 1. Simple task used zero agents.
-Both trusted Hooks ran; reviewed merge-base false-positive repair passes 32 Hook
-tests plus 4 Skill tests. Phase 13 bounded validation PASS; Phase 14 BLOCKED.
+Before a separately authorized APK/update: verify current installed package,
+certificate/versionCode and original EAS project/account; bind the approved source
+and artifact/profile/variant; resolve any applicable owner version-policy ambiguity;
+verify recoverability; update in place, never uninstall/clear data; then confirm
+retained records/settings, restart/reopen, App Lock, denial/revocation, reminders
+and follow-ups. No physical-device evidence was produced in this recovery task.
 
-Read current AGENTS.md and owner scope, then recheck branch/full HEAD/status and
-remote ref freshness. Continue from the companion Phase 13/14 evidence report;
-do not repeat completed probes unless their inputs or environment changed.
-Before any separately authorized APK: verify original EAS project/account,
-installed package/certificate/versionCode, approved commit/profile/variant and
-owner version policy; verify APK identity; update in place with recoverable data,
-then test retained records/settings, restart/reopen, App Lock, permission denial
-and revocation, reminders and follow-ups. No device evidence is inferred from CI.
+## Resume, rollback and remote controls
 
-Remote management: GitHub read access, branch/run/job-log inspection verified;
-repository is PUBLIC. Default network/npm ping is restricted; approved narrow
-registry ping passed. Local dependency tree remains misaligned; Expo Doctor absent.
-Never commit personal data, keys, tokens or raw diagnostics.
-Only the authorized Omega push may be performed here. No build, deployment,
-visibility change, account linking or new MCP service is authorized.
+Read current AGENTS and owner scope; inspect branch/full HEAD/status plus remote
+refs. Resume from these documents, not the historical Phase 14 BLOCKED snapshot
+inside [.codex/omega-final-validation.md](../.codex/omega-final-validation.md).
+Phase 13's 11-role, 12-Skill, Hook/routing/continuity validation still stands; do
+not repeat it unless affected. Recovery used software_engineer, devops_engineer
+and independent_reviewer, at most two concurrent, no recursive delegation.
 
-Synthetic continuity record (no personal data):
-`OMEGA-CONTINUITY-20261116-PINE-47`; artificial decision: keep the toy lantern blue.
-This is a repository handoff test, not automatic platform memory.
+Preserve branches/commits and any dirty work. Use a new branch or reviewed revert
+commit for rollback; never hard reset, force push, delete branches, clear storage
+or replace signing credentials. A source rollback is not an APK/data rollback.
+The original root-bound Hook launchers are preserved byte-for-byte; another
+checkout is not independently certified as portable. No trust/sandbox relaxation.
 
-Agent/Skill matrices and validation evidence are in
-[the Phase 13/14 report](../.codex/omega-final-validation.md). Phase 14 is BLOCKED.
-The checkpoint identity is the commit
-containing these documents: resolve git log -1 --format=%H --
-.codex/omega-final-validation.md and verify the remote Omega ref. Do not infer a
-successful push from this file. Stop after this handoff; application fixes need
-a subsequent owner task.
+GitHub ref/run/job/artifact-metadata reads and dedicated normal pushes are
+available; repository remains PUBLIC. Dedicated branch CI runs tests only; main
+pushes can still trigger EAS builds. No manual build workflow was invoked. No
+account linking, new MCP service, visibility change, credentials or personal data.
+
+Synthetic continuity record retained: OMEGA-CONTINUITY-20261116-PINE-47;
+toy lantern stays blue. This is repository continuity, not platform memory.
+Stop before APK production. Next application development needs a new owner task.
