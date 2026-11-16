@@ -97,14 +97,16 @@ test('invalid stored phone type fails closed, instead of silently dropping or ov
   ), /unsupported or invalid format/);
 });
 
-test('UI explains app-only phone and accurately discloses current local security', () => {
-  const app = fs.readFileSync(path.join(root, 'App.tsx'), 'utf8');
-  assert.ok(app.includes('PHONE NUMBER'));
-  assert.ok(app.includes('not in your phone Contacts'));
-  assert.ok(app.includes('local records are not separately encrypted'));
-  assert.match(app, /phone: selected\.phone \?\? ''/);
-  assert.match(app, /phone,\n\s+relationship: form\.relationship/);
-  assert.match(app, /normalizeStandardPhone\(form\.phone\)/);
-  // No separate secret phone/vault field: App Lock covers the whole AI Memory address book.
-  assert.doesNotMatch(app, /secretPhone|privatePhone|confidentialPhone/);
-});
+for (const [label, lineEnding] of [['LF', '\n'], ['CRLF', '\r\n']]) {
+  test(`UI explains app-only phone and accurately discloses current local security (${label})`, () => {
+    const app = fs.readFileSync(path.join(root, 'App.tsx'), 'utf8').replace(/\r?\n/g, lineEnding);
+    assert.ok(app.includes('PHONE NUMBER'));
+    assert.ok(app.includes('not in your phone Contacts'));
+    assert.ok(app.includes('local records are not separately encrypted'));
+    assert.match(app, /phone: selected\.phone \?\? ''/);
+    assert.match(app, /phone,\r?\n\s+relationship: form\.relationship/);
+    assert.match(app, /normalizeStandardPhone\(form\.phone\)/);
+    // No separate secret phone/vault field: App Lock covers the whole AI Memory address book.
+    assert.doesNotMatch(app, /secretPhone|privatePhone|confidentialPhone/);
+  });
+}

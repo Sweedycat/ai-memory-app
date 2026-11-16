@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - feature/personal-notebook-foundation
+      - repair/omega-phase14-notebook
+      - integration/omega-notebook-phase14
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,5 +21,6 @@ jobs:
       - name: Check npm DNS
         run: node -e "require('node:dns').lookup('registry.npmjs.org', (err) => { if (err) { console.error(err.code); process.exitCode = 1; } })"
       - run: npm ci
+      - run: npm run doctor
       - run: npm run typecheck
       - run: npm run test:unit

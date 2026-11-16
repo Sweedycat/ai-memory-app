@@ -55,9 +55,10 @@ export async function openNotebookSession(vault: NotebookVault) {
     async save(note: PersonalNote) {
       const next = snapshot();
       const index = next.findIndex(n => n.id === note.id);
-      if (index < 0) next.push({ ...note });
+      const existing = next[index];
+      if (!existing) next.push({ ...note });
       else {
-        if (note.createdAt !== next[index].createdAt || note.updatedAt < next[index].updatedAt) {
+        if (note.createdAt !== existing.createdAt || note.updatedAt < existing.updatedAt) {
           throw new Error('Invalid note revision');
         }
         next[index] = { ...note };
