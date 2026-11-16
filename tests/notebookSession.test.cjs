@@ -34,11 +34,11 @@ test('corrupt read never writes', async () => {
   await assert.rejects(open({readAuthenticated:async()=>'{bad',replaceAuthenticated:async()=>{writes++;}}));
   assert.equal(writes,0);
 });
-test('ambiguous failed write blocks further writes and preserves visible state', async () => {
+test('ambiguous failed write blocks further access until reopening', async () => {
   let writes=0;
   const session=await open({readAuthenticated:async()=>JSON.stringify([note]),replaceAuthenticated:async()=>{writes++;throw Error('failure');}});
   await assert.rejects(session.remove('n1'));
-  assert.equal(session.snapshot().length,1);
+  assert.throws(()=>session.snapshot());
   await assert.rejects(session.save({...note,body:'new'}));
   assert.equal(writes,1);
 });
@@ -51,4 +51,26 @@ test('concurrent mutation is rejected while first write is pending', async () =>
   release();
   await pending;
   assert.equal(session.snapshot().length,1);
+});
+
+test('closed session rejects reads and mutations',async()=>{
+  let writes=0;
+  const session=await open({readAuthenticated:async()=>JSON.stringify([note]),replaceAuthenticated:async()=>{writes++;}});
+  session.close();
+  session.close();
+  assert.throws(()=>session.snapshot());
+  await assert.rejects(session.save(note));
+  await assert.rejects(session.remove('n1'));
+  assert.equal(writes,0);
+});
+test('closing during an in-flight write does not reopen the session',async()=>{
+  let release;
+  const session=await open({readAuthenticated:async()=>null,replaceAuthenticated:()=>new Promise(r=>{release=r;})});
+  const pending=session.save(note);
+  const rejected=assert.rejects(pending);
+  session.close();
+  release();
+  await rejected;
+  assert.throws(()=>session.snapshot());
+  await assert.rejects(session.save(note));
 });
