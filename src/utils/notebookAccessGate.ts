@@ -9,9 +9,13 @@ export function createNotebookAccessGate() {
   let generation = 0;
   let session: Session | null = null;
   let opening = false;
+  let drain: Promise<void> = Promise.resolve();
   function lock() {
     generation++;
-    session?.close();
+    if (session) {
+      session.close();
+      drain = session.whenIdle();
+    }
     session = null;
   }
   return {
@@ -21,6 +25,8 @@ export function createNotebookAccessGate() {
       const token = ++generation;
       opening = true;
       try {
+        await drain;
+        if (token !== generation) throw new Error('Notebook locked during opening');
         const candidate = await openNotebookSession(vault);
         if (token !== generation) {
           candidate.close();
