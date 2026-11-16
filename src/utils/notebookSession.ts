@@ -11,6 +11,8 @@ export async function openNotebookSession(vault: NotebookVault) {
   const raw = await vault.readAuthenticated();
   let current = raw === null ? [] : decodePersonalNotebook(raw);
   let writing = false;
+  let settled: Promise<void> = Promise.resolve();
+  let finishWrite: (() => void) | undefined;
   let blocked = false;
   let closed = false;
 
@@ -27,6 +29,7 @@ export async function openNotebookSession(vault: NotebookVault) {
     if (closed || blocked || writing) throw new Error('Notebook unavailable for writing');
     const validated = decodePersonalNotebook(JSON.stringify(next));
     writing = true;
+    settled = new Promise<void>(resolve => { finishWrite = resolve; });
     try {
       await vault.replaceAuthenticated(JSON.stringify(validated));
       if (closed) throw new Error('Notebook session closed during save');
@@ -37,11 +40,14 @@ export async function openNotebookSession(vault: NotebookVault) {
       throw new Error('Notebook save could not be confirmed');
     } finally {
       writing = false;
+      finishWrite?.();
+      finishWrite = undefined;
     }
   }
 
   return {
     snapshot,
+    whenIdle: () => settled,
     close() {
       closed = true;
       current = [];
