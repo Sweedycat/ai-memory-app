@@ -1,4 +1,4 @@
-import { decodePersonalNotebook, PersonalNote } from './personalNotebook';
+import { decodePersonalNotebook, type PersonalNote } from './personalNotebook';
 
 // Adapter contract: authenticated encryption and atomic durable replacement
 // must be provided by a reviewed implementation. No plaintext adapter here.
@@ -12,17 +12,24 @@ export async function openNotebookSession(vault: NotebookVault) {
   let current = raw === null ? [] : decodePersonalNotebook(raw);
   let writing = false;
   let blocked = false;
+  let closed = false;
+
+  function assertOpen() {
+    if (closed || blocked) throw new Error('Notebook session unavailable');
+  }
 
   function snapshot(): PersonalNote[] {
+    assertOpen();
     return current.map(note => ({ ...note }));
   }
 
   async function commit(next: PersonalNote[]): Promise<void> {
-    if (blocked || writing) throw new Error('Notebook unavailable for writing');
+    if (closed || blocked || writing) throw new Error('Notebook unavailable for writing');
     const validated = decodePersonalNotebook(JSON.stringify(next));
     writing = true;
     try {
       await vault.replaceAuthenticated(JSON.stringify(validated));
+      if (closed) throw new Error('Notebook session closed during save');
       current = validated;
     } catch {
       // An ambiguous write result requires reopening and authenticating.
@@ -35,6 +42,10 @@ export async function openNotebookSession(vault: NotebookVault) {
 
   return {
     snapshot,
+    close() {
+      closed = true;
+      current = [];
+    },
     async save(note: PersonalNote) {
       const next = snapshot();
       const index = next.findIndex(n => n.id === note.id);
@@ -48,6 +59,7 @@ export async function openNotebookSession(vault: NotebookVault) {
       await commit(next);
     },
     async remove(id: string) {
+      assertOpen();
       if (!current.some(n => n.id === id)) throw new Error('Unknown note');
       await commit(current.filter(n => n.id !== id));
     },
