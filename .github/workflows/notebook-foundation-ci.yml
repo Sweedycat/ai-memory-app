@@ -1,0 +1,23 @@
+name: Notebook foundation verification
+on:
+  push:
+    branches:
+      - feature/personal-notebook-foundation
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Check npm DNS
+        run: node -e "require('node:dns').lookup('registry.npmjs.org', (err) => { if (err) { console.error(err.code); process.exitCode = 1; } })"
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run test:unit
