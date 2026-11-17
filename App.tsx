@@ -17,8 +17,9 @@ import {
 } from 'react-native';
 
 import { useOwnerControls } from './src/components/OwnerProfileGate';
+import { MemorySaveNotice } from './src/components/MemorySaveNotice';
 import { mockPeople } from './src/data/mockPeople';
-import { usePersistentPeople } from './src/hooks/usePersistentPeople';
+import { usePersistentPeople, type PeopleSaveState } from './src/hooks/usePersistentPeople';
 import { MemoryFollowUp, MemoryPerson } from './src/types';
 import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
 import { createInteractionTimestamp, formatInteractionDate } from './src/utils/interactionDates';
@@ -120,7 +121,7 @@ function sortFollowUps(a: MemoryPerson, b: MemoryPerson) {
 }
 
 export default function App() {
-  const [people, setPeople, isReady, loadError] = usePersistentPeople(mockPeople);
+  const [people, setPeople, isReady, loadError, saveState] = usePersistentPeople(mockPeople);
   const { openSettings } = useOwnerControls();
   const [screen, setScreen] = useState<Screen>('home');
   const [query, setQuery] = useState('');
@@ -618,7 +619,7 @@ export default function App() {
       : defaultCustomReminder();
 
     return (
-      <Page key={screen}>
+      <Page key={screen} saveState={saveState}>
         <Back onPress={() => setScreen(isEdit ? 'detail' : 'home')} />
         <Text style={styles.titleSmall}>{isEdit ? 'Edit person' : 'Add a person'}</Text>
         <Text style={styles.sub}>
@@ -711,7 +712,7 @@ export default function App() {
 
   if (screen === 'detail' && selected) {
     return (
-      <Page key={screen}>
+      <Page key={screen} saveState={saveState}>
         <Back onPress={() => setScreen('home')} />
 
         <View style={styles.profile}>
@@ -846,7 +847,7 @@ export default function App() {
   }
 
   return (
-    <Page key="home">
+    <Page key="home" saveState={saveState}>
       <View style={styles.hero}>
         <View style={styles.heroTop}>
           <Text style={styles.brand}>AI MEMORY</Text>
@@ -979,7 +980,7 @@ export default function App() {
   );
 }
 
-function Page({ children }: { children: React.ReactNode }) {
+function Page({ children, saveState }: { children: React.ReactNode; saveState?: PeopleSaveState }) {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="light-content" />
@@ -990,6 +991,7 @@ function Page({ children }: { children: React.ReactNode }) {
       >
         {children}
       </ScrollView>
+      {saveState && <MemorySaveNotice {...saveState} />}
     </SafeAreaView>
   );
 }

@@ -99,6 +99,10 @@ Policy sources: [README](README.md), [branch and version policy](docs/branch-pol
 
 ## 15. Costs and service ownership
 
+- **BOOTSTRAP FIRST — REVENUE FUNDED GROWTH. Earn first. Expand second.** The company must not depend on loans, external credit, anticipated subscriptions or pending store settlements. The mandatory [financial policy](docs/financial-policy.md) governs service proposals and activation.
+- Before the first actual revenue settlement into the company account, do not activate paid AI APIs, usage-based paid services, paid cloud infrastructure, new subscriptions/purchases, uncontrolled consumption billing or trials that automatically incur paid obligations. No mandatory external AI dependency. Prepare disabled, provider-independent interfaces only where useful.
+- Every paid service requires explicit owner approval, including after settlement. Before proposing activation, verify settled funds, taxes/refunds, operating reserves, expected and growth-stressed costs, hard spending controls and ability to fulfill subscription obligations. Target a 90-day operating reserve before significant recurring expansion; model registered, active and paid users separately at 100 through 1,000,000 registered users. Never enable billed AI from subscriber counts alone.
+- Before using a free service, verify commercial rights, privacy, free-tier limits, no automatic paid conversion/unexpected billing, and safe limit exhaustion. Unknown terms block activation. Paid features default disabled; live billing, marketing publication and unsupported premium promises require separate owner authorization.
 - No new paid services, subscriptions, build credits, hosted storage, or billable integrations without explicit owner approval. Do not treat a free trial or available billing credentials as approval for later charges.
 - Preserve user-owned backup storage and the existing project/account choices. Present concrete scope/cost implications for a necessary approval; do not purchase or provision first. Owner approval is also required for exceptions to the no developer-hosted backup-storage policy.
 

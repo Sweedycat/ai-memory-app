@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,6 +16,7 @@ import {
 import { BugReportPanel } from './BugReportPanel';
 import { ReminderPermissionGate } from './ReminderPermissionGate';
 import { SettingsPanel } from './SettingsPanel';
+import { ownerProfileEn } from '../strings/ownerProfile.en';
 
 type OwnerProfileGateProps = {
   children: React.ReactNode;
@@ -50,10 +51,13 @@ const emptyProfile: OwnerProfile = {
 };
 
 function normalizeProfile(value: unknown): OwnerProfile | null {
-  if (!value || typeof value !== 'object') return null;
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
 
   const candidate = value as Partial<OwnerProfile>;
   if (typeof candidate.name !== 'string' || !candidate.name.trim()) return null;
+  // Legacy profiles may omit optional fields, but malformed fields must not be discarded.
+  if ((candidate.preferredName !== undefined && typeof candidate.preferredName !== 'string') ||
+      (candidate.role !== undefined && typeof candidate.role !== 'string')) return null;
 
   return {
     name: candidate.name.trim(),
@@ -66,6 +70,9 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   const [profile, setProfile] = useState<OwnerProfile | null>(null);
   const [draft, setDraft] = useState<OwnerProfile>(emptyProfile);
   const [ready, setReady] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+  const loading = useRef(false);
   const [editing, setEditing] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [reportingBug, setReportingBug] = useState(false);
@@ -75,21 +82,26 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
 
   useEffect(() => {
     let mounted = true;
+    loading.current = true;
 
     async function loadProfile() {
       try {
         const saved = await AsyncStorage.getItem(STORAGE_KEY);
-        if (saved && mounted) {
-          const parsed = normalizeProfile(JSON.parse(saved));
-          if (parsed) {
-            setProfile(parsed);
-            setDraft(parsed);
-          }
-        }
+        const parsed = saved === null ? null : normalizeProfile(JSON.parse(saved));
+        if (saved !== null && !parsed) throw new Error('Invalid owner profile');
+        if (!mounted) return;
+        setProfile(parsed);
+        setDraft(parsed ?? emptyProfile);
+        setLoadError(false);
+        setReady(true);
       } catch {
-        // Corrupt or unavailable local data safely falls back to onboarding.
+        // Preserve original bytes and keep both onboarding and private content closed.
+        if (mounted) {
+          setReady(false);
+          setLoadError(true);
+        }
       } finally {
-        if (mounted) setReady(true);
+        if (mounted) loading.current = false;
       }
     }
 
@@ -98,7 +110,15 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [loadAttempt]);
+
+  function retryProfileLoad() {
+    if (loading.current) return;
+    loading.current = true;
+    setReady(false);
+    setLoadError(false);
+    setLoadAttempt(attempt => attempt + 1);
+  }
 
   const displayName = useMemo(
     () => profile?.preferredName.trim() || profile?.name.trim() || 'Owner',
@@ -114,7 +134,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   );
 
   async function saveProfile() {
-    if (!draft.name.trim() || saving) return;
+    if (!ready || loadError || loading.current || !draft.name.trim() || saving) return;
 
     const next: OwnerProfile = {
       name: draft.name.trim(),
@@ -159,6 +179,25 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
       setReturnToSettingsAfterEdit(false);
       setSettingsOpen(true);
     }
+  }
+
+  if (loadError) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <StatusBar barStyle="light-content" />
+        <View style={styles.center}>
+          <Text style={styles.brand}>AI MEMORY</Text>
+          <Text accessibilityRole="header" style={styles.title}>{ownerProfileEn.loadTitle}</Text>
+          <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.body}>
+            {ownerProfileEn.loadExplanation}
+          </Text>
+          <Pressable accessibilityRole="button" accessibilityLabel={ownerProfileEn.retryLoad}
+            onPress={retryProfileLoad} style={styles.primaryButton}>
+            <Text style={styles.primaryButtonText}>{ownerProfileEn.retryLoad}</Text>
+          </Pressable>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   if (!ready) {

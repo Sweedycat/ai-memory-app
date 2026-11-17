@@ -1,4 +1,48 @@
-# Omega engineering handoff — Phase 14 recovery
+# Omega engineering handoff
+
+## Current continuation — Master Development V2, 2026-11-17
+
+Current development branch: `development/omega-commercial-mvp`, created from
+clean, remote-verified `4bd815625f1456e116aaa5f8358549b40318989a`. The owner now
+authorizes continued safe application milestones and normal validated checkpoint
+commits/pushes. No paid activation, force push, main/preview merge or production
+release. APK/signing/install still require their existing separate authorization
+and owner-participated physical acceptance. Historical scope below is retained
+for Phase 14 provenance; it does not limit or authorize the current task.
+
+Read [financial policy](financial-policy.md) and AGENTS Rule 15: bootstrap first,
+actual settled revenue before paid-service proposals, all eight activation gates,
+90-day reserve target, five-scale exposure worksheet, owner approval even after
+settlement. No services, credentials, subscription billing or real app data used.
+
+Delivered current app changes: full-base conditional Notebook saves/deletes;
+serialized people writes, persistent save notice and explicit latest-state retry;
+no automatic people write on open; failed person edits retained in process across
+gate remounts; owner-profile read/validation failures block onboarding/private
+content and allow explicit read-only retry. Shapes/storage keys, intentional empty
+lists, legacy records, App Lock, notifications, package IDs/signing/versioning and
+the MVP local-encryption exception are preserved. Unsaved changes cannot survive
+process death; a reminder can exist even if its people write fails. Retry does
+not reschedule native reminders.
+
+See [current validation](omega-commercial-mvp-validation.md) for exact tests,
+frozen review identity and remaining gates, and
+[product inventory](commercial-mvp-status.md) for implemented/planned boundaries.
+Organic launch preparation is source documentation only; nothing published.
+Resolve the containing commit with `git log -1 --format=%H --
+docs/omega-commercial-mvp-validation.md`; verify remote equality and exact-SHA CI
+instead of assuming a static document is fresh.
+
+Next narrow P0 milestone: Notebook uncertain-save reopen/reconciliation with
+draft preservation and full-base conflict handling, then independently reviewed
+durable ciphertext/key lifecycle and App Lock/native acceptance before mounting.
+Actual Notebook, Drive backup/restore, paid AI/BYOK, voice, wearables and billing
+remain disabled. Do not call this a complete Notebook or commercial MVP.
+Residual audit: three moderate entries, zero high/critical; no forced downgrade.
+Physical Android acceptance and exact installed package/certificate/versionCode
+remain unverified. Remaining owner version-policy ambiguities are unchanged.
+
+## Historical Phase 14 recovery handoff
 
 Date: 2026-11-17. Current owner task authorizes application blocker repairs,
 independent review, a separate integration candidate, and runtime-approved normal

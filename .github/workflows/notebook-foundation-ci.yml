@@ -5,6 +5,7 @@ on:
       - feature/personal-notebook-foundation
       - repair/omega-phase14-notebook
       - integration/omega-notebook-phase14
+      - development/omega-commercial-mvp
   workflow_dispatch:
 permissions:
   contents: read

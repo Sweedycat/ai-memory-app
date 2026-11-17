@@ -22,11 +22,11 @@ const note = {id:'n1', title:'Synthetic', body:'Test only',
 test('save and remove only publish after persistence succeeds', async () => {
   let raw = null;
   const session = await open({readAuthenticated:async()=>raw, replaceAuthenticated:async v=>{raw=v;}});
-  await session.save(note);
+  await session.save(note, null);
   assert.equal(JSON.parse(raw)[0].id,'n1');
   session.snapshot()[0].body = 'changed copy';
   assert.equal(session.snapshot()[0].body,note.body);
-  await session.remove('n1');
+  await session.remove('n1', note);
   assert.equal(raw,'[]');
 });
 test('saving an existing note replaces it only after persistence and preserves other notes', async () => {
@@ -44,7 +44,7 @@ test('saving an existing note replaces it only after persistence and preserves o
   const revision = { ...note, title: 'Revised synthetic note', body: 'Updated test only',
     updatedAt: '2026-11-17T12:00:00.000Z' };
   const original = raw;
-  const pending = session.save(revision);
+  const pending = session.save(revision, note);
   assert.equal(raw, original);
   assert.equal(JSON.stringify(session.snapshot()), original);
   release();
@@ -71,17 +71,136 @@ test('invalid existing-note revisions leave original bytes and session state unc
     { ...existing, body: 'Changed creation time', createdAt: '2026-11-15T12:00:00.000Z' },
     { ...existing, body: 'Stale revision', updatedAt: note.updatedAt },
   ]) {
-    await assert.rejects(session.save(revision), /Invalid note revision/);
+    await assert.rejects(session.save(revision, existing), /Invalid note revision/);
     assert.equal(writes, 0);
     assert.equal(raw, original);
     assert.equal(JSON.stringify(session.snapshot()), original);
   }
   const valid = { ...existing, body: 'Valid later revision', updatedAt: '2026-11-18T12:00:00.000Z' };
-  await session.save(valid);
+  await session.save(valid, existing);
   assert.equal(writes, 1);
   assert.deepEqual(JSON.parse(raw), [valid]);
   assert.equal(JSON.stringify(session.snapshot()), raw);
 });
+test('stale edits reject equal and later timestamps, then a fresh base can retry', async () => {
+  const other = { ...note, id: 'n2', body: 'Unrelated synthetic note' };
+  let raw = JSON.stringify([note, other]);
+  let writes = 0;
+  const session = await open({
+    readAuthenticated: async () => raw,
+    replaceAuthenticated: async value => { writes++; raw = value; },
+  });
+  const firstBase = session.snapshot()[0];
+  const staleBase = session.snapshot()[0];
+  const firstEdit = { ...firstBase, body: 'First editor saved', updatedAt: '2026-11-17T12:00:00.000Z' };
+  await session.save(firstEdit, firstBase);
+  const confirmed = raw;
+  for (const updatedAt of [firstEdit.updatedAt, '2026-11-18T12:00:00.000Z']) {
+    await assert.rejects(session.save({ ...staleBase, body: 'Stale editor draft', updatedAt }, staleBase), /Notebook changed/);
+    assert.equal(raw, confirmed);
+    assert.equal(writes, 1);
+    assert.equal(JSON.stringify(session.snapshot()), confirmed);
+  }
+  const freshBase = session.snapshot()[0];
+  // Equal timestamps are safe when the complete base still matches.
+  const resolved = { ...freshBase, body: 'Reviewed fresh editor draft' };
+  await session.save(resolved, freshBase);
+  assert.equal(writes, 2);
+  assert.deepEqual(JSON.parse(raw), [resolved, other]);
+});
+
+test('save and delete compare every base field without overwriting or blocking the session', async () => {
+  const original = JSON.stringify([note]);
+  let raw = original;
+  let writes = 0;
+  const session = await open({
+    readAuthenticated: async () => raw,
+    replaceAuthenticated: async value => { writes++; raw = value; },
+  });
+  for (const changedBase of [
+    { ...note, id: 'different-id' },
+    { ...note, title: 'Different title' },
+    { ...note, body: 'Different body' },
+    { ...note, createdAt: '2026-11-15T12:00:00.000Z' },
+    { ...note, updatedAt: '2026-11-17T12:00:00.000Z' },
+  ]) {
+    await assert.rejects(session.save({ ...note, body: 'Proposed draft' }, changedBase), /Notebook changed/);
+    await assert.rejects(session.remove(note.id, changedBase), /Notebook changed/);
+    assert.equal(raw, original);
+    assert.equal(writes, 0);
+    assert.equal(JSON.stringify(session.snapshot()), original);
+  }
+  await session.save({ ...note, body: 'Valid draft' }, { ...note });
+  assert.equal(writes, 1);
+});
+
+test('explicit creation cannot replace an existing ID and stale editing cannot resurrect a deleted note', async () => {
+  let raw = JSON.stringify([note]);
+  let writes = 0;
+  const session = await open({
+    readAuthenticated: async () => raw,
+    replaceAuthenticated: async value => { writes++; raw = value; },
+  });
+  const original = raw;
+  await assert.rejects(session.save({ ...note, body: 'Duplicate creation' }, null), /Notebook changed/);
+  assert.equal(raw, original);
+  assert.equal(writes, 0);
+  const staleBase = session.snapshot()[0];
+  await session.remove(note.id, staleBase);
+  assert.equal(raw, '[]');
+  assert.equal(writes, 1);
+  await assert.rejects(session.save({ ...note, body: 'Stale deleted draft' }, staleBase), /Notebook changed/);
+  await assert.rejects(session.remove(note.id, staleBase), /Unknown note/);
+  assert.equal(raw, '[]');
+  assert.equal(writes, 1);
+  assert.equal(session.snapshot().length, 0);
+  await session.save({ ...note, id: 'new-id' }, null);
+  assert.equal(writes, 2);
+  assert.equal(JSON.parse(raw)[0].id, 'new-id');
+});
+
+test('a stale delete cannot discard an edit and a freshly reviewed delete succeeds', async () => {
+  const other = { ...note, id: 'n2' };
+  let raw = JSON.stringify([note, other]);
+  let writes = 0;
+  const session = await open({
+    readAuthenticated: async () => raw,
+    replaceAuthenticated: async value => { writes++; raw = value; },
+  });
+  const staleBase = session.snapshot()[0];
+  await session.save({ ...note, body: 'Edit before deletion', updatedAt: '2026-11-17T12:00:00.000Z' }, staleBase);
+  const confirmed = raw;
+  await assert.rejects(session.remove(note.id, staleBase), /Notebook changed/);
+  assert.equal(raw, confirmed);
+  assert.equal(writes, 1);
+  assert.equal(JSON.stringify(session.snapshot()), confirmed);
+  await session.remove(note.id, session.snapshot()[0]);
+  assert.equal(writes, 2);
+  assert.deepEqual(JSON.parse(raw), [other]);
+});
+
+test('omitted and malformed expectations never write, including creation into an empty notebook', async () => {
+  for (const initial of [null, '[]', JSON.stringify([note])]) {
+    let raw = initial;
+    let writes = 0;
+    const session = await open({
+      readAuthenticated: async () => raw,
+      replaceAuthenticated: async value => { writes++; raw = value; },
+    });
+    // Exercise untyped callers as well as the required TypeScript arguments.
+    await assert.rejects(session.save(note));
+    await assert.rejects(session.remove(note.id));
+    for (const expected of [undefined, {}, [], 'invalid']) {
+      await assert.rejects(session.save(note, expected));
+      await assert.rejects(session.remove(note.id, expected));
+    }
+    await assert.rejects(session.remove(note.id, null));
+    assert.equal(raw, initial);
+    assert.equal(writes, 0);
+    assert.equal(JSON.stringify(session.snapshot()), initial === null ? '[]' : initial);
+  }
+});
+
 test('corrupt read never writes', async () => {
   let writes=0;
   await assert.rejects(open({readAuthenticated:async()=>'{bad',replaceAuthenticated:async()=>{writes++;}}));
@@ -90,16 +209,16 @@ test('corrupt read never writes', async () => {
 test('ambiguous failed write blocks further access until reopening', async () => {
   let writes=0;
   const session=await open({readAuthenticated:async()=>JSON.stringify([note]),replaceAuthenticated:async()=>{writes++;throw Error('failure');}});
-  await assert.rejects(session.remove('n1'));
+  await assert.rejects(session.remove('n1', note));
   assert.throws(()=>session.snapshot());
-  await assert.rejects(session.save({...note,body:'new'}));
+  await assert.rejects(session.save({...note,body:'new'}, note));
   assert.equal(writes,1);
 });
 test('concurrent mutation is rejected while first write is pending', async () => {
   let release;
   const session=await open({readAuthenticated:async()=>null,replaceAuthenticated:()=>new Promise(r=>{release=r;})});
-  const pending=session.save(note);
-  await assert.rejects(session.save({...note,id:'n2'}));
+  const pending=session.save(note, null);
+  await assert.rejects(session.save({...note,id:'n2'}, null));
   assert.equal(session.snapshot().length,0);
   release();
   await pending;
@@ -112,18 +231,18 @@ test('closed session rejects reads and mutations',async()=>{
   session.close();
   session.close();
   assert.throws(()=>session.snapshot());
-  await assert.rejects(session.save(note));
-  await assert.rejects(session.remove('n1'));
+  await assert.rejects(session.save(note, note));
+  await assert.rejects(session.remove('n1', note));
   assert.equal(writes,0);
 });
 test('closing during an in-flight write does not reopen the session',async()=>{
   let release;
   const session=await open({readAuthenticated:async()=>null,replaceAuthenticated:()=>new Promise(r=>{release=r;})});
-  const pending=session.save(note);
+  const pending=session.save(note, null);
   const rejected=assert.rejects(pending);
   session.close();
   release();
   await rejected;
   assert.throws(()=>session.snapshot());
-  await assert.rejects(session.save(note));
+  await assert.rejects(session.save(note, null));
 });

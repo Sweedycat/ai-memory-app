@@ -50,7 +50,7 @@ test('reopening waits for prior native write to settle',async()=>{
   let release, raw=null, reads=0;
   const storage={readAuthenticated:async()=>{reads++;return raw;},replaceAuthenticated:v=>new Promise(r=>{release=()=>{raw=v;r();};})};
   const old=await gate.unlock(storage);
-  const pending=old.save(note);
+  const pending=old.save(note, null);
   const rejected=assert.rejects(pending);
   gate.lock();
   const reopening=gate.unlock(storage);

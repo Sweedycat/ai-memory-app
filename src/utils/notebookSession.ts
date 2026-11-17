@@ -7,6 +7,12 @@ export interface NotebookVault {
   replaceAuthenticated(plaintext: string): Promise<void>;
 }
 
+function matchesExpected(actual: PersonalNote, expected: PersonalNote): boolean {
+  return expected !== null && typeof expected === 'object' && !Array.isArray(expected) &&
+    actual.id === expected.id && actual.title === expected.title && actual.body === expected.body &&
+    actual.createdAt === expected.createdAt && actual.updatedAt === expected.updatedAt;
+}
+
 export async function openNotebookSession(vault: NotebookVault) {
   const raw = await vault.readAuthenticated();
   let current = raw === null ? [] : decodePersonalNotebook(raw);
@@ -52,12 +58,19 @@ export async function openNotebookSession(vault: NotebookVault) {
       closed = true;
       current = [];
     },
-    async save(note: PersonalNote) {
+    // Expectations protect edits within this session, not writes by other vault instances.
+    // null explicitly creates a new note; an existing note requires its complete base.
+    async save(note: PersonalNote, expected: PersonalNote | null) {
       const next = snapshot();
       const index = next.findIndex(n => n.id === note.id);
       const existing = next[index];
-      if (!existing) next.push({ ...note });
-      else {
+      if (expected === null) {
+        if (existing) throw new Error('Notebook changed since editing began');
+        next.push({ ...note });
+      } else {
+        if (!existing || !matchesExpected(existing, expected)) {
+          throw new Error('Notebook changed since editing began');
+        }
         if (note.createdAt !== existing.createdAt || note.updatedAt < existing.updatedAt) {
           throw new Error('Invalid note revision');
         }
@@ -65,10 +78,14 @@ export async function openNotebookSession(vault: NotebookVault) {
       }
       await commit(next);
     },
-    async remove(id: string) {
+    async remove(id: string, expected: PersonalNote) {
       assertOpen();
-      if (!current.some(n => n.id === id)) throw new Error('Unknown note');
+      const existing = current.find(n => n.id === id);
+      if (!existing) throw new Error('Unknown note');
+      if (!matchesExpected(existing, expected)) throw new Error('Notebook changed since editing began');
       await commit(current.filter(n => n.id !== id));
     },
   };
 }
+
+export type NotebookSession = Awaited<ReturnType<typeof openNotebookSession>>;
