@@ -1,5 +1,29 @@
 # Omega engineering handoff
 
+## Latest bounded milestone — Notebook editor and encrypted draft recovery
+
+Resource-limited task starts at remote-verified clean
+`8a41e42ff51678338977031f519e27e91ea3c6f2` on the same development branch.
+Only one milestone: an unmounted Notebook editor/controller with explicit
+encrypted draft checkpoint, authenticated outcome review, safe recovered-save
+and confirmed discard. Existing recovery journal/schema/key management are reused.
+No automatic typing autosave, additional product features, dependencies, paid
+services or production activation. Founder financial/payment policies preserved.
+
+`checkpointDraft` validates the original full note/create expectation, seals the
+candidate and durably stages only the encrypted intent; active/previous remain
+unchanged. Closing after acknowledgement can retain that draft for reopening.
+Uncheckpointed text can still be lost on process death. Foreign recovery intents,
+conflicts and uncertain outcomes are never blindly applied. Background revokes
+the workspace and hides private fields; disposed editors cannot report late saves.
+
+See [editor validation](notebook-editor-recovery-validation.md) for checks, exact
+review digest and gates. Resolve its containing commit, verify remote/CI on
+resume, and preserve all newer work. Production flag remains false; Android
+durability/App Lock/TalkBack and approved activation are still outstanding.
+Next focused work is native acceptance preparation/editor navigation behind the
+existing gate, not more product features or paid payment infrastructure.
+
 ## Current continuation — Notebook foundation and payment addendum
 
 Task baseline: clean `development/omega-commercial-mvp` at

@@ -22,6 +22,7 @@ const sessions = load('notebookSession', { './personalNotebook': model });
 const gates = load('notebookAccessGate', { './notebookSession': sessions });
 const { openPersistentNotebook } = load('persistentNotebook', {
   './personalNotebook': model, './encryptedNotebookVault': encrypted, './notebookAccessGate': gates,
+  './notebookSession': sessions,
 });
 const { openNotebookDatabase } = load('sqliteNotebookDatabase');
 const digest = async value => crypto.createHash('sha256').update(value).digest('hex');

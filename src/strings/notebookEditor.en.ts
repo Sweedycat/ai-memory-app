@@ -1,0 +1,16 @@
+export const notebookEditorEn = {
+  heading: 'Private note', title: 'Title', body: 'Note', titleLabel: 'Note title', bodyLabel: 'Note body',
+  save: 'Save note', checkpoint: 'Keep encrypted draft', busy: 'Checking and saving…', close: 'Close',
+  recoverable: 'An encrypted draft is ready. Review it before saving to your notebook.',
+  memoryOnly: 'This draft is still only in memory. Retry saving before closing to keep it.',
+  commit: 'Save recovered draft', discard: 'Discard encrypted draft',
+  discardWarning: 'Discard this encrypted draft? Your current saved note will stay unchanged.',
+  confirmDiscard: 'Confirm discard', keep: 'Keep draft',
+  uncertain: 'The result could not be confirmed. Check the saved state before trying again.',
+  review: 'Check saved state', conflict: 'The saved note changed. This draft cannot overwrite it.',
+  current: 'Currently saved', missing: 'This note is no longer saved.',
+  unavailable: 'Notebook access is unavailable. Close and reopen it safely.',
+  saved: 'Note saved.', protectedClose: 'Close and keep encrypted draft',
+  unsaved: 'This text has not been saved. Close without keeping these edits?',
+  confirmClose: 'Close without saving', stay: 'Continue editing',
+} as const;

@@ -1,0 +1,146 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const { load, fixture, note } = require('./helpers/notebookRuntime.cjs');
+const { createNotebookEditor: create } = load('notebookEditor');
+const target = { kind: 'create', id: note.id, createdAt: note.createdAt };
+const now = () => '2026-11-17T11:00:00.000Z';
+
+test('explicit encrypted draft survives recreation without changing active notes and requires a save choice', async t => {
+  const f = await fixture(t), w = await f.open(), e = create(w, target, now);
+  e.change({ title: note.title }); e.change({ body: note.body });
+  await e.checkpoint();
+  assert.equal(e.getView().mode, 'recoverable');
+  assert.equal(e.getView().checkpointed, true);
+  const staged = await f.database.read();
+  assert.equal(staged.active, null); assert.ok(staged.draft);
+  assert.ok(!fs.readFileSync(f.filename).includes(Buffer.from(note.body)));
+  e.dispose(); w.close(); await w.whenIdle();
+  const reopened = await f.open(), recovered = create(reopened, target, now);
+  assert.equal(recovered.getView().body, note.body);
+  assert.equal(recovered.getView().mode, 'recoverable');
+  assert.deepEqual(reopened.getSession().snapshot(), []);
+  recovered.change({ body: 'Unreviewed replacement' });
+  assert.equal(recovered.getView().body, note.body);
+  await recovered.commitRecovery();
+  assert.equal(recovered.getView().mode, 'saved');
+  assert.equal(reopened.getSession().snapshot()[0].body, note.body);
+  assert.equal((await f.database.read()).draft, null);
+  reopened.close();
+});
+test('discard preserves active bytes, resets editor to saved content and does not resurrect a deleted note', async t => {
+  const f = await fixture(t), w = await f.open();
+  await w.getSession().save(note, null);
+  const active = (await f.database.read()).active;
+  const e = create(w, { kind: 'edit', id: note.id }, now);
+  e.change({ body: 'Synthetic edited draft' }); await e.checkpoint();
+  await e.discardRecovery();
+  assert.equal((await f.database.read()).active, active);
+  assert.equal(e.getView().body, note.body); assert.equal(e.getView().mode, 'editing');
+  const other = await f.open(); await other.getSession().remove(note.id, note); other.close();
+  e.change({ body: 'Stale resurrection attempt' }); await e.save();
+  await e.review();
+  assert.equal(e.getView().mode, 'conflict'); assert.equal(e.getView().current, null);
+  const before = JSON.stringify(await f.database.read());
+  await e.commitRecovery();
+  assert.equal(JSON.stringify(await f.database.read()), before);
+  w.close();
+});
+test('lost commit acknowledgement is checked once and never blindly repeats the write', async t => {
+  const f = await fixture(t), w = await f.open(), e = create(w, target, now);
+  e.change({ title: note.title, body: note.body });
+  const replace = f.database.replace;
+  f.database.replace = async (expected, next) => {
+    const result = await replace(expected, next);
+    if (next.draft === null) throw Error('Synthetic lost acknowledgement');
+    return result;
+  };
+  await e.save(); assert.equal(e.getView().mode, 'uncertain');
+  const saved = JSON.stringify(await f.database.read());
+  await e.save(); assert.equal(JSON.stringify(await f.database.read()), saved);
+  f.database.replace = replace;
+  await e.review();
+  assert.equal(e.getView().mode, 'saved');
+  assert.equal(JSON.stringify(await f.database.read()), saved);
+  w.close();
+});
+test('failed encrypted staging retains editor text and needs authenticated review before another action', async t => {
+  const f = await fixture(t), w = await f.open(), e = create(w, target, now);
+  e.change({ title: note.title, body: note.body });
+  const replace = f.database.replace;
+  f.database.replace = async () => { throw Error('Synthetic full disk'); };
+  await e.checkpoint();
+  assert.equal(e.getView().mode, 'unavailable');
+  assert.equal(e.getView().dirty, true); assert.equal(e.getView().checkpointed, false);
+  f.database.replace = replace;
+  await e.review();
+  assert.equal(e.getView().body, note.body); assert.equal(e.getView().mode, 'recoverable');
+  assert.equal(e.getView().checkpointed, false);
+  await e.commitRecovery();
+  assert.equal(e.getView().mode, 'saved'); w.close();
+});
+
+test('checkpoint cannot replace an intent produced by a previously running failed save', async t => {
+  const f = await fixture(t), w = await f.open(), replace = f.database.replace;
+  let release, writes = 0;
+  f.database.replace = async (expected, next) => {
+    if (next.draft === null) throw Error('Synthetic failed activation');
+    writes++;
+    await new Promise(resolve => { release = resolve; });
+    return replace(expected, next);
+  };
+  const save = w.getSession().save(note, null), rejected = assert.rejects(save);
+  while (!release) await new Promise(resolve => setImmediate(resolve));
+  const checkpoint = w.checkpointDraft({ ...note, id: 'second-note', body: 'Must not replace first intent' }, null);
+  const denied = assert.rejects(checkpoint, /Review existing/);
+  release(); await rejected; await denied;
+  assert.equal(writes, 1);
+  f.database.replace = replace;
+  await w.reopen();
+  assert.equal(w.getRecovery().candidate[0].id, note.id);
+  assert.equal(w.getRecovery().durable, true);
+  assert.equal(w.getSession().snapshot().length, 0);
+  w.close();
+});
+test('foreign operation or changed encrypted candidate cannot be silently adopted or committed', async t => {
+  const f = await fixture(t), w = await f.open(), e = create(w, target, now);
+  e.change({ title: note.title, body: note.body });
+  const other = await f.open();
+  await other.checkpointDraft({ ...note, id: 'other-note' }, null);
+  await e.review();
+  assert.equal(e.getView().mode, 'uncertain');
+  const before = JSON.stringify(await f.database.read());
+  await e.commitRecovery(); assert.equal(JSON.stringify(await f.database.read()), before);
+  assert.throws(() => create(w, target, now), /another operation/);
+  other.close(); w.close();
+});
+test('locking during checkpoint hides plaintext, drains the write and leaves only recoverable encrypted intent', async t => {
+  const f = await fixture(t), w = await f.open(), e = create(w, target, now);
+  e.change({ title: note.title, body: note.body });
+  const replace = f.database.replace;
+  let release;
+  f.database.replace = async (expected, next) => {
+    await new Promise(resolve => { release = resolve; }); return replace(expected, next);
+  };
+  const checkpoint = e.checkpoint();
+  while (!release) await new Promise(resolve => setImmediate(resolve));
+  e.lock(); assert.equal(e.getView().body, ''); assert.equal(e.getView().mode, 'unavailable');
+  release(); await checkpoint; await w.whenIdle();
+  assert.equal(e.getView().body, '');
+  f.database.replace = replace;
+  const reopened = await f.open();
+  assert.equal(reopened.getRecovery().status, 'retry-safe'); reopened.close();
+});
+test('concurrent button actions produce one encrypted checkpoint, and malformed/stale expectations never stage', async t => {
+  const f = await fixture(t), w = await f.open(), e = create(w, target, now);
+  e.change({ title: note.title, body: note.body });
+  const before = (await f.database.read()).revision;
+  await Promise.all([e.checkpoint(), e.checkpoint(), e.save()]);
+  assert.equal((await f.database.read()).revision, before + 1);
+  await e.discardRecovery();
+  await w.getSession().save(note, null);
+  const original = JSON.stringify(await f.database.read());
+  await assert.rejects(w.checkpointDraft({ ...note, body: 'Invalid stale draft' }, null));
+  assert.equal(JSON.stringify(await f.database.read()), original);
+  await w.reopen(); w.close();
+});

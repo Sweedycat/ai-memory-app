@@ -11,7 +11,7 @@ The owner's Master Development V2 supersedes older cloud-first roadmap language.
 | Area | Implemented source | Still needed for the requested commercial MVP |
 | --- | --- | --- |
 | People | App.tsx: readable profile identity/role/company/phone/context, notes, interactions, one open follow-up and completed history, reminders, substring search, explicit contact actions/export | Tags/topics, duplicate/ambiguous matching, multiple structured commitments; photo consent/storage review before photos |
-| Notebook | Unmounted editor/preview, strict model and conditional session; new disabled foundation: encrypted SQLite active/previous/draft, SecureStore key lifecycle, explicit save reconciliation and App Lock/background boundary | Production editor/recovery UX still unmounted. Physical Android native/key/durability acceptance and owner activation approval required; unsubmitted typing has no durable autosave |
+| Notebook | Disabled SQLite/SecureStore foundation plus unmounted editor/controller: explicit encrypted draft checkpoint, outcome review, conflict comparison, recovered-save and confirmed discard | Production navigation still unmounted. Physical Android native/key/durability/UI acceptance and owner approval required; typing is durable only after an explicit encrypted checkpoint, not by automatic autosave |
 | Persistence | people-v1 AsyncStorage; owner/privacy separate; current milestone adds serialized person saves, visible errors, explicit latest-state retry and no write merely from opening | Native interruption/low-storage acceptance; people and notification operations are still not one transaction |
 | Life management | Person-linked follow-up/reminder, completion/history and edit-time rescheduling | Independent appointments, vehicle/insurance/documents/bills/events and recurring responsibility records with completion/rescheduling |
 | Briefing | Individual memory briefing plus home daily overview of current local follow-ups: overdue, remaining today, next seven local days, undated and invalid-date review | Independent appointments, renewals and life records are not implemented; no invented dates or claim that follow-ups are all life responsibilities |
@@ -32,9 +32,9 @@ are not Android proof.
 
 1. Preserve actual data and finish current persistence fixes with independent
    frozen-diff review and exact-SHA CI. Never clear data to exercise failures.
-2. Integrate the implemented already-saved/retry-safe/conflict API into a reviewed
-   Notebook recovery/editor UX. Submitted intents can be encrypted and durably
-   staged before activation; ordinary unsubmitted typing is not checkpointed.
+2. Validate and wire the new editor/controller navigation behind the existing
+   disabled gate. Explicit encrypted checkpoint now retains a draft without
+   committing the note; ordinary typing is not automatically checkpointed.
 3. Validate the implemented SQLite/SecureStore/native factory on Android. Keep
    missing/corrupt keys and ciphertext fail-closed; no substitute keys. Prove
    physical rollback, interruption, full-storage and bounded retention before

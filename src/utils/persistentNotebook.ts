@@ -1,6 +1,7 @@
 import type { Aes256GcmBackupCipher } from './encryptedBackupEnvelope';
 import { createEncryptedNotebookVault } from './encryptedNotebookVault';
 import { createNotebookAccessGate } from './notebookAccessGate';
+import { openNotebookSession } from './notebookSession';
 import { decodePersonalNotebook, MAX_NOTEBOOK_SIZE, type PersonalNote } from './personalNotebook';
 import type { NotebookDatabase, NotebookDatabaseState } from './sqliteNotebookDatabase';
 
@@ -129,10 +130,45 @@ export async function openPersistentNotebook(
   }
   return {
     getSession() { assertOpen(); return gate.getSession(); },
-    getRecovery(): { status: NotebookRecovery; candidate: PersonalNote[] | null } {
+    getRecovery(): { status: NotebookRecovery; candidate: PersonalNote[] | null; durable: boolean } {
       assertOpen();
       if (!reviewReady) throw new Error('Notebook recovery requires authenticated reopening');
-      return { status: recovery, candidate: attempt ? attempt.candidate.map(note => ({ ...note })) : null };
+      return { status: recovery, candidate: attempt ? attempt.candidate.map(note => ({ ...note })) : null,
+        durable: state.draft !== null };
+    },
+    async checkpointDraft(note: PersonalNote, expected: PersonalNote | null) {
+      assertOpen();
+      if (!reviewReady || recovery !== 'none' || state.draft !== null || attempt !== null) {
+        throw new Error('Review existing Notebook recovery first');
+      }
+      return exclusive(async () => {
+        await pauseSession();
+        assertOpen();
+        // A save that was already running may have left a new uncertain intent
+        // during the drain. Never replace it, even if it exists only in memory.
+        if (recovery !== 'none' || state.draft !== null || attempt !== null) {
+          throw new Error('Review existing Notebook recovery first');
+        }
+        // Reuse the same conditional-create/edit validation as a committed save.
+        // This temporary session validates in memory; only the sealed intent is persisted.
+        let candidateRaw = '';
+        const validation = await openNotebookSession({ readAuthenticated: async () => base,
+          replaceAuthenticated: async value => { candidateRaw = value; } });
+        try { await validation.save(note, expected); } finally { validation.close(); }
+        const baseDigest = await digest(base);
+        assertOpen();
+        if (!/^[a-f0-9]{64}$/.test(baseDigest)) throw new Error('Notebook digest invalid');
+        attempt = { version: 1, keyId: state.keyId!, baseRevision: state.revision, baseDigest,
+          candidate: decodePersonalNotebook(candidateRaw) };
+        const journal = JOURNAL_KIND + JSON.stringify(attempt);
+        if (journal.length > MAX_JOURNAL) throw new Error('Notebook recovery too large');
+        const sealed = await seal(journal);
+        assertOpen();
+        state = await database.replace(state, { active: state.active, previous: state.previous, draft: sealed });
+        assertOpen();
+        latestSession = await gate.unlock(vault);
+        reviewReady = true;
+      });
     },
     reopen() {
       return exclusive(async () => {
