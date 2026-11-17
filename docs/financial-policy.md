@@ -118,3 +118,33 @@ five-scale worksheet and stress results, 90-day reserve assessment, enforced cap
 exhaustion fallback, subscription fulfillment, rollback/disable procedure,
 independent review where applicable and explicit owner decision. A blank or
 incomplete record is disabled status, never implicit approval.
+
+## Founder-approved multi-platform payment addendum
+
+The [payment strategy](payment-strategy.md), supplied and approved by the founder
+on 2026-11-17, is mandatory. Prepare Google Play Billing, Apple StoreKit, Patreon
+Web and first-party website subscriptions behind a provider-independent model.
+No provider, checkout, external link, webhook or billing server is activated.
+iyzico, PayTR, Stripe and Paddle are evaluation candidates, not selected vendors.
+
+Fees and channel prices must be configurable and versioned by provider, region,
+currency, effective dates and verified eligibility. The supplied reference rates
+and example prices are preserved in the strategy document as unverified planning
+inputs. Verify current official terms before implementation/commercial activation;
+never silently treat these as permanent constants or approved commercial prices.
+Founder approval is required for every final price, discount and promotion.
+
+Calculate gross revenue, platform/processing/fixed/FX/international/payout fees,
+taxes/VAT, refunds, chargebacks, infrastructure, AI and acquisition costs
+separately before net contribution margin. Track settlement dates and spendable
+cash separately; receivables remain unavailable. Extend the five-scale worksheet
+above by channel and stress case; preserve all eight activation gates and the
+90-day operating reserve target. Provider commission savings may fund sustainable
+customer discounts only after founder approval and verified regional compliance.
+
+Preserve existing entitlements and core functionality. Prevent accidental duplicate
+subscriptions; switching channels never automatically cancels an existing plan.
+Client payment claims cannot grant benefits. Receipt ownership, server validation,
+signed webhook verification, idempotent event handling, expiry/refund/chargeback
+and secure account linking are future acceptance requirements. Do not collect raw
+card details. Use approved hosted checkout/tokenization only after authorization.

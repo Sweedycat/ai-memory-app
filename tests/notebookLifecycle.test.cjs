@@ -1,0 +1,40 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const { load } = require('./helpers/notebookRuntime.cjs');
+const { createNotebookLifecycle: create } = load('notebookLifecycle');
+test('lock revokes current workspace and next unlock waits for prior durable write drain', async () => {
+  let release, closed = false, opens = 0;
+  const drain = new Promise(resolve => { release = resolve; });
+  const first = { close() { closed = true; }, whenIdle: () => drain };
+  const next = { close() {}, whenIdle: async () => {} };
+  const lifecycle = create(async () => ++opens === 1 ? first : next);
+  assert.throws(() => lifecycle.get());
+  await lifecycle.unlock();
+  lifecycle.lock();
+  assert.equal(closed, true); assert.throws(() => lifecycle.get());
+  const reopening = lifecycle.unlock();
+  await Promise.resolve(); assert.equal(opens, 1);
+  release(); await reopening; assert.equal(lifecycle.get(), next);
+});
+test('background/lock during opening never publishes a late decrypted workspace', async () => {
+  let release, closed = false;
+  const candidate = { close() { closed = true; }, whenIdle: async () => {} };
+  const lifecycle = create(() => new Promise(resolve => { release = () => resolve(candidate); }));
+  const opening = lifecycle.unlock(), rejected = assert.rejects(opening, /locked/);
+  while (!release) await new Promise(resolve => setImmediate(resolve));
+  await assert.rejects(lifecycle.unlock(), /already/);
+  lifecycle.lock(); release(); await rejected;
+  assert.equal(closed, true); assert.throws(() => lifecycle.get());
+});
+test('production access stays disabled beneath existing PrivacyGate and OwnerProfileGate', () => {
+  const root = fs.readFileSync(path.join(__dirname, '../index.tsx'), 'utf8');
+  assert.match(root, /<PrivacyGate>\s*<OwnerProfileGate>\s*<NotebookBoundary><App \/><\/NotebookBoundary>\s*<\/OwnerProfileGate>\s*<\/PrivacyGate>/);
+  const boundary = fs.readFileSync(path.join(__dirname, '../src/components/NotebookBoundary.tsx'), 'utf8');
+  assert.match(boundary, /NOTEBOOK_PRODUCTION_ENABLED = false/);
+  assert.match(boundary, /state !== 'active'.*lock\(\)/);
+  const runtime = fs.readFileSync(path.join(__dirname, '../src/utils/expoNotebookRuntime.ts'), 'utf8');
+  assert.match(runtime, /WHEN_UNLOCKED_THIS_DEVICE_ONLY/);
+  assert.doesNotMatch(runtime, /AsyncStorage|console\.|deleteItemAsync|deleteDatabaseAsync/);
+});

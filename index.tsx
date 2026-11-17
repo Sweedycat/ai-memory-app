@@ -5,6 +5,7 @@ import { registerRootComponent } from 'expo';
 import App from './App';
 import { OwnerProfileGate } from './src/components/OwnerProfileGate';
 import { PrivacyGate } from './src/components/PrivacyGate';
+import { NotebookBoundary } from './src/components/NotebookBoundary';
 
 function Root() {
   return (
@@ -14,7 +15,7 @@ function Root() {
     >
       <PrivacyGate>
         <OwnerProfileGate>
-          <App />
+          <NotebookBoundary><App /></NotebookBoundary>
         </OwnerProfileGate>
       </PrivacyGate>
     </KeyboardAvoidingView>

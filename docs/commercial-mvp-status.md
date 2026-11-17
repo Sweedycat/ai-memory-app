@@ -11,7 +11,7 @@ The owner's Master Development V2 supersedes older cloud-first roadmap language.
 | Area | Implemented source | Still needed for the requested commercial MVP |
 | --- | --- | --- |
 | People | App.tsx: readable profile identity/role/company/phone/context, notes, interactions, one open follow-up and completed history, reminders, substring search, explicit contact actions/export | Tags/topics, duplicate/ambiguous matching, multiple structured commitments; photo consent/storage review before photos |
-| Notebook | PersonalNoteEditor/PersonalNotebookPreview, strict model, encrypted vault/session, access gate, backup comparison and review-only restore helpers | Editor and storage are unmounted. Reviewed native durable ciphertext backend, notebook-specific key lifecycle, safe uncertain-save reopen/reconciliation, App Lock/background integration and Android recovery evidence |
+| Notebook | Unmounted editor/preview, strict model and conditional session; new disabled foundation: encrypted SQLite active/previous/draft, SecureStore key lifecycle, explicit save reconciliation and App Lock/background boundary | Production editor/recovery UX still unmounted. Physical Android native/key/durability acceptance and owner activation approval required; unsubmitted typing has no durable autosave |
 | Persistence | people-v1 AsyncStorage; owner/privacy separate; current milestone adds serialized person saves, visible errors, explicit latest-state retry and no write merely from opening | Native interruption/low-storage acceptance; people and notification operations are still not one transaction |
 | Life management | Person-linked follow-up/reminder, completion/history and edit-time rescheduling | Independent appointments, vehicle/insurance/documents/bills/events and recurring responsibility records with completion/rescheduling |
 | Briefing | buildMemoryBriefing summarizes an individual from stored facts without network | Cross-record daily agenda, overdue/upcoming items and renewals; do not invent absent structured records |
@@ -19,25 +19,26 @@ The owner's Master Development V2 supersedes older cloud-first roadmap language.
 | Privacy | PrivacyGate device authentication, permission catalogue, private new reminder content, local-first architecture; current batch blocks onboarding/private content after owner-profile load errors and adds read-only retry | Physical lock/permission acceptance and continued review of other persistence readers |
 | Backup | Versioned encrypted envelopes, bound-identity helpers, injected Drive transport, generation/review helpers, synthetic Settings crypto diagnostic | OAuth/token/key UX, bounded native streaming, durable rollback, real recovery; actual backup/restore stays disabled |
 | UX/global | Existing dark phone layout and onboarding/settings/bug-report paths; new save copy centralized separately | Full catalog extraction, reviewed Turkish/English catalogs and locale selection, light appearance, TalkBack/font/keyboard/layout measurement |
-| Commercial | Mandatory founder financial policy and capacity worksheet | Approved pricing/entitlements, validated subscription fulfillment and store review; billing remains inactive |
+| Commercial | Founder financial policy/capacity worksheet and approved multi-platform payment strategy documentation | Current provider/region eligibility and fee verification, approved pricing/entitlements, subscription fulfillment and store review; all billing remains inactive |
 
 Source inventory is not runtime or end-to-end verification. Existing AsyncStorage
 people records are not separately encrypted by the app; preserve the owner's MVP
 exception. Notebook's existing encrypted design and off-device AES-GCM requirements
-are not weakened. No new key store or cipher was activated.
+are not weakened. No production key store or cipher was activated. Native
+factories stay behind the disabled Notebook boundary; host SQLite/crypto tests
+are not Android proof.
 
 ## Known P0 risks and ordered continuation
 
 1. Preserve actual data and finish current persistence fixes with independent
    frozen-diff review and exact-SHA CI. Never clear data to exercise failures.
-2. Complete Notebook uncertain-save recovery: authenticate a reopened session,
-   compare the attempted note and original full base against stored state,
-   distinguish already-saved/retry-safe/conflict, retain the draft, and require
-   comparison for conflicts. Never blindly retry a blocked session.
-3. Implement/review durable native ciphertext replacement and notebook-specific
-   secure key lifecycle. Keep missing/corrupt key and ciphertext fail-closed;
-   do not generate a substitute key over existing ciphertext. Prove rollback,
-   interrupted/full-storage behavior and bounded retention before wiring.
+2. Integrate the implemented already-saved/retry-safe/conflict API into a reviewed
+   Notebook recovery/editor UX. Submitted intents can be encrypted and durably
+   staged before activation; ordinary unsubmitted typing is not checkpointed.
+3. Validate the implemented SQLite/SecureStore/native factory on Android. Keep
+   missing/corrupt keys and ciphertext fail-closed; no substitute keys. Prove
+   physical rollback, interruption, full-storage and bounded retention before
+   activation. Host SQLite rollback and terminated-process tests are now available.
 4. Wire Notebook only after review, tests and owner/device activation gates;
    unmount private drafts on lock/background according to the approved policy.
    Assistant access must be separately explicit and off by default.

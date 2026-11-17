@@ -1,6 +1,47 @@
 # Omega engineering handoff
 
-## Current continuation — Master Development V2, 2026-11-17
+## Current continuation — Notebook foundation and payment addendum
+
+Task baseline: clean `development/omega-commercial-mvp` at
+`cf751eabd7730cad54564370f84ebde603e135bc`, verified against remote ref and
+successful CI 44079288134 before editing. Remain on this dedicated branch.
+The owner supplied and approved the [payment strategy](payment-strategy.md);
+AGENTS Rule 15 and [financial policy](financial-policy.md) now preserve it.
+Provider/region fee rules and prices remain provisional planning references;
+all providers, external payment promotion, billing and paid services are disabled.
+
+Current implementation adds a dedicated versioned SQLite Notebook state, encrypted
+active/previous/recovery-intent payloads, full-state transactional stale-write
+checks, verified commit reads, and device-local SecureStore key binding. Submitted
+saves stage encrypted recovery intent before activation. Reopen authenticates and
+classifies already-saved/retry-safe/conflict; explicit retry/discard never silently
+merges or promotes old snapshots. Missing/corrupt keys never trigger replacement.
+The native factory and background/lock lifecycle are composed under existing
+PrivacyGate/OwnerProfileGate with `NOTEBOOK_PRODUCTION_ENABLED=false`.
+
+SDK 57 additions: expo-sqlite ~57.0.5, expo-secure-store ~57.0.4, both MIT;
+plugins are configured including SecureStore's Android backup exclusion. No
+version/versionCode, identity/signing or existing people/settings data changed.
+No production Notebook or payment UI is enabled, no new paid service/cost.
+
+Host SQLite/Node crypto/secure-store mocks and a terminated host process exercise
+recovery; these are not Android evidence. Unsubmitted typing has no durable
+autosave. After the encrypted intent's stage commit, a submitted save can be
+recovered; before it, only the in-process attempt/draft remains. No plaintext
+recovery files or substitute keys. Existing people in-memory pending-save behavior
+is unchanged and does not gain process-death recovery from Notebook work.
+
+Read [Notebook validation](notebook-production-foundation-validation.md) for exact
+results/review digest and remaining native gates. Resolve its containing commit
+with `git log -1 --format=%H -- docs/notebook-production-foundation-validation.md`,
+then verify remote equality and exact-SHA CI. Earlier evidence below is historical.
+
+Next: reviewed Notebook recovery/editor UX with explicit choices and lock-safe
+draft disposal, then owner-participated native Android/key/durability acceptance
+before activation. Do not advance P1 activation past unresolved critical/native
+gates. Keep payment infrastructure and paid AI out of this critical path.
+
+## Previous checkpoint — Master Development V2, 2026-11-17
 
 Current development branch: `development/omega-commercial-mvp`, created from
 clean, remote-verified `4bd815625f1456e116aaa5f8358549b40318989a`. The owner now
