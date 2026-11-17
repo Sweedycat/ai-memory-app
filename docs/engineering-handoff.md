@@ -41,6 +41,15 @@ draft disposal, then owner-participated native Android/key/durability acceptance
 before activation. Do not advance P1 activation past unresolved critical/native
 gates. Keep payment infrastructure and paid AI out of this critical path.
 
+Notebook/payment checkpoint was normally pushed at
+`3d9a11622e565c1ca922f68c1f61d0b31ed4d8ae`; exact-SHA
+[CI 44084195783](https://github.com/Sweedycat/ai-memory-app/actions/runs/44084195783)
+PASSED. The following independent P1 increment adds a home daily overview from
+existing local follow-ups only. It is read-only, includes explicit invalid-date
+review and local-calendar/DST boundaries, and uses no AI/storage/notification API.
+New copy is centralized English; full Turkish localization remains unreviewed.
+See the validation report's daily-overview addendum for final checks/identity.
+
 ## Previous checkpoint — Master Development V2, 2026-11-17
 
 Current development branch: `development/omega-commercial-mvp`, created from

@@ -18,6 +18,7 @@ import {
 
 import { useOwnerControls } from './src/components/OwnerProfileGate';
 import { MemorySaveNotice } from './src/components/MemorySaveNotice';
+import { DailyBriefingCard } from './src/components/DailyBriefingCard';
 import { mockPeople } from './src/data/mockPeople';
 import { usePersistentPeople, type PeopleSaveState } from './src/hooks/usePersistentPeople';
 import { MemoryFollowUp, MemoryPerson } from './src/types';
@@ -880,6 +881,8 @@ export default function App() {
           style={styles.input}
         />
       </Card>
+
+      {!query.trim() && <DailyBriefingCard people={people} onOpenPerson={openPerson} />}
 
       <View style={styles.sectionHeader}>
         <View>

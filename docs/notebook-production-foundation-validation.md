@@ -177,3 +177,51 @@ Primary platform references consulted:
 [Expo SecureStore](https://docs.expo.dev/versions/latest/sdk/securestore/) and the
 installed SDK 57 package declarations/source. No provider billing terms were used
 as verified implementation inputs.
+
+## Validated Notebook checkpoint and next safe product increment
+
+Notebook/payment commit `3d9a11622e565c1ca922f68c1f61d0b31ed4d8ae` was normally
+pushed to the existing development branch. Exact-SHA
+[CI 44084195783](https://github.com/Sweedycat/ai-memory-app/actions/runs/44084195783)
+completed SUCCESS (fresh npm ci, Doctor, strict TypeScript and complete units).
+No APK/manual build or main/preview promotion was triggered.
+
+After critical source/test/review validation, an independent small P1 increment
+adds `dailyBriefing.ts`, `DailyBriefingCard.tsx`, centralized English copy and seven
+pure tests, mounted on the existing home screen. It groups actual current local
+follow-ups into overdue, still due today, next seven local calendar days, later,
+undated and invalid-date review. Completed/history records are excluded; source
+IDs/text are preserved and no appointments or dates are invented. It changes no
+schema, storage, notification, authentication or Notebook gate. Pending person
+edits still use the existing save-status notice; the card does not claim every
+displayed in-memory change has reached disk.
+
+Tests cover exact boundaries, invalid/relative/rollover timestamps, same-name
+distinct IDs, no source mutation, empty/completed records, Türkiye midnight and
+both daylight-saving transitions in America/New_York. UI refresh runs each minute
+only in foreground and on resume, with cleanup on unmount/background. Four
+priority rows link to the actual person profile; the visible/total count discloses
+truncation. Dates/times use the device locale; this does not activate an unreviewed
+Turkish UI catalog. No AI, paid/cloud service or new permission is introduced.
+
+Frozen five-file ordered manifest for the incremental review:
+`2e62a5ff7b0e5b3ba112ec740984dc8a4f2a818849f491b2d4e2a66842ccaba4`.
+Order: App.tsx; src/components/DailyBriefingCard.tsx;
+src/strings/dailyBriefing.en.ts; src/utils/dailyBriefing.ts;
+tests/dailyBriefing.test.cjs. Notebook's reviewed implementation is unchanged.
+Initial incremental review found one P2: an explicit action-only accessibility
+label hid commitment/date child text from screen-reader row grouping. Principal
+replaced it with an action hint so the native grouped child label retains the
+actual name, commitment and due/missing/review text. Updated five-file digest:
+`aa204f6979248e69039c6a4501feeaf16959deb9fcd9e269fce9ddaa88eb5033`.
+Complete application suite passed **274/274**, strict TypeScript passed; seven
+new pure daily-overview tests passed. Reviewer independently ran seven pure tests,
+strict TypeScript and whitespace before the one-prop accessibility correction.
+Independent correction re-review: P2 resolved at source, no new findings; digest
+verified and TypeScript/whitespace independently passed. A final App placement
+adjustment preserves search's original position and hides the overview while a
+nonempty query is active, so results follow search directly. Same five-file order,
+final digest `4a733081f6a39065829b0e7ddd61b56559e48a5e058aca55e5ce7923818a8715`.
+Final placement re-review verified that digest before/after, confirmed the search
+condition and retained accessibility correction, and reported no new findings.
+No physical layout, TalkBack or Android foreground/resume observation is claimed.
