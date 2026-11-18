@@ -1,0 +1,12 @@
+{
+  "format": "omega-ui-inputs-v1",
+  "purpose": "Future isolated UI typing scenarios; not a backup, import or executable flow",
+  "targetVariant": "github-test",
+  "executionEnabled": false,
+  "personName": "Omega Synthetic 01",
+  "phone": "+12025550123",
+  "note": "Synthetic Unicode note: café, İstanbul, tomorrow is not a stored date.",
+  "interaction": "Synthetic conversation about a fictional garden.",
+  "followUp": "Review the synthetic garden sketch.",
+  "requiredBoundaries": ["owner-authorized isolated emulator", "no existing records", "no dial/export/upload", "no authentication bypass"]
+}

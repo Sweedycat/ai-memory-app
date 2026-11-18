@@ -28,6 +28,12 @@ Phase 1 adds a separate [on-demand management helper](CONTROL-CENTER.md) with
 official native quota reads available in the existing Remote conversation.
 Context occupancy and native task events remain unobserved; no continuous
 dashboard, new transport or arbitrary terminal endpoint is implemented.
+Phase 2 adds [unified-workspace preparation](UNIFIED-WORKSPACE.md): pure sync
+classification and ownership-overlap checks, scoped environment/task reporting,
+weekly reserve guidance and disabled synthetic UI inputs. Actual Cloud execution,
+hook/custom-agent parity, automatic synchronization and Android workspace/lab
+acceptance remain unverified or unactivated. The current hooks are not portable
+unchanged; no configuration was weakened to conceal that blocker.
 No mobile app code, dependency, version, permission, key or feature flag changes.
 No build/install/release or new external obligation.
 Known risks include three previously recorded moderate dependency entries,

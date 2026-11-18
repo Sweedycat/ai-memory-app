@@ -3,6 +3,7 @@
 // On-demand, read-only projection. No server, credentials, telemetry cache or model calls.
 const { execFileSync } = require('node:child_process');
 const path = require('node:path');
+const { workspaceBranch, projectWorkspace } = require('./omega-workspace.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const REPO = 'Sweedycat/ai-memory-app';
 const MAX_AGE_MS = 120000;
@@ -14,6 +15,7 @@ const freshAt = (stamp, now) => integer(stamp) && integer(now) && stamp <= now &
 function projectUsage(raw, observedAt, now = Date.now()) {
   const fresh = freshAt(observedAt, now);
   const result = { source: 'provided_codex_limits', observedAt: iso(observedAt), fresh,
+    scope: 'account_bucket_not_environment', weeklyReservePercent: 10, weeklyCheckpointPercent: 15,
     fiveHour: null, weekly: null, ordinaryUsageAllowed: null, safeguard: 'conservative' };
   if (!fresh || !object(raw)) return result;
   result.ordinaryUsageAllowed = typeof raw.ordinaryUsageAllowed === 'boolean' ? raw.ordinaryUsageAllowed : null;
@@ -34,6 +36,8 @@ function projectUsage(raw, observedAt, now = Date.now()) {
   const known = values.filter(value => value !== null && value !== undefined);
   const remaining = known.length ? Math.min(...known) : null;
   result.safeguard = result.ordinaryUsageAllowed === false || (remaining !== null && remaining <= 1) ? 'stop'
+    : result.weekly?.remainingPercent != null && result.weekly.remainingPercent <= 10 ? 'weekly_reserve'
+    : result.weekly?.remainingPercent != null && result.weekly.remainingPercent <= 15 ? 'weekly_checkpoint'
     : remaining !== null && remaining <= 5 ? 'checkpoint'
     : remaining !== null && remaining <= 10 ? 'small_tasks'
     : values.every(value => value != null) && result.ordinaryUsageAllowed === true ? 'normal' : 'conservative';
@@ -89,7 +93,7 @@ function collectRepository() {
     const head = read(['rev-parse', '--verify', 'HEAD']).trim();
     if (!/^[0-9a-f]{40}$/.test(head)) throw Error('Invalid HEAD');
     const branch = read(['rev-parse', '--abbrev-ref', 'HEAD']).trim();
-    return { state: 'available', branch: branch === 'development/omega-commercial-mvp' ? branch : 'outside_approved_development_branch',
+    return { state: 'available', branch: workspaceBranch(branch) ? branch : 'outside_approved_development_branch',
       head, dirty: read(['status', '--porcelain=v1', '-z']).length > 0,
       recentCommits: read(['log', '-5', '--format=%H']).trim().split('\n').filter(s => /^[0-9a-f]{40}$/.test(s)),
       milestoneRecord: 'docs/omega/TASK-QUEUE.md' };
@@ -100,6 +104,7 @@ function createSnapshot(evidence = {}, now = Date.now()) {
   const repository = collectRepository();
   const nativeFresh = freshAt(evidence?.nativeObservedAt, now);
   return { generatedAt: iso(now), mode: 'on_demand_read_only', repository,
+    workspace: projectWorkspace(evidence?.workspace, repository, now),
     usage: projectUsage(evidence?.usage?.data, evidence?.usage?.observedAt, now),
     nativeEvidenceFresh: nativeFresh,
     thread: projectThread(nativeFresh ? evidence?.threadStatus : null), agents: projectAgents(nativeFresh ? evidence?.agents : null),

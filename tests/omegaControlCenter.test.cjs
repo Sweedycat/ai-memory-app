@@ -34,13 +34,23 @@ test('legacy fallback does not override an available map; null values are not ze
 });
 test('reserve thresholds and backend refusal win over reset clocks and optimistic percentages', () => {
   for (const [used, mode] of [[90, 'small_tasks'], [95, 'checkpoint'], [99, 'stop'], [110, 'stop']]) {
-    assert.equal(monitor.projectUsage(limits(used), observed, now).safeguard, mode);
+    const raw = limits(used); raw.rateLimitsByLimitId.codex.secondary = window(10080, 20);
+    assert.equal(monitor.projectUsage(raw, observed, now).safeguard, mode);
   }
   const raw = limits(0); raw.ordinaryUsageAllowed = false;
   assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'stop');
   raw.ordinaryUsageAllowed = null; assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'conservative');
   raw.rateLimitsByLimitId.codex.primary.resetsAt = now / 1000;
   assert.equal(monitor.projectUsage(raw, observed, now).fiveHour.remainingPercent, null);
+});
+test('weekly emergency reserve is preserved without inventing separate cloud or local balances', () => {
+  const raw = limits(20); raw.rateLimitsByLimitId.codex.secondary = window(10080, 90);
+  const result = monitor.projectUsage(raw, observed, now);
+  assert.equal(result.safeguard, 'weekly_reserve'); assert.equal(result.weeklyReservePercent, 10);
+  assert.equal(result.scope, 'account_bucket_not_environment');
+  raw.rateLimitsByLimitId.codex.secondary = window(10080, 85);
+  assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'weekly_checkpoint');
+  raw.ordinaryUsageAllowed = false; assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'stop');
 });
 test('unsupported or duplicate duration cannot invent a five-hour/weekly allowance', () => {
   const raw = limits(); raw.rateLimitsByLimitId.codex.primary = window(15);

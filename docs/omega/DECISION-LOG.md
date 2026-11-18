@@ -16,6 +16,7 @@ Existing policies remain intact. Snapshot: 2026-11-18 UTC.
 | D09 | One writer per file, smallest authorized team, at most two concurrent specialists | [AGENTS 12-13](../../AGENTS.md), [.codex configuration](../../.codex/config.toml); no recursive delegation |
 | D10 | No arbitrary remote command bridge, service purchase, build or release in this task | Owner's current scope; [REMOTE-CONTROL](REMOTE-CONTROL.md) distinguishes proposals from capabilities |
 | D11 | Phase 1 reuses authenticated native Remote/App tools plus a separate on-demand read-only projection helper | Owner's Phase 1 scope; [CONTROL-CENTER](CONTROL-CENTER.md). No new listener, credentials, daemon configuration, account-data publication or automatic resume |
+| D12 | Phase 2 prepares independent environments with GitHub checkpoints, one writer/file and advisory conflict checks | [Unified workspace](UNIFIED-WORKSPACE.md); preserve at least 10% weekly reserve, prepare at 15%. No automatic sync/lock/Cloud activation, configuration weakening or device/install operations |
 
 ## Unresolved, not decided here
 

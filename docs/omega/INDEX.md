@@ -28,6 +28,7 @@ do not confuse management/docs changes with an application milestone.
 | [USAGE-STATUS](USAGE-STATUS.md) | Availability of safe, reliable usage evidence |
 | [HANDOFF](HANDOFF.md) | Exact remote and local continuation procedure |
 | [CONTROL-CENTER](CONTROL-CENTER.md) | Phase 1 on-demand native monitoring, safeguards and limits |
+| [UNIFIED-WORKSPACE](UNIFIED-WORKSPACE.md) | Phase 2 compatibility, advisory ownership/sync and offline recovery design |
 | [Android Emulator/Maestro plan](ANDROID-EMULATOR-MAESTRO-PLAN.md) | Subsequent authorized synthetic UI test integration; not executed |
 
 ## Authority and source reuse

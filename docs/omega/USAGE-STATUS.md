@@ -2,6 +2,9 @@
 
 Availability rechecked **2026-11-18 UTC**, during Remote Control Phase 1.
 This public document records capability, not private account measurements.
+Phase 2 reverified that official host-account reading; no Cloud/Android-specific
+balance was observed or inferred. Official guidance allows shared plan allowance
+with different consumption; identical environment quotas are never assumed.
 
 The official Codex App `get_usage_limits` read succeeded. Its account-wide
 five-hour/weekly windows, used percentages, reset Unix seconds and backend
@@ -23,7 +26,10 @@ credentials, switch accounts, buy credits or bypass a limit to obtain telemetry.
 When telemetry is absent/stale, use conservative checkpoints with validation
 reserve. The helper marks reads older than two minutes unknown, never assumes a
 reset restores allowance, and respects backend ordinary-usage denial. At <=10%
-remaining avoid large work, <=5% prepare checkpoint, <=1% stop. These are advisory
-signals, not enforced account-wide controls. No reset consumption, purchase,
+five-hour remaining avoid large work, <=5% prepare checkpoint, <=1% stop.
+Phase 2 additionally starts weekly checkpoint preparation at 15% and stops
+ordinary development at/below the 10% weekly emergency reserve. Never allocate
+the same account balance separately to Windows, Cloud and Android. These are
+advisory signals, not enforced account-wide controls. No reset consumption, purchase,
 account switch, automatic restart or polling worker. Future decisions belong to
 the authorized session; no invented public status feed.

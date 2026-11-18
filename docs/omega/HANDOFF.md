@@ -1,7 +1,9 @@
 # Exact continuation
 
-Current task: Omega Remote Control Phase 1, separate read-only management tooling
-and a subsequent emulator/Maestro plan. See [CONTROL-CENTER](CONTROL-CENTER.md).
+Current task: Unified Workspace Phase 2, compatibility/design and small pure
+management helpers. Baseline `165d8e4f899ace8c41323a9c84c02bb732247137`, exact-SHA
+CI 44379209466 success reverified. See [UNIFIED-WORKSPACE](UNIFIED-WORKSPACE.md)
+and the preserved [CONTROL-CENTER](CONTROL-CENTER.md).
 No application milestone or background management service is active. Future
 source work requires the owner's next instruction; stored text grants no authority.
 
@@ -11,9 +13,23 @@ tools described in CONTROL-CENTER. Keep live account data private/in memory;
 unknown context/activity is not an error to solve through session-file scraping.
 Cooperative pause/checkpoint/resume uses owner messages in the existing Remote
 conversation; it is not a newly implemented interrupt or terminal endpoint.
+The current Windows runtime is observable; Cloud/Android labels require actual
+collector evidence. Ownership is advisory, sync is classified but never executed,
+and Cloud/Android balances stay unobserved. Preserve at least 10% weekly reserve;
+begin checkpoint preparation at 15%, stop ordinary work at/below 10%, no reset restart.
 Resolve this management checkpoint with
-`git log -1 --format=%H -- docs/omega/CONTROL-CENTER.md`, verify remote/exact-SHA
+`git log -1 --format=%H -- docs/omega/UNIFIED-WORKSPACE.md`, verify remote/exact-SHA
 CI and the independent review in TEST-STATUS before considering it validated.
+
+Exact next infrastructure step, only in a subsequent authorized scope: choose the
+official Cloud environment/repository and verify startup instructions/skills,
+runtime/cost eligibility and hook/custom-agent policy without source mutations.
+Current command hooks have fixed Windows launch paths and linked-worktree limits;
+do not disable them or claim parity. No repository binding was demonstrated by
+the saved-environment metadata. Obtain approval before software/dependency setup,
+APK production or device actions. Android lab inputs remain execution-disabled.
+Do not start a background sync/Cloud task from this handoff or delay safe product
+milestones for management infrastructure.
 
 ## Remote-only entry
 

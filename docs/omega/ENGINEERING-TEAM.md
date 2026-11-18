@@ -43,3 +43,6 @@ publication review. No new security implementation approval is claimed.
 Subsequent Remote Control Phase 1 reused one Independent Reviewer for the frozen
 management helper/tests/runbook/plan. See [TEST-STATUS](TEST-STATUS.md) for digest,
 scope and evidence; no agent, skill, hook or permission configuration changed.
+Phase 2 likewise used one independent reviewer. Local role files remain intact;
+Cloud dispatch of those exact custom roles and hook parity is not established.
+See [compatibility assessment](UNIFIED-WORKSPACE.md) before any cross-environment work.

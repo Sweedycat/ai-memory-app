@@ -19,6 +19,7 @@ Remote Control Phase 1 extends management tooling from knowledge-center baseline
 | C07 | Android acceptance plan, not its execution | [Plan](../android-notebook-acceptance-plan.md) |
 | C08 | Public-safe GitHub knowledge center and continuity policy | [Index](INDEX.md); containing commit/checks resolved as in [handoff](HANDOFF.md) |
 | C09 | On-demand read-only Control Center projection/helper and native capability assessment; emulator/Maestro plan only | [Control Center](CONTROL-CENTER.md), [318-test and independent review evidence](TEST-STATUS.md); no always-on monitor or activated controls |
+| C10 | Phase 2 compatibility/design, pure advisory sync/ownership helpers, weekly reserve guard and disabled lab fixture | [Unified workspace](UNIFIED-WORKSPACE.md), [327-test/review evidence](TEST-STATUS.md); no Cloud bootstrap, automatic sync, lock or UI execution |
 
 ## Active
 
@@ -49,3 +50,4 @@ No background worker or automatic restart is configured by this task.
 | Live payments, paid AI/cloud, future voice/wearables | Relevant financial, privacy/security, platform and explicit owner gates; no provider activation |
 | Version assignment | Preserve unresolved third-position/versionCode wording; owner decision only when a proposed build depends on it |
 | Broader live control/context and emulator/Maestro execution | Separate authorized task/evidence; current native socket access failed, live context/events and pause/resume were not exercised; no new transport or device setup |
+| Full Cloud/Android Omega parity | Repository binding/runtime smoke, hook portability/native policy and custom-agent/skill discovery require separate validation; preserve existing hooks/config and obtain consent before installation/device operations |

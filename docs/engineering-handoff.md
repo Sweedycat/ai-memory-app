@@ -1,5 +1,25 @@
 # Omega engineering handoff
 
+## Unified Workspace Phase 2 — 2026-11-18
+
+Started clean on `development/omega-commercial-mvp` at remote-matching
+`165d8e4f899ace8c41323a9c84c02bb732247137`, CI 44379209466 success.
+[Unified workspace](omega/UNIFIED-WORKSPACE.md) records official compatibility,
+Windows/Cloud/mobile boundaries and proposed conflict-safe checkpoint exchange.
+Small pure helpers classify sync states/ownership overlaps; no sync executor or
+distributed lock. Phase 1 official quota projection is preserved with account
+scope and 15% weekly checkpoint preparation/10% emergency reserve guidance.
+
+Strict TypeScript and 327/327 host tests passed. Independent seven-file review
+found no actionable findings; focused21/21 passed and digest is in
+[TEST-STATUS](omega/TEST-STATUS.md). No actual Cloud run or repo binding was proved;
+fixed Windows hook paths/worktree assumptions remain an explicit portability gate.
+Existing agents/skills/hooks/policies/mobile source and false Notebook gate remain
+unchanged. Synthetic UI fixture is disabled; no install/APK/device/service/cost.
+Resolve the containing UNIFIED-WORKSPACE commit, verify remote/exact-SHA CI and use
+[HANDOFF](omega/HANDOFF.md). Stop after this checkpoint; future Cloud/lab setup
+needs its own scoped authorization and any installation/device approvals.
+
 ## Omega Control Center Phase 1 — 2026-11-18
 
 Baseline: clean `development/omega-commercial-mvp` at remote-matching

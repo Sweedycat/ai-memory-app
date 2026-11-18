@@ -1,5 +1,10 @@
 # Omega Control Center — Phase 1
 
+Phase 2 adds [workspace projections and portability assessment](UNIFIED-WORKSPACE.md)
+without replacing native reads. Environment labels are caller declarations,
+not authentication; account quotas are not fabricated per-environment balances.
+No sync executor or distributed lock is activated.
+
 Assessment/implementation date: 2026-11-18 UTC. Baseline
 `10a2a8a1eac608cacd8527d62e984e8a2129e415`, clean local/live development ref;
 CI 44373995969 successful. Management tooling is separate from the mobile app.
@@ -85,8 +90,10 @@ variables, public artifacts or console logs. Prefer its pure exports in memory.
 
 Freshness is at most two minutes. Missing/future/stale observations, expired
 reset snapshots and unknown windows do not become fresh unused quota. Backend
-ordinary-usage denial takes precedence. Remaining quota at <=10% suggests small
-tasks, <=5% checkpoint preparation, <=1% stop; missing evidence is conservative.
+ordinary-usage denial takes precedence. Five-hour remaining quota at <=10%
+suggests small tasks, <=5% checkpoint preparation, <=1% stop. Phase 2 preserves
+a weekly emergency reserve: prepare checkpoints at <=15%, and at <=10% stop
+ordinary development to protect the reserve. Missing evidence is conservative.
 These are advisory projections, not an account-wide enforcement mechanism.
 No reset credit, purchase, upgrade or automatic restart is invoked. Normal Codex
 requests/review use the existing allowance; this helper adds no API billing.

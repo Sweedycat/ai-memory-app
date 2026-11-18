@@ -1,5 +1,16 @@
 # Subsequent Android Emulator and Maestro integration plan
 
+## Phase 2 preparation
+
+[Synthetic UI inputs](../../qa/omega-lab/synthetic-ui-inputs.json) are committed
+only as future typing fixtures. `executionEnabled=false`; they are not a backup,
+import file, Maestro flow or proof of passing UI tests. Use only a newly authorized
+isolated synthetic laboratory and explicit test variant. No guessed selectors,
+clear-state action, phone Contacts, production package or real records are used.
+Windows is the proposed primary Android lab. Cloud test execution and Termux are
+not assumed to provide an emulator, signing identity or native App Lock evidence.
+All installation/build/device approval gates below still apply.
+
 Prepared 2026-11-18 UTC; **plan only, not performed**. No download, installation,
 AVD creation/start, ADB connection, APK build/install or production flag change.
 The PATH-only lookup resolved no `adb`, `emulator` or `maestro` command here;
