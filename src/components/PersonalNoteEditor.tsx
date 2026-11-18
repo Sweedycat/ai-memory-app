@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AppState, BackHandler, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { MAX_NOTE_TITLE, MAX_NOTE_BODY } from '../utils/personalNotebook';
 import type { NotebookEditor } from '../utils/notebookEditor';
 import { notebookEditorEn as copy } from '../strings/notebookEditor.en';
@@ -13,6 +13,7 @@ export default function PersonalNoteEditor({ editor, onClose, onSaved }: {
   const [confirmation, setConfirmation] = useState<'close' | 'discard' | null>(null);
   const mounted = useRef(true);
   const notified = useRef(false);
+  const hardwareBack = useRef<() => void>(() => undefined);
   const view = AppState.currentState === 'active' ? editor.getView()
     : { mode: 'unavailable' as const, title: '', body: '', busy: false, current: null, dirty: false, checkpointed: false };
   const refresh = () => { if (mounted.current) render(value => value + 1); };
@@ -21,9 +22,11 @@ export default function PersonalNoteEditor({ editor, onClose, onSaved }: {
     notified.current = false;
     if (AppState.currentState !== 'active') { editor.lock(); refresh(); }
     const listener = AppState.addEventListener('change', state => {
+      if (!mounted.current) return;
       if (state !== 'active') { editor.lock(); setConfirmation(null); refresh(); }
     });
-    return () => { mounted.current = false; listener.remove(); editor.dispose(); };
+    const back = BackHandler.addEventListener('hardwareBackPress', () => { hardwareBack.current(); return true; });
+    return () => { mounted.current = false; listener.remove(); back.remove(); editor.dispose(); };
   }, [editor]);
 
   async function act(action: () => Promise<void>) {
@@ -45,6 +48,7 @@ export default function PersonalNoteEditor({ editor, onClose, onSaved }: {
     }
     editor.dispose(); onClose();
   }
+  hardwareBack.current = () => { if (confirmation) setConfirmation(null); else close(); };
   const editable = view.mode === 'editing' && !view.busy;
   const valid = Boolean(view.title.trim() || view.body.trim()) &&
     view.title.length <= MAX_NOTE_TITLE && view.body.length <= MAX_NOTE_BODY;

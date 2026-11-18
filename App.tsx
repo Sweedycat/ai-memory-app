@@ -19,6 +19,9 @@ import {
 import { useOwnerControls } from './src/components/OwnerProfileGate';
 import { MemorySaveNotice } from './src/components/MemorySaveNotice';
 import { DailyBriefingCard } from './src/components/DailyBriefingCard';
+import { NOTEBOOK_PRODUCTION_ENABLED, useNotebookLifecycle } from './src/components/NotebookBoundary';
+import { NotebookPanel } from './src/components/NotebookPanel';
+import { notebookEn } from './src/strings/notebook.en';
 import { mockPeople } from './src/data/mockPeople';
 import { usePersistentPeople, type PeopleSaveState } from './src/hooks/usePersistentPeople';
 import { MemoryFollowUp, MemoryPerson } from './src/types';
@@ -32,7 +35,7 @@ import {
   scheduleFollowUpNotification,
 } from './src/utils/followUpNotifications';
 
-type Screen = 'home' | 'detail' | 'add' | 'edit';
+type Screen = 'home' | 'detail' | 'add' | 'edit' | 'notebook';
 type PickerMode = 'date' | 'time' | 'datetime' | null;
 type PersonForm = {
   name: string;
@@ -124,6 +127,7 @@ function sortFollowUps(a: MemoryPerson, b: MemoryPerson) {
 export default function App() {
   const [people, setPeople, isReady, loadError, saveState] = usePersistentPeople(mockPeople);
   const { openSettings } = useOwnerControls();
+  const notebookLifecycle = useNotebookLifecycle();
   const [screen, setScreen] = useState<Screen>('home');
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(mockPeople[0]?.id ?? null);
@@ -613,6 +617,11 @@ export default function App() {
     );
   }
 
+  if (screen === 'notebook' && NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle) {
+    return <NotebookPanel lifecycle={notebookLifecycle} onBack={() => setScreen('home')}
+      createId={async () => { const crypto = await import('expo-crypto'); return crypto.randomUUID(); }} />;
+  }
+
   if (screen === 'add' || screen === 'edit') {
     const isEdit = screen === 'edit';
     const pickerValue = form.followUpReminderAt
@@ -883,6 +892,7 @@ export default function App() {
       </Card>
 
       {!query.trim() && <DailyBriefingCard people={people} onOpenPerson={openPerson} />}
+      {NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label={notebookEn.title} onPress={() => setScreen('notebook')} />}
 
       <View style={styles.sectionHeader}>
         <View>

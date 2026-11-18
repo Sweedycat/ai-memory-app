@@ -1,6 +1,36 @@
 # Omega engineering handoff
 
-## Latest bounded milestone — Notebook editor and encrypted draft recovery
+## Autonomous continuation — Notebook navigation, 2026-11-18
+
+Started from clean local/remote
+`34392fd7049f480894dfef3f4dea2895edc5971b` on the existing dedicated branch.
+Native quota telemetry is not exposed by the available tools; no current usage
+percentages are asserted. Use conservative completed-milestone checkpoints and
+preserve a validation reserve. Do not automatically restart after a quota reset.
+
+Notebook navigation now composes list/search/full readable detail, create/edit,
+full-base confirmed delete and recovery comparison/apply/discard. Both App entry
+and route require the unchanged false production flag and lifecycle context.
+Background clears private state; reopening is explicit. Pending recovery blocks
+new writes; conflicts/multiple changes cannot be applied from this screen.
+Memory-only exit risk survives failed-read screens and requires confirmation.
+Hardware Back respects editor dirty-close and cancels repeated confirmation.
+
+See [navigation validation](notebook-navigation-validation.md) for frozen review
+identity/tests/remaining gates and [Android plan](android-notebook-acceptance-plan.md)
+for unexecuted owner-participated physical scenarios. No APK/device/real-data
+operation, new dependency, paid service, live billing or release. Existing
+financial/payment/data policies and main/preview are preserved. On resume resolve
+this validation document's containing commit, verify remote equality and exact-SHA
+CI, then use the ordered backlog; do not enable Notebook from host-only evidence.
+
+Notebook source navigation work is complete for this checkpoint. Physical native
+acceptance/activation remains blocked on separate owner authorization/evidence.
+Independent safe next product work: readable person/history improvements, then
+structured life administration, followed by retrieval/localization. No unresolved
+security-sensitive implementation may be enabled to advance that backlog.
+
+## Previous bounded milestone — Notebook editor and encrypted draft recovery
 
 Resource-limited task starts at remote-verified clean
 `8a41e42ff51678338977031f519e27e91ea3c6f2` on the same development branch.

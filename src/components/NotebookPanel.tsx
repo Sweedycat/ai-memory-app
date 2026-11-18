@@ -1,0 +1,220 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { AppState, BackHandler, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import type { createNotebookLifecycle } from '../utils/notebookLifecycle';
+import type { PersistentNotebook } from '../utils/persistentNotebook';
+import { createNotebookEditor, type NotebookEditor } from '../utils/notebookEditor';
+import { searchPersonalNotebook, type PersonalNote } from '../utils/personalNotebook';
+import { notebookRecoveryChanges } from '../utils/notebookNavigation';
+import { SCREEN_TOP_PADDING } from '../utils/screenInsets';
+import { notebookEn as copy } from '../strings/notebook.en';
+import PersonalNoteEditor from './PersonalNoteEditor';
+
+type Snapshot = { notes: PersonalNote[]; recovery: ReturnType<PersistentNotebook['getRecovery']> };
+type Props = { lifecycle: ReturnType<typeof createNotebookLifecycle>; onBack: () => void;
+  createId: () => Promise<string>; now?: () => string };
+const clock = () => new Date().toISOString();
+
+// Production navigation is separately gated in App. No automatic background open,
+// storage reset or recovery application. A new mount owns one lifecycle consumer.
+export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Props) {
+  const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
+  const [busy, setBusy] = useState(false), [failed, setFailed] = useState(false);
+  const [query, setQuery] = useState(''), [selectedId, setSelectedId] = useState<string | null>(null);
+  const [editor, setEditor] = useState<NotebookEditor | null>(null);
+  const [review, setReview] = useState(false);
+  const [exitRisk, setExitRisk] = useState(false);
+  const [confirmation, setConfirmation] = useState<'delete' | 'commit' | 'discard' | 'close' | null>(null);
+  const workspace = useRef<PersistentNotebook | null>(null), editorRef = useRef<NotebookEditor | null>(null);
+  const mounted = useRef(true), pending = useRef(false), generation = useRef(0);
+
+  function clearPrivate() {
+    editorRef.current?.dispose(); editorRef.current = null;
+    setEditor(null); setSnapshot(null); setSelectedId(null); setQuery(''); setReview(false); setConfirmation(null);
+  }
+  function publish(w: PersistentNotebook) {
+    const notes = w.getSession().snapshot(), recovery = w.getRecovery();
+    setSnapshot({ notes, recovery }); setFailed(false);
+    setExitRisk(Boolean(recovery.candidate && !recovery.durable && recovery.status !== 'already-saved'));
+    setSelectedId(id => notes.some(note => note.id === id) ? id : null);
+    if (!recovery.candidate) setReview(false);
+  }
+  async function open() {
+    if (pending.current || AppState.currentState !== 'active') return;
+    pending.current = true;
+    const token = generation.current;
+    setBusy(true); clearPrivate();
+    try {
+      let w = workspace.current;
+      if (w) await w.reopen(); else w = await lifecycle.unlock();
+      if (!mounted.current || token !== generation.current) { w.close(); return; }
+      workspace.current = w; publish(w);
+    } catch {
+      if (mounted.current && token === generation.current) {
+        clearPrivate(); setExitRisk(workspace.current !== null); setFailed(true);
+      }
+    } finally {
+      pending.current = false;
+      if (mounted.current && token === generation.current) setBusy(false);
+    }
+  }
+  useEffect(() => {
+    mounted.current = true;
+    void open();
+    const listener = AppState.addEventListener('change', state => {
+      if (!mounted.current) return;
+      if (state !== 'active') {
+        generation.current++; lifecycle.lock(); workspace.current = null;
+        clearPrivate(); setExitRisk(false); setBusy(false); setFailed(false);
+      }
+    });
+    return () => {
+      mounted.current = false; generation.current++; editorRef.current?.dispose();
+      lifecycle.lock(); workspace.current = null; listener.remove();
+    };
+  }, [lifecycle]);
+
+  function back() {
+    if (pending.current || busy || editorRef.current) return;
+    if (confirmation) { setConfirmation(null); return; }
+    if (review) { setReview(false); return; }
+    if (selectedId) { setSelectedId(null); return; }
+    if (exitRisk) {
+      setConfirmation('close'); return;
+    }
+    onBack();
+  }
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (editorRef.current) return false; // Editor owns dirty-close confirmation.
+      back(); return true;
+    });
+    return () => subscription.remove();
+  }, [busy, confirmation, review, selectedId, exitRisk]);
+
+  async function operate(action: (w: PersistentNotebook) => Promise<void>) {
+    const w = workspace.current;
+    if (!w || pending.current || AppState.currentState !== 'active') return;
+    pending.current = true; setBusy(true);
+    const token = generation.current;
+    try {
+      await action(w);
+      if (mounted.current && token === generation.current) { publish(w); setConfirmation(null); }
+    } catch {
+      if (mounted.current && token === generation.current) { clearPrivate(); setExitRisk(true); setFailed(true); }
+    } finally {
+      pending.current = false;
+      if (mounted.current && token === generation.current) setBusy(false);
+    }
+  }
+  function finishEditor() {
+    editorRef.current?.dispose(); editorRef.current = null; setEditor(null);
+    try { if (workspace.current) publish(workspace.current); }
+    catch { clearPrivate(); setExitRisk(true); setFailed(true); }
+  }
+  function edit(note: PersonalNote) {
+    const w = workspace.current;
+    if (!w || pending.current || snapshot?.recovery.status !== 'none') return;
+    try {
+      const controller = createNotebookEditor(w, { kind: 'edit', id: note.id }, now);
+      editorRef.current = controller; setEditor(controller);
+    } catch { clearPrivate(); setExitRisk(true); setFailed(true); }
+  }
+  async function create() {
+    if (snapshot?.recovery.status !== 'none') return;
+    await operate(async w => {
+      const token = generation.current, id = await createId();
+      if (!mounted.current || token !== generation.current) return;
+      const controller = createNotebookEditor(w, { kind: 'create', id, createdAt: now() }, now);
+      editorRef.current = controller; setEditor(controller);
+    });
+  }
+  function button(label: string, action: () => void, disabled = busy) {
+    return <Pressable accessibilityRole="button" accessibilityLabel={label} disabled={disabled}
+      accessibilityState={{ disabled }} onPress={action} style={styles.button}><Text style={styles.text}>{label}</Text></Pressable>;
+  }
+  function noteContent(note: PersonalNote | null) {
+    return note ? <View style={styles.note}>
+      <Text accessibilityRole="header" style={styles.title}>{note.title || copy.untitled}</Text>
+      <Text selectable style={styles.text}>{note.body}</Text>
+      <Text style={styles.meta}>{copy.created(new Date(note.createdAt).toLocaleString())}</Text>
+      <Text style={styles.meta}>{copy.updated(new Date(note.updatedAt).toLocaleString())}</Text>
+    </View> : <Text style={styles.text}>{copy.missing}</Text>;
+  }
+  if (editor) return <SafeAreaView style={styles.root}><PersonalNoteEditor editor={editor} onClose={finishEditor} onSaved={finishEditor} /></SafeAreaView>;
+  const selected = snapshot?.notes.find(note => note.id === selectedId) ?? null;
+  const visible = snapshot ? searchPersonalNotebook(snapshot.notes, query) : [];
+  const recovery = snapshot?.recovery;
+  const changes = snapshot && recovery?.candidate ? notebookRecoveryChanges(snapshot.notes, recovery.candidate) : [];
+  return (
+    <SafeAreaView style={styles.root}>
+      <View style={styles.header}>
+        {button(selected || review ? copy.backToList : copy.back, back)}
+        <Text accessibilityRole="header" style={styles.heading}>{copy.title}</Text>
+      </View>
+      {!snapshot ? <View style={styles.content}>
+        <Text accessibilityRole={failed ? 'alert' : undefined} style={styles.text}>{busy ? copy.loading : failed ? copy.unavailable : copy.locked}</Text>
+        {!busy && button(copy.reopen, () => { void open(); })}
+      </View> : review && recovery?.candidate ? <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.text}>{recovery.durable ? copy.encryptedSource : copy.memorySource}</Text>
+        <Text style={styles.meta}>{copy.changes(changes.length)}</Text>
+        {recovery.status === 'conflict' && <Text accessibilityRole="alert" style={styles.text}>{copy.conflict}</Text>}
+        {changes.map(change => <View key={change.id} style={styles.note}>
+          <Text style={styles.meta}>{copy.current}</Text>{noteContent(change.current)}
+          <Text style={styles.meta}>{copy.candidate}</Text>{noteContent(change.candidate)}
+        </View>)}
+        {changes.length > 1 && <Text style={styles.text}>{copy.multiple}</Text>}
+        {recovery.status !== 'conflict' && changes.length <= 1 && button(copy.saveRecovery, () => setConfirmation('commit'))}
+        {button(copy.discardRecovery, () => setConfirmation('discard'))}
+        {confirmation === 'commit' && <>
+          <Text accessibilityRole="alert" style={styles.text}>{copy.saveWarning}</Text>
+          {button(copy.confirmSave, () => { void operate(w => w.resolveRecovery('retry')); })}
+          {button(copy.cancel, () => setConfirmation(null))}
+        </>}
+        {confirmation === 'discard' && <>
+          <Text accessibilityRole="alert" style={styles.text}>{copy.discardWarning}</Text>
+          {button(copy.confirmDiscard, () => { void operate(w => w.resolveRecovery('discard')); })}
+          {button(copy.keep, () => setConfirmation(null))}
+        </>}
+      </ScrollView> : selected ? <ScrollView contentContainerStyle={styles.content}>
+        {noteContent(selected)}
+        {button(copy.edit, () => edit(selected), busy || recovery?.status !== 'none')}
+        {button(copy.delete, () => setConfirmation('delete'), busy || recovery?.status !== 'none')}
+        {confirmation === 'delete' && <>
+          <Text accessibilityRole="alert" style={styles.text}>{copy.deleteWarning}</Text>
+          {button(copy.confirmDelete, () => { void operate(w => w.getSession().remove(selected.id, selected)); })}
+          {button(copy.cancel, () => setConfirmation(null))}
+        </>}
+      </ScrollView> : <View style={styles.list}>
+        <TextInput accessibilityLabel={copy.search} placeholder={copy.search} placeholderTextColor="#9CA3AF"
+          value={query} onChangeText={setQuery} editable={!busy} maxLength={100} style={styles.input} />
+        {recovery?.status !== 'none' && <View style={styles.note}>
+          <Text style={styles.text}>{copy.draft}</Text>
+          {button(copy.review, () => { setReview(true); setConfirmation(null); })}
+        </View>}
+        {button(copy.newNote, () => { void create(); }, busy || recovery?.status !== 'none')}
+        <Text style={styles.meta}>{copy.count(visible.length, snapshot.notes.length)}</Text>
+        <FlatList data={visible} keyExtractor={note => note.id} keyboardShouldPersistTaps="handled"
+          ListEmptyComponent={<Text style={styles.text}>{query.trim() ? copy.noMatches : copy.empty}</Text>}
+          renderItem={({ item }) => <Pressable accessibilityRole="button" onPress={() => setSelectedId(item.id)} style={styles.note}>
+            <Text style={styles.title}>{item.title || copy.untitled}</Text>
+            <Text style={styles.text} numberOfLines={2}>{item.body}</Text>
+            <Text style={styles.meta}>{copy.updated(new Date(item.updatedAt).toLocaleString())}</Text>
+          </Pressable>} />
+      </View>}
+      {confirmation === 'close' && <View style={styles.note}>
+        <Text accessibilityRole="alert" style={styles.text}>{snapshot ? copy.closeWarning : copy.uncertainCloseWarning}</Text>
+        {button(copy.confirmClose, onBack)}{button(copy.keep, () => setConfirmation(null))}
+      </View>}
+    </SafeAreaView>
+  );
+}
+const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: '#10151e' }, header: { paddingHorizontal: 20, paddingTop: SCREEN_TOP_PADDING, gap: 8 },
+  heading: { color: '#F8FAFC', fontSize: 26, fontWeight: '700' },
+  content: { padding: 20, gap: 12 }, list: { flex: 1, padding: 20, gap: 10 },
+  note: { padding: 14, gap: 8, borderRadius: 14, backgroundColor: '#1E293B', marginBottom: 8 },
+  title: { color: '#F8FAFC', fontSize: 18, fontWeight: '600' }, text: { color: '#E2E8F0', fontSize: 16, lineHeight: 23 },
+  meta: { color: '#A8B4C5', fontSize: 13, lineHeight: 19 },
+  input: { borderWidth: 1, borderColor: '#64748B', borderRadius: 12, minHeight: 48, padding: 12, color: '#F8FAFC' },
+  button: { minHeight: 48, padding: 10, justifyContent: 'center', backgroundColor: '#243447', borderRadius: 12 },
+});

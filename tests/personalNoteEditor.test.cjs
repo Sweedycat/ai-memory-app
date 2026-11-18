@@ -16,7 +16,7 @@ const copy = load('src/strings/notebookEditor.en.ts').notebookEditorEn;
 const target = { kind: 'create', id: h.note.id, createdAt: h.note.createdAt };
 function renderEditor(editor, initialState = 'active') {
   const slots = [], effects = [];
-  let cursor = 0, dirty = false, output, mounted = true, closed = 0, saved = 0, listener;
+  let cursor = 0, dirty = false, output, mounted = true, closed = 0, saved = 0, listener, back;
   const state = { currentState: initialState, addEventListener: (_, callback) => {
     listener = callback; return { remove() { listener = undefined; } };
   } };
@@ -35,6 +35,7 @@ function renderEditor(editor, initialState = 'active') {
   };
   const native = Object.fromEntries(['Pressable', 'ScrollView', 'Text', 'TextInput', 'View'].map(name => [name, name]));
   native.AppState = state; native.StyleSheet = { create: value => value };
+  native.BackHandler = { addEventListener: (_, callback) => { back = callback; return { remove() { back = undefined; } }; } };
   const component = load('src/components/PersonalNoteEditor.tsx', {
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
     '../utils/personalNotebook': h.model, '../strings/notebookEditor.en': { notebookEditorEn: copy },
@@ -55,6 +56,7 @@ function renderEditor(editor, initialState = 'active') {
       assert.ok(node, 'Missing ' + label); return node; },
     async flush() { for (let i = 0; i < 8; i++) { await new Promise(resolve => setImmediate(resolve)); if (dirty && mounted) render(); } },
     background() { state.currentState = 'background'; listener?.('background'); },
+    back() { return back?.(); },
     unmount() { effects.forEach(effect => effect.cleanup?.()); mounted = false; },
   };
 }
@@ -145,4 +147,16 @@ test('failed checkpoint with hidden fields still protects dirty in-memory text o
   f.database.replace = replace;
   ui.find('Pressable', copy.review).props.onPress(); await ui.flush();
   assert.equal(editor.getView().body, h.note.body); ui.unmount(); w.close();
+});
+
+test('Android hardware Back asks about dirty text; repeated Back cancels instead of confirming loss', async t => {
+  const f = await h.fixture(t), w = await f.open();
+  const ui = renderEditor(create(w, target, () => h.note.updatedAt));
+  ui.find('TextInput', copy.bodyLabel).props.onChangeText(h.note.body); await ui.flush();
+  assert.equal(ui.back(), true); await ui.flush();
+  ui.find('Pressable', copy.confirmClose); assert.equal(ui.closed, 0);
+  ui.back(); await ui.flush(); assert.equal(ui.closed, 0);
+  assert.equal(ui.nodes.some(node => node.props?.accessibilityLabel === copy.confirmClose), false);
+  ui.back(); await ui.flush(); ui.find('Pressable', copy.confirmClose).props.onPress();
+  assert.equal(ui.closed, 1); ui.unmount(); w.close();
 });
