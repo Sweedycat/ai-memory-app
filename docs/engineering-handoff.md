@@ -1,5 +1,23 @@
 # Omega engineering handoff
 
+## GitHub knowledge center — documentation checkpoint, 2026-11-18
+
+Start with [docs/omega/INDEX.md](omega/INDEX.md) for the versioned project status,
+task queue, exact CI/review evidence, APK gates, decisions and continuation steps.
+This index preserves the detailed historical records below and the existing
+financial/payment/security policies; it does not supersede owner authorization.
+After each future validated milestone update the center's PROJECT-STATUS,
+TASK-QUEUE, TEST-STATUS and HANDOFF together. Public-safe summaries only.
+
+Documentation-only baseline: clean local/live remote development branch at
+`7cfb7737ed2cf39be6f1f4973319d91a44f3878d`, exact-SHA CI 44279981978 success.
+Repository visibility verified public before writing the new center. No local
+engineering files needing separate synchronization were identified in the
+inspected docs/.agents/.codex paths. Application code, flags, policies, agents and
+skills remain unchanged. Resolve this center's containing commit and CI using
+[HANDOFF](omega/HANDOFF.md); stop after verified synchronization, with no build,
+installation, remote command bridge, release, new service or financial obligation.
+
 ## Safe autonomous checkpoint — person history, 2026-11-18
 
 Continued from `3ecc5faeef665ab8f4ab6485c1b820e51c9a79a5`; its exact-SHA
