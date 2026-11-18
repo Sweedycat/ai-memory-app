@@ -21,6 +21,9 @@ import { MemorySaveNotice } from './src/components/MemorySaveNotice';
 import { DailyBriefingCard } from './src/components/DailyBriefingCard';
 import { NOTEBOOK_PRODUCTION_ENABLED, useNotebookLifecycle } from './src/components/NotebookBoundary';
 import { NotebookPanel } from './src/components/NotebookPanel';
+import { PersonHistory } from './src/components/PersonHistory';
+import { personHistoryEn } from './src/strings/personHistory.en';
+import { latestDatedInteraction, recentPersonMemory } from './src/utils/personHistory';
 import { notebookEn } from './src/strings/notebook.en';
 import { mockPeople } from './src/data/mockPeople';
 import { usePersistentPeople, type PeopleSaveState } from './src/hooks/usePersistentPeople';
@@ -171,13 +174,7 @@ export default function App() {
     [people],
   );
 
-  const recentMemory = useMemo(() => {
-    for (const person of people) {
-      const interaction = person.interactions[0];
-      if (interaction) return { person, interaction };
-    }
-    return null;
-  }, [people]);
+  const recentMemory = useMemo(() => recentPersonMemory(people), [people]);
 
   useEffect(() => {
     function openFromNotification(response: Notifications.NotificationResponse) {
@@ -818,40 +815,7 @@ export default function App() {
           <Action label="Add interaction" onPress={addInteraction} disabled={!interactionText.trim()} />
         </Card>
 
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>History</Text>
-          <Text style={styles.muted}>{selected.interactions.length} interactions</Text>
-        </View>
-
-        {selected.interactions.length ? (
-          selected.interactions.map((item) => (
-            <View key={item.id} style={styles.historyCard}>
-              <Text style={styles.historyDate}>{formatInteractionDate(item.date)}</Text>
-              <Text style={styles.historyText}>{item.summary}</Text>
-              <Text style={styles.source}>SOURCE: {item.source}</Text>
-            </View>
-          ))
-        ) : (
-          <Card><Text style={styles.muted}>No interactions yet.</Text></Card>
-        )}
-
-        {selected.followUpHistory?.length ? (
-          <>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Completed follow-ups</Text>
-              <Text style={styles.muted}>{selected.followUpHistory.length} done</Text>
-            </View>
-            {selected.followUpHistory.slice(0, 5).map((item) => (
-              <View key={item.id} style={styles.historyCard}>
-                <Text style={styles.historyDate}>✓ COMPLETED</Text>
-                <Text style={styles.historyText}>{item.text}</Text>
-                <Text style={styles.source}>
-                  {item.completedAt ? new Date(item.completedAt).toLocaleString() : 'Completed'}
-                </Text>
-              </View>
-            ))}
-          </>
-        ) : null}
+        <PersonHistory key={selected.id} interactions={selected.interactions} completed={selected.followUpHistory ?? []} />
       </Page>
     );
   }
@@ -925,9 +889,9 @@ export default function App() {
               </View>
             ) : null}
             <Text style={styles.muted}>{person.notes.length} {person.notes.length === 1 ? 'note' : 'notes'} · {person.interactions.length} {person.interactions.length === 1 ? 'interaction' : 'interactions'}</Text>
-            <Text style={styles.muted}>Last interaction: {person.interactions[0]
-                ? formatInteractionDate(person.interactions[0].date)
-                : 'No interactions yet'}</Text>
+            <Text style={styles.muted}>{personHistoryEn.latest}{person.interactions.length
+                ? formatInteractionDate(latestDatedInteraction(person.interactions)?.date)
+                : personHistoryEn.noInteractions}</Text>
           </View>
           <Text style={styles.chevron}>›</Text>
         </Pressable>
@@ -982,7 +946,7 @@ export default function App() {
             onPress={() => openPerson(recentMemory.person.id)}
             style={styles.recentMemory}
           >
-            <Text style={styles.recentLabel}>RECENT MEMORY</Text>
+            <Text style={styles.recentLabel}>{recentMemory.dated ? personHistoryEn.recentDated : personHistoryEn.recentUndated}</Text>
             <Text style={styles.recentName}>{recentMemory.person.name}</Text>
             <Text style={styles.recentText} numberOfLines={3}>{recentMemory.interaction.summary}</Text>
             <Text style={styles.recentDate}>{formatInteractionDate(recentMemory.interaction.date)}</Text>

@@ -1,5 +1,41 @@
 # Omega engineering handoff
 
+## Safe autonomous checkpoint — person history, 2026-11-18
+
+Continued from `3ecc5faeef665ab8f4ab6485c1b820e51c9a79a5`; its exact-SHA
+[CI 44278544152](https://github.com/Sweedycat/ai-memory-app/actions/runs/44278544152)
+passed. Notebook navigation/recovery and the unchanged false production flag are
+preserved. Financial/payment policies, existing records and main/preview remain
+unchanged; no services, obligations, releases or device actions were activated.
+
+Person detail now offers full readable, searchable interaction/completed-follow-up
+history with incremental reveal. Dated records sort by actual instant; legacy
+relative labels remain visible as original labels without invented dates. Cards
+and the home memory use the latest valid recorded timestamp rather than array
+order. Invalid calendar days no longer roll into fabricated dates. This is
+display-only: no schema, migration, storage or reminder writes.
+
+Strict TypeScript and all **306/306** host application tests passed. Independent
+frozen-diff review found no actionable issues and independently passed focused
+tests/typecheck. See
+[person history validation](person-history-validation.md) for review identity,
+evidence and limitations. Native UI/accessibility, Notebook durability/key/App Lock
+acceptance and retained-data upgrade remain unverified on physical devices.
+The existing three moderate dependency advisories remain unresolved.
+
+Exact quota telemetry is unavailable; do not invent remaining percentages or
+claim a threshold was reached. Finish review, normal commit/push, remote equality
+and exact-SHA CI, then stop conservatively with validation reserve. Do not start
+another security-sensitive milestone or automatically restart after quota reset.
+
+On the founder's next instruction: inspect branch/status and resolve the latest
+commit with `git log -1 --format=%H -- docs/person-history-validation.md`; verify
+remote equality and that commit's CI, preserving any newer work. Next bounded
+product milestone is structured life administration with an explicit schema and
+non-destructive persistence/recovery design, then grounded briefing/retrieval and
+reviewed localization. Notebook activation still requires the separate physical
+acceptance/owner gates in the Android plan; no build/install is authorized here.
+
 ## Autonomous continuation — Notebook navigation, 2026-11-18
 
 Started from clean local/remote

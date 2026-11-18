@@ -49,8 +49,11 @@ test('app persists ISO dates, formats history, list and recent memory consistent
   assert.match(app, /const timestamp = createInteractionTimestamp\(\)/);
   assert.match(app, /lastInteraction: timestamp/);
   assert.match(app, /date: timestamp/);
-  assert.match(app, /historyDate}>\{formatInteractionDate\(item\.date\)\}/);
-  assert.match(app, /formatInteractionDate\(person\.interactions\[0\]\.date\)/);
+  const history = fs.readFileSync(path.join(root, 'src/components/PersonHistory.tsx'), 'utf8');
+  assert.match(app, /<PersonHistory key=\{selected\.id\} interactions=\{selected\.interactions\} completed=\{selected\.followUpHistory \?\? \[\]\}/);
+  assert.match(history, /formatInteractionDate\(value\)/);
+  assert.match(app, /formatInteractionDate\(latestDatedInteraction\(person\.interactions\)\?\.date\)/);
+  assert.match(app, /recentPersonMemory\(people\)/);
   assert.match(app, /recentDate}>\{formatInteractionDate\(recentMemory\.interaction\.date\)\}/);
   assert.doesNotMatch(app, /date:\s*'Just now'/);
 });

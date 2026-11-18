@@ -7,13 +7,21 @@
  * field to remain compatible with the saved people-v1 schema.
  */
 const ISO_TIMESTAMP_WITH_ZONE =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
+
+export function interactionInstant(value?: string): number | null {
+  if (!value || value.length > 48 || !ISO_TIMESTAMP_WITH_ZONE.test(value)) return null;
+  const day = new Date(value.slice(0, 10) + 'T00:00:00.000Z');
+  if (!Number.isFinite(day.getTime()) || day.toISOString().slice(0, 10) !== value.slice(0, 10) ||
+      Number(value.slice(11, 13)) > 23 || Number(value.slice(14, 16)) > 59 || Number(value.slice(17, 19)) > 59) return null;
+  const time = Date.parse(value);
+  return Number.isFinite(time) ? time : null;
+}
 
 export function formatInteractionDate(value?: string): string {
-  if (!value || !ISO_TIMESTAMP_WITH_ZONE.test(value)) return 'Date not recorded';
-
-  const date = new Date(value);
-  if (!Number.isFinite(date.getTime())) return 'Date not recorded';
+  const instant = interactionInstant(value);
+  if (instant === null) return 'Date not recorded';
+  const date = new Date(instant);
 
   return (
     date.toLocaleDateString(undefined, {

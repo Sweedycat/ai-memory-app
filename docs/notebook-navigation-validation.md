@@ -86,6 +86,10 @@ implementation hash and receive Principal policy/consistency review.
 
 ## Checkpoint and gates
 
+Saved checkpoint: `3ecc5faeef665ab8f4ab6485c1b820e51c9a79a5`.
+[Exact-SHA CI 44278544152](https://github.com/Sweedycat/ai-memory-app/actions/runs/44278544152)
+completed successfully. This is host/CI evidence, not physical acceptance.
+
 Normal commit/push only to the existing dedicated branch. Main/preview and their
 build triggers are not touched; inspected development workflow is tests-only.
 Resolve this document's containing commit and verify remote equality/exact-SHA
