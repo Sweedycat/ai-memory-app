@@ -2,6 +2,12 @@
 
 Availability rechecked **2026-11-18 UTC**, during Remote Control Phase 1.
 This public document records capability, not private account measurements.
+Phase 3 records the founder-observed shared-product dashboard scope and the
+installed schema's optional conversation usage estimates in
+[CLOUD-INDEPENDENCE-VALIDATION](CLOUD-INDEPENDENCE-VALIDATION.md). Live limit reads
+remain distinct from token/credit estimates, feature analytics and Admin APIs.
+No per-feature/conversation analytics or private account values were fetched or
+published; no hidden endpoint, protected-socket workaround or new key was used.
 Phase 2 reverified that official host-account reading; no Cloud/Android-specific
 balance was observed or inferred. Official guidance allows shared plan allowance
 with different consumption; identical environment quotas are never assumed.

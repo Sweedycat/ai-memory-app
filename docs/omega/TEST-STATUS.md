@@ -1,5 +1,35 @@
 # Test and review evidence
 
+## Cloud Independence Phase 3 — unverified Cloud execution
+
+Baseline `69b2eace67d2a0c5cb4876eaf4d3a44fa72b6a20`, exact-SHA CI 44383019205
+success rechecked. Its 327-test result belongs to the previous verified source,
+not to a new Cloud run. Current changes are documentation only; no redundant
+local app tests, package installs, Doctor or device checks.
+
+Actual parent evidence: native limits/environment listing worked; one official
+Cloud creation request produced no acknowledgment before the waiting cell was
+terminated. Limited recent exact-title lookup found no match. Outcome and remote
+cancellation remain unknown, so no retry. No Cloud checkout/dependency/typecheck/
+unit run, security parity, handoff or laptop-off trial is verified. Simulated
+environment finalization was not used. See
+[full record and founder steps](CLOUD-INDEPENDENCE-VALIDATION.md).
+
+Independent Reviewer made no writes and authored none of the frozen eight docs.
+No actionable findings; whitespace PASS and **82 relative links** resolved.
+Ordered scope: docs/omega/CLOUD-INDEPENDENCE-VALIDATION.md; docs/omega/INDEX.md;
+docs/omega/PROJECT-STATUS.md; docs/omega/TASK-QUEUE.md; docs/omega/HANDOFF.md;
+docs/omega/USAGE-STATUS.md; docs/omega/REMOTE-CONTROL.md; docs/engineering-handoff.md.
+SHA-256 of JSON.stringify of ordered `{file,sha256(raw bytes)}` entries:
+`8045adee93cc912d6b0179a693e464e1fe4bbb03c410ed370240adede47344ba`;
+matched before/after. Tool/schema evidence is parent-attributed; reviewer did not
+repeat external/native calls. This evidence append receives Principal review.
+
+The containing documentation commit's exact-SHA CI must be checked after normal
+push; success cannot be predeclared here. CI uses the existing Node22/Doctor/
+typecheck/unit workflow and is not evidence of Codex Cloud execution. Existing
+moderate advisories and native/device/Notebook gates remain unresolved.
+
 ## Unified Workspace Phase 2 — 2026-11-18 UTC
 
 Baseline `165d8e4f899ace8c41323a9c84c02bb732247137`, CI 44379209466 success

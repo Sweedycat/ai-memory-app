@@ -1,5 +1,23 @@
 # Exact continuation
 
+## Current Phase 3 boundary
+
+Baseline `69b2eace67d2a0c5cb4876eaf4d3a44fa72b6a20` and CI 44383019205 success
+were reverified. Read [CLOUD-INDEPENDENCE-VALIDATION](CLOUD-INDEPENDENCE-VALIDATION.md)
+first: the official task-creation request never supplied an acknowledgment; the
+limited recent-task lookup is not proof of non-creation/cancellation. Do not retry
+blindly. Founder must inspect the official Cloud UI and resolve setup/connection
+before another creation or dependency installation. Exact steps and immutable
+validation task are recorded there. No Cloud checkout/tests/handoff or laptop-off
+execution is verified. No hook replacement/protection relaxation was implemented.
+
+Current changes are documentation only; Phase 1/2 helpers and weekly reserve are
+unchanged. Resolve this record's containing commit and exact-SHA CI on resume.
+No new Cloud task, Android operation, install or product milestone is launched
+from this handoff. Official analytics schema support and live access are separate.
+
+## Previous Phase 2 continuation
+
 Current task: Unified Workspace Phase 2, compatibility/design and small pure
 management helpers. Baseline `165d8e4f899ace8c41323a9c84c02bb732247137`, exact-SHA
 CI 44379209466 success reverified. See [UNIFIED-WORKSPACE](UNIFIED-WORKSPACE.md)

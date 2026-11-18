@@ -34,6 +34,11 @@ weekly reserve guidance and disabled synthetic UI inputs. Actual Cloud execution
 hook/custom-agent parity, automatic synchronization and Android workspace/lab
 acceptance remain unverified or unactivated. The current hooks are not portable
 unchanged; no configuration was weakened to conceal that blocker.
+Phase 3 attempted one isolated Cloud task through the official creation tool;
+no acknowledgment/execution was confirmed and a limited recent lookup found no
+exact-title match. Cloud independence remains unverified. See the
+[validation record and founder steps](CLOUD-INDEPENDENCE-VALIDATION.md) before
+any retry or setup; do not equate a simulated environment/catalog with execution.
 No mobile app code, dependency, version, permission, key or feature flag changes.
 No build/install/release or new external obligation.
 Known risks include three previously recorded moderate dependency entries,

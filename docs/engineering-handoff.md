@@ -1,5 +1,23 @@
 # Omega engineering handoff
 
+## Cloud Independence Phase 3 — execution unverified
+
+Baseline `69b2eace67d2a0c5cb4876eaf4d3a44fa72b6a20` matched clean local/live
+development state; CI 44383019205 success reverified. One official default-Cloud
+task creation was attempted but returned no acknowledgment before waiting was
+terminated. A limited recent exact-title lookup found no match, not proof the
+operation was cancelled/never occurred. No duplicate request was sent. Founder
+must inspect the official UI before retry/setup. No Cloud checkout, installation,
+test, policy parity, handoff or powered-off Windows execution is established.
+
+[Validation record](omega/CLOUD-INDEPENDENCE-VALIDATION.md) contains exact founder
+steps, the immutable-source validation task, simulated-tool warning and analytics
+contract findings. Installed official schema supports optional conversation usage
+estimates; no live per-feature/conversation analytics read was performed. No keys,
+private endpoints, hook replacements, disabled protections or mobile changes.
+Preserve 15% weekly checkpoint/10% reserve; no automatic retry/reset restart.
+Current work is a documentation checkpoint, not Cloud independence approval.
+
 ## Unified Workspace Phase 2 — 2026-11-18
 
 Started clean on `development/omega-commercial-mvp` at remote-matching

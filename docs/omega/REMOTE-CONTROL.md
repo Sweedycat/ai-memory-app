@@ -1,5 +1,13 @@
 # Remote engineering access
 
+## Phase 3 update — 2026-11-18 UTC
+
+The [Cloud independence probe](CLOUD-INDEPENDENCE-VALIDATION.md) is unverified:
+one official creation request supplied no acknowledgment; a limited recent lookup
+found no exact-title task. Its outcome/cancellation cannot be inferred. No retry
+or simulated environment finalization. Founder UI inspection/setup is the next
+boundary; existing management helpers, hooks and mobile source remain unchanged.
+
 ## Phase 2 update — 2026-11-18 UTC
 
 [UNIFIED-WORKSPACE](UNIFIED-WORKSPACE.md) separates the Windows host, independent
