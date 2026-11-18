@@ -15,6 +15,7 @@ Existing policies remain intact. Snapshot: 2026-11-18 UTC.
 | D08 | Critical changes require independent qualified review; tests/CI are not physical acceptance | [AGENTS 09-11](../../AGENTS.md) |
 | D09 | One writer per file, smallest authorized team, at most two concurrent specialists | [AGENTS 12-13](../../AGENTS.md), [.codex configuration](../../.codex/config.toml); no recursive delegation |
 | D10 | No arbitrary remote command bridge, service purchase, build or release in this task | Owner's current scope; [REMOTE-CONTROL](REMOTE-CONTROL.md) distinguishes proposals from capabilities |
+| D11 | Phase 1 reuses authenticated native Remote/App tools plus a separate on-demand read-only projection helper | Owner's Phase 1 scope; [CONTROL-CENTER](CONTROL-CENTER.md). No new listener, credentials, daemon configuration, account-data publication or automatic resume |
 
 ## Unresolved, not decided here
 

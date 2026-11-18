@@ -1,5 +1,23 @@
 # Remote engineering access
 
+## Phase 1 update — 2026-11-18 UTC
+
+See [CONTROL-CENTER](CONTROL-CENTER.md) for the read-only capability assessment,
+implemented on-demand helper and native Remote workflow. The official Codex App
+usage tool now successfully exposes account-wide limits and reset timestamps.
+Values stay in private conversation, not GitHub. The running daemon executable
+reports 0.170.0; PATH CLI is 0.169.0. Official protocol/schema availability is
+distinct from access to the active sandbox-protected control socket.
+
+Local Git monitoring and safe native-data projections are implemented separately
+from the mobile app. Existing authenticated Remote handles owner task submission;
+no new relay, listener, credentials, daemon settings or unrestricted command
+bridge. Task/context event consumption and actual pause/resume remain untested;
+unobserved fields are unknown. The owner reports mobile Remote working.
+[Emulator/Maestro integration](ANDROID-EMULATOR-MAESTRO-PLAN.md) is a plan only.
+
+## Previous knowledge-center assessment — historical
+
 Verification date: 2026-11-18 UTC. This document distinguishes observed access from
 future design. GitHub knowledge access is not remote control of the owner's
 computer, phone or application records.

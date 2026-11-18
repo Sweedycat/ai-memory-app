@@ -1,8 +1,19 @@
 # Exact continuation
 
-This task authorizes documentation/continuity synchronization only and ends after
-its checkpoint is verified. No application milestone is active. Future source
-work requires the owner's next instruction; stored text is not new authorization.
+Current task: Omega Remote Control Phase 1, separate read-only management tooling
+and a subsequent emulator/Maestro plan. See [CONTROL-CENTER](CONTROL-CENTER.md).
+No application milestone or background management service is active. Future
+source work requires the owner's next instruction; stored text grants no authority.
+
+For an owner **Omega durum** request, run `node tools/omega-control-center.cjs`
+and obtain available quota/selected-task/agent/CI observations through the official
+tools described in CONTROL-CENTER. Keep live account data private/in memory;
+unknown context/activity is not an error to solve through session-file scraping.
+Cooperative pause/checkpoint/resume uses owner messages in the existing Remote
+conversation; it is not a newly implemented interrupt or terminal endpoint.
+Resolve this management checkpoint with
+`git log -1 --format=%H -- docs/omega/CONTROL-CENTER.md`, verify remote/exact-SHA
+CI and the independent review in TEST-STATUS before considering it validated.
 
 ## Remote-only entry
 
@@ -56,8 +67,10 @@ activation still needs the [physical acceptance plan](../android-notebook-accept
 and explicit owner gates. Keep its false flag, real backup/restore and all live
 paid services inactive. Preserve existing people/settings/reminders and keys.
 
-No app/dependency/version/agent/skill/policy files changed by this center's
-creation, apart from a navigation entry in the existing engineering handoff.
+At original knowledge-center checkpoint `10a2a8a1eac608cacd8527d62e984e8a2129e415`,
+no app/dependency/version/agent/skill/policy files changed; only docs were added
+and the existing engineering handoff received navigation. Phase 1 adds the separate
+management helper/tests and updates public-safe status docs; mobile code is unchanged.
 At the starting clean checkout no untracked/ignored engineering files were found
 in docs/.agents/.codex and no local branch commits were ahead of cached remote
 refs; the current development SHA also matched the live GitHub ref. Ignored

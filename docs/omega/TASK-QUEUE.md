@@ -3,6 +3,8 @@
 As of 2026-11-18 UTC, application baseline
 `7cfb7737ed2cf39be6f1f4973319d91a44f3878d`.
 Completed means the stated source/document scope only, not production acceptance.
+Remote Control Phase 1 extends management tooling from knowledge-center baseline
+`10a2a8a1eac608cacd8527d62e984e8a2129e415`; it changes no mobile app feature.
 
 ## Completed
 
@@ -16,11 +18,12 @@ Completed means the stated source/document scope only, not production acceptance
 | C06 | Searchable complete person history and truthful dated ordering | [History validation](../person-history-validation.md), [CI evidence](TEST-STATUS.md) |
 | C07 | Android acceptance plan, not its execution | [Plan](../android-notebook-acceptance-plan.md) |
 | C08 | Public-safe GitHub knowledge center and continuity policy | [Index](INDEX.md); containing commit/checks resolved as in [handoff](HANDOFF.md) |
+| C09 | On-demand read-only Control Center projection/helper and native capability assessment; emulator/Maestro plan only | [Control Center](CONTROL-CENTER.md), [318-test and independent review evidence](TEST-STATUS.md); no always-on monitor or activated controls |
 
 ## Active
 
-No application implementation task is active at this documentation checkpoint.
-Resolve this center's synchronization result from its containing commit and
+No mobile application implementation task or background worker is active here.
+Resolve the management checkpoint's synchronization result from its containing commit and
 exact-SHA checks using HANDOFF; this file does not predeclare its own CI result.
 No background worker or automatic restart is configured by this task.
 
@@ -45,3 +48,4 @@ No background worker or automatic restart is configured by this task.
 | Dependency advisories | Compatible verified remediation; last inventory has three moderate entries, no forced overrides |
 | Live payments, paid AI/cloud, future voice/wearables | Relevant financial, privacy/security, platform and explicit owner gates; no provider activation |
 | Version assignment | Preserve unresolved third-position/versionCode wording; owner decision only when a proposed build depends on it |
+| Broader live control/context and emulator/Maestro execution | Separate authorized task/evidence; current native socket access failed, live context/events and pause/resume were not exercised; no new transport or device setup |

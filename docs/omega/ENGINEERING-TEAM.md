@@ -39,3 +39,7 @@ AGENTS Rule 11 requires a separate qualified reviewer for critical changes;
 review never replaces owner approval or native acceptance. No specialist was
 needed for this documentation-only indexing task; Principal owns file-by-file
 publication review. No new security implementation approval is claimed.
+
+Subsequent Remote Control Phase 1 reused one Independent Reviewer for the frozen
+management helper/tests/runbook/plan. See [TEST-STATUS](TEST-STATUS.md) for digest,
+scope and evidence; no agent, skill, hook or permission configuration changed.

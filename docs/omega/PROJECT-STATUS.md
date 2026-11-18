@@ -24,8 +24,12 @@ Detailed boundaries: [product inventory](../commercial-mvp-status.md),
 [navigation](../notebook-navigation-validation.md) and
 [person history](../person-history-validation.md).
 
-No app code, dependency, version, permission, key or feature flag changes in this
-documentation checkpoint. No build/install/release or new external obligation.
+Phase 1 adds a separate [on-demand management helper](CONTROL-CENTER.md) with
+official native quota reads available in the existing Remote conversation.
+Context occupancy and native task events remain unobserved; no continuous
+dashboard, new transport or arbitrary terminal endpoint is implemented.
+No mobile app code, dependency, version, permission, key or feature flag changes.
+No build/install/release or new external obligation.
 Known risks include three previously recorded moderate dependency entries,
 unverified native failure recovery and unresolved version-policy wording. See
 [TASK-QUEUE](TASK-QUEUE.md) and [APK-STATUS](APK-STATUS.md).

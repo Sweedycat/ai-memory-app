@@ -2,6 +2,10 @@
 
 As of 2026-11-18 UTC: **no accepted Android candidate for the current development
 checkpoint**. This task built, signed, installed and released nothing.
+Remote Control Phase 1 adds only the
+[subsequent Emulator/Maestro plan](ANDROID-EMULATOR-MAESTRO-PLAN.md).
+No emulator runtime was observed; a PATH lookup finding no tool command is not
+proof the tools are uninstalled. The monitor reports this boundary as unknown.
 
 ## Source configuration, not installed/artifact evidence
 

@@ -8,8 +8,10 @@ current development checkpoint.
 
 Snapshot date: 2026-11-18 UTC. Application checkpoint:
 [`7cfb7737ed2cf39be6f1f4973319d91a44f3878d`](https://github.com/Sweedycat/ai-memory-app/commit/7cfb7737ed2cf39be6f1f4973319d91a44f3878d).
-This knowledge-center addition changes documentation only. Its own revision is
-the commit containing this file; do not confuse it with an application milestone.
+The original knowledge-center checkpoint is
+`10a2a8a1eac608cacd8527d62e984e8a2129e415`. Current Phase 1 management tooling is
+separate from mobile application code. Resolve this file's containing commit;
+do not confuse management/docs changes with an application milestone.
 
 ## Navigation
 
@@ -25,6 +27,8 @@ the commit containing this file; do not confuse it with an application milestone
 | [REMOTE-CONTROL](REMOTE-CONTROL.md) | Observed capabilities versus proposed remote architecture |
 | [USAGE-STATUS](USAGE-STATUS.md) | Availability of safe, reliable usage evidence |
 | [HANDOFF](HANDOFF.md) | Exact remote and local continuation procedure |
+| [CONTROL-CENTER](CONTROL-CENTER.md) | Phase 1 on-demand native monitoring, safeguards and limits |
+| [Android Emulator/Maestro plan](ANDROID-EMULATOR-MAESTRO-PLAN.md) | Subsequent authorized synthetic UI test integration; not executed |
 
 ## Authority and source reuse
 

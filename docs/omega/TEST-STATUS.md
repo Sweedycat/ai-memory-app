@@ -1,5 +1,46 @@
 # Test and review evidence
 
+## Remote Control Phase 1 — 2026-11-18 UTC
+
+Management baseline: `10a2a8a1eac608cacd8527d62e984e8a2129e415`;
+[CI 44373995969](https://github.com/Sweedycat/ai-memory-app/actions/runs/44373995969)
+success reverified before edits. Mobile application source remains unchanged.
+
+- Local strict TypeScript PASS. Full repository regression **318/318 PASS**,
+  zero failed/skipped/cancelled: prior 306 tests plus 12 management helper tests.
+- New focused tests **12/12 PASS**: privacy canaries, bounded/invalid input,
+  unknown/stale/expired windows, durations, backend refusal/reserves, honest
+  context/activity and exact-repository/SHA CI checks. No new packages.
+- Actual native `get_usage_limits` read and in-memory CommonJS projection
+  succeeded; actual percentages/reset/account data were not persisted. Current
+  native collaboration-tree counts were projected without names/IDs/raw outputs.
+  The initial direct `.cjs` ESM import was unsupported by the Node tool; standard
+  `node:module` CommonJS interoperability succeeded without modifying source.
+- Default read-only Git CLI smoke PASS; unknown native/context fields remained
+  unknown. App Server schema/help inspection was read-only; sandbox socket
+  version probe failed with OS error 10050, not bypassed or called successful.
+- No live native task/context event, actual pause/resume, emulator/device,
+  APK installation or new connection/authentication acceptance was performed.
+
+Independent Reviewer authored none of the four frozen files and made no writes.
+Reviewed order: tools/omega-control-center.cjs;
+tests/omegaControlCenter.test.cjs; docs/omega/CONTROL-CENTER.md;
+docs/omega/ANDROID-EMULATOR-MAESTRO-PLAN.md. SHA-256 of JSON.stringify of ordered
+`{file,sha256(raw bytes)}` entries:
+`630ae4ab3140723335bb159f16c67a92b93d6b980521523b4dfcd2c00e282feb`.
+Digest matched before/after. **No actionable findings** in the bounded scope;
+independently passed 12 focused tests and whitespace validation. Actual native
+reads/schema observations are Principal evidence, not reviewer/device proof.
+Status/handoff updates outside that manifest receive Principal consistency review.
+
+No mobile/dependency/native configuration changed; no repeated local Doctor/audit.
+The new containing commit's CI must be verified separately; its own success is
+not predeclared in this document. Existing development push workflow runs fresh
+Doctor, strict typecheck and the complete suite; it builds no APK on this branch.
+Prior moderate advisories remain unresolved, not reclassified as clean.
+
+## Previous application and knowledge-center evidence
+
 Evidence rechecked: 2026-11-18 UTC. Application checkpoint:
 `7cfb7737ed2cf39be6f1f4973319d91a44f3878d`.
 

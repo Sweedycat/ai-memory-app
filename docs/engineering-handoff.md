@@ -1,5 +1,23 @@
 # Omega engineering handoff
 
+## Omega Control Center Phase 1 — 2026-11-18
+
+Baseline: clean `development/omega-commercial-mvp` at remote-matching
+`10a2a8a1eac608cacd8527d62e984e8a2129e415`, CI 44373995969 success.
+[CONTROL-CENTER](omega/CONTROL-CENTER.md) records read-only assessment and the
+separate on-demand helper; [HANDOFF](omega/HANDOFF.md) gives exact continuation.
+Official native account-limit reads now work; actual account/usage data is never
+committed. No live context event or actual native pause/resume was tested.
+Mobile Remote is owner-reported working; no new connection/port/service is added.
+
+The helper uses fixed read-only Git and bounded allowlisted projections, not
+arbitrary terminal execution. Existing mobile source, agents, skills, hooks,
+policies, dependencies and false Notebook gate remain intact. Emulator/Maestro
+integration is planned only; no device/build/install/release or paid service.
+Resolve the containing CONTROL-CENTER commit, independent review and exact-SHA CI
+before treating this as a validated management checkpoint. Stop after checkpoint;
+do not resume product work or restart automatically from quota reset.
+
 ## GitHub knowledge center — documentation checkpoint, 2026-11-18
 
 Start with [docs/omega/INDEX.md](omega/INDEX.md) for the versioned project status,
