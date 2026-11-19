@@ -125,7 +125,7 @@ working-copy assumption:
 OMEGA_REPO_DIR=/workspace/ai-memory-app
 OMEGA_EXPECTED_SHA=<full approved checkpoint SHA>
 OMEGA_BOOTSTRAP_SHA256=bc905eb466301177b8479754242fa3ee36f84419bd024d2e01ede78868ca7803
-OMEGA_PATHS_SHA256=d810a8dc7d746c4dd57f610774587b8c5c13b24445dfd0b393c269b8c93b23c6
+OMEGA_PATHS_SHA256=350f9c2df63377599ecf7035c9c9550f0fd5754f64223c557e2b330d243297b0
 OMEGA_INITIAL_DETACH=1
 OMEGA_INSTALL_DEPS=1
 ```
@@ -141,7 +141,7 @@ Initial Phase4 checkpoint `6612a105eba7b0157a9eca16cc7d0a2a7451faf8` was
 pushed normally. Its [Notebook/full CI 44433117490](https://github.com/Sweedycat/ai-memory-app/actions/runs/44433117490)
 passed. [Portability CI 44433117588](https://github.com/Sweedycat/ai-memory-app/actions/runs/44433117588)
 passed on Ubuntu but failed four Windows source/backlink assertions. Actual
-hosted evidence exposed drive-letter case differences; success was not inferred
+hosted evidence exposed Windows path-identity differences; success was not inferred
 from earlier Windows workstation tests.
 
 The correction compares Windows normalized casing **and bigint filesystem
@@ -169,7 +169,33 @@ eleven-file ordinal aggregate:
 `1d6f01ec152a4b193a97ef9d94026e3884218fc9f7290c4063542ffc16c1a6e7`.
 This supersedes the earlier eleven-file identity for the corrected source.
 
-## Remaining actual Cloud gates
+## DOS short-path correction and current validation
+
+The first Windows correction `6c994b08a3088758ceb6361ee89c2c20f6371327`
+passed [full CI 44434986724](https://github.com/Sweedycat/ai-memory-app/actions/runs/44434986724)
+and Ubuntu portability again, but [Windows matrix 44434986708](https://github.com/Sweedycat/ai-memory-app/actions/runs/44434986708)
+still failed root/backlink comparisons. Casing alone was insufficient. A real
+Windows probe with a fabricated temp directory and its DOS8.3 spelling confirmed:
+ordinary realpath strings differed, native realpaths matched, bigint inode IDs
+matched, and the previous path comparator rejected the same directory.
+
+Windows comparison now rejects every path-component symlink/junction **before**
+native canonicalization, then requires native canonical equality and bigint
+filesystem identity. Exact-root Git trust uses an additional lexical gate before
+resolution, so aliases cannot broaden retained trust. A new real Windows test
+exercises a synthetic short-path repository and rejects a junction.
+
+Current Node22 focused run: **78 total, 76 PASS, 0 FAIL, 2 Windows skips**
+(29 bootstrap, 16 runtime, 1 launcher, 32 hooks). Linux skips the Windows-only DOS
+probe explicitly; Linux FIFO/symlink coverage remains separate. Existing app/
+TypeScript source is unchanged. Both earlier failed matrices remain recorded;
+inspect the current correction SHA's own CI for acceptance.
+
+Independent Security and QA reviews found no new blocker; both matched the current eleven-file ordinal
+aggregate is `4a4d467ecad37a715c287eef01511e7947a2fe69e07dd352046a74779a9e28ba`.
+This supersedes prior code identities; seed pins above match this correction.
+
+## Remaining actual Cloud acceptance gates
 
 Actual Cloud bootstrap/dependency and regression acceptance, current native skill
 and delegation interface observations, and hook event support remain pending.

@@ -6,9 +6,21 @@ const path = require('node:path');
 function samePath(left, right) {
   const a = path.resolve(left), b = path.resolve(right);
   if (process.platform !== 'win32') return a === b;
-  if (a.toLowerCase() !== b.toLowerCase()) return false;
-  // Avoid conflating distinct entries in an NTFS case-sensitive directory.
-  try { const x = fs.statSync(a, { bigint: true }), y = fs.statSync(b, { bigint: true }); return x.dev === y.dev && x.ino === y.ino; }
+  // Native canonicalization expands DOS 8.3 aliases; ordinary realpath retains
+  // them on Windows. Reject links before canonicalizing either spelling.
+  try {
+    for (const file of [a, b]) {
+      const base = path.parse(file).root;
+      let current = base;
+      for (const part of path.relative(base, file).split(path.sep).filter(Boolean)) {
+        current = path.join(current, part);
+        if (fs.lstatSync(current).isSymbolicLink()) return false;
+      }
+    }
+    if (fs.realpathSync.native(a).toLowerCase() !== fs.realpathSync.native(b).toLowerCase()) return false;
+    const x = fs.statSync(a, { bigint: true }), y = fs.statSync(b, { bigint: true });
+    return x.dev === y.dev && x.ino === y.ino;
+  }
   catch { return false; }
 }
 function gitEnvironment(root, source = process.env) {
@@ -24,6 +36,9 @@ function gitEnvironment(root, source = process.env) {
       if (value === '') rootTrusted = false; // Git's empty value resets earlier entries.
       else if (typeof value === 'string' && path.isAbsolute(value)
         && (process.platform !== 'win32' || path.parse(value).root.length > 1)
+        // Do not inspect unrelated ambient roots to resolve possible aliases.
+        && (process.platform === 'win32' ? path.resolve(value).toLowerCase() === path.resolve(root).toLowerCase()
+          : path.resolve(value) === path.resolve(root))
         && samePath(value, root)) rootTrusted = true;
     }
   }

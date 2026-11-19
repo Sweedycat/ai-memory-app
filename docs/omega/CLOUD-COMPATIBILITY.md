@@ -162,8 +162,9 @@ node_modules. Stop and inspect; existing source/owner data is never reset.
 There is no atomic cross-process checkout lock. Ownership is mandatory before
 source selection. The existing Unified Workspace advisory planner remains the
 shared conflict model; no automatic sync, merge or push is introduced.
-Windows path comparisons preserve actual filesystem identity across drive-letter
-casing; Linux stays case sensitive. Existing runtime Git trust is retained only
+Windows path comparisons reject symlink/junction components before native DOS
+short-name canonicalization and require matching filesystem identity across
+drive-letter casing; Linux stays case sensitive. Existing runtime Git trust is retained only
 for an effective absolute exact-root `safe.directory` entry already supplied by
 the host, with reset ordering preserved. No wildcard trust or new global trust is
 added to work around a refusal.

@@ -113,6 +113,20 @@ test('Git environment retains only existing exact-root safe.directory trust', t 
   assert.equal(gitEnvironment(f.root, trust(['', f.root])).GIT_CONFIG_VALUE_0, f.root);
   assert.equal(gitEnvironment(f.root, trust([f.root, '', '*'])).GIT_CONFIG_COUNT, undefined);
 });
+test('Windows DOS short aliases identify the same repository without accepting junctions', { skip: process.platform !== 'win32' }, t => {
+  const f = fixture(t);
+  const result = spawnSync('powershell.exe', ['-NoProfile', '-Command',
+    '$f=New-Object -ComObject Scripting.FileSystemObject; $f.GetFolder($env:OMEGA_TEST_LONG_PATH).ShortPath'], {
+    env: { ...process.env, OMEGA_TEST_LONG_PATH: f.root }, encoding: 'utf8', timeout: 5000, windowsHide: true });
+  if (result.status !== 0 || !result.stdout.trim()) { t.skip('Host cannot expose a synthetic DOS short path'); return; }
+  const short = result.stdout.trim();
+  if (short.toLowerCase() === f.root.toLowerCase()) { t.skip('Host does not create DOS short aliases'); return; }
+  assert.equal(samePath(f.root, short), true);
+  assert.equal(runtime.repository(short).head, f.head);
+  const linked = path.join(f.root, 'synthetic-junction');
+  fs.symlinkSync(path.join(f.root, 'tools'), linked, 'junction');
+  assert.equal(samePath(linked, path.join(f.root, 'tools')), false);
+});
 test('path loader rejects symlinks or junctions before reading instructions', t => {
   const f = fixture(t);
   fs.symlinkSync(path.join(f.root, 'tools'), path.join(f.root, 'linked'), process.platform === 'win32' ? 'junction' : 'dir');

@@ -6,7 +6,9 @@ The first Phase4 commit `6612a105eba7b0157a9eca16cc7d0a2a7451faf8` passed
 Ubuntu full/portable CI but exposed hosted-Windows path-case failures. Resume
 only from the newer reviewed Windows correction recorded in PHASE4-VALIDATION,
 with updated seed hashes; do not select the earlier commit from a stale per-file
-log. Reverify the current development HEAD and both exact-SHA workflows.
+log. The intermediate `6c994b08a3088758ceb6361ee89c2c20f6371327` still failed
+hosted Windows DOS8.3 aliases; the latest native-canonicalization correction and
+updated seed pins are required. Reverify current HEAD and both exact-SHA workflows.
 
 Owner authorized portability implementation, tests, independent review, commits
 and normal pushes only to `development/omega-commercial-mvp`. Initial clean local
