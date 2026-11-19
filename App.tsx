@@ -21,6 +21,8 @@ import { MemorySaveNotice } from './src/components/MemorySaveNotice';
 import { DailyBriefingCard } from './src/components/DailyBriefingCard';
 import { LifeAdminPanel } from './src/components/LifeAdminPanel';
 import { lifeAdminCopy } from './src/strings/lifeAdmin';
+import { GroundedAssistantPanel } from './src/components/GroundedAssistantPanel';
+import { assistantCopy } from './src/strings/assistant';
 import { NOTEBOOK_PRODUCTION_ENABLED, useNotebookLifecycle } from './src/components/NotebookBoundary';
 import { NotebookPanel } from './src/components/NotebookPanel';
 import { PersonHistory } from './src/components/PersonHistory';
@@ -40,7 +42,7 @@ import {
   scheduleFollowUpNotification,
 } from './src/utils/followUpNotifications';
 
-type Screen = 'home' | 'detail' | 'add' | 'edit' | 'notebook' | 'life';
+type Screen = 'home' | 'detail' | 'add' | 'edit' | 'notebook' | 'life' | 'assistant';
 type PickerMode = 'date' | 'time' | 'datetime' | null;
 type PersonForm = {
   name: string;
@@ -134,6 +136,7 @@ export default function App() {
   const { openSettings } = useOwnerControls();
   const notebookLifecycle = useNotebookLifecycle();
   const [screen, setScreen] = useState<Screen>('home');
+  const [lifeTarget, setLifeTarget] = useState<string | undefined>(undefined);
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(mockPeople[0]?.id ?? null);
   const [briefing, setBriefing] = useState('');
@@ -617,8 +620,13 @@ export default function App() {
   }
 
   if (screen === 'life') {
-    return <LifeAdminPanel onBack={() => setScreen('home')}
+    return <LifeAdminPanel onBack={() => setScreen('home')} initialRecordId={lifeTarget}
       createId={async () => { const crypto = await import('expo-crypto'); return crypto.randomUUID(); }} />;
+  }
+
+  if (screen === 'assistant') {
+    return <GroundedAssistantPanel people={people} onBack={() => setScreen('home')} onOpenPerson={openPerson}
+      onOpenLife={id => { setLifeTarget(id); setScreen('life'); }} />;
   }
 
   if (screen === 'notebook' && NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle) {
@@ -863,7 +871,8 @@ export default function App() {
       </Card>
 
       {!query.trim() && <DailyBriefingCard people={people} onOpenPerson={openPerson} />}
-      <OutlineAction label={lifeAdminCopy(Intl.DateTimeFormat().resolvedOptions().locale).title} onPress={() => setScreen('life')} />
+      <OutlineAction label={lifeAdminCopy(Intl.DateTimeFormat().resolvedOptions().locale).title} onPress={() => { setLifeTarget(undefined); setScreen('life'); }} />
+      <OutlineAction label={assistantCopy(Intl.DateTimeFormat().resolvedOptions().locale).title} onPress={() => setScreen('assistant')} />
       {NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label={notebookEn.title} onPress={() => setScreen('notebook')} />}
 
       <View style={styles.sectionHeader}>

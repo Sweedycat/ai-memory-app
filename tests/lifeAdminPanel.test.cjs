@@ -19,7 +19,7 @@ const record = { id: 'synthetic-life', title: 'Synthetic insurance', category: '
 
 // Real panel handlers and date model; native elements/lifecycle and persistence
 // adapter are mocked. These tests make no Android rendering/durability claim.
-function screen({ records = [], createId = async () => 'new-synthetic', locale = 'en', saveResult = true } = {}) {
+function screen({ records = [], createId = async () => 'new-synthetic', locale = 'en', saveResult = true, initialRecordId } = {}) {
   const slots = [], effects = [], backs = new Set(), listeners = new Set(), calls = [];
   let cursor = 0, dirty = false, mounted = true, scheduled = [], output, exits = 0;
   const store = { records, status: 'ready', busy: false, error: null,
@@ -46,7 +46,7 @@ function screen({ records = [], createId = async () => 'new-synthetic', locale =
     '../hooks/useLifeRecords': { useLifeRecords: () => store }, '../utils/lifeRecords': model,
     '../strings/lifeAdmin': strings, '../utils/screenInsets': { SCREEN_TOP_PADDING: 24 },
   }).LifeAdminPanel;
-  function render() { cursor = 0; dirty = false; output = Component({ onBack: () => { exits++; }, createId, locale });
+  function render() { cursor = 0; dirty = false; output = Component({ onBack: () => { exits++; }, createId, locale, initialRecordId });
     const pending = scheduled; scheduled = []; pending.forEach(run => run()); }
   function nodes(node) { if (Array.isArray(node)) return node.flatMap(nodes); if (!node || typeof node !== 'object') return [];
     return [node, ...nodes(node.props?.children)]; }
@@ -170,4 +170,11 @@ test('Turkish catalog covers the same workflow and category keys; unsupported lo
   const ui = screen({ locale: 'tr-TR' }); t.after(ui.unmount);
   assert.ok(ui.text(strings.lifeAdminTr.title)); await ui.press(strings.lifeAdminTr.add);
   assert.equal(ui.find('TextInput', strings.lifeAdminTr.date).props.value, '');
+});
+
+test('assistant source navigation opens only the requested saved responsibility and missing IDs invent nothing', async t => {
+  const ui = screen({ records: [record], initialRecordId: record.id }); t.after(ui.unmount); await ui.flush();
+  assert.ok(ui.text(record.notes)); assert.ok(ui.has(copy.edit)); assert.equal(ui.calls.length, 0);
+  const missing = screen({ records: [record], initialRecordId: 'missing-synthetic' }); t.after(missing.unmount); await missing.flush();
+  assert.ok(missing.text(copy.missing)); assert.equal(missing.has(copy.edit), false); assert.equal(missing.calls.length, 0);
 });

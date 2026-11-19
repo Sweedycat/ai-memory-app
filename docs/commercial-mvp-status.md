@@ -1,5 +1,17 @@
 # Commercial MVP implementation inventory
 
+## 2026-11-19 grounded daily assistant
+
+The [local assistant increment](grounded-assistant-validation.md) adds six fixed
+questions grounded in saved people/follow-ups and responsibilities. It preserves
+exact source IDs/text/dates, requires duplicate-name selection, distinguishes
+missing information from empty loaded records, flags legacy/future interactions
+and opens the selected source. New copy is English/Turkish. This does not connect
+AI, search Notebook, verify actual spoken contact/promises, or add notifications.
+The older table's statement that structured local questions are absent is now
+superseded within this bounded retrieval scope. Native acceptance, full-app
+localization and commercial release remain incomplete.
+
 ## 2026-11-19 product continuation
 
 The new [life administration checkpoint](life-admin-validation.md) adds a separate

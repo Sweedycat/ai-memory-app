@@ -1,5 +1,20 @@
 # Omega engineering handoff
 
+## Daily assistant continuation — 2026-11-19
+
+The previous life agenda was pushed at
+`2b61db6b180bc8b09d2480305d1272890d708f53`; exact-SHA full CI44497602771
+and portability CI44497602626 both passed. The next product increment adds six
+deterministic local questions with exact saved sources, duplicate-name selection,
+explicit unknown/unavailable results and links into gated person/life records.
+Read [assistant validation](grounded-assistant-validation.md). No Notebook reads,
+external AI, schema changes, billing, device alerts or factory work.
+
+Source development remains separate from Android/upgrade acceptance. Priority A
+notification reconciliation and Notebook's physical activation gates remain.
+Resolve this section's containing checkpoint and verify its exact-SHA CI before
+continuing. Do not infer that successful source tests authorize an APK or install.
+
 ## Product development resumed — 2026-11-19
 
 Current owner authorizes product milestones, normal reviewed commits/pushes only

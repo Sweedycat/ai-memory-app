@@ -11,8 +11,8 @@ type Confirmation = { kind: 'delete' | 'discard' | 'review'; target: LifeRecord 
 
 // Uses the existing outer owner/privacy gates. No native reminder, export or
 // account permission is requested. Date-only records never pass through UTC.
-export function LifeAdminPanel({ onBack, createId, locale = Intl.DateTimeFormat().resolvedOptions().locale }: {
-  onBack: () => void; createId: () => Promise<string>; locale?: string;
+export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Intl.DateTimeFormat().resolvedOptions().locale }: {
+  onBack: () => void; createId: () => Promise<string>; initialRecordId?: string; locale?: string;
 }) {
   const store = useLifeRecords();
   const copy = lifeAdminCopy(locale);
@@ -28,12 +28,20 @@ export function LifeAdminPanel({ onBack, createId, locale = Intl.DateTimeFormat(
   const [message, setMessage] = useState('');
   const [working, setWorking] = useState(false);
   const mounted = useRef(true), pending = useRef(false), hardwareBack = useRef<() => void>(() => undefined);
+  const initialTargetUsed = useRef(false);
   const canWrite = store.status === 'ready' && !store.busy && !working;
   const dirty = mode === 'edit' && JSON.stringify(draft) !== JSON.stringify(base);
   const agenda = lifeAgenda(store.records, now, query, copy.categories);
   const entries = agenda[group];
   const current = draft ? store.records.find(record => record.id === draft.id) : undefined;
   const stale = draft && (base ? JSON.stringify(current) !== JSON.stringify(base) : Boolean(current));
+
+  useEffect(() => {
+    if (!initialRecordId || initialTargetUsed.current || store.status !== 'ready') return;
+    initialTargetUsed.current = true;
+    const record = store.records.find(item => item.id === initialRecordId);
+    if (record) open(record); else setMessage(copy.missing);
+  }, [initialRecordId, store.status, store.records]);
 
   useEffect(() => {
     mounted.current = true;
