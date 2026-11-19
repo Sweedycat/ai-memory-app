@@ -6,7 +6,7 @@ const path = require('node:path');
 const os = require('node:os');
 const { spawnSync } = require('node:child_process');
 const runtime = require('../tools/omega-runtime.cjs');
-const { within, gitLayout } = require('../tools/omega-paths.cjs');
+const { within, gitLayout, samePath, gitEnvironment } = require('../tools/omega-paths.cjs');
 const hooks = require('../.codex/hooks/omega-hooks.cjs');
 
 function fixture(t) {
@@ -82,6 +82,36 @@ test('path boundaries normalize both separators and preserve spaces', t => {
   for (const file of ['../outside', 'tools/../file', '/outside', 'C:/outside', '//host/share', '.git/HEAD',
     '.env', '.aws/file', 'tools/auth.json', 'tools/a.key', 'tools/NUL.txt', 'tools/file.', 'tools/file:stream'])
     assert.throws(() => within(f.root, file), file);
+});
+test('path identity respects Windows casing and Linux case sensitivity', t => {
+  const f = fixture(t);
+  assert.equal(samePath(f.root, f.root), true);
+  if (process.platform === 'win32') {
+    const driveVariant = f.root[0] === f.root[0].toUpperCase() ? f.root[0].toLowerCase() + f.root.slice(1) : f.root[0].toUpperCase() + f.root.slice(1);
+    assert.equal(samePath(f.root, driveVariant), true);
+    assert.equal(runtime.repository(driveVariant).head, f.head);
+  } else assert.equal(samePath(f.root, f.root.toUpperCase()), false);
+  assert.equal(samePath(f.root, path.join(f.root, 'other')), false);
+});
+test('Git environment retains only existing exact-root safe.directory trust', t => {
+  const f = fixture(t);
+  const input = { PATH: 'synthetic', GIT_DIR: '/unapproved', GIT_WORK_TREE: '/unapproved', GIT_CONFIG_COUNT: '3',
+    GIT_CONFIG_KEY_0: 'safe.directory', GIT_CONFIG_VALUE_0: '*', GIT_CONFIG_KEY_1: 'http.extraHeader',
+    GIT_CONFIG_VALUE_1: 'SYNTHETIC-CANARY', GIT_CONFIG_KEY_2: 'safe.directory', GIT_CONFIG_VALUE_2: f.root };
+  const env = gitEnvironment(f.root, input);
+  assert.equal(env.GIT_CONFIG_COUNT, '1'); assert.equal(env.GIT_CONFIG_KEY_0, 'safe.directory');
+  assert.equal(env.GIT_CONFIG_VALUE_0, f.root); assert.equal(env.GIT_DIR, undefined);
+  assert.equal(env.GIT_WORK_TREE, undefined); assert.equal(env.GIT_CONFIG_KEY_1, undefined);
+  assert(!JSON.stringify(env).includes('SYNTHETIC-CANARY'));
+  assert.equal(gitEnvironment(f.root, { ...input, GIT_CONFIG_COUNT: '1' }).GIT_CONFIG_COUNT, undefined);
+  assert.equal(gitEnvironment(f.root, {}).GIT_CONFIG_COUNT, undefined);
+  const trust = values => Object.fromEntries([['GIT_CONFIG_COUNT', String(values.length)], ...values.flatMap((value, i) =>
+    [[`GIT_CONFIG_KEY_${i}`, 'safe.directory'], [`GIT_CONFIG_VALUE_${i}`, value]])]);
+  for (const value of ['', '.', './', '*', 'relative/path'])
+    assert.equal(gitEnvironment(process.cwd(), trust([value])).GIT_CONFIG_COUNT, undefined);
+  assert.equal(gitEnvironment(f.root, trust([f.root, ''])).GIT_CONFIG_COUNT, undefined);
+  assert.equal(gitEnvironment(f.root, trust(['', f.root])).GIT_CONFIG_VALUE_0, f.root);
+  assert.equal(gitEnvironment(f.root, trust([f.root, '', '*'])).GIT_CONFIG_COUNT, undefined);
 });
 test('path loader rejects symlinks or junctions before reading instructions', t => {
   const f = fixture(t);

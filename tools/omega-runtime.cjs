@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { createHash } = require('node:crypto');
-const { within, bounded, gitLayout } = require('./omega-paths.cjs');
+const { within, bounded, gitLayout, samePath, gitEnvironment } = require('./omega-paths.cjs');
 const { ownershipPlan } = require('./omega-workspace.cjs');
 const { validOrigin } = require('./omega-cloud-bootstrap.cjs');
 const { hasSecret } = require('../.codex/hooks/omega-hooks.cjs');
@@ -20,8 +20,7 @@ const cap = (status = 'UNTESTED', detail = 'No direct runtime observation') => (
 const sha = s => typeof s === 'string' && /^[a-f0-9]{40}$/.test(s);
 
 function run(file, args, cwd = ROOT, timeout = 5000) {
-  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^GIT_/i.test(key)));
-  env.GIT_TERMINAL_PROMPT = '0';
+  const env = gitEnvironment(cwd);
   const result = spawnSync(file, args, { cwd, encoding: 'utf8', shell: false, windowsHide: true, timeout,
     maxBuffer: 256 * 1024, stdio: ['ignore', 'pipe', 'pipe'], env });
   if (result.error || result.status !== 0) throw Error('command_unavailable');
@@ -38,7 +37,7 @@ function git(args, root = ROOT) {
 }
 function repository(root = ROOT) {
   const layout = gitLayout(root);
-  if (fs.realpathSync(git(['rev-parse', '--show-toplevel'], root).trim()) !== fs.realpathSync(root)) throw Error('wrong_root');
+  if (!samePath(fs.realpathSync(git(['rev-parse', '--show-toplevel'], root).trim()), fs.realpathSync(root))) throw Error('wrong_root');
   const origins = git(['config', '--get-all', 'remote.origin.url'], root).trim().split(/\r?\n/);
   if (origins.length !== 1 || !validOrigin(origins[0])) throw Error('wrong_repository');
   const head = git(['rev-parse', '--verify', 'HEAD'], root).trim();

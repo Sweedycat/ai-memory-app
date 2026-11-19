@@ -124,8 +124,8 @@ working-copy assumption:
 ```text
 OMEGA_REPO_DIR=/workspace/ai-memory-app
 OMEGA_EXPECTED_SHA=<full approved checkpoint SHA>
-OMEGA_BOOTSTRAP_SHA256=2d7d61f4faf3573c9992a26f115fee5de297b27df3208b5d55add3d043014089
-OMEGA_PATHS_SHA256=629e799e166a90012bc40b489f6c386a69476cf65eec98767ce819f07191f6e3
+OMEGA_BOOTSTRAP_SHA256=bc905eb466301177b8479754242fa3ee36f84419bd024d2e01ede78868ca7803
+OMEGA_PATHS_SHA256=d810a8dc7d746c4dd57f610774587b8c5c13b24445dfd0b393c269b8c93b23c6
 OMEGA_INITIAL_DETACH=1
 OMEGA_INSTALL_DEPS=1
 ```
@@ -135,7 +135,41 @@ Set detach back to `0` for subsequent tasks/maintenance; never overwrite active
 work. Paste the reviewed setup script and Start instructions as described in
 [CLOUD-COMPATIBILITY](CLOUD-COMPATIBILITY.md). No account setting was changed here.
 
-## Remaining gates
+## Hosted CI correction after initial checkpoint
+
+Initial Phase4 checkpoint `6612a105eba7b0157a9eca16cc7d0a2a7451faf8` was
+pushed normally. Its [Notebook/full CI 44433117490](https://github.com/Sweedycat/ai-memory-app/actions/runs/44433117490)
+passed. [Portability CI 44433117588](https://github.com/Sweedycat/ai-memory-app/actions/runs/44433117588)
+passed on Ubuntu but failed four Windows source/backlink assertions. Actual
+hosted evidence exposed drive-letter case differences; success was not inferred
+from earlier Windows workstation tests.
+
+The correction compares Windows normalized casing **and bigint filesystem
+identity**, retaining Linux case sensitivity. Windows sandbox smoke also exposed
+that stripping every Git environment override removed an existing runtime trust
+entry, causing Git's dubious-ownership refusal. The shared environment adapter
+now retains only an **already supplied, effective, absolute exact-root**
+`safe.directory` entry; it creates no new trust, carries no wildcard/other-root
+trust, honors later empty reset entries and drops other Git overrides. Independent
+review caught empty/relative trust-reset conversion during this correction; it
+was fixed before publication and covered at the actual cwd with fabricated values.
+
+Final correction focused run: **77 total, 75 PASS, 0 FAIL, 2 Windows skips**
+(29 bootstrap, 15 runtime, 1 launcher, 32 hooks). The strengthened actual-cwd
+trust-reset test also passed alone. Dirty-source Windows detector smoke verified
+repository, Node22, npm and dependencies; strict ready correctly still requires
+a clean checkpoint. The two seed blob pins above correspond to this correction.
+No new app/TypeScript changes, builds, device operations, global Git settings or
+account changes. Inspect the correction commit's own CI; the initial Linux success
+does not predeclare its result.
+
+Independent final correction Security and QA reviews both closed the trust-reset
+finding and found no remaining bounded source blocker. Both matched the current
+eleven-file ordinal aggregate:
+`1d6f01ec152a4b193a97ef9d94026e3884218fc9f7290c4063542ffc16c1a6e7`.
+This supersedes the earlier eleven-file identity for the corrected source.
+
+## Remaining actual Cloud gates
 
 Actual Cloud bootstrap/dependency and regression acceptance, current native skill
 and delegation interface observations, and hook event support remain pending.

@@ -3,6 +3,34 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
+function samePath(left, right) {
+  const a = path.resolve(left), b = path.resolve(right);
+  if (process.platform !== 'win32') return a === b;
+  if (a.toLowerCase() !== b.toLowerCase()) return false;
+  // Avoid conflating distinct entries in an NTFS case-sensitive directory.
+  try { const x = fs.statSync(a, { bigint: true }), y = fs.statSync(b, { bigint: true }); return x.dev === y.dev && x.ino === y.ino; }
+  catch { return false; }
+}
+function gitEnvironment(root, source = process.env) {
+  const env = Object.fromEntries(Object.entries(source).filter(([key]) => !/^GIT_/i.test(key)));
+  Object.assign(env, { GIT_TERMINAL_PROMPT: '0', GCM_INTERACTIVE: 'never' });
+  const count = Number(source.GIT_CONFIG_COUNT || 0);
+  let rootTrusted = false;
+  if (Number.isSafeInteger(count) && count >= 0 && count <= 32) for (let i = 0; i < count; i++) {
+    // Preserve only an already supplied runtime trust entry for this exact root.
+    // Never create trust, carry wildcard/other-root trust, or expose values.
+    if (source[`GIT_CONFIG_KEY_${i}`]?.toLowerCase() === 'safe.directory') {
+      const value = source[`GIT_CONFIG_VALUE_${i}`];
+      if (value === '') rootTrusted = false; // Git's empty value resets earlier entries.
+      else if (typeof value === 'string' && path.isAbsolute(value)
+        && (process.platform !== 'win32' || path.parse(value).root.length > 1)
+        && samePath(value, root)) rootTrusted = true;
+    }
+  }
+  if (rootTrusted) Object.assign(env, { GIT_CONFIG_COUNT: '1', GIT_CONFIG_KEY_0: 'safe.directory', GIT_CONFIG_VALUE_0: root });
+  return env;
+}
+
 function ordinary(file, directory = false) {
   const info = fs.lstatSync(file);
   if (info.isSymbolicLink() || !(directory ? info.isDirectory() : info.isFile())) throw Error('unsafe_path');
@@ -37,7 +65,8 @@ function within(root, value, cwd = root) {
 // Linked worktree metadata may live outside the worktree. Only Git's reciprocal
 // admin layout is accepted; it is never an instruction/script loading location.
 function gitLayout(root) {
-  if (path.resolve(root) !== fs.realpathSync(root)) throw Error('linked_root');
+  ordinary(root, true);
+  if (!samePath(path.resolve(root), fs.realpathSync(root))) throw Error('linked_root');
   const marker = path.join(root, '.git');
   const info = fs.lstatSync(marker);
   if (info.isSymbolicLink()) throw Error('linked_git');
@@ -47,16 +76,16 @@ function gitLayout(root) {
     if (!match) throw Error('git_layout');
     gitDir = path.resolve(root, match[1]);
     ordinary(gitDir, true);
-    if (fs.realpathSync(gitDir) !== gitDir) throw Error('linked_admin');
+    if (!samePath(fs.realpathSync(gitDir), gitDir)) throw Error('linked_admin');
     const common = path.resolve(gitDir, bounded(path.join(gitDir, 'commondir'), 4096).trim());
     ordinary(common, true);
-    if (fs.realpathSync(common) !== common || path.dirname(gitDir) !== path.join(common, 'worktrees')
+    if (!samePath(fs.realpathSync(common), common) || !samePath(path.dirname(gitDir), path.join(common, 'worktrees'))
       || !/^[a-zA-Z0-9._-]{1,100}$/.test(path.basename(gitDir))
-      || path.resolve(gitDir, bounded(path.join(gitDir, 'gitdir'), 4096).trim()) !== marker) throw Error('git_backlink');
+      || !samePath(path.resolve(gitDir, bounded(path.join(gitDir, 'gitdir'), 4096).trim()), marker)) throw Error('git_backlink');
     linked = true;
   } else if (!info.isDirectory()) throw Error('git_layout');
   const head = bounded(path.join(gitDir, 'HEAD'), 4096).trim();
   return { gitDir, linked, head };
 }
 
-module.exports = { within, bounded, gitLayout };
+module.exports = { within, bounded, gitLayout, samePath, gitEnvironment };

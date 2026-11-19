@@ -4,7 +4,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { gitLayout, within, bounded } = require('./omega-paths.cjs');
+const { gitLayout, within, bounded, samePath, gitEnvironment } = require('./omega-paths.cjs');
 
 const REPOSITORY = 'Sweedycat/ai-memory-app';
 const BRANCH = 'development/omega-commercial-mvp';
@@ -48,8 +48,7 @@ function validOrigin(value) {
 
 function createGitRunner(cwd, execute = spawnSync) {
   // Avoid caller GIT_DIR/WORK_TREE/config injection and interactive credential prompts.
-  const env = Object.fromEntries(Object.entries(process.env).filter(([key]) => !/^GIT_/i.test(key)));
-  Object.assign(env, { GIT_TERMINAL_PROMPT: '0', GCM_INTERACTIVE: 'never' });
+  const env = gitEnvironment(cwd);
   const config = ['--no-pager', '--no-optional-locks', '-c', 'core.fsmonitor=false', '-c', 'credential.helper=', '-c', 'core.askPass=',
     '-c', 'http.followRedirects=false', '-c', 'protocol.allow=never', '-c', 'protocol.https.allow=always',
     '-c', 'fetch.recurseSubmodules=false', '-c', 'gc.auto=0', '-c', 'maintenance.auto=false'];
@@ -158,7 +157,7 @@ function bootstrap(options, dependencies = {}) {
   const git = dependencies.git || createGitRunner(cwd);
   const root = git(['rev-parse', '--show-toplevel']).output;
   let sameRoot;
-  try { sameRoot = fs.realpathSync(root) === fs.realpathSync(cwd); } catch { sameRoot = false; }
+  try { sameRoot = samePath(fs.realpathSync(root), fs.realpathSync(cwd)); } catch { sameRoot = false; }
   if (!sameRoot) fail('repository_root', 'Run this command from the actual repository root.');
   verifyGitHooks(git, root);
   const before = readState(git);

@@ -2,6 +2,12 @@
 
 ## Phase 4 portability checkpoint
 
+Initial implementation `6612a105eba7b0157a9eca16cc7d0a2a7451faf8`: full CI
+44433117490 and Ubuntu portability passed; hosted Windows portability failed.
+The reviewed correction and final focused evidence are recorded in
+PHASE4-VALIDATION. Verify the correction's exact HEAD/run rather than presenting
+the initial failed matrix as final success.
+
 Current exact commands, source hashes, native independent Security/QA findings,
 CI identity and unsupported runtime gates live in
 [PHASE4-VALIDATION](PHASE4-VALIDATION.md). Initial clean/live baseline
