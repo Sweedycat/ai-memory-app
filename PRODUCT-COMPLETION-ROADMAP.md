@@ -1,169 +1,130 @@
-# AI Memory — ürün tamamlama yol haritası
+# AI Memory product completion roadmap — Master Development V3
 
-Denetim: 2026-11-19. İncelenen kaynak: `fe8ef364b1757bc8984b3236521e980f8766ebb1`,
-dal: `development/omega-commercial-mvp`; başlangıç çalışma ağacı temiz.
-Bu sınırlı kaynak/doküman denetimi uygulamayı çalıştırmadı, bağımlılık yüklemedi,
-test veya APK üretmedi, cihaz/kişisel veri/anahtar erişimi yapmadı.
-Yalnızca bu rapor yazılır. Tamamlanma yüzdesi veya ticari hazır olma iddiası yoktur.
+Updated 2026-11-20. Starting source `be4e9bf421aaedfd71369dab741c16f2293bc630`, branch `development/omega-commercial-mvp`; local/remote matched, clean tree. Engineering records are English; founder reports and focused device checklists are Turkish. Git preserves the earlier audit. No completion percentages, launch promises or production approval.
 
-## Kanıt ve sınıflandırma
+## Independent evidence levels
 
-- **FD — Uygulanmış, fiziksel doğrulanmış:** Bu kaynak SHA'sına bağlanmış özellik
-  bazlı fiziksel kabul kaydı bulunamadı; bu sınıfa yeni özellik atanmıyor.
-  `main` için tarihsel manuel MVP doğrulaması, güncel geliştirme sürümünü doğrulamaz.
-- **KD — Uygulanmış, fiziksel doğrulanmamış:** Kod akışı mevcut; cihaz kabulü açık.
-- **K — Kısmen uygulanmış:** Yardımcılar veya akışın bir bölümü var; ürün uçtan uca değil.
-- **KK — Uygulanmış fakat kapalı:** Üretim girişi/bayrağı kapalı; etkin ürün sayılmaz.
-- **Y — Uygulanmamış:** İncelenen kaynakta çalışan ürün akışı bulunamadı; plan mevcut.
-- **E — Güvenlik/dış bağımlılık engelli:** İnceleme, izin, kimlik, sağlayıcı veya
-  cihaz kanıtı olmadan etkinleştirilemez; mevcut alt parçalar ayrıca açıklanır.
+Track implementation separately from automated, APK, physical and commercial evidence. A partially implemented helper can have passing tests; a disabled feature can have substantial source without being available.
 
-Tabloların statüsü ana ürün durumudur; güvenlik engelleri ayrıca belirtilir.
-Kapsam mevcut `src`, uygulama girişleri, test envanteri, README, ürün envanteri,
-Omega yol haritası, karar/kabul/devir belgelerindeki özellik aileleridir.
-Eski belgelerdeki “tamamlandı” ve “yok” ifadeleri güncel kodun yerine kullanılmaz;
-incelenmeyen uzak dallar veya açıklanmamış fikirler için kapsam garantisi verilmez.
-
-Başlangıç SHA'sında [tam CI](https://github.com/Sweedycat/ai-memory-app/actions/runs/44572320020)
-ve [portability CI](https://github.com/Sweedycat/ai-memory-app/actions/runs/44572320108)
-başarılı olarak uzaktan doğrulandı. Önceden başlatılmış
-[APK çalışması 44565432466](https://github.com/Sweedycat/ai-memory-app/actions/runs/44565432466),
-`5b679b35a535ab723739a7b31d71ceeaa2b75acf` kaynağında başarılı görünüyor.
-Bu denetim APK indirmedi, binary kimliğini/imzasını yeniden doğrulamadı ve kurulum
-kanıtı elde etmedi. CI/derleme başarısı fiziksel kabul veya güvenli güncelleme değildir.
-
-## Özellik envanteri: yerel günlük değer
-
-| Özellik ailesi | Durum | Güncel kanıt ve eksik sınır |
-| --- | --- | --- |
-| Kişi oluşturma/düzenleme, profil, rol/şirket/telefon/bağlam/not | KD | [App.tsx](App.tsx), [types](src/types.ts); mevcut cihaz kayıtlarını koruyan güncelleme kabulü açık |
-| Kişi arama, etkileşim/hafıza ve tamamlanan takip geçmişi | KD | [PersonHistory](src/components/PersonHistory.tsx), [tarihçe yardımcıları](src/utils/personHistory.ts); okunabilirlik/TalkBack ve eski tarihler cihazda denenmeli |
-| Son tarihli etkileşim ve kişisel/günlük yerel brifing | KD | [buildMemoryBriefing](src/utils/buildMemoryBriefing.ts), [dailyBriefing](src/utils/dailyBriefing.ts); geçmiş kayıt kanıtı, gerçek konuşma doğrulaması değildir |
-| Takip oluşturma/düzenleme/tamamlama ve eski düzenleme çakışması koruması | KD | [güvenilirlik kaydı](docs/people-reliability-validation.md), App ortak işlem koruması; disk ve alarm işlemleri atomik değil |
-| Kişiye bağlı özel içerikli bildirim zamanlama/iptal/yönlendirme | K | [followUpNotifications](src/utils/followUpNotifications.ts), [özel önizleme](src/utils/reminderNotificationPrivacy.ts); gerçek teslim, yeniden başlatma ve iptal telafisi kabulü yok; eski alarmların temizlendiği varsayılmaz |
-| Telefonu arama/mesaj ve kullanıcı seçimiyle Android kişi dışa aktarma | KD | App açık eylemleri; otomatik cihaz Contacts yazımı değil; native paylaşım/niyet/izin davranışı doğrulanmalı |
-| Etiketler, gelişmiş kişi birleştirme, çoklu yapılandırılmış söz/taahhüt | Y | Tek açık takip ve notlar mevcut; ayrı çoklu taahhüt/kişi birleştirme ürünü yok |
-| Hayat ajandası: araç muayene/sigorta/bakım/fatura/randevu/belge/önemli tarih/diğer | KD | [LifeAdminPanel](src/components/LifeAdminPanel.tsx), [lifeRecords](src/utils/lifeRecords.ts); açık tarih, gecikmiş/bugün/gelecek/tamamlanan, arama, düzenleme/silme var |
-| Sorumluluk tamamlama geçmişi ve kullanıcı onaylı sonraki yenileme | KD | `completeLifeRecord`; otomatik tarih icadı/yeniden planlama yok; yerel gün/saat dilimi ve yaz saati cihaz kabulü açık |
-| Hayat ajandası cihaz bildirimleri ve tekrar planlama | Y | Model tarih odaklı; Panel native bildirim eklemediğini belirtir. Kişi takip alarmları bu özelliği karşılamaz |
-| Altı sabit yerel asistan sorusu, kaynak açma ve aynı adlı kişi seçimi | KD | [groundedAssistant](src/utils/groundedAssistant.ts), [panel](src/components/GroundedAssistantPanel.tsx); bugün/iletişim/son etkileşim/sözler/gecikmiş/yaklaşan, kayıt temelli; sınırsız doğal dil veya dış AI değil |
-| Notebook'u asistanda arama, genel doğal dil/JARVIS zekâsı | Y | Notebook erişimi kapalı; gelecekte ayrı açık izin ve sağlayıcıdan bağımsız sınır gerekli |
-| İlk açılış/yerel sahip profili, ayarlar, izin açıklamaları | K | [OwnerProfileGate](src/components/OwnerProfileGate.tsx), [Settings](src/components/SettingsPanel.tsx), [izinler](src/components/PermissionOverview.tsx); sahip okuma hatasında koruma var; bütün akış TR/EN ve fiziksel kabul eksik |
-| App Lock/biometrik-cihaz doğrulama ve arka plan gizliliği | KD | [PrivacyGate](src/components/PrivacyGate.tsx); telefon kabulü açık; UI kilidi yerel kayıt şifrelemesi değildir |
-| Yerel hata raporu ve kullanıcı seçimiyle paylaşım | K | [BugReportPanel](src/components/BugReportPanel.tsx); yapı doğrulama/koruma ve sürüm etiketi gözden geçirilmeli; otomatik destek backend'i yok |
-| Tam TR/EN, ortak dil seçimi ve tek dilde tutarlı arayüz | K | [lifeAdmin](src/strings/lifeAdmin.ts), [assistant](src/strings/assistant.ts) iki dilli; `.en.ts` katalogları ve App/izin ekranlarında sabit İngilizce mevcut; uygulama geneli tamamlanmış değil |
-| Birleşik görsel tasarım, geri gezinme, güvenli alanlar, erişilebilirlik | K | [screenInsets](src/utils/screenInsets.ts) ve ekran içi stiller var; uygulama çapı doğrulanmış tasarım sistemi yok. Kurucu karışık dil/tasarım/büyük Geri/güvenli alan sorunu bildirdi; cihaz yeniden üretimi bekliyor |
-| Açık/koyu tema kapsamı ve ölçülmüş performans | K | Koyu ağırlıklı ekranlar; desteklenen temalarda bütüncül kabul ve cihaz ölçümü yok; desteklenmeyen açık tema varmış gibi sunulmamalı |
-
-## Şifreleme, anahtarlar, yedekleme ve kurtarma
-
-| Özellik ailesi | Durum | Güncel kanıt ve bağımlılıklar |
-| --- | --- | --- |
-| Mevcut kişi/ajanda/sahip/ayar verilerinin saklanması | KD | AsyncStorage; insanlar için [tek yazıcı](src/hooks/usePersistentPeople.ts), ajanda için [seri store/readback](src/utils/lifeRecordStore.ts); ayrı uygulama şifrelemesi yok |
-| MVP genel yerel şifreleme | Y | Kurucu bunu MVP için zorunlu tutmadı. Eksiklik ticari MVP kapısı yapılmamalı; Notebook ve dış yedek şifreleme kuralları ayrı |
-| AES-256-GCM zarf, doğrulanmış çözme ve snapshot doğrulama | K | [encryptedBackupEnvelope](src/utils/encryptedBackupEnvelope.ts), [expoBackupCipher](src/utils/expoBackupCipher.ts), [backupSnapshot](src/utils/backupSnapshot.ts); 256-bit rastgele anahtar, her işlemde yeni 12-byte nonce, 16-byte tag tasarımı; ürün yedekleme UI'ı değil |
-| Ayarlar sentetik yerel kripto tanısı | KD | [BackupSafetyDiagnostics](src/components/BackupSafetyDiagnostics.tsx), [backupNativeSelfTest](src/utils/backupNativeSelfTest.ts); gerçek kayıt/Drive aktarmaz; fiziksel çalıştırma sonucu bulunamadı |
-| Kurtarma anahtarı üretim/biçim/ayrı saklama-onay yardımcıları | K | [backupRecoveryKey](src/utils/backupRecoveryKey.ts), [politika](src/utils/backupRecoveryKeyPolicy.ts); kayıp anahtar, taşınabilir ayrı kurtarma ve kullanıcı onboarding ürünü eksik |
-| Notebook yerel anahtar yaşam döngüsü | KK | [notebookKeys](src/utils/notebookKeys.ts), [expoNotebookRuntime](src/utils/expoNotebookRuntime.ts): SecureStore + DB anahtar kimliği, kayıp/bozuk/eşleşmeyen anahtarda yenisini üretmeme, kesilmiş başlangıçta yetim anahtar yeniden kullanımı. Android doğrulaması/bağımsız etkinleştirme onayı gerekli |
-| Şifreli Personal Notebook CRUD/arama/editör/taslak checkpoint | KK | [NotebookBoundary](src/components/NotebookBoundary.tsx): `NOTEBOOK_PRODUCTION_ENABLED=false`; [NotebookPanel](src/components/NotebookPanel.tsx), [persistentNotebook](src/utils/persistentNotebook.ts), [editör](src/utils/notebookEditor.ts). Yazmak otomatik kalıcı kayıt değildir; açık checkpoint gerekir |
-| Notebook doğrulanmış taslak kurtarma/çatışma ve kilit lifecycle | KK | [notebookLifecycle](src/utils/notebookLifecycle.ts), [notebookRestoreCandidate](src/utils/notebookRestoreCandidate.ts), [SQLite](src/utils/sqliteNotebookDatabase.ts); sentetik/host kanıt var; SecureStore, Android DB, güç kaybı ve arka plan kabulü açık |
-| Şifreli Google Drive yedeklemesi | E | [driveBackupTransport](src/utils/driveBackupTransport.ts): injected upload/list/download-for-review; [protocol](src/utils/driveBackupProtocol.ts). Gerçek OAuth/token deposu/hesap bağlantısı/anahtar UX/ürün aktarımı yok; minimum `drive.appdata`, kullanıcı kotası ve izin/review kapıları gerekli |
-| Google/Cloud hesap, kimlik doğrulama ve senkronizasyon | Y | Sahip profili yerel, bulut hesabı değil. Kimlik-binding yardımcıları gerçek hesap yetkisi sağlamaz; finansal/consent/security kapıları açık |
-| Şifreli manuel dışa aktarma/içe alma | K | Zarf/inceleme yardımcıları var; gerçek dosya seçimi, anahtar onayı, bounded staging ve güvenli ürün akışı yok; gerçek veriyi dışa aktarmak yetkili değil |
-| Güvenli üretim geri yükleme ve cihaz taşıma | E | [restoreAdmission](src/utils/restoreAdmission.ts), [generationStore](src/utils/generationStore.ts), [boundBackup](src/utils/boundBackup.ts), [Notebook inceleme](src/utils/notebookBackupReview.ts) yazan restore ürünü değildir. Tüm ilgili kayıtların bağımsız kurtarma kopyası, durable rollback, çatışma seçimi ve yeni cihaz hatırlatıcı onayı eksik |
-| Otomatik/arka plan yedekleme ve saklama politikası | E | Zamanlayıcı ürünü yok; doğrulanmış manuel kurtarma/taşıma/retention ve açık opt-in önce tamamlanmalı; yeni hatada iyi yedeğin silinmemesi gerekli |
-| Büyük yedek/streaming/ekli medya arşivi | K | [driveResumableProtocol](src/utils/driveResumableProtocol.ts) mantıksal aralık/3 GiB simülasyonları; native şifreli streaming, gerçek büyük dosya ve incremental restore yok. 5 MB multipart sınırı ürün limiti değil |
-
-## Gelecek/ticari özellikler
-
-| Özellik ailesi | Durum | Sınır |
-| --- | --- | --- |
-| Free/Plus/gelecek Pro yetkilendirme ve abonelik bitişi | Y | [ödeme stratejisi](docs/payment-strategy.md) politika düzeyinde; canlı entitlement doğrulama ürünü yok. Süre bitince yerel veriye erişim/veri korunmalı; yapay kısıt yok |
-| Google Play/StoreKit/Patreon/ilk taraf web ödeme kanalları | E | Plan mevcut; canlı SDK/checkout/webhook/provider aktivasyonu yok; settled revenue, rezerv, güncel uygunluk ve açık kurucu onayı olmadan etkinleşmez |
-| Google Play ticari dağıtım, mağaza hazırlığı | K | Geliştirme APK hattı ve kabul politikası var; mağaza yayını, fiziksel kabul, gizlilik/erişilebilirlik/ürün sınırları ve abonelik doğrulaması tamamlanmadı |
-| Ücretli AI, BYOK, JARVIS servis entegrasyonu | E | Yerel deterministik yanıtlar mevcut; dış model servisi yok. Finansal/kişisel veri aktarımı/izin/sınır kapıları geçmeden aktivasyon yok |
-| Ses, kamera, ekler, kişi fotoğrafı/yüz tanıma | Y | Ürün yönü; çalışan yakalama/medya arşivi/yüz kayıt ürünü bulunamadı. Ayrı opt-in ve güvenli saklama gerekli |
-| Gözlük/wearables | Y | Gelecek yönü ve mühendislik planı; çalışan cihaz entegrasyonu yok; ayrı capture/aktarım onayı gerekli |
-| B2B/CRM, web/desktop ürünleri ve tam iOS kabulü | Y | Gelecek yönü/taşınabilir kaynak iOS ürünü kanıtı değildir; Android önceliğini geciktirmemeli |
-
-## Güvenlik ve veri kaybı riskleri: mevcut testler ve açık kanıt
-
-Aşağıdakiler bu denetimde çalıştırılmış test sonuçları değildir. Kaynak ve test
-dosyalarının incelenmesidir; kapsam dışı kalan senaryolar “test yokluğu kanıtı”
-yerine doğrulanmamış kabul edilir.
-
-| Öncelik/risk | Var olan koruma/test kaynağı | Eksik test veya güvenli sonraki adım |
-| --- | --- | --- |
-| P0: Tek AsyncStorage belgesinin kesintide kaybı | `memorySaveQueue.test.cjs`, `lifeRecordStore.test.cjs`, `lifePersistence.test.cjs`: bozuk okuma, seri yazıcı, çatışma, kayıp ACK/readback | Android force-stop/güç-kesintisi/az disk/dış yazıcı. Ajandanın aynı belgedeki önceki snapshot'ı bağımsız kurtarma kopyası değildir; kişi kaydı için doğrulanmış dış kurtarma yok |
-| P0: Anahtar/ciphertext kaybı | `notebookKeys.test.cjs`, `persistentNotebook.test.cjs`, `encryptedNotebookVault.test.cjs`: yanlış anahtar, tampering, bozuk journal, stale review, kesilmiş host process | Gerçek SecureStore erişim hatası/DB-key ayrışması/yeniden başlatma/OS yedek davranışı/yer değiştirme; anahtarı kopyalama veya yeniden üretme yok. `requireAuthentication:false` ikinci biyometrik anahtar kapısı iddiasına izin vermez; PrivacyGate sınırı cihazda doğrulanmalı |
-| P0: Geri yükleme tüm veri kümelerini korumayabilir | `backupSnapshot.ts` V1 yalnız owner/people taşır; ajanda/privacy/notebook tam kurtarma paketi değil; ayrı Notebook review var | Versiyonlu tüm-kapsam manifesti; mevcut kayıt/ayar/anahtar kimlikleri için bağımsız snapshot; wrong-key/tampering/schema/duplicate/low-disk/interruption/conflict testleri + gerçek durable rollback. Legacy alarm ID taşınmamalı |
-| P0 inceleme: Gizlilik ayarı okuma hatası sonrası varsayılanlar | `PrivacyGate.tsx:123` yükleme catch'i default ayarla devam eder; default App Lock **açık**, bu yüzden bypass kanıtı değildir. `privacySettingsPersistence.test.cjs` write-before-apply test eder | Okuma hatası/bozuk JSON/yanlış tiplerden sonra orijinal bytes korunuyor mu ve sonraki kullanıcı ayarı bunları fark edilmeden değiştiriyor mu? Gerçek gate lifecycle testi, açık hata/yeniden okuma gereksinimi; düzeltmeden önce dar yeniden üretim |
-| P1: Yerel hata raporları sessiz kaybolabilir | `BugReportPanel.tsx:92`: JSON dizi değilse `[]` kabul edilip yeni kayıtla yazılır; yalnız son 50 kayıt tutulur | Geçerli JSON yanlış şekil, eşzamanlı kayıt, read/write/share hatalarını sentetik test et; bozuk bytes koru. Bu kişi hafızası kaybı kanıtı değildir. `APP_VERSION` tutarlılığını ayrıca incele |
-| P1: Disk ve bildirim işlemleri farklı sistemler | `personFollowUpConcurrency.test.cjs`, `reminderNotificationPrivacy.test.cjs`, App işlem korumaları | Schedule/cancel sonrası OS termination, disk hatası, stale edit, izin iptali, yeniden başlatma, pil kısıtları; gerçek teslim/duplikasyon/iptal. Ham native hata loglarının özel içerik taşımadığını doğrula |
-| P1: Drive/token/streaming sınırı | `driveBackupTransport.test.cjs`, `driveResumableProtocol.test.cjs`, `expoBackupCipher.test.cjs` sentetik protokol/kripto | Gerçek yetki iptali, token süresi, yanlış hesap, quota/308/session-expiry ve bounded disk/memory. 100 MB/1 GB/3 GB Android sentetik arşivler; otomatik yedek önce değil |
-| P1: Dil/tasarım/güvenli alan kabulü | Kaynakta sabit İngilizce, TR/EN yeni paneller ve `SCREEN_TOP_PADDING` mevcut; kurucu UI kusurları bildirdi | Tüm ekran/durumlarda TR ve EN; büyük font, TalkBack, klavye, gesture/3-button navigation, rotasyon ve desteklenen temalar; cihaz görüntüsü gerçek veri içermemeli |
-
-## Bağımlılık sırası ve tamamlanma kapıları
-
-1. **P0 — Veriyi koru ve güvenlik kanıtını tamamla.** Yukarıdaki okuma-hata,
-   bytes koruma ve bağımsız kurtarma risklerini dar kapsamda yeniden üret;
-   gerçek riskler UX kusurlarından önce çözülür. MVP'ye genel şifreleme zorunluluğu
-   ekleme; Notebook/backup kapalı kalır. Mevcut testleri gereksiz tekrarlama.
-2. **P1 — Kurucu UI geri bildirimini düzelt.** Karışık dil, tutarsız görsel dil,
-   büyük Geri düğmesi ve güvenli alanlar; mevcut/yeni ekranları aynı tasarımla
-   karşılaştır. Tam TR/EN + erişilebilirlik kabulü, sonraki büyük özellikten önce.
-3. **P1 — Ajanda bildirimleri.** P0 korumaları + yerel tarih/saat politikası → açık
-   opt-in, özel önizleme, kullanıcı onaylı tekrar tarihi, güvenli düzenle/iptal ve
-   hata görünürlüğü → gerçek teslim/izin/pil/saat-dilimi kabulü.
-4. **P0 etkinleştirme kapısı — Notebook.** Mevcut şifreli editör/çatışma/kurtarma
-   temellerini yeniden yazma. SecureStore/SQLite/lifecycle ve fiziksel kabul →
-   bağımsız güvenlik incelemesi → açık kurucu etkinleştirme onayı; bayrak sonra.
-5. **P1/P2 — Manuel şifreli kurtarma ve taşıma.** Tüm-kapsam arşiv + ayrı taşınabilir
-   recovery key UX → authenticate/validate/review → independently recoverable
-   mevcut snapshot + durable rollback → eski alarm ID'siz yeni cihaz kabulü.
-6. **P2 — Google Drive.** Önce manuel kurtarma güvenli; sonra minimum OAuth,
-   güvenli token/hesap/izin iptali, kullanıcı Drive kotası ve bounded şifreli
-   streaming. Manuel upload/download/recovery cihaz kabulünden önce otomatik yok.
-7. **P2 — Otomatik yedek.** Manuel restore/taşıma/retention doğrulanınca opt-in,
-   başarısız son aktarımda iyi arşivi koruma, arka plan/pil/ağ/quota testleri.
-8. **P2/P3 — Ticari hazırlık ve sonra isteğe bağlı entegrasyonlar.** Yerel değer,
-   fiziksel kabul, gizlilik ve fiyat/entitlement tasarımı önce; canlı ödeme/AI veya
-   medya/gözlük aktivasyonu bu yol haritasından izin almaz. Harcama sıfır.
-
-Her kullanıcıya görünür kilometre taşı [kalıcı teslim politikasını](docs/feature-delivery-policy.md)
-izler: tasarım/TR-EN → güvenlik/regresyon → bağımsız inceleme → commit/push →
-exact-SHA CI → tek ücretsiz doğrulanmış APK → link/odaklı cihaz kontrol listesi →
-kurucu gözlemi/kabulü → düzeltmeler. Kaynak tamamlanması fiziksel kabul değildir.
-
-## Samsung Galaxy S26 Ultra fiziksel kabul ölçütleri
-
-Kurulum ayrı yetkilidir. Önce gerçek kurulu paket/sertifika/versionCode ve aday
-APK eşleşmesini doğrula; eski uygulamayı kaldırma, veriyi temizleme veya anahtar
-yenileme yok. Uyumsuzlukta dur; sentetik yeni kayıtlar kullan, gerçek veri kopyalama.
-
-| Alan | Geçiş için gerekli gözlem |
+| Evidence level | Required meaning |
 | --- | --- |
-| Güncelleme/kalıcılık | Yetkili yerinde güncelleme sonrası mevcut kişiler/ajanda/notlar/ayarlar/anahtarlar korunur; force-stop/reboot/reopen ve boş liste aynı kalır; hata veriyi boş varsayılanla değiştirmez |
-| Gizlilik/anahtarlar | Kilitle/arka plana al/yeniden aç, biyometrik reddi/iptali/yeniden denemesi; özel içerik erken görünmez. Anahtar yok/bozuk durumda yeni anahtar üretilmez, veriye yazılmaz |
-| Notebook | Bayrak açılmadan ayrı yetkili test kapsamı; oluştur/ara/düzenle/sil, açık encrypted checkpoint, dirty Back, arka plan/çatışma/kesilmiş yazı/az disk/yanlış anahtar ve açık kurtarma kararı |
-| Ajanda/hatırlatıcı | Sekiz kategori, bugün/gecikmiş/yaklaşan, artık gün/saat dilimi/DST, onaylı sonraki tarih; uygulama kapalı/telefon yeniden başlatılmışken izin/pil davranışı, özel içerik ve tek alarm; henüz olmayan alarm ürününü var sayma |
-| Dil/arayüz | TR ve EN'de bütün etiket/diyalog/boş-hata-yükleme durumları tek dilde; normal/büyük yazı, TalkBack, klavye, Geri, safe-area ve desteklenen temalarda taşma/örtüşme yok |
-| Şifreli yedek/restore/taşıma | Yalnız yetkili sentetik dosyalar: doğru/yanlış anahtar, tampering, bozuk/uyumsuz/duplicate arşiv, yanlış hesap, iptal, az disk ve kesinti; tüm mevcut veri korunur, rollback/recovery anlaşılır; yeni cihazda ayrı recovery key gerekir |
-| Büyük/otomatik yedek | Ancak ilgili kapılar açıldıktan sonra 100 MB/1 GB/3 GB, ağ/enerji/quota/auth kesintisi; bounded kaynak, son iyi arşiv korunur; opt-out durdurur |
+| Not implemented | No complete working product path in inspected source |
+| Partially implemented | Helpers or some flows exist; the requirement is not complete |
+| Implemented but disabled | Implementation exists behind an inactive production gate |
+| Automated tests passed | Exact source/check URL and unit/mocked/native scope, not inferred from code |
+| APK verified | Actual package/version/code/certificate/integrity associated with exact source; prepared workflow is insufficient |
+| Physical device acceptance passed | Feature-specific founder observations/checklist and identified candidate; installation alone accepts no feature |
+| Commercially ready | All applicable security/data/privacy/UX/device/commercial gates passed; none declared here |
 
-Her sonuçta kaynak/build/APK kimliği, kontrol, beklenen/gözlenen davranış ve
-kurucu kabulü kaydedilir; bekleyen/başarısız maddeler tam kabul sayılmaz.
+No current-source feature-specific physical acceptance was established. Preserve earlier successful MVP device behavior; absence of a current record does not mean historical tests failed or never ran.
 
-## Denetim sınırları ve güvenli duruş
+Starting-source [full CI44605956206](https://github.com/Sweedycat/ai-memory-app/actions/runs/44605956206) and [portability44605956141](https://github.com/Sweedycat/ai-memory-app/actions/runs/44605956141) passed. Open PRs #23/#21/#19/#16/#11 are drafts; #8 is open, not draft. Their branches are not automatically delivered or merge-authorized. Source and [existing inventory](docs/commercial-mvp-status.md) override older stale claims that independent life records and local questions are absent.
 
-[Backup security](docs/backup-security.md), [Notebook kabul planı](docs/android-notebook-acceptance-plan.md),
-[ürün envanteri](docs/commercial-mvp-status.md) ve [devir kaydı](docs/engineering-handoff.md)
-birlikte okundu. Eski envanterin ajanda/yerel soruları yok sayan satırları ve
-native cipher'ı tamamen kullanılmıyor gösteren metinleri güncel sınırlı kodla
-çelişiyor; bu rapor onları gerçek yedek veya fiziksel kabul iddiasına çevirmiyor.
+## Implementation and verification inventory
 
-Yeni uygulama testi/güvenlik testi/Expo Doctor yapılmadı; kaynak/test envanteri ve
-belge tutarlılığı incelendi. Uygulama, iş akışı, bağımlılık, sürüm veya bayrak
-değişmedi. Bu belge bir güvenlik sertifikası, etkinleştirme, APK veya release izni
-değildir. Resmî iki kotadan daha düşüğüne uy; %1 veya backend ret halinde dur.
-Kalan kota elverirse yalnız dokümantasyon checkpoint/push/CI doğrulaması yap ve dur.
+Historical synthetic evidence below refers to existing tests/validation and prior CI, not a new physical or commercial certification. None of these rows is declared physically accepted at this SHA. APK evidence is increment-wide and cannot imply every feature passed device tests.
+
+| Requirement family | Implementation | Existing evidence and remaining boundary |
+| --- | --- | --- |
+| People create/edit/profile/contact/context/notes | Implemented | App/types/people normalization/save queue; current device readability and retained-data acceptance open; sensitive storage unencrypted |
+| Memories/interactions/history/search/last recorded interaction | Implemented | personHistory/interactionDates/briefing tests; legacy/future uncertainty preserved; actual record is not proof of a real conversation |
+| One active follow-up, completion/history and stale-edit guards | Implemented | personFollowUpConcurrency and reliability validation; disk and native alarms remain separate |
+| Multiple active commitments/tags/merging/advanced matching | Not implemented | Local assistant duplicate-name selection exists, but no complete multi-commitment/merge product |
+| Explicit phone/contact actions and Android contact export | Implemented | Existing source/synthetic evidence; native intents/privacy require targeted acceptance; no automatic Contacts write |
+| Optional person photos/attachments/secure media | Not implemented | Requires opt-in, encrypted storage, resource limits, backup and deletion policy |
+| Life Administration eight categories/agenda/search/edit/delete | Implemented | lifeRecords/store/persistence/panel tests; native durability, timezone/layout and encryption acceptance open |
+| Completion history and confirmed next renewal | Implemented | Explicit next-date/stale-base tests; no invented renewal dates or silent rescheduling |
+| Life reminder times/multiple lead times/private delivery | Not implemented | Current date-only agenda explicitly schedules no notifications; person alarms are not this feature |
+| Person notifications/private preview/permission UX/routing | Partially implemented | Existing notification/privacy/edit tests; reboot/DST/permission/process-death and durable reconciliation open |
+| Six fixed grounded local questions/source links/unknowns | Implemented | groundedAssistant/panel/dailyBriefing tests; not conversational AI or unrestricted natural language |
+| Unified permitted-domain search/local query parsing/assistant names | Partially implemented | People/history substring search and six-query foundation; no integrated Notebook/other-domain conversational search |
+| First use/local profile/Settings | Partially implemented | Owner read-failure/write guards exist; complete localized functional submenu architecture missing |
+| App Lock/device authentication/background privacy | Implemented | Privacy write-before-apply and lifecycle tests; full gate/native acceptance open; UI lock is not encryption |
+| Local bug report/share sheet/approved attachments | Partially implemented | Report source exists; corruption/concurrency/version/redaction and approved attachments incomplete |
+| Centralized English/Turkish/system default/user preference | Partially implemented | Life/assistant bilingual catalogs; other English catalogs/literals; no unified persisted app language |
+| Shared design/components/safe areas/accessibility/themes | Partially implemented | Insets/current styles/tests; founder reports mixed styles, oversized Back, card/margin/keyboard/inset issues; visual direction needs approval |
+| People/Life/profile/preferences persistence | Implemented | Serialized writer, read-error blocking and life readback/base conflicts; no app-level authenticated encryption or proven independent native recovery |
+| Application-wide encryption and safe plaintext migration | Not implemented | V3 critical commercial blocker; Notebook foundation does not migrate People/Life/profile |
+| Independent Notebook title/content/dates/search/edit/delete | Implemented but disabled | Notebook panel/editor/session tests; NOTEBOOK_PRODUCTION_ENABLED=false; actual Android security/recovery and explicit activation approval required |
+| Notebook SQLite/SecureStore/key identity/checkpoints/conflicts | Implemented but disabled | Wrong-key/tamper/journal/key-loss/bootstrap/host SQLite and terminated-process tests; native lifecycle/atomicity/key/low-storage proof missing; typing is not autosave |
+| AES-GCM backup envelope/validation/identity binding/diagnostic | Partially implemented | expoBackupCipher/envelope/snapshot/boundBackup/native-contract tests; Settings diagnostic is synthetic, not actual backup |
+| Portable recovery-key formatting/confirmation/onboarding | Partially implemented | Existing helpers; separate recoverable key UX and loss/revocation handling incomplete |
+| Complete manual encrypted archive/export/import | Partially implemented | Owner/People V1 and separate Notebook review helpers; Life/preferences coverage and safe file workflow missing |
+| Google Drive OAuth/tokens/live encrypted backup | Partially implemented | Injected upload/list/download and resumable protocol tests only; no live account/product connection; appdata-only consent/token/revocation/quota gates |
+| Restore preview/record comparison/conflict decisions | Partially implemented | Admission/generation/Notebook candidate helpers; no all-domain production durable rollback transaction |
+| Safe device migration/retention | Not implemented | New-device key recovery, full-domain preservation, interrupted restore and no legacy alarm IDs required |
+| Automatic backup/preferences/failure notifications | Not implemented | Manual restore/migration/retention and opt-in gates must pass first |
+| Large encrypted streaming/media archives | Partially implemented | Logical 3 GiB resumable simulations; real bounded Android 100 MB/1 GB/3 GB/resource/failure tests absent |
+| Free/Plus/Pro/Business entitlements | Not implemented | Policies only; verified provider-independent entitlements and local-data retention after expiry required; no artificial Free degradation |
+| Google Play/StoreKit/Patreon/first-party web live billing | Not implemented | Strategy not checkout/webhooks; financial/provider/privacy/founder gates and settled reserves apply |
+| Cloud account/authentication/sync | Not implemented | Local owner profile and binding helpers are not cloud accounts; local-first/consent/key/$0 constraints remain |
+| Voice/camera/face/wearables/external AI/JARVIS providers | Not implemented | Future direction; separate capture/transfer/security/financial approval, no consumer ChatGPT-as-API backend |
+| B2B/CRM/deal dossiers/web/desktop/full iOS product | Not implemented | Separate proposals/draft branches and portable source do not establish shipped products/device acceptance |
+| Commercial onboarding/privacy/legal/performance/upgrade/store readiness | Partially implemented | Existing CI and documents; encryption/recovery/localization/design/accessibility/device/store obligations remain blockers |
+
+## Complete backup coverage matrix
+
+[BackupSnapshotV1](src/utils/backupSnapshot.ts) includes owner and People; person-contained notes/interactions/follow-ups are part of that schema. [boundBackup](src/utils/boundBackup.ts) is identity review, not full coverage or a transaction. [Notebook review](src/utils/notebookBackupReview.ts) is separate and does not make a live archive.
+
+| Domain | Current portable foundation | Required complete archive |
+| --- | --- | --- |
+| Profile | Owner fields in V1 | Versioned portable/sensitive-field selection |
+| People/contact/notes/interactions/follow-ups/history | People normalization | Preserve IDs/legacy semantics/new commitment schemas; exclude native notification IDs |
+| Life/history/confirmed next dates | Missing from V1 | New versioned section, validation/limits and restore conflicts |
+| Notebook | Separate authenticated review/candidate helpers | Explicit encrypted inclusion, local-only/conflict preservation; no implicit deletion |
+| Language/appearance/assistant/notification preferences | No complete portable section | Portable choices only; current-device permissions reviewed rather than cloned |
+| App Lock/security preferences | No complete portable restore | Authentication and safe explicit review on new device; no gate bypass |
+| Future supported attachments | No complete streaming manifest | Authenticated bounded manifest/files, encryption/integrity/retention before support |
+| Keys/tokens/device IDs | Excluded | No raw keys/credentials/tokens/device alarm IDs in portable archive; separate recovery key |
+
+V3 supersedes the former MVP local-encryption exception. Current AsyncStorage remains unencrypted by the app; no production encryption migration is active. Independently preserve all affected domains before migration/restore; authenticate, validate/read before write, verify integrity and use durable rollback. Never discard original valid bytes before verified migration and recoverability; never create substitute keys on corruption or empty defaults after failed reads.
+
+## Security and missing-evidence register
+
+| Priority | Evidence / potential risk | Next verification |
+| --- | --- | --- |
+| P0 commercial | Sensitive plaintext; biometric UI gate is separate | Reviewed AEAD/domain/platform-backed-key lifecycle architecture; synthetic interrupted migration and physical recovery before activation |
+| P0 data safety | Life prior snapshot is in the same document; People has no proven independent durable rollback | Native low-disk/force-stop/power/external-writer/lost ACK and recoverable-original tests; all-domain coverage |
+| P0 gated Notebook | Existing wrong-key/tamper/key mismatch/host-process tests are meaningful, not Android proof | SecureStore read/write/key loss/OS backup behavior; actual SQLite transaction/connection, background/biometric denial/restart/low disk |
+| P0 restore | Admission/generation/candidate helpers are not production restore | Wrong key/tamper/schema/duplicate/conflict/interrupted writes/rollback/key-loss/new-device tests |
+| P1 investigate | PrivacyGate read error continues with defaults; App Lock default is true, so no demonstrated bypass | Reproduce whether later settings writes overwrite unreadable bytes; actual gate lifecycle/read validation tests, not only write-before-apply |
+| P1 investigate | BugReportPanel accepts non-array JSON as empty, retains latest 50 | Potential report loss, not proven People-data loss: corruption/concurrency/share-cancel/full-storage/version/redaction tests |
+| P1 reminders | Disk and native alarm effects nontransactional despite guards | Durable expected-state/outbox reconciliation, duplicate/cancel/reboot/permission/timezone/DST/process-death/migration tests |
+| P1 Drive/large backup | No live tokens/streaming/retention product | Wrong account/revocation/expiry/quota/session resume and bounded resources; actual 100 MB/1 GB/3 GB Android synthetic failure tests |
+| P1 UX | Founder-reported mixed labels/styles/Back/safe areas | Targeted TR/EN/font/TalkBack/keyboard/gesture+3-button/supported-theme reproduction; no private fixtures/screenshots |
+
+These are source/test-inventory findings unless an exact checkpoint records execution. Unverified scenarios are not claimed as exploited vulnerabilities or proven loss incidents. `requireAuthentication:false` on the gated local Notebook key store must not be described as a second biometric key gate; PrivacyGate/native lifecycle must be verified. Do not weaken safeguards to enable a feature.
+
+## Controlled milestones and dependencies
+
+| Milestone | Deliverable and dependency gate | Starting status |
+| --- | --- | --- |
+| A | Current-state/PR/CI audit; V3 alignment; English inventory; narrow approval/tool assessment; hosted APK readiness; native role validation | In progress; no APK for internal tooling/docs |
+| B1 | Centralized system-default TR/EN, safe persisted explicit selection, catalogs/completeness tests and locale formatting | Independent technical work permitted; never translate records |
+| B2 | Three coherent directions: familiar refined, premium dark, coordinated light/dark | Prepare alternatives; substantial redesign awaits founder choice |
+| B3 | Shared tokens/components and functional Settings hierarchy; reported navigation/inset/card/keyboard fixes | B1/B2 integration; no dummy commercial/security controls |
+| C | Reviewed authenticated encryption/platform keys for all sensitive domains; synthetic backwards-compatible migration/rollback | Threat-model preparation independent of B; real migration disabled until review/device gates |
+| D1 | Complete versioned coverage, encrypted manual backup/key UX, authenticated preview/explicit restore/durable rollback | C architecture and data-domain coverage before real transfer/restore |
+| D2 | Minimal Drive auth/token safety/list/verify/migration/retention, then automatic opt-in backup | Manual recovery/retention/device acceptance before scheduling; user quota/$0 |
+| D3 | Complete Notebook Android key/storage/lifecycle/recovery acceptance and reviewed activation | Preserve existing source; production flag false until explicit approval |
+| E1 | Multiple People commitments/tags/matching/search and verified defect correction | Schema/migration/encryption/backup integration; retain current records/history |
+| E2 | Life reminder lead times/private delivery and durable People/Life reconciliation | Confirm local time/next dates; permission/reboot/DST/process-death tests |
+| E3 | Unified permitted-domain retrieval/local query handling/modular providers/assistant names | Grounded source links, ambiguity, Notebook opt-in, confirmation before writes; no paid AI |
+| F | Onboarding/offline portability/storage/accessibility/performance/version/errors, entitlement preparation/store readiness | Security/product/device/provider gates; pricing/payments/production remain founder decisions |
+
+Each user-facing release increment follows [V3 delivery](docs/feature-delivery-policy.md): design/TR-EN/security/tests/review → checkpoint → exact-SHA CI → APK_READY using a tested zero-cost hosted path → optional acknowledged build/run URL without interactive polling → APK_VERIFIED on actual binary evidence → FOUNDER_ACCEPTANCE_PENDING → ACCEPTED on targeted founder observations. Independent non-conflicting preparation may continue while feedback/design approval is pending.
+
+## Focused Samsung Galaxy S26 Ultra acceptance
+
+Installation remains separately authorized. Verify actual installed package/code/certificate before in-place update. Never uninstall, clear data, replace signing keys or substitute a package. The founder's last-known installed candidate `0.1.0` / code `2` is a report, not independently inspected installed metadata.
+
+| Increment/risk | Required targeted observation |
+| --- | --- |
+| Language/UI | System default and persisted TR/EN; no mixed labels in changed flows/states; records unchanged; fonts/TalkBack/keyboard/Back/insets and approved themes |
+| Storage/upgrade | Existing domains/settings retained on authorized update/reopen/reboot; empty data preserved; read failures block overwrites; synthetic low-disk/interruption recovery |
+| Security/Notebook | No private text on lock/background/denial; no replacement key on mismatch; encrypted checkpoint/dirty Back/conflict/corrupt journal recovery before activation |
+| Notifications | Changed create/edit/complete/cancel plus real private delivery and duplicate/reconciliation behavior under relevant reboot/permission/timezone/DST/process death |
+| Backup/migration | Authorized synthetic correct/wrong-key/tampered/schema/duplicate/low-disk/cancel/interruption archives; full comparison/durable rollback/separate recovery key on new device |
+| Large/automatic backup | Only after manual gates: bounded resources, retained good archive through network/power/token/quota failures, opt-out stops work, actual Android size tests |
+
+Use automated regression to preserve past successes rather than forcing the entire manual suite for every small increment. Record source/APK, expected/observed behavior and founder decision. Commercial readiness remains blocked while encryption/recovery/privacy/localization/accessibility/device/provider obligations are unresolved. Financial and ethical reward policies remain in their existing founder records; no hypothetical revenue, paid activation or automatic quota reset/resume.

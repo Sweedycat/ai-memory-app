@@ -1,5 +1,12 @@
 # Approved roadmap
 
+Master Development V3 (2026-11-20) is the current priority source. Follow the
+[consolidated A-F completion roadmap](../../PRODUCT-COMPLETION-ROADMAP.md).
+It separates implementation, automated tests, APK, physical acceptance and
+commercial readiness; makes sensitive-data encryption a commercial blocker;
+and replaces interactive APK waiting with hosted APK_READY delivery. The earlier
+ordering below is historical, not an instruction to repeat completed life/query work.
+
 Priority source: the owner's approved development scope, summarized in the
 [product inventory](../commercial-mvp-status.md) and governed by
 [AGENTS.md](../../AGENTS.md). This is engineering scope, not launch dates,

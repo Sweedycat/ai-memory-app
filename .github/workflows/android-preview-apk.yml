@@ -17,7 +17,7 @@ jobs:
     # Only this founder-authorized request can auto-build the development branch.
     # Other development pushes skip all jobs; manual dispatch stays explicit.
     if: >-
-      github.event_name == 'workflow_dispatch' || github.ref != 'refs/heads/development/omega-commercial-mvp' || (github.event_name == 'push' && github.event.head_commit.message == 'build: prepare Android Preview APK 0.1.0 (2) [APK-20261119-REMOTE-ONE]' && github.run_attempt == 1)
+      github.run_attempt == 1 && (github.event_name == 'workflow_dispatch' || github.ref != 'refs/heads/development/omega-commercial-mvp' || (github.event_name == 'push' && github.event.head_commit.message == 'build: preview APK [APK_READY]'))
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -34,7 +34,7 @@ jobs:
   android-apk:
     needs: verify
     if: >-
-      github.event_name == 'workflow_dispatch' || github.ref != 'refs/heads/development/omega-commercial-mvp' || (github.event_name == 'push' && github.event.head_commit.message == 'build: prepare Android Preview APK 0.1.0 (2) [APK-20261119-REMOTE-ONE]' && github.run_attempt == 1)
+      github.run_attempt == 1 && (github.event_name == 'workflow_dispatch' || github.ref != 'refs/heads/development/omega-commercial-mvp' || (github.event_name == 'push' && github.event.head_commit.message == 'build: preview APK [APK_READY]'))
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -58,6 +58,25 @@ jobs:
       - run: npm ci
       - name: Generate Android native project
         run: npx expo prebuild --platform android --non-interactive --clean
+      - name: Validate reviewed checkpoint metadata
+        id: checkpoint
+        shell: bash
+        run: |
+          node <<'CHECKPOINT' >> "$GITHUB_OUTPUT"
+          const fs = require('node:fs');
+          const app = JSON.parse(fs.readFileSync('app.json', 'utf8')).expo;
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const lock = JSON.parse(fs.readFileSync('package-lock.json', 'utf8'));
+          const config = require('./app.config.js')({ config: app });
+          if (config.android?.package !== 'com.sweedycat.aimemory.githubtest') throw Error('Unexpected APK package');
+          if (!/^\d+\.\d+\.\d+$/.test(config.version) || pkg.version !== config.version ||
+              lock.version !== config.version || lock.packages?.['']?.version !== config.version) throw Error('Inconsistent APK version');
+          // Last verified/reported delivered candidate: code 2. Recheck the latest
+          // actual artifact before every increment; this floor is not release history.
+          if (!Number.isSafeInteger(config.android.versionCode) || config.android.versionCode <= 2) throw Error('APK update code must exceed verified baseline 2');
+          console.log('version=' + config.version);
+          console.log('version_code=' + config.android.versionCode);
+          CHECKPOINT
       - name: Assert isolated package identity
         run: |
           grep -Eq "applicationId[[:space:]]+['\"]com[.]sweedycat[.]aimemory[.]githubtest['\"]" android/app/build.gradle
@@ -69,6 +88,9 @@ jobs:
         run: test -s android/app/build/outputs/apk/release/app-release.apk
       - name: Verify APK identity, signature and integrity before upload
         shell: bash
+        env:
+          EXPECTED_VERSION: ${{ steps.checkpoint.outputs.version }}
+          EXPECTED_CODE: ${{ steps.checkpoint.outputs.version_code }}
         run: |
           set -euo pipefail
           apk=android/app/build/outputs/apk/release/app-release.apk
@@ -81,7 +103,7 @@ jobs:
           test "$(grep -Eic '^(Signer #1 |V2 Signer: )certificate SHA-256 digest: fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c$' "$RUNNER_TEMP/apk-signature.txt")" -eq 1
           "$build_tools/aapt" dump badging "$apk" > "$RUNNER_TEMP/apk-badging.txt"
           head -n 1 "$RUNNER_TEMP/apk-badging.txt"
-          grep -Eq "^package: name='com[.]sweedycat[.]aimemory[.]githubtest' versionCode='2' versionName='0[.]1[.]0'([[:space:]]|$)" "$RUNNER_TEMP/apk-badging.txt"
+          node -e 'const fs=require("node:fs");const first=fs.readFileSync(process.argv[1],"utf8").split(/\r?\n/)[0];const m=/^package: name=\x27([^\x27]+)\x27 versionCode=\x27(\d+)\x27 versionName=\x27([^\x27]+)\x27(?:\s|$)/.exec(first);if(!m||m[1]!=="com.sweedycat.aimemory.githubtest"||m[2]!==process.env.EXPECTED_CODE||m[3]!==process.env.EXPECTED_VERSION)throw Error("APK identity mismatch");' "$RUNNER_TEMP/apk-badging.txt"
           sha256sum "$apk"
       - name: Upload APK
         uses: actions/upload-artifact@v4

@@ -1,5 +1,52 @@
 # Omega engineering handoff
 
+## Master Development V3 — 2026-11-20
+
+Starting clean local/remote development source:
+`be4e9bf421aaedfd71369dab741c16f2293bc630`; full CI44605956206 and portability
+44605956141 successful. Open draft PRs23/21/19/16/11 and open non-draft PR8 were
+read, not merged. Scope is controlled V3 milestones, not a restart or broad rewrite.
+
+V3 explicitly supersedes the previous MVP local-encryption exception and long
+interactive APK waiting. Sensitive plaintext is now a commercial release blocker;
+actual encryption/migration remains disabled pending reviewed architecture,
+synthetic recoverability and required physical acceptance. Notebook stays false.
+Each user-facing increment becomes APK_READY with exact source/CI, a tested free
+hosted trigger and focused Turkish checklist. If triggered, link the run and stop
+waiting; keep readiness/build/binary verification/device/commercial evidence separate.
+
+Milestone A ownership: Principal owns policy/English roadmap/integration; DevOps
+owns the existing APK pipeline/tests/build record; Software owns two approved
+native role definitions/discovery and existing role projections. Max two active
+specialists, no nested delegation; freeze before separate independent review.
+See [completion roadmap](../PRODUCT-COMPLETION-ROADMAP.md) and
+[current delivery policy](feature-delivery-policy.md). Results remain pending
+until checks/review and exact-SHA CI actually complete; older records below are historical.
+
+Next executable B work: centralized TR/EN/system default/safe language preference
+and completeness tests, plus three coherent visual proposals for founder choice.
+Do not begin substantial visual redesign before approval. Independent encryption
+threat-model work may proceed without activating a migration. Preserve current
+records and successful behaviors; correct founder defects before expanding releases.
+
+Initial A evidence: existing native CLI0.169.0 passed strict startup and discovered
+all13 roles after the two additions; actual current-host invocation of each new
+name returned `unknown agent_type`. They are configuration/discovery validated,
+not claimed operational; fresh-session invocation remains outstanding. Preserve
+the 11 existing role definitions, 12 skills and cap2. Focused runtime/APK checks
+initially passed23/23; final checks/review remain to be recorded after freeze.
+Two delegated operations stalled in tool/approval waits without file edits and
+were interrupted; Principal inspected the tree, took ownership and implemented
+the bounded changes. No denied shell network request was retried or bypassed;
+latest actual APK metadata still needs independent re-inspection before a future
+version increment. No APK/build/version bump is part of this internal checkpoint.
+Subsequent unchanged CLI0.169.0 recheck observed multi_agent_v2 stable false;
+strict native validation failed the enabled-feature assertion. Earlier discovery
+13 is historical evidence only. Current native-role availability and new-role
+host invocation remain blocked, not completed. No global/managed feature or
+permission setting was altered to force validation. Continue product work through
+available existing roles; revisit native configuration/session when supported.
+
 ## Permanent delivery policy checkpoint — 2026-11-19
 
 The founder now grants standing authorization for one verified zero-cost Preview

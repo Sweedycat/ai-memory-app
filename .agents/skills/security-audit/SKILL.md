@@ -11,7 +11,7 @@ Apply the [working contract](../omega-orchestrator/references/working-contract.m
 
 1. Bound the reviewed assets and threat model; record full commit and frozen diff/file hashes, including untracked files. Read `docs/backup-security.md` for backup/restore work and current source rather than treating historical status as proof.
 2. An authorized read-only `security_engineer` examines trust boundaries, consent, App Lock, notification privacy, key/token handling, encrypted envelopes, endpoint validation and recovery. `independent_reviewer` may supply qualified independent review only when not an implementation author; disclose conflicts.
-3. Check AGENTS Rules 04-06 invariants: external AES-256-GCM encryption, separate portable key recovery, bounded authenticated validation, snapshots and durable rollback. Preserve the owner's MVP local-encryption exception. No secrets, live accounts, penetration activity or actual memory transfers are needed for source review.
+3. Check AGENTS Rules 04-06 invariants: authenticated local encryption under V3, external AES-256-GCM, separate portable key recovery, bounded authenticated validation, snapshots and durable rollback. V3 supersedes the historical MVP local-encryption exception and makes sensitive plaintext storage a commercial blocker. Never activate a real migration without independent review and required physical acceptance; preserve original valid bytes and recovery. No secrets, live accounts, penetration activity or actual memory transfers are needed for source review.
 4. Trace failure/denial paths and compare tests with claimed guarantees. Report severity, precise file reference, impact, evidence and recommended correction; do not edit fixes or activate capabilities.
 
 ## Verification and completion

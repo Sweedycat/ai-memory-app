@@ -1,5 +1,23 @@
 # Task queue
 
+## Master Development V3 execution order — 2026-11-20
+
+V3 replaces the preceding documentation-only task boundary. Current work is
+Milestone A: actual state/PR/CI audit, reconciled policies and English completion
+inventory, narrow permission/integration assessment, quota-efficient hosted APK
+readiness and actual native registration evidence for the two approved roles.
+No app migration, production activation or APK is required for internal A changes.
+
+Then begin independent Milestone B localization/settings architecture and prepare
+familiar-refined, premium-dark and coordinated-light/dark design alternatives.
+Substantial redesign awaits founder approval. Mixed labels/styles, oversized Back,
+safe-area/card/keyboard/navigation defects remain priority observations to reproduce.
+V3 makes authenticated local encryption a commercial blocker and permits separate
+architecture/threat-model preparation, without any real migration activation.
+Use [the consolidated roadmap](../../PRODUCT-COMPLETION-ROADMAP.md) for A-F
+dependencies and [delivery states](../feature-delivery-policy.md) for APK readiness,
+hosted work and risk-based founder acceptance. Earlier task boundaries are history.
+
 ## Current founder priority — 2026-11-19
 
 The [permanent delivery/device acceptance policy](../feature-delivery-policy.md)

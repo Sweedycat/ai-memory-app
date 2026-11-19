@@ -65,19 +65,55 @@ test('automatic development build is limited to one authorized request and rejec
   const expressions = [...workflow.matchAll(/^    if: >-\r?\n      (.+)$/gm)].map(match => match[1]);
   assert.equal(expressions.length, 2, 'verification and Android jobs each enforce the request guard');
   const request = { event_name: 'push', ref: 'refs/heads/development/omega-commercial-mvp', run_attempt: 1,
-    event: { head_commit: { message: 'build: prepare Android Preview APK 0.1.0 (2) [APK-20261119-REMOTE-ONE]' } } };
+    event: { head_commit: { message: 'build: preview APK [APK_READY]' } } };
   for (const expression of expressions) {
     const allowed = github => new Function('github', 'return (' + expression + ')')(github);
     assert.equal(allowed(request), true);
     assert.equal(allowed({ ...request, event: { head_commit: { message: 'docs: ordinary checkpoint' } } }), false);
     assert.equal(allowed({ ...request, run_attempt: 2 }), false);
+    assert.equal(allowed({ ...request, event: { head_commit: { message: 'build: prepare Android Preview APK 0.1.0 (2) [APK-20261119-REMOTE-ONE]' } } }), false);
     assert.equal(allowed({ ...request, event_name: 'workflow_dispatch', event: {} }), true);
+    assert.equal(allowed({ ...request, event_name: 'workflow_dispatch', event: {}, run_attempt: 2 }), false);
   }
   assert.match(workflow, /android-apk:\s+needs: verify/);
   assert.match(workflow, /npm run doctor/);
   assert.match(workflow, /apksigner.*verify --verbose --print-certs/);
   assert.match(workflow, /fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c/);
   assert.doesNotMatch(workflow, /keytool|genkey|eas build|APP_VARIANT: preview|autoIncrement/);
+});
+
+test('reviewed checkpoint metadata rejects stale update codes and mismatched manifests without building', () => {
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/android-preview-apk.yml'), 'utf8');
+  const code = workflow.match(/node <<'CHECKPOINT' >> "\$GITHUB_OUTPUT"\r?\n([\s\S]+?)\r?\n          CHECKPOINT/)[1];
+  function metadata({ version = '0.2.0', versionCode = 3, packageId = 'com.sweedycat.aimemory.githubtest', packageVersion = version } = {}) {
+    const output = [];
+    const files = { 'app.json': { expo: { version } }, 'package.json': { version: packageVersion },
+      'package-lock.json': { version, packages: { '': { version } } } };
+    vm.runInNewContext(code, { require: name => name === 'node:fs'
+      ? { readFileSync: file => JSON.stringify(files[file]) }
+      : ({ config }) => ({ ...config, android: { package: packageId, versionCode } }),
+      console: { log: value => output.push(value) } });
+    return output;
+  }
+  assert.deepEqual(metadata(), ['version=0.2.0', 'version_code=3']);
+  for (const versionCode of [1, 2, 2.5, NaN, '3', Number.MAX_SAFE_INTEGER + 1]) assert.throws(() => metadata({ versionCode }));
+  assert.throws(() => metadata({ packageId: 'com.sweedycat.aimemory.preview' }));
+  assert.throws(() => metadata({ packageVersion: '0.1.0' }));
+  assert.throws(() => metadata({ version: '0.2.0\nother=value' }));
+});
+
+test('actual APK badging gate compares exact package, code and version without shell interpolation', () => {
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/android-preview-apk.yml'), 'utf8');
+  const code = workflow.match(/node -e '([^']+)' "\$RUNNER_TEMP\/apk-badging\.txt"/)[1];
+  const line = "package: name='com.sweedycat.aimemory.githubtest' versionCode='3' versionName='0.2.0' platformBuildVersionName='16'";
+  function verify(badging) {
+    return vm.runInNewContext(code, { require: () => ({ readFileSync: () => badging }),
+      process: { argv: ['node', 'synthetic-badging'], env: { EXPECTED_VERSION: '0.2.0', EXPECTED_CODE: '3' } } });
+  }
+  assert.doesNotThrow(() => verify(line + '\napplication: label=synthetic'));
+  assert.doesNotThrow(() => verify(line + '\r\n'));
+  for (const badging of ['', line.replace('.githubtest', '.preview'), line.replace("versionCode='3'", "versionCode='2'"),
+    line.replace("versionName='0.2.0'", "versionName='0.1.0'"), 'diagnostic\n' + line]) assert.throws(() => verify(badging));
 });
 
 test('APK certificate gate accepts both verified apksigner labels and rejects mismatches or duplicate matches', () => {

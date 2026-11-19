@@ -43,8 +43,8 @@ test('runtime plans distinguish native invocation, role-guided delegation and un
   assert.equal(runtime.executionPlan({ nativeSpecialists: 'true' }).nativeSpecialists.status, 'UNTESTED');
   assert.equal(runtime.executionPlan({ quotaTelemetry: false }).quotaTelemetry.status, 'UNSUPPORTED');
 });
-test('manual loading preserves all twelve skills and eleven roles without claiming native activation', () => {
-  assert.equal(runtime.SKILLS.length, 12); assert.equal(runtime.ROLES.length, 11);
+test('manual loading preserves all twelve skills and thirteen roles without claiming native activation', () => {
+  assert.equal(runtime.SKILLS.length, 12); assert.equal(runtime.ROLES.length, 13);
   for (const name of runtime.SKILLS) {
     const loaded = runtime.instructions('skill', name);
     assert.equal(loaded.nativeActivation, false);

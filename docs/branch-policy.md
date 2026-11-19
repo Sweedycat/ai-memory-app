@@ -1,10 +1,12 @@
 # Git branch policy
 
 The [permanent feature delivery policy](feature-delivery-policy.md) grants standing
-authorization for one verified zero-cost Preview APK after each completed
-user-facing milestone, independent review and successful exact-SHA CI. Preserve
+authorization for zero-cost hosted Preview delivery after each completed
+user-facing milestone, independent review and successful exact-SHA CI. V3 permits
+APK_READY with a tested automatic/founder-triggered path; a triggered run is linked
+immediately and finishes without interactive Gradle polling. Preserve
 package/signing and strictly increase versionCode over prior delivered artifacts;
-provide the artifact/checklist and await founder device acceptance/corrections
+provide the verified artifact or precise trigger/checklist and await founder feedback/acceptance
 before the next major feature. No repetitive ordinary build approval; installation,
 production, paid operations and merges remain separately gated. Documentation-only
 work and invisible refactoring do not independently require an APK; current-task
@@ -18,6 +20,9 @@ authorize equal/lower milestone update codes or third-position reinterpretation.
 - Never clear or uninstall the existing Preview app. Do not export or upload unencrypted personal memories.
 - Founder clarification: an explicitly authorized test APK may be produced from a verified historical package/signing identity without installed-device metadata. Actual installed package/certificate/versionCode and retained-data checks are required before separately authorized installation; artifact production does not approve installation or promotion.
 - No developer-hosted backup storage or new paid services without approval.
+- Master Development V3 makes authenticated encryption of all sensitive local
+  data a commercial release blocker; the former MVP encryption exception is
+  historical. Do not activate real migration without review/recoverability/device gates.
 - The backup snapshot module is only in-memory schema validation. Encryption, Drive, and restore are not implemented.
 
 ## Owner-defined version numbering

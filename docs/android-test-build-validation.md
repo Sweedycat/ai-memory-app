@@ -1,5 +1,47 @@
 # Authorized GitHub Test APK 0.1.0 (2)
 
+## V3 hosted readiness — 2026-11-20
+
+V3 supersedes the historical single-attempt/current-session stop boundaries below.
+Internal Milestone A does not produce a new APK or bump application versions.
+The existing pipeline remains push-scoped to development and its legacy branches;
+ordinary development commits skip build jobs. The new explicit checkpoint request
+is exactly `build: preview APK [APK_READY]`, without a message body. Both verify
+and Android jobs enforce run_attempt1 for that development push. The obsolete
+2026-11-19 marker is rejected; no automatic retry/second request is made.
+
+For a future reviewed user-facing increment: verify actual latest artifact
+metadata, assign a strictly higher code and owner-cadence version consistently,
+run focused/full required checks, independently review and push, then verify
+exact-source CI. Prepare one empty request commit with the exact marker when
+building is authorized; verify its tree matches the reviewed source, push only
+development and immediately report the acknowledged Actions run URL/SHA. Its own
+verify job runs Doctor/types/full unit tests at that event SHA before Android.
+No default-branch edit/manual-dispatch retry, EAS service, new signing material,
+installation or interactive Gradle polling. Standard public GitHub-hosted runners
+are the existing zero-cost route; recheck eligibility/capacity before activation.
+
+The metadata step requires the GitHub Test package, consistent numeric triplet
+versions and a safe integer code above the last known delivered baseline2. This
+constant is a fail-closed minimum, not complete release history: the engineer must
+recheck actual latest produced metadata before every increment and use a strictly
+higher value. The current internal source0.1.0/code2 intentionally cannot pass this
+next-update gate; it is not a new APK_READY product candidate. SDK apksigner,
+exact historical one-signer fingerprint, actual aapt package/version/code and hash
+checks remain required before unchanged seven-day APK artifact upload:
+`ai-memory-isolated-standalone-apk` in the exact Actions run's Artifacts section.
+
+Expected first subsequent feature candidate, after verifying latest metadata:
+version0.2.0/code at least3; this is planning, not a version assignment or built APK.
+The final source/build identity and focused Turkish checklist must be included in
+the user-facing increment record. Report APK_READY, BUILD_TRIGGERED, BUILD_RUNNING,
+APK_VERIFIED, FOUNDER_ACCEPTANCE_PENDING and ACCEPTED separately. A prepared path
+does not certify a binary, installed compatibility or physical acceptance.
+
+The bounded worker shell metadata lookup failed network and its elevation request
+was aborted; no credential fallback, new download or build was performed. Latest
+produced binary metadata was not independently re-inspected in Milestone A.
+
 Founder clarification, 2026-11-19: APK production is authorized separately from
 installation. Installed-device metadata is a pre-installation gate and does not
 block producing this one test artifact. No installation, uninstall, data reset,

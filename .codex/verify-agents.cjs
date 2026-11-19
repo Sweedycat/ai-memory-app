@@ -12,8 +12,8 @@ const executable = process.argv[2];
 assert(executable, 'Usage: node .codex/verify-agents.cjs <native-codex-executable>');
 const root = path.resolve(__dirname, '..');
 const expected = [
-  'ai_engineer', 'android_engineer', 'data_engineer', 'devops_engineer',
-  'independent_reviewer', 'performance_engineer', 'qa_engineer',
+  'ai_engineer', 'android_engineer', 'automation_integration_engineer', 'data_engineer', 'devops_engineer',
+  'independent_reviewer', 'performance_engineer', 'product_release_engineer', 'qa_engineer',
   'security_engineer', 'software_engineer', 'ui_ux_engineer', 'wearables_engineer',
 ];
 

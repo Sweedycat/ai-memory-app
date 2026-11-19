@@ -1,5 +1,17 @@
 # AI Memory private backup: security and rollout gate
 
+Master Development V3 (2026-11-20) requires full domain coverage in a new versioned
+archive: portable profile, People/contact/notes/interactions/commitments/follow-ups,
+Life/history, Notebook, portable preferences and future supported media. Current
+BackupSnapshotV1 covers owner/People only; separate Notebook review is not a live
+backup. See [coverage matrix and dependencies](../PRODUCT-COMPLETION-ROADMAP.md).
+No raw credentials, keys or device-specific notification IDs in archives. Local
+authenticated encryption is now a commercial blocker; preserve recoverable valid
+originals before any migration. Complete reviewed manual recovery/rollback/device
+migration/retention before Drive automation. No live backup/restore is activated.
+Historical adapter statements below do not negate the existing synthetic Settings
+diagnostic; that diagnostic is not actual memory backup or Android security proof.
+
 Status: **experimental** (only `preview`). Not connected to the UI or any
 Google account. Do **not** upload or export actual memory data yet.
 

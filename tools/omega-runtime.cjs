@@ -14,8 +14,8 @@ const BRANCH = 'development/omega-commercial-mvp';
 const SKILLS = ['android-expo-build', 'automated-testing', 'bug-investigation', 'feature-development', 'github-ci',
   'memory-continuity', 'omega-orchestrator', 'performance-audit', 'privacy-compliance', 'release-management',
   'security-audit', 'wearables-integration'];
-const ROLES = ['ai_engineer', 'android_engineer', 'data_engineer', 'devops_engineer', 'independent_reviewer',
-  'performance_engineer', 'qa_engineer', 'security_engineer', 'software_engineer', 'ui_ux_engineer', 'wearables_engineer'];
+const ROLES = ['ai_engineer', 'android_engineer', 'automation_integration_engineer', 'data_engineer', 'devops_engineer', 'independent_reviewer',
+  'performance_engineer', 'product_release_engineer', 'qa_engineer', 'security_engineer', 'software_engineer', 'ui_ux_engineer', 'wearables_engineer'];
 const cap = (status = 'UNTESTED', detail = 'No direct runtime observation') => ({ status, detail });
 const sha = s => typeof s === 'string' && /^[a-f0-9]{40}$/.test(s);
 

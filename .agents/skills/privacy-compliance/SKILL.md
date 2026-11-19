@@ -12,7 +12,7 @@ Apply the [working contract](../omega-orchestrator/references/working-contract.m
 1. Map each relevant input, purpose, storage location, recipient, retention/deletion behavior and visible control from current source. Distinguish delivered local behavior from future AI, cloud, capture and wearable proposals.
 2. An authorized read-only `security_engineer` reviews boundaries. `ui_ux_engineer` supplies consent/accessibility design evidence; `data_engineer` explains persistence/recovery where needed. Do not delegate broadly or edit flows during an audit.
 3. Check separate opt-ins for camera, microphone, identity, glasses, location, contacts, files and external processing. OS permission alone is insufficient. Verify denial/revocation and App Lock failure paths without accessing real data; app phone fields must not write device Contacts or request its permission.
-4. Check notification disclosure, diagnostics and exported information. Preserve local-first defaults, the MVP local-encryption exception and encrypted off-device backup requirements. Do not claim existing notifications are sanitized or AsyncStorage encrypted.
+4. Check notification disclosure, diagnostics and exports. Preserve local-first defaults and encrypted off-device backup requirements. Under V3, authenticated encryption of sensitive local domains is a commercial blocker, superseding the former MVP exception; real migration remains reviewed and physically gated. Do not claim existing notifications are sanitized, App Lock encrypts data, or current AsyncStorage is app-encrypted.
 
 ## Verification and completion
 

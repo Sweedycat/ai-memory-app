@@ -76,6 +76,7 @@ GitHub Test artifact or authorize a package switch. No installation is authorize
 
 ## Scope
 The backup/Drive, deal documents and face enrollment prototypes are not
-released or promoted to `main`. Local app-managed at-rest encryption was
-declined for the current MVP; **cloud/off-device backup encryption is still
-required**.
+released or promoted to `main`. Master Development V3 supersedes the former
+local-encryption exception: authenticated encryption of sensitive local data is
+a commercial release blocker. Real migration remains independently reviewed,
+recoverable and physically gated. **Cloud/off-device encryption remains required**.

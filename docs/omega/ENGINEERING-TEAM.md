@@ -17,6 +17,16 @@ handoff. Existing definitions are in [.codex/agents](../../.codex/agents) and
 | `security_engineer` | Read-only privacy/crypto/key/authentication review |
 | `qa_engineer` | Read-only regression/test-evidence review |
 | `independent_reviewer` | Read-only frozen-diff review, independent of implementation |
+| `automation_integration_engineer` | Narrow approved automation/integration and hosted APK/task-handoff evidence |
+| `product_release_engineer` | Product inventory, complete localization/design consistency and risk-based founder release acceptance |
+
+V3 native CLI discovery validated 13 definitions, retaining all 11 existing roles
+and 12 skills. Current-host invocation of the two new names returned
+`unknown agent_type`; they are not claimed operational here. Recheck the exact
+no-tools smoke in a fresh supported session. See [registration evidence](../../.codex/README.md#v3-registration-and-actual-invocation-evidence--2026-11-20).
+A later CLI recheck observed V2 stable false and failed its strict enabled-feature
+assertion. Earlier 13-role discovery does not establish current native availability;
+no feature/approval setting was changed to hide this blocker.
 
 Use the smallest useful team when delegation is authorized; maximum two concurrent
 specialists, no recursive delegation. One writer per file. Reviewers may not

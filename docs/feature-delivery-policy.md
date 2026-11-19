@@ -1,9 +1,11 @@
 # Permanent feature delivery and device acceptance policy
 
-Founder decision, 2026-11-19. AGENTS.md Rules 08-10 and 17 govern this policy.
+Founder decisions, 2026-11-19 and Master Development V3, 2026-11-20. AGENTS.md Rules 08-10 and 17 govern this policy.
 It supersedes earlier requirements to ask repeatedly for ordinary milestone APK
 approval; all privacy, data-preservation, installation, production and financial
-boundaries remain. This is a delivery policy, not new workflow implementation.
+boundaries remain. V3 supersedes the requirement to wait for APK compilation in
+an interactive engineering session. Source readiness, a hosted build, binary
+verification, device acceptance and commercial readiness are separate evidence.
 
 ## Mandatory delivery cycle
 
@@ -18,13 +20,18 @@ For each completed user-facing feature or significant UI/UX milestone:
 5. Obtain independent frozen-diff review; apply AGENTS.md Rule 11 qualifications.
 6. Commit and push the validated checkpoint on the authorized development branch.
 7. Verify successful GitHub CI for the exact source SHA.
-8. Automatically produce one free Android Preview APK using the existing validated
-   GitHub Actions pipeline, after verifying free capacity and official quota.
-9. Verify actual APK package, versionName, versionCode, signing certificate and
-   integrity. Compare against the approved previous artifact; record APK SHA-256
-   and check downloaded bytes against the build hash/artifact evidence.
-10. Deliver the downloadable artifact link, build ID/source SHA and a focused
-    physical acceptance checklist, with known limitations and unverified gates.
+8. Make the exact checkpoint APK_READY with the existing hosted GitHub Actions
+   pipeline, verified zero-cost eligibility/capacity and a tested branch-scoped
+   one-build-per-approved-checkpoint trigger. An automatic path after checks is
+   preferred; a prepared founder trigger is acceptable. Never change main merely
+   to expose manual dispatch or repeat its known default-branch absence failure.
+9. Record exact source SHA, branch, expected version/code, workflow/trigger and
+   artifact destination. If triggering a hosted build, immediately provide its
+   run link and let it finish independently; no repeated Gradle polling. Verify
+   actual APK package, versionName, versionCode, signing certificate and SHA-256
+   against build/download evidence before calling the artifact APK_VERIFIED.
+10. Deliver the verified artifact link or simple ready-to-run trigger instructions,
+    plus a focused Turkish device checklist, known limits and unverified gates.
 11. Await founder observations and acceptance on the Samsung Galaxy S26 Ultra.
 12. Record feedback immediately, prioritize corrections and obtain the required
     device results before advancing to the next major user-facing feature.
@@ -33,6 +40,10 @@ Do not treat CI, unit tests, screenshots of source, or APK production as physica
 acceptance. Corrections follow the same applicable validation and delivery gates.
 Do not start automatic retry loops or additional speculative builds after failure;
 checkpoint, record the cause and respect the current task's attempt limit.
+Await founder feedback before the next major user-facing release increment;
+safe independent research, documentation and non-conflicting preparation may
+continue. Use risk-based targeted device checks rather than repeating every
+historically successful manual scenario. Installation alone accepts no feature.
 
 ## Unified interface and localization
 
@@ -56,6 +67,9 @@ credentials or substitute a package to make an update install. Use a strictly
 higher versionCode than the highest previously delivered verified artifact for
 that package, and a visible version under the owner's existing cadence. Keep
 manifests consistent; unresolved third-position policy remains unresolved.
+Read actual latest produced metadata before incrementing. The founder reports
+the last installed candidate as `0.1.0` / code `2`; do not treat that report as
+independently inspected installed package/certificate evidence.
 
 Build authority is separate from installation authority. Actual installed-device
 identity and compatibility remain unverified until confirmed before a separately
@@ -71,9 +85,20 @@ mandatory stop at or below 1% in either official quota window. No automatic resu
 
 ## Evidence, feedback and acceptance states
 
-Track each milestone as source validated, exact-SHA CI verified, APK verified,
-awaiting device acceptance, correction required, or founder accepted. Do not skip
-states or label a feature fully accepted while required device tests remain open.
+Track implementation status, automated checks, binary verification, device
+acceptance and commercial readiness separately. Delivery states are:
+
+| State | Required evidence |
+| --- | --- |
+| APK_READY | Reviewed checkpoint, exact-SHA CI, prepared validated build path, expected identity/version/code and checklist; no produced APK implied |
+| BUILD_TRIGGERED | A single hosted run acknowledged with run URL and exact source SHA |
+| BUILD_RUNNING | Hosted run actually observed in progress; no polling obligation |
+| APK_VERIFIED | Actual package/version/code/certificate/integrity verified and downloadable artifact associated with source SHA |
+| FOUNDER_ACCEPTANCE_PENDING | Founder checklist/results outstanding, whether delivered as verified artifact or prepared build |
+| ACCEPTED | Required risk-based physical tests passed and founder explicitly accepted the increment |
+
+Record correction-required observations without promoting any evidence state.
+Do not skip states or label fully accepted while required device tests remain open.
 Record source SHA, review identity/findings, test outcomes/omissions, CI/build and
 artifact links, verified package/version/certificate/hash, known limits, checklist
 and founder results. Attach only authorized redacted evidence; never put personal
@@ -85,16 +110,21 @@ plus retained records/settings, restart, App Lock, permissions and reminders whe
 affected. Separate observed device results from expected behavior. Prioritize
 reported defects and keep the next major feature gated on required acceptance.
 
-## Current policy-only checkpoint and next priority
+## V3 product and security priorities
 
-This session only records this policy, validates and commits/pushes documentation,
-checks exact-SHA CI and stops. No UI overhaul, workflow edit or new APK build.
-An earlier authorized APK run44565432466 was already triggered at source
-`5b679b35a535ab723739a7b31d71ceeaa2b75acf`; its result is not asserted here.
-This policy-only checkpoint does not restart or duplicate that build.
+V3 authorizes controlled product milestones, not an unreviewable full rewrite.
+Milestone A reconciles policy, current inventory, narrow automation and native
+roles. Milestone B centralizes TR/EN and settings, prepares coherent visual
+alternatives and addresses founder defects after appropriate design approval.
+Encryption architecture/threat modeling may proceed independently; application-
+wide authenticated local encryption is now a critical commercial release gate,
+superseding the former MVP exception. No real migration is activated without
+independent review, synthetic recovery tests and required physical acceptance.
 
 Next priority, reported by the founder; not independently reproduced in this
 session: mixed Turkish/English interface, inconsistent visual design, oversized
 Back button and safe-area issues. Preserve records and functionality; scope the
 correction against existing and new screens, then apply the full delivery cycle.
-Do not begin that implementation under this documentation-only authorization.
+No substantial visual redesign before the founder approves the visual direction.
+Subsequent backup/Notebook activation, notification reconciliation and commercial
+milestones follow dependencies in [the completion roadmap](../PRODUCT-COMPLETION-ROADMAP.md).

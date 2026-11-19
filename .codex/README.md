@@ -2,7 +2,7 @@
 
 The main agent is Principal Architect. `config.toml` defines its orchestration
 instructions and caps concurrently open subagents at two (excluding the main
-agent). Eleven standalone files in `agents/` define the requested specialists;
+agent). Thirteen standalone files in `agents/` define the requested specialists;
 the `name` field is the runtime identifier. Model, reasoning, provider, service
 tier, sandbox and approval settings inherit. No global settings are changed.
 
@@ -19,6 +19,8 @@ tier, sandbox and approval settings inherit. No global settings are changed.
 | `ai_engineer` | Local briefings/search and synthetic evaluation | Inspect; assigned-file implementation only |
 | `wearables_engineer` | Opt-in future wearable interfaces | Inspect; assigned-file implementation only |
 | `independent_reviewer` | Frozen-diff correctness and safety review | Read-only; must not be the implementation author |
+| `automation_integration_engineer` | Narrow approved integrations/permissions, GitHub/APK readiness and official handoff research | Inspect; assigned paths only, no broad grants or speculative bridge |
+| `product_release_engineer` | Requirements, integrated design/TR-EN, readiness and founder acceptance evidence | Inspect; assigned paths only, no false readiness/activation claims |
 
 All roles must read and preserve `AGENTS.md`. Delegation does not authorize
 implementation, personal-data access, releases or external writes. Project
@@ -58,8 +60,8 @@ Run `node .codex/verify-agents.cjs <installed-native-codex-executable>` from a
 normal permitted shell. This uses only the installed CLI and Node standard
 library. It does not run a model turn, install packages, inspect credential
 files or print prompts/effective configuration. It verifies CLI version, the
-V2 flag, strict startup parsing and discovery of all eleven names in the native
-developer context; it emits SHA-256 identifiers for the twelve TOML files.
+V2 flag, strict startup parsing and discovery of all thirteen names in the native
+developer context; it emits SHA-256 identifiers for the fourteen TOML files.
 `--strict-config` is supported on `app-server`, not `debug prompt-input`.
 
 Project config is loaded only for a trusted repository. A previously running
@@ -73,6 +75,31 @@ tests/device checks are unnecessary for this configuration-only change and no
 build/install is authorized.
 
 ## Automatic routing and MCP (Phases 11-12)
+
+### V3 registration and actual invocation evidence — 2026-11-20
+
+The existing validator passed with CLI0.169.0, V2 enabled, strict startup and all
+13 native definitions discovered, including the two V3 roles. All existing roles
+and the two-specialist cap were retained; Security Engineer's operative encryption
+exception was narrowly aligned to V3. Manual role loading now recognizes the
+same 13 names; it is a projection, not proof of native activation.
+
+Actual current-host smoke calls using each exact new `agent_type` returned
+`unknown agent_type`. Thus native file/discovery validation passed but invocation
+of these two roles is BLOCKED in this already-open host registry. A fresh supported
+session must repeat the bounded no-tools invocation smoke; do not create a router,
+shell model turn or role-guided substitute and claim custom dispatch. Existing
+registered specialists remain usable. Configuration does not prove model routing
+or OS isolation. No global permission/model changes or external services were made.
+
+A later unchanged-CLI recheck observed `multi_agent_v2 stable false` and the
+strict validator correctly failed its enabled-feature assertion. Thus the earlier
+13-role discovery is timestamped evidence, not a claim of current availability.
+Current native V2/discovery and current-host invocation are BLOCKED/unverified;
+do not alter global/managed settings or weaken the validator to force a pass.
+Resolve the supported host/session configuration before claiming these roles
+operational. Existing role definitions and current host's already registered
+specialists are retained; this checkpoint changes no native feature toggle.
 
 The Principal Architect selects by task complexity and affected boundary using
 native custom agents and the existing focused skills. Simple tasks remain with

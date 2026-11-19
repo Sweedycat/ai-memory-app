@@ -1,5 +1,12 @@
 # Commercial MVP implementation inventory
 
+Current controlling inventory: [Master Development V3 roadmap](../PRODUCT-COMPLETION-ROADMAP.md),
+updated 2026-11-20. V3 supersedes the former MVP local-encryption exception:
+authenticated encryption of all sensitive local domains is a commercial blocker;
+real migration remains reviewed/recoverable/physically gated. Hosted APK_READY
+delivery supersedes long interactive build waiting. Historical tables and no-build
+task boundaries below remain dated evidence, not current authorization/status.
+
 ## 2026-11-19 people reliability
 
 The [people reliability increment](people-reliability-validation.md) addresses
