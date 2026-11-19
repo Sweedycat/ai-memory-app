@@ -1,5 +1,16 @@
 # Git branch policy
 
+The [permanent feature delivery policy](feature-delivery-policy.md) grants standing
+authorization for one verified zero-cost Preview APK after each completed
+user-facing milestone, independent review and successful exact-SHA CI. Preserve
+package/signing and strictly increase versionCode over prior delivered artifacts;
+provide the artifact/checklist and await founder device acceptance/corrections
+before the next major feature. No repetitive ordinary build approval; installation,
+production, paid operations and merges remain separately gated. Documentation-only
+work and invisible refactoring do not independently require an APK; current-task
+no-build instructions prevail. Existing version-policy ambiguities below do not
+authorize equal/lower milestone update codes or third-position reinterpretation.
+
 - `main`: Android MVP baseline verified by manual device tests and CI. Not a Play Store release.
 - `preview`: unfinished features, including backup validation; separate draft PR to `main`.
 - Expo's `preview` **build profile** is not the same as the GitHub branch.

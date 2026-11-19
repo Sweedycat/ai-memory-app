@@ -1,5 +1,23 @@
 # Task queue
 
+## Current founder priority — 2026-11-19
+
+The [permanent delivery/device acceptance policy](../feature-delivery-policy.md)
+governs user-facing milestones. The current session is documentation-only:
+validate, checkpoint/push, verify CI and stop; no UI implementation or APK build.
+
+Next priority is the founder-reported mixed Turkish/English interface,
+inconsistent visual design, oversized Back button and safe-area issues.
+These are observations awaiting reproduction and scoped correction, not fixes
+or physical acceptance proven here. Review existing/new screens together and
+verify both locales, shared design, accessibility and supported themes. Deliver
+the validated correction through the full policy cycle and await Samsung Galaxy
+S26 Ultra observations/acceptance before the next major user-facing feature.
+Record feedback immediately and prioritize correction; preserve stored data.
+
+Earlier factory/Cloud task ordering below is historical and does not supersede
+this product priority or authorize unrelated infrastructure work.
+
 Phase4 current task: engineering portability only, Principal owns integration and
 all shared files; DevOps owns the bounded bootstrap/test pair until handoff;
 Security and QA independently review read-only. Base
@@ -55,7 +73,7 @@ No background worker or automatic restart is configured by this task.
 | Item | Required next evidence/decision |
 | --- | --- |
 | Notebook production activation | Owner-authorized native acceptance, key/App Lock/durability/UI evidence and activation approval |
-| APK/update acceptance | Installed identity/signing/version policy and safe retained-data update; separate build/device authorization |
+| APK/update acceptance | Standing free milestone build authority under the delivery policy; installed identity/signing/version and retained-data checks plus separate installation authorization remain mandatory |
 | Real backup/restore/Drive | Consent, recovery-key UX, secure token/native streaming, rollback/device/retention gates |
 | Dependency advisories | Compatible verified remediation; last inventory has three moderate entries, no forced overrides |
 | Live payments, paid AI/cloud, future voice/wearables | Relevant financial, privacy/security, platform and explicit owner gates; no provider activation |

@@ -1,5 +1,20 @@
 # APK and device acceptance
 
+## Current standing delivery policy — 2026-11-19
+
+The [permanent feature delivery policy](../feature-delivery-policy.md) grants
+standing authorization for one verified free milestone APK after independent
+review, a validated checkpoint and successful exact-SHA CI. Preserve the approved
+development package/signing identity and strictly increase delivered versionCode;
+verify package/version/certificate/integrity and supply a download/checklist.
+Await founder Samsung Galaxy S26 Ultra observations, record/prioritize corrections
+and do not mark fully accepted or advance the next major feature before required
+device acceptance. Installed compatibility/installation remain separately gated.
+Documentation and invisible refactoring do not independently require an APK.
+The current policy-only session must not trigger a build or implement UI changes.
+Historical configuration, task-specific build statements and results below are
+dated evidence, not current standing authority or a device acceptance claim.
+
 As of 2026-11-18 UTC: **no accepted Android candidate for the current development
 checkpoint**. This task built, signed, installed and released nothing.
 Remote Control Phase 1 adds only the

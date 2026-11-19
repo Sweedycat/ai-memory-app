@@ -17,6 +17,7 @@ do not confuse management/docs changes with an application milestone.
 
 | Document | Purpose |
 | --- | --- |
+| [Permanent feature delivery](../feature-delivery-policy.md) | Unified design/TR-EN checks, standing free milestone APK authority, founder physical acceptance and correction gate |
 | [PROJECT-STATUS](PROJECT-STATUS.md) | Implemented, disabled and unverified functionality |
 | [ROADMAP](ROADMAP.md) | Approved priority order and conditional future work |
 | [TASK-QUEUE](TASK-QUEUE.md) | Completed, active, pending and blocked tasks |

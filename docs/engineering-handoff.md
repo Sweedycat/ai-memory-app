@@ -1,5 +1,27 @@
 # Omega engineering handoff
 
+## Permanent delivery policy checkpoint — 2026-11-19
+
+The founder now grants standing authorization for one verified zero-cost Preview
+APK after each completed user-facing feature/significant UI change, following
+design-system/TR-EN checks, security/regression, independent review, commit/push
+and exact-SHA CI. See [authoritative cycle](feature-delivery-policy.md). Provide
+the verified artifact and focused checklist, await founder Samsung Galaxy S26
+Ultra acceptance, record feedback immediately and prioritize corrections before
+the next major feature. Source/CI/APK completion is not physical acceptance.
+Preserve installation/production/security/data/cost gates and the 1% quota stop.
+
+Current scope is policy documentation only: checkpoint/push, verify CI and stop.
+Do not implement UI changes or trigger another APK now. Earlier single-attempt
+instructions below are historical; APK run44565432466 at
+`5b679b35a535ab723739a7b31d71ceeaa2b75acf` was already triggered, with result
+unverified by this policy task. No new build is needed for this documentation.
+
+Next priority: founder-reported mixed-language UI, inconsistent visual design,
+oversized Back button and safe-area issues. Reproduction and physical acceptance
+remain pending; no screenshots or app records were inspected in this session.
+Preserve existing records/functionality and apply the new cycle to corrections.
+
 ## Single APK attempt failed after valid signing — 2026-11-19
 
 Source `f6d01cceb746a56439a2bbdea8938d0343c62d7e` passed full CI44555535125

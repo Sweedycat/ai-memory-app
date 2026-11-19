@@ -59,6 +59,7 @@ Policy sources: [README](README.md), [branch and version policy](docs/branch-pol
 - EAS Preview selects `AI Memory Preview`, `com.sweedycat.aimemory.preview` and local versionCode `2`. The authorized GitHub Test update preserves `AI Memory GitHub Test`, `com.sweedycat.aimemory.githubtest`, with candidate display `0.1.0` and versionCode `2`, strictly above the verified historical artifact's code `1`. These are separate variants. Treat configuration as source facts and verify the produced APK; prevent accidental package/variant switches.
 - Preserve the existing application ID and Android signing identity. Never regenerate/replace signing credentials as a workaround. An Expo build fingerprint is not an Android signing certificate. If original project/linkage/credentials cannot be verified, stop instead of authorizing unknown third-party apps or creating a substitute project.
 - Verify the produced APK's identity and that its versionCode satisfies the applicable confirmed owner policy before installation; observe Rule 07 if the proposal depends on ambiguous wording. Update over the existing app only after authorization and recovery/preservation checks. Stop on package/signature conflicts; never uninstall or clear data. Verify existing records, App Lock, notifications, and follow-ups after update before proposing promotion.
+- The founder grants standing authorization for one verified zero-cost Android Preview APK after each completed user-facing feature or significant UI/UX milestone, using the existing validated GitHub Actions pipeline. Follow the [permanent delivery policy](docs/feature-delivery-policy.md) without repetitive build approval requests. Preserve the approved package/development signing identity, use a strictly higher versionCode than prior delivered artifacts for that package, verify the resulting artifact and provide its download link. No build for documentation-only work or invisible refactoring; explicit current-task prohibitions override this standing authorization. Insufficient free capacity/quota requires a safe checkpoint and blocker report, never spending or automatic retries.
 
 ## 09. Unit, integration, regression, and device testing
 
@@ -66,6 +67,25 @@ Policy sources: [README](README.md), [branch and version policy](docs/branch-pol
 - For release/native/security/data changes, include applicable physical Android checks: restart/reopen, permission denial/revocation, biometric lock/unlock, reminder delivery, in-place update with retained records, and failure recovery. Use fabricated records for new test actions; inspect retained owner data only within authorized device verification without copying it into fixtures or logs.
 - Crypto/restore changes require wrong-key, tampering, malformed/unsupported archives, duplicate IDs, interrupted writes, low storage, rollback, and recovery-key-loss coverage as applicable. Before enabling large archives, perform the documented 100 MB, 1 GB, and 3 GB Android synthetic tests including network, quota, memory, power, and storage failures.
 - State which checks are unit, simulated/mocked integration, native synthetic diagnostics, or real-device end-to-end tests. Never present synthetic success, CI, or logical file-size tests as production readiness or successful real-user backup/recovery. If necessary environments are unavailable, report the unverified gate.
+
+### Permanent feature delivery and physical-device acceptance
+
+For every completed user-facing feature or significant UI/UX change, follow this order:
+
+1. Complete implementation within authorized scope.
+2. Verify consistency with the application-wide design system, comparing existing and new screens: typography, colors, icons, buttons, cards, navigation, spacing, safe areas, accessibility and light/dark themes where supported.
+3. Verify complete Turkish and English localization across affected flows and states; never mix interface-label languages within the selected language.
+4. Run applicable security checks and automated regression tests.
+5. Obtain independent frozen-diff review; Rule 11 qualifications remain mandatory for critical changes.
+6. Commit and push the validated checkpoint to the authorized development branch.
+7. Verify successful exact-SHA GitHub CI.
+8. Automatically produce one free Android Preview APK under Rule 08's standing authorization and verified cost/quota gates.
+9. Verify APK package identity, signing certificate, strictly increasing versionCode, versionName and file integrity.
+10. Provide the downloadable APK link and focused physical-device acceptance checklist.
+11. Await founder observations and acceptance on the Samsung Galaxy S26 Ultra; automated success is not physical acceptance.
+12. Record feedback immediately, prioritize corrections and verify reported issues before the next major user-facing feature. Never mark fully accepted until required device tests pass.
+
+Use [delivery states and evidence](docs/feature-delivery-policy.md) to separate source completion, artifact verification and device acceptance. No installation, uninstall, data clearing, production release or sensitive-feature activation follows from standing build authorization. Internal documentation and invisible refactoring do not independently require an APK.
 
 ## 10. Mandatory verification before completion
 
@@ -129,6 +149,7 @@ The founder's 2026-11-19 replacement policy applies equally to reliable official
 ## 17. Repository and release authorization
 
 - Local, reversible work within an authorized task may proceed. Commit, push, PR creation, merge, tagging, build, signing, installation, deployment, publication, and external writes require authorization within the relevant task scope; never infer them from successful checks or from this file.
+- The founder's standing milestone APK authorization in Rules 08-09 is an explicit limited exception to repetitive task-specific build approval, not authorization for installation, production changes, paid operations, main/preview merges or unrelated development. Honor any narrower current-task boundary.
 - Do not repeat approval requests when the owner has already clearly authorized the action and its scope. Prepare a concrete reviewable result before asking for any required final approval. Explicit prohibitions remain binding even if a workflow could perform the action.
 - Inspect workflow triggers before remote operations: pushing `main` can trigger the EAS development-build workflow; preview builds have a separate manual workflow. Never trigger a prohibited build/deployment indirectly through Git or tooling.
 
