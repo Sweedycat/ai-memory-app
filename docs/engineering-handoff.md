@@ -1,5 +1,33 @@
 # Omega engineering handoff
 
+## Product development resumed — 2026-11-19
+
+Current owner authorizes product milestones, normal reviewed commits/pushes only
+to `development/omega-commercial-mvp`, and existing tests/CI. Factory expansion,
+Cloud configuration and internal tooling experiments are paused. Additional
+spending is zero; main/preview, builds/signing/install, production flags, billing
+and publication remain outside scope.
+
+Started clean at live-matching `9cd3751a7eea6057606d0e94566465139ee839b7`;
+both supplied CI runs were reverified successful at that SHA. Highest-priority
+unfinished product area was independent life administration. The new date-only
+agenda adds structured categories, strict explicit dates, search, due/completed
+views, safe edit/delete and user-confirmed completion/renewal. Read
+[validation and remaining boundaries](life-admin-validation.md) and the updated
+[product inventory](commercial-mvp-status.md). Existing people/settings keys,
+Notebook encryption/gate, notification privacy and version policies are preserved.
+
+Next Priority A increment: private opt-in device notifications with failure-safe
+reconciliation. This agenda currently schedules no device alerts. Physical
+Android storage/durability/UI/upgrade acceptance remains unverified and needs
+separate founder authorization; no APK or device work occurred. Notebook's
+existing physical/security gates must pass before activation. No paid service,
+commercial price, entitlement activation or actual revenue was assumed.
+
+Resolve this section's containing checkpoint from Git; reverify clean tree,
+remote equality and exact-SHA CI. Older factory-focused sections below retain
+history and do not override current product priorities or authorize Cloud work.
+
 ## Unified Cloud Compatibility Phase 4 — Cloud acceptance pending
 
 Engineering-only portability extension from clean/live-matching

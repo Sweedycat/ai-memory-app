@@ -1,5 +1,22 @@
 # Commercial MVP implementation inventory
 
+## 2026-11-19 product continuation
+
+The new [life administration checkpoint](life-admin-validation.md) adds a separate
+date-only local agenda: eight categories, exact dates, overdue/today/upcoming and
+completed views, search, guarded edit/delete, completion history and explicitly
+chosen next renewal dates. It uses a separate validated serialized AsyncStorage
+document with readback, full-base conflicts and one previous logical snapshot.
+The new screen has English/Turkish copy. It does not schedule device alerts;
+the UI states this. Priority A still needs opt-in private notifications and real
+Android acceptance. Same-document snapshots do not establish native durable
+recovery. Notebook production remains disabled. No billing, build or release.
+
+Older inventory below is historical; its statement that all independent life
+records are absent is superseded by this scoped source increment. No percentage
+completion or physical acceptance is inferred. Exact checks/review belong to the
+linked validation record, and published SHA/CI must be verified on resume.
+
 Source inspection: 2026-11-17, starting at
 `4bd815625f1456e116aaa5f8358549b40318989a`, on dedicated
 `development/omega-commercial-mvp`. This is a development checkpoint, not a

@@ -19,6 +19,8 @@ import {
 import { useOwnerControls } from './src/components/OwnerProfileGate';
 import { MemorySaveNotice } from './src/components/MemorySaveNotice';
 import { DailyBriefingCard } from './src/components/DailyBriefingCard';
+import { LifeAdminPanel } from './src/components/LifeAdminPanel';
+import { lifeAdminCopy } from './src/strings/lifeAdmin';
 import { NOTEBOOK_PRODUCTION_ENABLED, useNotebookLifecycle } from './src/components/NotebookBoundary';
 import { NotebookPanel } from './src/components/NotebookPanel';
 import { PersonHistory } from './src/components/PersonHistory';
@@ -38,7 +40,7 @@ import {
   scheduleFollowUpNotification,
 } from './src/utils/followUpNotifications';
 
-type Screen = 'home' | 'detail' | 'add' | 'edit' | 'notebook';
+type Screen = 'home' | 'detail' | 'add' | 'edit' | 'notebook' | 'life';
 type PickerMode = 'date' | 'time' | 'datetime' | null;
 type PersonForm = {
   name: string;
@@ -614,6 +616,11 @@ export default function App() {
     );
   }
 
+  if (screen === 'life') {
+    return <LifeAdminPanel onBack={() => setScreen('home')}
+      createId={async () => { const crypto = await import('expo-crypto'); return crypto.randomUUID(); }} />;
+  }
+
   if (screen === 'notebook' && NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle) {
     return <NotebookPanel lifecycle={notebookLifecycle} onBack={() => setScreen('home')}
       createId={async () => { const crypto = await import('expo-crypto'); return crypto.randomUUID(); }} />;
@@ -856,6 +863,7 @@ export default function App() {
       </Card>
 
       {!query.trim() && <DailyBriefingCard people={people} onOpenPerson={openPerson} />}
+      <OutlineAction label={lifeAdminCopy(Intl.DateTimeFormat().resolvedOptions().locale).title} onPress={() => setScreen('life')} />
       {NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label={notebookEn.title} onPress={() => setScreen('notebook')} />}
 
       <View style={styles.sectionHeader}>
