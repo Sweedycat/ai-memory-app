@@ -90,12 +90,20 @@ variables, public artifacts or console logs. Prefer its pure exports in memory.
 
 Freshness is at most two minutes. Missing/future/stale observations, expired
 reset snapshots and unknown windows do not become fresh unused quota. Backend
-ordinary-usage denial takes precedence. Five-hour remaining quota at <=10%
-suggests small tasks, <=5% checkpoint preparation, <=1% stop. Phase 2 preserves
-a weekly emergency reserve: prepare checkpoints at <=15%, and at <=10% stop
-ordinary development to protect the reserve. Missing evidence is conservative.
-These are advisory projections, not an account-wide enforcement mechanism.
-No reset credit, purchase, upgrade or automatic restart is invoked. Normal Codex
+ordinary-usage denial takes precedence and stops work. The founder's
+[permanent quota policy](USAGE-STATUS.md#permanent-quota-policy) applies uniformly
+to weekly and short-window allowance: >10% normal; <=10% and >5% small controlled
+work; <=5% and >2% finish existing work and validate; <=2% and >1% finalize the
+checkpoint, authorized GitHub sync, CI evidence and handoff; <=1% mandatory stop.
+Prepare earlier when needed. `tierThresholdsPercent` exposes inclusive thresholds
+for both windows; `safeguard` is `normal`, `small_controlled_work`,
+`finish_and_validate`, `finalize_handoff`, `stop` or `conservative`. The lowest
+known window imposes restrictions; normal requires both fresh windows and backend
+permission. Missing reliable official evidence permits at most one bounded
+milestone followed by a stop, subject to stricter known limits/backend denial.
+These are advisory projections, not an account-wide enforcement mechanism or
+new GitHub/release authorization. No purchased credits/top-ups, reset credit,
+upgrade or automatic reset resume is invoked. Normal Codex
 requests/review use the existing allowance; this helper adds no API billing.
 
 ## Safe remote controls through the existing conversation
@@ -117,8 +125,9 @@ or daemon configuration requires a separate scoped decision before implementatio
 ## Validation and remaining gates
 
 Synthetic helper tests cover redaction, null/stale/expired data, limit durations,
-backend denial/reserves, context honesty, native-state scope, exact-SHA CI and
-bounded CLI input. Review identity and exact results are in TEST-STATUS. This
+backend denial, uniform tier boundaries, context honesty, native-state scope,
+exact-SHA CI and bounded CLI input. Historical review identities and current
+focused results are distinguished in TEST-STATUS. This
 module provides no write, task-creation, terminal or authentication endpoint.
 Live native task/context events, real pause/resume and emulator execution have
 not been end-to-end tested. See the [subsequent testing plan](ANDROID-EMULATOR-MAESTRO-PLAN.md).

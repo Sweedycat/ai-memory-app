@@ -16,7 +16,8 @@ Existing policies remain intact. Snapshot: 2026-11-18 UTC.
 | D09 | One writer per file, smallest authorized team, at most two concurrent specialists | [AGENTS 12-13](../../AGENTS.md), [.codex configuration](../../.codex/config.toml); no recursive delegation |
 | D10 | No arbitrary remote command bridge, service purchase, build or release in this task | Owner's current scope; [REMOTE-CONTROL](REMOTE-CONTROL.md) distinguishes proposals from capabilities |
 | D11 | Phase 1 reuses authenticated native Remote/App tools plus a separate on-demand read-only projection helper | Owner's Phase 1 scope; [CONTROL-CENTER](CONTROL-CENTER.md). No new listener, credentials, daemon configuration, account-data publication or automatic resume |
-| D12 | Phase 2 prepares independent environments with GitHub checkpoints, one writer/file and advisory conflict checks | [Unified workspace](UNIFIED-WORKSPACE.md); preserve at least 10% weekly reserve, prepare at 15%. No automatic sync/lock/Cloud activation, configuration weakening or device/install operations |
+| D12 | Phase 2 prepares independent environments with GitHub checkpoints, one writer/file and advisory conflict checks | [Unified workspace](UNIFIED-WORKSPACE.md); quota guidance replaced by D13. No automatic sync/lock/Cloud activation, configuration weakening or device/install operations |
+| D13 | Founder replaces earlier quota restrictions with uniform remaining-allowance tiers for weekly and short-window limits | [Permanent quota policy](USAGE-STATUS.md#permanent-quota-policy): >10% normal; <=10% and >5% small controlled work; <=5% and >2% finish/validate; <=2% and >1% finalize checkpoint/authorized GitHub sync/CI/handoff; <=1% stop. Prepare earlier as needed. Unknown official telemetry: one bounded milestone then stop. Backend denial stops; no purchased credits/top-ups or automatic reset resume; financial/security/release boundaries unchanged |
 
 ## Unresolved, not decided here
 

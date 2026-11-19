@@ -29,7 +29,11 @@ Next safe step: founder pins the reviewed checkpoint and tooling hashes in the
 existing official environment, selects Node22 and runs the minimal acceptance
 in CLOUD-COMPATIBILITY. No automatic task creation, account change, paid credit,
 APK, device action, product activation or promotion is authorized here. Preserve
-the platform task branch, exact file ownership and 15%/10% weekly safeguards.
+the platform task branch, exact file ownership and the replacement
+[permanent quota policy](USAGE-STATUS.md#permanent-quota-policy) for both windows.
+Prepare earlier as needed; no reliable official telemetry means one bounded
+milestone then stop. Backend denial stops work; no purchased credits/top-ups or
+automatic reset resume.
 
 The remaining Phase3/Phase2 sections are historical evidence.
 
@@ -44,8 +48,9 @@ before another creation or dependency installation. Exact steps and immutable
 validation task are recorded there. No Cloud checkout/tests/handoff or laptop-off
 execution is verified. No hook replacement/protection relaxation was implemented.
 
-Current changes are documentation only; Phase 1/2 helpers and weekly reserve are
-unchanged. Resolve this record's containing commit and exact-SHA CI on resume.
+That Phase3 change was documentation only; Phase 1/2 helpers were unchanged then.
+Its older quota guidance is superseded by the permanent policy linked above.
+Resolve this record's containing commit and exact-SHA CI on resume.
 No new Cloud task, Android operation, install or product milestone is launched
 from this handoff. Official analytics schema support and live access are separate.
 
@@ -66,8 +71,10 @@ Cooperative pause/checkpoint/resume uses owner messages in the existing Remote
 conversation; it is not a newly implemented interrupt or terminal endpoint.
 The current Windows runtime is observable; Cloud/Android labels require actual
 collector evidence. Ownership is advisory, sync is classified but never executed,
-and Cloud/Android balances stay unobserved. Preserve at least 10% weekly reserve;
-begin checkpoint preparation at 15%, stop ordinary work at/below 10%, no reset restart.
+and Cloud/Android balances stay unobserved. Apply the permanent quota policy linked
+above equally to weekly and short-window allowance; older reserve rules no longer
+govern continuation. GitHub sync/CI requires existing authorization and must be
+left explicitly pending if it cannot finish safely before the mandatory stop.
 Resolve this management checkpoint with
 `git log -1 --format=%H -- docs/omega/UNIFIED-WORKSPACE.md`, verify remote/exact-SHA
 CI and the independent review in TEST-STATUS before considering it validated.

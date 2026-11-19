@@ -203,8 +203,11 @@ Generic role-guided delegation cannot be called registered specialist execution.
 No separate reviewer means Rule11 work must stay deferred. The explicit gate is
 cooperative verification, not native enforcement or a distributed lock.
 
-Live official quota telemetry is unavailable in the current exposed tools;
-historical founder readings are not current balances. Use bounded milestones,
-the Phase4 reassessment point and global 15% checkpoint/10% stop safeguards.
-No precise consumption estimate, credit purchase, paid obligation or revenue
+Live official quota telemetry was unavailable in that validation's exposed tools;
+historical founder readings are not current balances. The founder's replacement
+[permanent quota policy](USAGE-STATUS.md#permanent-quota-policy) supersedes earlier
+Phase4 reassessment/reserve restrictions. Without reliable official telemetry,
+finish one bounded milestone then stop; do not chain milestones. Prepare earlier
+when needed; backend denial stops work and resets never authorize automatic resume.
+No precise consumption estimate, purchased credits/top-ups, paid obligation or revenue
 claim is made. All existing app/device/backup gates remain as recorded.

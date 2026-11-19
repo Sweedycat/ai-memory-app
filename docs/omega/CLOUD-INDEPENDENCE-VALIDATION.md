@@ -103,8 +103,11 @@ npm run doctor
 read-only inspection. Stop on missing runtime, denied access, failed check or
 required policy decision. Synthetic tests only; no real records or raw logs.
 Report command exits, exact counts and omissions without sensitive content.
-Preserve weekly 15% checkpoint preparation and 10% emergency reserve; no automatic
-restart or duplicate creation after a timeout/reset.
+Apply the replacement [permanent quota policy](USAGE-STATUS.md#permanent-quota-policy)
+to both weekly and short-window allowance, preparing earlier if necessary.
+Without reliable official telemetry, finish one bounded milestone then stop.
+No purchased credits/top-ups, automatic reset resume or duplicate creation after
+a timeout/reset; backend denial remains a stop.
 
 For a genuine Windows–Cloud handoff, return the exact Cloud checkout SHA, actual
 backing/runtime evidence, policy results, commands/results, unchanged source

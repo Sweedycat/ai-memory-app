@@ -74,6 +74,19 @@ Policy sources: [README](README.md), [branch and version policy](docs/branch-pol
 - Scale checks to the authorized change. Documentation-only governance work requires source/policy review, consistency review, and Git verification; it does not require an APK build or app tests. Do not install packages, alter dependencies, build, or access devices when the task prohibits them.
 - For application changes, use existing `npm run typecheck` and `npm run test:unit` as applicable; run the repository's Expo Doctor/CI requirements when authorized and available. The current audit step is informational, not proof that advisories are resolved. Do not weaken checks or hide failures to finish a task.
 
+### Permanent founder quota policy
+
+The founder's 2026-11-19 replacement policy applies equally to reliable official weekly and short-window remaining allowance. It supersedes all earlier quota thresholds in handoffs, skills, tools and historical instructions; it does not expand the authorized task or alter security, privacy, financial or release gates.
+
+- Above 10%: normal authorized development.
+- Above 5% through 10%: smaller, controlled milestones.
+- Above 2% through 5%: finish existing tasks and validate changes.
+- Above 1% through 2%: finalize safe checkpoints, GitHub synchronization, exact-SHA CI verification and handoff.
+- At or below 1%: mandatory stop. Backend usage denial also requires stopping, regardless of displayed percentages.
+- Apply the most restrictive observed window. Begin final checkpoint preparation earlier whenever needed to avoid interrupted writes or incomplete handoffs.
+- If reliable official telemetry is unavailable, conservatively complete one bounded milestone and stop. Never infer allowance from token, command or test counts, or assume a reset has restored it.
+- Never purchase credits, enable automatic top-ups or automatically resume after quota reset. A new founder continuation instruction is required; all existing task-specific authorization boundaries remain in force.
+
 ## 11. Independent review of critical security changes
 
 - Changes to cryptography, key/token storage, authentication, consent/privacy boundaries, external transfers, signing, backup/restore, or destructive migration behavior require independent review by a qualified security/data-safety reviewer before activation or promotion.

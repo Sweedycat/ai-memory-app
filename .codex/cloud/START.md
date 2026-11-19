@@ -32,6 +32,7 @@ reviewed controlled workflow. Ordinary bounded engineering needs focused checks
 and independent frozen-diff review before checkpoint publication.
 
 Do not start services, build APKs, install apps, deploy, buy credits or change
-account settings. Preserve the 15% checkpoint / 10% stop policy. Without official
-fresh quota observations use one bounded milestone then checkpoint; never infer
+account settings. Apply the permanent founder quota policy in AGENTS.md Rule 10
+equally to weekly and short-window limits, with mandatory stop at or below 1%.
+Without official fresh quota observations complete one bounded milestone then stop; never infer
 consumption from test counts or tokens. Phase 4 Cloud acceptance is still pending.

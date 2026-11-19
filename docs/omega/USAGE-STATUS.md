@@ -29,13 +29,36 @@ explicit about scope/time/unit and safe for this public repository. Otherwise
 record availability as unknown; do not estimate a percentage. Never inspect
 credentials, switch accounts, buy credits or bypass a limit to obtain telemetry.
 
-When telemetry is absent/stale, use conservative checkpoints with validation
-reserve. The helper marks reads older than two minutes unknown, never assumes a
-reset restores allowance, and respects backend ordinary-usage denial. At <=10%
-five-hour remaining avoid large work, <=5% prepare checkpoint, <=1% stop.
-Phase 2 additionally starts weekly checkpoint preparation at 15% and stops
-ordinary development at/below the 10% weekly emergency reserve. Never allocate
-the same account balance separately to Windows, Cloud and Android. These are
-advisory signals, not enforced account-wide controls. No reset consumption, purchase,
-account switch, automatic restart or polling worker. Future decisions belong to
-the authorized session; no invented public status feed.
+## Permanent quota policy
+
+Effective 2026-11-19: the founder's replacement policy applies equally to weekly and short-window
+(currently five-hour) remaining allowance. Use the most restrictive current
+window; these percentages are remaining allowance, not consumption targets.
+
+| Remaining in either window | Authorized work within the existing task scope |
+| --- | --- |
+| >10% | Normal work |
+| <=10% and >5% | Small, controlled work |
+| <=5% and >2% | Finish existing work and validate; start no new work |
+| <=2% and >1% | Finalize the checkpoint, GitHub synchronization, CI evidence and handoff within existing authorization |
+| <=1% | Mandatory stop |
+
+Begin preparation earlier if validation, synchronization, CI or handoff needs
+more headroom. These tiers supersede the older weekly preparation/reserve and
+large-work thresholds. They grant no commit, push, remote-run, build, release,
+paid-service or security authorization. Synchronization/CI that cannot finish
+safely before stopping stays explicitly pending in the handoff.
+
+When reliable official telemetry is unavailable, incomplete or stale, complete
+at most one bounded milestone, validate/checkpoint within scope, then stop; never
+chain milestones or invent percentages. A restrictive known window still
+applies when the other is unknown. The helper marks reads older than two minutes
+unknown, never assumes a reset restores allowance, and respects backend
+ordinary-usage denial as a stop regardless of percentages. It remains an
+on-demand read-only advisory projection, not account-wide enforcement or a worker.
+
+Never allocate the same account balance separately to Windows, Cloud and Android.
+No purchased credits/top-ups, account switch, limit bypass or automatic resume
+after a reset. Resume requires a fresh owner instruction and revalidation.
+Keep measurements private; this policy creates no public status feed or change
+to financial, security or release boundaries.

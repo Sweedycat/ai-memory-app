@@ -1,5 +1,26 @@
 # Test and review evidence
 
+## Permanent quota policy replacement — 2026-11-19 UTC
+
+Local baseline: `043caa6a327e22c490b29535fe4ac84b82b6d28a` on
+`development/omega-commercial-mvp`; existing Windows Node `v24.19.0`.
+This is management tooling/policy evidence, not an application release.
+
+- `node --test tests/omegaControlCenter.test.cjs tests/omegaWorkspace.test.cjs`:
+  **22/22 PASS**, zero failed, cancelled or skipped. These are synthetic unit
+  and local read-only CLI checks, not live quota observations or remote CI.
+- Both window durations cover remaining 0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 15,
+  20 and 100 percent; mixed windows use the stricter tier. Incomplete telemetry
+  cannot grant normal work; restrictive known windows and backend denial win.
+  Existing stale/expired/unknown, account-scope and privacy-canary tests pass.
+- The [replacement policy](USAGE-STATUS.md#permanent-quota-policy) supersedes
+  historical reserve/reassessment instructions below. Threshold metadata now
+  describes identical tiers for both windows; no worker or enforcement service.
+- Focused quota work ran no dependency installation, Doctor download, build,
+  device test or remote action. Full regression/typecheck and current exact-SHA
+  CI are separate integration evidence; earlier checks below do not verify this
+  replacement. No independent approval or release readiness is claimed here.
+
 ## Phase 4 portability checkpoint
 
 Initial implementation `6612a105eba7b0157a9eca16cc7d0a2a7451faf8`: full CI
@@ -64,7 +85,9 @@ reverified before editing; mobile source/dependencies and existing policies inta
   `0200ceef054216cbe71950777e8b875c260a5f75e797f2937465f1584942fd08`.
 - Coverage includes dirty/offline/stale/mismatched refs, divergence/ancestry,
   protected branches, case-preserving bounded ownership and cross-environment
-  overlap, unknown environment quotas, weekly 15% preparation/10% reserve.
+  overlap and unknown environment quotas. The quota-tier expectations from that
+  historical run are superseded by the [permanent policy](USAGE-STATUS.md#permanent-quota-policy)
+  and its current focused tests; old results do not verify the replacement.
 - Default CLI smoke observed Windows runtime and preserved a dirty worktree;
   missing native evidence stayed unknown. This is not synchronization execution.
 - Official host-account quota/environment-list reads succeeded; account values,
@@ -88,7 +111,7 @@ success reverified before edits. Mobile application source remains unchanged.
 - Local strict TypeScript PASS. Full repository regression **318/318 PASS**,
   zero failed/skipped/cancelled: prior 306 tests plus 12 management helper tests.
 - New focused tests **12/12 PASS**: privacy canaries, bounded/invalid input,
-  unknown/stale/expired windows, durations, backend refusal/reserves, honest
+  unknown/stale/expired windows, durations, backend refusal/quota tiers, honest
   context/activity and exact-repository/SHA CI checks. No new packages.
 - Actual native `get_usage_limits` read and in-memory CommonJS projection
   succeeded; actual percentages/reset/account data were not persisted. Current

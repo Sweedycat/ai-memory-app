@@ -15,7 +15,9 @@ const freshAt = (stamp, now) => integer(stamp) && integer(now) && stamp <= now &
 function projectUsage(raw, observedAt, now = Date.now()) {
   const fresh = freshAt(observedAt, now);
   const result = { source: 'provided_codex_limits', observedAt: iso(observedAt), fresh,
-    scope: 'account_bucket_not_environment', weeklyReservePercent: 10, weeklyCheckpointPercent: 15,
+    scope: 'account_bucket_not_environment', tierThresholdsPercent: {
+      smallControlledWorkAtOrBelow: 10, finishAndValidateAtOrBelow: 5,
+      finalizeHandoffAtOrBelow: 2, mandatoryStopAtOrBelow: 1 },
     fiveHour: null, weekly: null, ordinaryUsageAllowed: null, safeguard: 'conservative' };
   if (!fresh || !object(raw)) return result;
   result.ordinaryUsageAllowed = typeof raw.ordinaryUsageAllowed === 'boolean' ? raw.ordinaryUsageAllowed : null;
@@ -35,11 +37,14 @@ function projectUsage(raw, observedAt, now = Date.now()) {
   const values = [result.fiveHour?.remainingPercent, result.weekly?.remainingPercent];
   const known = values.filter(value => value !== null && value !== undefined);
   const remaining = known.length ? Math.min(...known) : null;
-  result.safeguard = result.ordinaryUsageAllowed === false || (remaining !== null && remaining <= 1) ? 'stop'
-    : result.weekly?.remainingPercent != null && result.weekly.remainingPercent <= 10 ? 'weekly_reserve'
-    : result.weekly?.remainingPercent != null && result.weekly.remainingPercent <= 15 ? 'weekly_checkpoint'
-    : remaining !== null && remaining <= 5 ? 'checkpoint'
-    : remaining !== null && remaining <= 10 ? 'small_tasks'
+  const thresholds = result.tierThresholdsPercent;
+  // Restrict by the lowest known window even when the other is unknown. Unknown
+  // evidence never grants normal work: at most one bounded milestone, then stop.
+  result.safeguard = result.ordinaryUsageAllowed === false
+    || (remaining !== null && remaining <= thresholds.mandatoryStopAtOrBelow) ? 'stop'
+    : remaining !== null && remaining <= thresholds.finalizeHandoffAtOrBelow ? 'finalize_handoff'
+    : remaining !== null && remaining <= thresholds.finishAndValidateAtOrBelow ? 'finish_and_validate'
+    : remaining !== null && remaining <= thresholds.smallControlledWorkAtOrBelow ? 'small_controlled_work'
     : values.every(value => value != null) && result.ordinaryUsageAllowed === true ? 'normal' : 'conservative';
   return result;
 }

@@ -32,25 +32,50 @@ test('legacy fallback does not override an available map; null values are not ze
     assert.equal(monitor.projectUsage(invalid, observed, now).fiveHour, null);
   }
 });
-test('reserve thresholds and backend refusal win over reset clocks and optimistic percentages', () => {
-  for (const [used, mode] of [[90, 'small_tasks'], [95, 'checkpoint'], [99, 'stop'], [110, 'stop']]) {
-    const raw = limits(used); raw.rateLimitsByLimitId.codex.secondary = window(10080, 20);
-    assert.equal(monitor.projectUsage(raw, observed, now).safeguard, mode);
+test('both windows use identical inclusive tier boundaries and adjacent integer percentages', () => {
+  const cases = [[0, 'stop'], [1, 'stop'], [2, 'finalize_handoff'], [3, 'finish_and_validate'],
+    [4, 'finish_and_validate'], [5, 'finish_and_validate'], [6, 'small_controlled_work'],
+    [9, 'small_controlled_work'], [10, 'small_controlled_work'], [11, 'normal'],
+    [15, 'normal'], [20, 'normal'], [100, 'normal']];
+  for (const [key, duration] of [['primary', 300], ['secondary', 10080]]) {
+    for (const [remaining, mode] of cases) {
+      const raw = limits(0); raw.rateLimitsByLimitId.codex[key] = window(duration, 100 - remaining);
+      assert.equal(monitor.projectUsage(raw, observed, now).safeguard, mode, `${duration} minutes, ${remaining}% remaining`);
+    }
   }
+  const result = monitor.projectUsage(limits(85), observed, now);
+  assert.equal(result.safeguard, 'normal');
+  assert.deepEqual(result.tierThresholdsPercent, { smallControlledWorkAtOrBelow: 10,
+    finishAndValidateAtOrBelow: 5, finalizeHandoffAtOrBelow: 2, mandatoryStopAtOrBelow: 1 });
+  assert.equal(Object.hasOwn(result, 'weeklyReservePercent'), false);
+  assert.equal(Object.hasOwn(result, 'weeklyCheckpointPercent'), false);
+  assert.equal(result.scope, 'account_bucket_not_environment');
+  assert.equal(monitor.projectUsage(limits(110), observed, now).safeguard, 'stop');
+});
+test('backend refusal wins over optimistic percentages and expired resets never grant renewed allowance', () => {
   const raw = limits(0); raw.ordinaryUsageAllowed = false;
   assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'stop');
+  raw.rateLimitsByLimitId = {}; assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'stop');
+  raw.rateLimitsByLimitId = limits().rateLimitsByLimitId;
   raw.ordinaryUsageAllowed = null; assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'conservative');
   raw.rateLimitsByLimitId.codex.primary.resetsAt = now / 1000;
   assert.equal(monitor.projectUsage(raw, observed, now).fiveHour.remainingPercent, null);
+  assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'conservative');
 });
-test('weekly emergency reserve is preserved without inventing separate cloud or local balances', () => {
-  const raw = limits(20); raw.rateLimitsByLimitId.codex.secondary = window(10080, 90);
-  const result = monitor.projectUsage(raw, observed, now);
-  assert.equal(result.safeguard, 'weekly_reserve'); assert.equal(result.weeklyReservePercent, 10);
-  assert.equal(result.scope, 'account_bucket_not_environment');
-  raw.rateLimitsByLimitId.codex.secondary = window(10080, 85);
-  assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'weekly_checkpoint');
-  raw.ordinaryUsageAllowed = false; assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'stop');
+test('the most restrictive known window wins while incomplete evidence cannot grant normal work', () => {
+  const cases = [[10, 'small_controlled_work'], [5, 'finish_and_validate'], [2, 'finalize_handoff'], [1, 'stop']];
+  for (const [key, otherKey, duration] of [['primary', 'secondary', 300], ['secondary', 'primary', 10080]]) {
+    for (const [remaining, mode] of cases) {
+      const raw = limits(80); raw.rateLimitsByLimitId.codex[key] = window(duration, 100 - remaining);
+      assert.equal(monitor.projectUsage(raw, observed, now).safeguard, mode);
+      delete raw.rateLimitsByLimitId.codex[otherKey];
+      assert.equal(monitor.projectUsage(raw, observed, now).safeguard, mode);
+      raw.ordinaryUsageAllowed = null;
+      assert.equal(monitor.projectUsage(raw, observed, now).safeguard, mode);
+    }
+    const raw = limits(85); delete raw.rateLimitsByLimitId.codex[otherKey];
+    assert.equal(monitor.projectUsage(raw, observed, now).safeguard, 'conservative');
+  }
 });
 test('unsupported or duplicate duration cannot invent a five-hour/weekly allowance', () => {
   const raw = limits(); raw.rateLimitsByLimitId.codex.primary = window(15);

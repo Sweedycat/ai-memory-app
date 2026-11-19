@@ -1,5 +1,26 @@
 # Omega engineering handoff
 
+## Current founder quota policy and APK task — 2026-11-19
+
+The founder permanently replaced earlier quota instructions with
+[AGENTS.md Rule 10](../AGENTS.md#permanent-founder-quota-policy), equally for
+weekly and short-window allowance: above 10% normal authorized work; above 5%
+through 10% small controlled milestones; above 2% through 5% finish/validate;
+above 1% through 2% finalize checkpoints/GitHub/CI/handoff; at or below 1% stop.
+Prepare earlier when needed. Without reliable official telemetry, complete one
+bounded milestone and stop. No purchased credits, automatic top-ups or automatic
+restart after reset. Earlier operational quota language below is superseded;
+other security/privacy/financial/release gates remain unchanged.
+
+Current authorization resumes APK artifact/signing investigation and permits one
+free test APK only after installed-identity, signing, version and cost gates pass.
+Preferred prior GitHub Actions artifact: 14132499977, run43643898173, source
+594004718471c4269bf3d75943e9a033fcf6f1c1, github-test variant. It is historical
+build evidence, not proof of the package/certificate/versionCode on the founder's
+phone. No USB is currently available; minimize founder interaction and offer
+safe phone-only verification if installed identity remains unknown. Do not create
+keys, change package identity, uninstall, activate Notebook or incur charges.
+
 ## People reliability continuation — 2026-11-19
 
 The daily assistant was pushed at
@@ -13,9 +34,9 @@ and reran27/27 focused cases. Read [reproduction, review identity and limits](pe
 Notification operations and people disk persistence remain nontransactional;
 physical acceptance is still required. No release or production flag is activated.
 
-Quota checkpoint: current safe product work is finalized; do not start another
-large/native milestone under the owner's 20% weekly policy. Do not automatically
-resume after quota reset. Source milestones delivered: life date agenda, grounded
+Quota checkpoint: that task's safe product work was finalized. Current execution
+now follows the replacement founder quota policy in AGENTS.md Rule 10; do not
+automatically resume after quota reset. Source milestones delivered: life date agenda, grounded
 local daily assistant, people operation coordination/grounded briefings. The
 factory, Cloud/account work, paid AI/services, billing, builds/install and
 main/preview promotion remain paused or separately owner-gated.
@@ -102,7 +123,7 @@ steps, the immutable-source validation task, simulated-tool warning and analytic
 contract findings. Installed official schema supports optional conversation usage
 estimates; no live per-feature/conversation analytics read was performed. No keys,
 private endpoints, hook replacements, disabled protections or mobile changes.
-Preserve 15% weekly checkpoint/10% reserve; no automatic retry/reset restart.
+Apply the current founder quota policy in AGENTS.md Rule 10; no automatic retry/reset restart.
 Current work is a documentation checkpoint, not Cloud independence approval.
 
 ## Unified Workspace Phase 2 — 2026-11-18
@@ -113,7 +134,7 @@ Started clean on `development/omega-commercial-mvp` at remote-matching
 Windows/Cloud/mobile boundaries and proposed conflict-safe checkpoint exchange.
 Small pure helpers classify sync states/ownership overlaps; no sync executor or
 distributed lock. Phase 1 official quota projection is preserved with account
-scope and 15% weekly checkpoint preparation/10% emergency reserve guidance.
+scope; quota decisions now follow the replacement founder policy in AGENTS.md Rule 10.
 
 Strict TypeScript and 327/327 host tests passed. Independent seven-file review
 found no actionable findings; focused21/21 passed and digest is in

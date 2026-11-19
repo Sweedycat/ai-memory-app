@@ -125,12 +125,18 @@ establish equal environment balances. Unknown surface-specific limits remain
 unknown. Track source, observation time and supplied window/reset independently;
 never multiply one shared remaining allowance across environments.
 
-Preserve at least 10% weekly as emergency reserve: begin checkpoint preparation at
-15%, stop ordinary development at/below 10%, and never automatically resume at a
-reset. Fresh backend denial still wins; missing/stale readings are conservative.
-These are cooperative advisory safeguards, not an account-wide hard reservation
-against concurrent users/tasks. Read-only checks/review use existing allowance;
-no Cloud task, paid service, subscription or API billing was activated.
+Apply the founder's [permanent quota policy](USAGE-STATUS.md#permanent-quota-policy)
+to both weekly and short-window remaining allowance, using the stricter window:
+above 10% normal; <=10% and >5% small controlled work; <=5% and >2% finish existing
+work and validate; <=2% and >1% finalize the checkpoint, authorized GitHub sync,
+CI evidence and handoff; <=1% mandatory stop. Prepare earlier if needed. Missing
+reliable official telemetry permits one bounded milestone then a stop, subject
+to any stricter known window; backend denial always stops work. No purchased
+credits/top-ups or automatic reset resume. These replace the earlier weekly
+reserve guidance and remain cooperative advisory signals, not account-wide
+enforcement or new financial/security/release authority. Read-only checks/review
+use existing allowance; no Cloud task, paid service, subscription or API billing
+was activated.
 
 The existing [Emulator/Maestro plan](ANDROID-EMULATOR-MAESTRO-PLAN.md) now references
 disabled synthetic UI inputs. No software, AVD, APK or device operation. Native

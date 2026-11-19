@@ -37,7 +37,8 @@ Context occupancy and native task events remain unobserved; no continuous
 dashboard, new transport or arbitrary terminal endpoint is implemented.
 Phase 2 adds [unified-workspace preparation](UNIFIED-WORKSPACE.md): pure sync
 classification and ownership-overlap checks, scoped environment/task reporting,
-weekly reserve guidance and disabled synthetic UI inputs. Actual Cloud execution,
+quota guidance (now replaced by the [permanent policy](USAGE-STATUS.md#permanent-quota-policy))
+and disabled synthetic UI inputs. Actual Cloud execution,
 hook/custom-agent parity, automatic synchronization and Android workspace/lab
 acceptance remain unverified or unactivated. The current hooks are not portable
 unchanged; no configuration was weakened to conceal that blocker.

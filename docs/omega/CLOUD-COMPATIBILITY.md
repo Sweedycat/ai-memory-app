@@ -191,8 +191,12 @@ One founder-started task using the pinned checkpoint, no paid credits:
    tests/review, capability classifications and remaining gates. No app data,
    credentials, account identifiers or raw quota responses in public Git.
 
-Checkpoint after this bounded milestone. At the owner's Phase4 reassessment
-threshold, reassess before more work; globally prepare at 15% weekly and stop
-normal development at 10%. With no reliable live telemetry do not calculate a
-precise budget consumption. No credits, service, subscription, port or daemon is
-provisioned. Actual Cloud Phase4 acceptance remains **pending**.
+Checkpoint after this bounded milestone. Apply the founder's replacement
+[permanent quota policy](USAGE-STATUS.md#permanent-quota-policy) equally to both
+windows; the older Phase4 reassessment/reserve restrictions are superseded.
+Without reliable official telemetry, complete at most this one bounded milestone
+then stop; do not calculate a precise consumption estimate or chain work.
+Prepare earlier if checkpoint, authorized GitHub sync, CI evidence or handoff
+needs headroom. No purchased credits/top-ups or automatic reset resume; backend
+denial stops work. No service, subscription, port or daemon is provisioned.
+Actual Cloud Phase4 acceptance remains **pending**.

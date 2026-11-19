@@ -29,7 +29,7 @@ Remote Control Phase 1 extends management tooling from knowledge-center baseline
 | C07 | Android acceptance plan, not its execution | [Plan](../android-notebook-acceptance-plan.md) |
 | C08 | Public-safe GitHub knowledge center and continuity policy | [Index](INDEX.md); containing commit/checks resolved as in [handoff](HANDOFF.md) |
 | C09 | On-demand read-only Control Center projection/helper and native capability assessment; emulator/Maestro plan only | [Control Center](CONTROL-CENTER.md), [318-test and independent review evidence](TEST-STATUS.md); no always-on monitor or activated controls |
-| C10 | Phase 2 compatibility/design, pure advisory sync/ownership helpers, weekly reserve guard and disabled lab fixture | [Unified workspace](UNIFIED-WORKSPACE.md), [327-test/review evidence](TEST-STATUS.md); no Cloud bootstrap, automatic sync, lock or UI execution |
+| C10 | Phase 2 compatibility/design, pure advisory sync/ownership helpers, quota projection and disabled lab fixture | [Unified workspace](UNIFIED-WORKSPACE.md), [327-test/review evidence](TEST-STATUS.md); its quota guidance is replaced by the [permanent policy](USAGE-STATUS.md#permanent-quota-policy). No Cloud bootstrap, automatic sync, lock or UI execution |
 | C11 | Phase 3 bounded probe attempt, exact prepared validation task/setup steps and official analytics assessment | [Validation record](CLOUD-INDEPENDENCE-VALIDATION.md); no successful Cloud execution or handoff claimed |
 
 ## Active

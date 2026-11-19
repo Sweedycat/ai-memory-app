@@ -14,8 +14,10 @@ boundary; existing management helpers, hooks and mobile source remain unchanged.
 official Cloud environment, mobile control and optional Termux clone. Read-only
 native inventory/quotas were checked; no Cloud runtime or repo binding was proved.
 The implemented sync/ownership checks are advisory, not a lock, worker or command
-endpoint. Weekly reserve guidance is stricter; private account values stay out of
-GitHub. Existing Windows hook/worktree limitations block claims of complete parity.
+endpoint. Its quota guidance is superseded by the founder's
+[permanent policy for both windows](USAGE-STATUS.md#permanent-quota-policy);
+private account values stay out of GitHub. Existing Windows hook/worktree
+limitations block claims of complete parity.
 
 ## Phase 1 update — 2026-11-18 UTC
 
