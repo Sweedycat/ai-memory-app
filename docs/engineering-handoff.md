@@ -21,6 +21,15 @@ phone. No USB is currently available; minimize founder interaction and offer
 safe phone-only verification if installed identity remains unknown. Do not create
 keys, change package identity, uninstall, activate Notebook or incur charges.
 
+The historical artifact is now downloaded/hashed and binary-inspected; do not
+download it again unnecessarily. Actual github-test versionCode is **1**, not the
+unverified historical 2. Its certificate matches the current Expo template's
+public development certificate. Read [APK identity evidence and phone-only gate](android-apk-identity-verification.md)
+for hashes, verification limits and the precise missing installed-device data.
+No new APK build was dispatched. Quota policy checkpoint
+`ed0cdb668ee8bf39937cb2787be304867884e9e8` passed exact-SHA full CI44548903688
+and portability CI44548903564. Source signing/package/version/flags are unchanged.
+
 ## People reliability continuation — 2026-11-19
 
 The daily assistant was pushed at
