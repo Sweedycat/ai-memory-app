@@ -1,5 +1,16 @@
 # Test and review evidence
 
+## Phase 4 portability checkpoint
+
+Current exact commands, source hashes, native independent Security/QA findings,
+CI identity and unsupported runtime gates live in
+[PHASE4-VALIDATION](PHASE4-VALIDATION.md). Initial clean/live baseline
+`95cb1deb51941b5164f4f2324ed7fda37e878c17` had successful exact-SHA
+[CI 44387226331](https://github.com/Sweedycat/ai-memory-app/actions/runs/44387226331),
+reverified in Phase4. This older run is not the new checkpoint's CI result.
+Actual new Cloud acceptance remains pending; historical evidence below stays
+attributed to its original source/environment.
+
 ## Cloud Independence Phase 3 — unverified Cloud execution
 
 Baseline `69b2eace67d2a0c5cb4876eaf4d3a44fa72b6a20`, exact-SHA CI 44383019205

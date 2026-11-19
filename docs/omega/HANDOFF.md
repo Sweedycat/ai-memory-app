@@ -1,5 +1,30 @@
 # Exact continuation
 
+## Current Phase 4 checkpoint
+
+Owner authorized portability implementation, tests, independent review, commits
+and normal pushes only to `development/omega-commercial-mvp`. Initial clean local
+and live remote SHA: `95cb1deb51941b5164f4f2324ed7fda37e878c17`; its CI
+44387226331 success was reverified. Resolve the containing Phase4 commit and its
+exact-SHA CI before continuation. See [CLOUD-COMPATIBILITY](CLOUD-COMPATIBILITY.md)
+for exact founder configuration/startup and [PHASE4-VALIDATION](PHASE4-VALIDATION.md)
+for tool blob pins, tests, independent reviews and limitations.
+
+Founder actually verified independent Linux Cloud access, initial old-main/work
+state, target ls-remote/fetch, clean exact-SHA detach and role/skill file presence.
+Registered-role selection was unsupported and native skill inventory empty in
+that session. Those observations supersede the older discovery gaps below;
+the new bootstrap, dependencies, hook alternative and Cloud regressions still
+need actual runtime acceptance. Do not repeat the entire old discovery process.
+
+Next safe step: founder pins the reviewed checkpoint and tooling hashes in the
+existing official environment, selects Node22 and runs the minimal acceptance
+in CLOUD-COMPATIBILITY. No automatic task creation, account change, paid credit,
+APK, device action, product activation or promotion is authorized here. Preserve
+the platform task branch, exact file ownership and 15%/10% weekly safeguards.
+
+The remaining Phase3/Phase2 sections are historical evidence.
+
 ## Current Phase 3 boundary
 
 Baseline `69b2eace67d2a0c5cb4876eaf4d3a44fa72b6a20` and CI 44383019205 success

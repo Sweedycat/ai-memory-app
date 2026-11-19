@@ -116,16 +116,18 @@ for (const input of ['{bad JSON', 'x'.repeat(hooks.MAX_INPUT + 1)]) {
     assert(result.stdout.length < 500);
   });
 }
-test('native Windows launcher works from nested cwd and preserves repository Git state', () => {
+test('hook subprocess works from nested cwd; configured Windows launcher is used only in its own checkout', () => {
   const status = () => spawnSync('git', ['--no-optional-locks', '-c', 'core.fsmonitor=false', 'status', '--porcelain=v1', '-z'],
     { cwd: root, encoding: 'utf8', windowsHide: true, timeout: 3000 }).stdout;
   const before = status();
   const config = JSON.parse(fs.readFileSync(path.join(root, '.codex/hooks.json'), 'utf8'));
-  const launcher = process.platform === 'win32' ? (process.env.ComSpec || 'cmd.exe') : process.execPath;
-  const args = process.platform === 'win32' ? ['/C', config.hooks.Stop[0].hooks[0].command] : [script, 'stop'];
+  const configured = config.hooks.Stop[0].hooks[0].command;
+  const useConfigured = process.platform === 'win32' && configured === `node "${script.replace(/\\/g, '/')}" stop`;
+  const launcher = useConfigured ? (process.env.ComSpec || 'cmd.exe') : process.execPath;
+  const args = useConfigured ? ['/C', configured] : [script, 'stop'];
   const result = spawnSync(launcher, args, {
     cwd: path.join(root, '.codex'), input: JSON.stringify({ hook_event_name: 'Stop' }),
-    encoding: 'utf8', windowsHide: true, windowsVerbatimArguments: process.platform === 'win32', timeout: 10000,
+    encoding: 'utf8', windowsHide: true, windowsVerbatimArguments: useConfigured, timeout: 10000,
   });
   assert.equal(result.status, 0);
   assert.equal(result.stderr, '');

@@ -1,5 +1,15 @@
 # Task queue
 
+Phase4 current task: engineering portability only, Principal owns integration and
+all shared files; DevOps owns the bounded bootstrap/test pair until handoff;
+Security and QA independently review read-only. Base
+`95cb1deb51941b5164f4f2324ed7fda37e878c17`, branch
+`development/omega-commercial-mvp`. Exact scope and evidence:
+[PHASE4-VALIDATION](PHASE4-VALIDATION.md). No concurrent Windows/Cloud writer is
+authorized from this record alone. Next pending item is actual founder Cloud
+acceptance using [CLOUD-COMPATIBILITY](CLOUD-COMPATIBILITY.md); no product feature
+or account setup is silently added. Previous queue entries below are preserved.
+
 As of 2026-11-18 UTC, application baseline
 `7cfb7737ed2cf39be6f1f4973319d91a44f3878d`.
 Completed means the stated source/document scope only, not production acceptance.

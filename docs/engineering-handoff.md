@@ -1,5 +1,20 @@
 # Omega engineering handoff
 
+## Unified Cloud Compatibility Phase 4 — Cloud acceptance pending
+
+Engineering-only portability extension from clean/live-matching
+`95cb1deb51941b5164f4f2324ed7fda37e878c17` on
+`development/omega-commercial-mvp`; baseline CI 44387226331 success reverified.
+See [compatibility and exact founder startup](omega/CLOUD-COMPATIBILITY.md),
+[validation/pins/review](omega/PHASE4-VALIDATION.md) and
+[current continuation](omega/HANDOFF.md). New detector, bounded source bootstrap,
+manual role/skill loader and explicit verification gate preserve existing
+Windows hooks and all app policies. Founder-supplied real Cloud probes are
+recorded separately from local synthetic tests. Actual new Cloud acceptance is
+pending; no account setup, app activation, APK/device or deployment performed.
+Resolve the containing checkpoint's exact SHA/CI before continuing. Older
+sections below retain historical evidence and do not override current scope.
+
 ## Cloud Independence Phase 3 — execution unverified
 
 Baseline `69b2eace67d2a0c5cb4876eaf4d3a44fa72b6a20` matched clean local/live

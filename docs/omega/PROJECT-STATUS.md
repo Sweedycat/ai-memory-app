@@ -1,5 +1,12 @@
 # Project status
 
+Phase4 engineering update (2026-11-19): portable detector/source bootstrap,
+explicit hook alternative, shared role/skill loading and Cloud startup are
+recorded in [compatibility](CLOUD-COMPATIBILITY.md) and
+[validation](PHASE4-VALIDATION.md). Actual new Cloud acceptance is pending.
+No product behavior, existing device result, app version or disabled feature
+changes. Earlier application/status observations below remain historical.
+
 Snapshot: 2026-11-18 UTC; application source at
 `7cfb7737ed2cf39be6f1f4973319d91a44f3878d` on
 `development/omega-commercial-mvp`. Remote equality and successful exact-SHA CI

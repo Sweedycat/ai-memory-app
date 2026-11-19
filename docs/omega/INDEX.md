@@ -30,6 +30,8 @@ do not confuse management/docs changes with an application milestone.
 | [CONTROL-CENTER](CONTROL-CENTER.md) | Phase 1 on-demand native monitoring, safeguards and limits |
 | [UNIFIED-WORKSPACE](UNIFIED-WORKSPACE.md) | Phase 2 compatibility, advisory ownership/sync and offline recovery design |
 | [CLOUD-INDEPENDENCE-VALIDATION](CLOUD-INDEPENDENCE-VALIDATION.md) | Phase 3 attempted probe, unverified execution, founder setup steps and analytics contracts |
+| [CLOUD-COMPATIBILITY](CLOUD-COMPATIBILITY.md) | Phase 4 capability-aware adapters, exact Cloud startup and minimal actual acceptance |
+| [PHASE4-VALIDATION](PHASE4-VALIDATION.md) | Phase 4 source pins, focused tests, independent review and remaining gates |
 | [Android Emulator/Maestro plan](ANDROID-EMULATOR-MAESTRO-PLAN.md) | Subsequent authorized synthetic UI test integration; not executed |
 
 ## Authority and source reuse

@@ -24,7 +24,7 @@ function checkedPath(value, cwd = ROOT) {
   if (typeof value !== 'string' || !value || /[\x00-\x1f]/.test(value)) throw Error('path');
   const slash = value.replace(/\\/g, '/');
   if (slash.startsWith('//') || slash.split('/').includes('..')) throw Error('path');
-  const absolute = path.resolve(cwd, value);
+  const absolute = path.resolve(cwd, slash);
   const relative = path.relative(ROOT, absolute).replace(/\\/g, '/');
   if (!relative || relative.startsWith('../') || path.isAbsolute(relative) || relative.includes(':')) throw Error('path');
   const parts = relative.toLowerCase().split('/');
@@ -46,12 +46,8 @@ function checkedPath(value, cwd = ROOT) {
 }
 
 function branch() {
-  // No per-tool subprocess. Worktree .git files need a separately verified path.
-  const gitDir = path.join(ROOT, '.git');
-  if (!fs.lstatSync(gitDir).isDirectory() || fs.lstatSync(gitDir).isSymbolicLink()) throw Error('git');
-  const headInfo = fs.lstatSync(path.join(gitDir, 'HEAD'));
-  if (!headInfo.isFile() || headInfo.isSymbolicLink() || headInfo.size > 4096) throw Error('git');
-  const head = fs.readFileSync(path.join(gitDir, 'HEAD'), 'utf8').trim();
+  // Bounded reciprocal metadata checks; no per-tool subprocess or external script.
+  const { head } = require('../../tools/omega-paths.cjs').gitLayout(ROOT);
   const match = /^ref: refs\/heads\/(.+)$/.exec(head);
   if (!match) throw Error('detached');
   return match[1];
@@ -63,6 +59,11 @@ function preTool(input, getBranch = branch) {
     const name = input.tool_name.split(/[./]/).at(-1).toLowerCase();
     const args = input.tool_input;
     const cwd = input.cwd || ROOT;
+    // A Windows absolute launcher must not inspect a different linked worktree
+    // against this checkout's branch. Such sessions use the explicit local gate.
+    if (typeof cwd !== 'string') throw Error('cwd');
+    const relativeCwd = path.relative(ROOT, path.resolve(cwd));
+    if (relativeCwd.startsWith('..') || path.isAbsolute(relativeCwd)) throw Error('cwd');
     const paths = [];
     let added = '';
     let mutating = false;

@@ -1,4 +1,16 @@
-# Unified workspace — Phase 2
+# Unified workspace — Phase 4 extension
+
+Current portability implementation and founder-supplied actual Cloud probes are
+recorded in [CLOUD-COMPATIBILITY](CLOUD-COMPATIBILITY.md) and
+[PHASE4-VALIDATION](PHASE4-VALIDATION.md). One authoritative repository,
+AGENTS/policies, eleven roles, twelve skills, advisory task ownership and reviewed
+Git checkpoints remain shared. Windows native execution and capability-aware
+Cloud adapters are distinct; no blind synchronization or automatic merge exists.
+Actual Phase4 Cloud runtime acceptance is pending. The Phase2 assessment below
+is historical; its unverified probes and fixed-hook limitation are extended only
+by explicitly identified newer evidence, never retroactively marked successful.
+
+## Historical Phase 2 assessment
 
 Read-only assessment baseline: clean local/live
 `165d8e4f899ace8c41323a9c84c02bb732247137` on
