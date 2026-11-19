@@ -1,5 +1,14 @@
 # Commercial MVP implementation inventory
 
+## 2026-11-19 people reliability
+
+The [people reliability increment](people-reliability-validation.md) addresses
+reproduced overlapping follow-up completion/editing and preserves the original
+operation target. Local person briefings now use actual dated past interactions
+instead of array order, label legacy/future uncertainty and exclude completed
+next steps. This does not make native reminders and disk writes atomic; physical
+Android acceptance and remaining commercial/privacy/recovery gates stay open.
+
 ## 2026-11-19 grounded daily assistant
 
 The [local assistant increment](grounded-assistant-validation.md) adds six fixed

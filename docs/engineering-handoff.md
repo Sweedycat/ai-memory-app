@@ -1,5 +1,34 @@
 # Omega engineering handoff
 
+## People reliability continuation — 2026-11-19
+
+The daily assistant was pushed at
+`ac29d59ff324db8bc91cf750f4e5935d1aec15f2`, fullCI44501857119 and
+portabilityCI44501857103 both successful at that SHA. The next bounded product
+repair prevents the reproduced completion/edit races and corrects last-interaction
+briefing claims and home midnight-DST boundaries. Final host tests: 443 total,
+441 pass, zero failures, two existing Windows platform skips; strict TypeScript
+and Doctor21/21 pass. Independent frozen review found no actionable findings
+and reran27/27 focused cases. Read [reproduction, review identity and limits](people-reliability-validation.md).
+Notification operations and people disk persistence remain nontransactional;
+physical acceptance is still required. No release or production flag is activated.
+
+Quota checkpoint: current safe product work is finalized; do not start another
+large/native milestone under the owner's 20% weekly policy. Do not automatically
+resume after quota reset. Source milestones delivered: life date agenda, grounded
+local daily assistant, people operation coordination/grounded briefings. The
+factory, Cloud/account work, paid AI/services, billing, builds/install and
+main/preview promotion remain paused or separately owner-gated.
+
+Next highest-value product milestone: explicit opt-in private notifications for
+life responsibilities with durable native/data reconciliation and failure
+coverage. Keep date-only agenda's no-device-alert disclosure accurate. Notebook
+requires its existing physical Android/key/security acceptance before activation.
+After a new continuation request, first verify branch/full HEAD/cleanliness,
+remote equality and exact-SHA full/portability CI. The containing commit is this
+checkpoint's source identity; CI must be read for that SHA, not inferred from
+the successful baseline runs above. No APK/device readiness is claimed.
+
 ## Daily assistant continuation — 2026-11-19
 
 The previous life agenda was pushed at

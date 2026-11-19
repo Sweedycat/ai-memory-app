@@ -25,8 +25,10 @@ function timestamp(value: string): number | null {
 export function buildDailyBriefing(people: readonly MemoryPerson[], now: Date): DailyBriefing {
   if (!Number.isFinite(now.getTime())) throw new Error('Invalid briefing date');
   const tomorrow = new Date(now);
-  tomorrow.setHours(0, 0, 0, 0); tomorrow.setDate(tomorrow.getDate() + 1);
-  const horizon = new Date(tomorrow); horizon.setDate(horizon.getDate() + 7);
+  tomorrow.setDate(tomorrow.getDate() + 1); tomorrow.setHours(0, 0, 0, 0);
+  // Preserve the next seven complete local dates after today. Derive each
+  // boundary independently so a missing midnight cannot carry 01:00 forward.
+  const horizon = new Date(now); horizon.setDate(horizon.getDate() + 8); horizon.setHours(0, 0, 0, 0);
   const result: DailyBriefing = { overdue: [], today: [], upcoming: [], later: [], unscheduled: [], needsReview: [] };
   for (const person of people) {
     const followUp = person.followUp;

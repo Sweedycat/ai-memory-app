@@ -73,3 +73,14 @@ test('next-seven-day window follows local days across both daylight-saving trans
 test('invalid current date is rejected instead of producing a fabricated daily summary', () => {
   assert.throws(() => build([person('synthetic')], new Date('invalid')), /Invalid briefing date/);
 });
+
+test('midnight DST gaps do not carry an extra hour into today or the next-seven-day boundary', () => timezone('Africa/Cairo', () => {
+  const today = build([person('inside', '2026-04-24T23:59:59+03:00'), person('outside', '2026-04-25T00:30:00+03:00')],
+    new Date('2026-04-24T12:00:00+03:00'));
+  assert.deepEqual(today.today.map(item => item.personId), ['inside']);
+  assert.deepEqual(today.upcoming.map(item => item.personId), ['outside']);
+  const upcoming = build([person('inside', '2026-04-30T23:59:59+03:00'), person('outside', '2026-05-01T00:30:00+03:00')],
+    new Date('2026-04-23T12:00:00+02:00'));
+  assert.deepEqual(upcoming.upcoming.map(item => item.personId), ['inside']);
+  assert.deepEqual(upcoming.later.map(item => item.personId), ['outside']);
+}));
