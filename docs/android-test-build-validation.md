@@ -71,3 +71,62 @@ conflict. Physical tests remain: retained people/life data/settings, keys and
 App Lock, restart/reopen, follow-up edits/completion, reminder delivery and
 permission denial/revocation. Use fabricated new test records. No physical
 acceptance, Play publication, billing or production Notebook is authorized here.
+
+## Recorded preparation evidence
+
+Candidate source: `f6d01cceb746a56439a2bbdea8938d0343c62d7e` on the authorized
+development branch. Local TypeScript passed; full unit regression had 446 tests,
+444 passes, two existing Windows skips and zero failures. After the review fix,
+all five focused version/trigger tests passed again. Expo Doctor passed 21/21
+after an initial sandbox-network EACCES was retried with authorized access;
+12 skill definitions and workflow YAML parsing passed. Whitespace checks passed.
+
+Independent Reviewer `quota_review` authored none of the changes and reviewed
+the frozen 14-file candidate against baseline `6e3c6ab436659aeeb52aa27838af9a67e4a1c0ed`.
+Its raw-file manifest digest was
+`4df8ff130705ce789dfb6c146e67dbc68378e74849675ce2881f9900f5dfe34e`.
+The initial P2 specific-job-rerun gap was fixed by guarding both jobs and testing
+both expressions; final independent focused tests were 5/5 with no remaining
+actionable findings. Review does not approve installation or physical acceptance.
+
+Single APK run [44555535088](https://github.com/Sweedycat/ai-memory-app/actions/runs/44555535088)
+was requested by the candidate push. Exact-source full regression run44555535125
+and portability run44555535148 were also observed queued. At this preparation
+entry their completion and the resulting APK remained pending; results follow.
+
+## Single-run outcome and safe stop
+
+Full regression run44555535125 and portability run44555535148 both succeeded at
+candidate SHA `f6d01cceb746a56439a2bbdea8938d0343c62d7e`. APK run44555535088
+verification passed Doctor 21/21, strict TypeScript and 446 Linux tests:
+445 passed, zero failed, one Windows-only DOS-short-alias test skipped.
+
+Android job135671055328 completed Gradle `assembleRelease` successfully in 7m27s.
+SDK apksigner verified APK v2 signing and exactly one signer whose certificate
+SHA-256 matched the historical certificate. However this SDK prints
+`V2 Signer: certificate SHA-256 digest:`; the added shell assertion expected
+the older `Signer #1 certificate SHA-256 digest:` label. This format assumption
+caused exit1 after successful cryptographic verification, before aapt/hash/upload.
+The run failed and GitHub confirms zero artifacts. New binary manifest, downloaded
+integrity and installability remain UNVERIFIED. There is no new APK download link.
+
+The narrow correction accepts either exact known label, requires exactly one
+matching complete fingerprint line and retains apksigner verification plus the
+one-signer assertion. Synthetic checks cover both labels, wrong digest, duplicate
+matches, prefixed diagnostics and trailing data. No certificate, signing key,
+assertion strength or feature flag is changed. An ordinary correction push does
+not satisfy the unique build request; neither job can auto-rebuild or rerun it.
+No second build is initiated under the founder's single-build limit. Another free
+build attempt needs a continuation instruction; installed identity still remains
+a separate pre-installation gate. Physical acceptance is not claimed.
+
+Independent Reviewer `quota_review` reviewed the four-file correction against
+`f6d01cceb746a56439a2bbdea8938d0343c62d7e`; raw-file manifest digest was
+`0ccedf3f0fb73b93b79c4f58360d5c3cfbbeb25d90b138f5ffacc49d7a1fd833`.
+Independent focused tests passed 6/6 with no actionable findings. This evidence
+entry and the founder's later stop instruction were appended after that review;
+the reviewed workflow and test bytes are unchanged.
+
+The founder subsequently answered **save the correction and stop**. Do not
+start another APK build under this task, including after CI or quota reset.
+Only save/synchronize this safe correction checkpoint and verify its CI.

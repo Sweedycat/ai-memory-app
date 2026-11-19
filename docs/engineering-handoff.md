@@ -1,5 +1,21 @@
 # Omega engineering handoff
 
+## Single APK attempt failed after valid signing — 2026-11-19
+
+Source `f6d01cceb746a56439a2bbdea8938d0343c62d7e` passed full CI44555535125
+and portability44555535148. APK run44555535088 passed its verify job and Gradle
+APK assembly. SDK apksigner verified v2 signing and the historical certificate,
+but our shell check expected an older signer-label format and failed before
+manifest/hash/upload; the run has zero artifacts and no downloadable APK.
+The focused format correction retains exact fingerprint/one-signer checks and
+rejects wrong/duplicate digest lines. Read [full evidence](android-test-build-validation.md).
+No second build is started under the single-build limit. A continuation may
+authorize another free attempt after the corrected checkpoint's exact-SHA CI.
+The founder subsequently selected **save the correction and stop**. Save/sync
+and verify the correction checkpoint only; no further APK build in this task.
+Installed identity and physical acceptance remain unverified; no device action,
+key change, sensitive activation, merge or spending occurred.
+
 ## Authorized artifact production, installation remains gated — 2026-11-19
 
 The founder explicitly separates APK production from device installation.

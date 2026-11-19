@@ -79,3 +79,23 @@ test('automatic development build is limited to one authorized request and rejec
   assert.match(workflow, /fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c/);
   assert.doesNotMatch(workflow, /keytool|genkey|eas build|APP_VARIANT: preview|autoIncrement/);
 });
+
+test('APK certificate gate accepts both verified apksigner labels and rejects mismatches or duplicate matches', () => {
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/android-preview-apk.yml'), 'utf8');
+  const pattern = workflow.match(/grep -Eic '([^']+)'/)[1];
+  const certificate = 'fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c';
+  const accepts = output => output.split(/\r?\n/).filter(line => new RegExp(pattern, 'i').test(line)).length === 1;
+  const historical = 'Signer #1 certificate SHA-256 digest: ' + certificate;
+  const current = 'V2 Signer: certificate SHA-256 digest: ' + certificate;
+  // Older apksigner uses no colon between Signer #1 and certificate.
+  assert.equal(accepts(current), true);
+  assert.equal(accepts(current.toUpperCase()), true);
+  assert.equal(accepts(current.replace(certificate, '0'.repeat(64))), false);
+  assert.equal(accepts(current + '\n' + current), false);
+  assert.equal(accepts('diagnostic: ' + current), false);
+  assert.equal(accepts(current + '0'), false);
+  assert.equal(accepts(''), false);
+  assert.equal(accepts(historical), true);
+  assert.match(workflow, /grep -Fxq 'Number of signers: 1'/);
+  assert.match(workflow, /apksigner" verify --verbose --print-certs/);
+});
