@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1344 1560" role="img" aria-labelledby="title desc" font-family="system-ui, Segoe UI, sans-serif"><title id="title">AI Memory — üç tasarım önerisi</title><desc id="desc">Tasarım önerisi; cihaz ekran görüntüsü değildir. Aynı sentetik içerik farklı renklerde gösterilir. Uygulamaya uygulanmadı.</desc><g transform="translate(0 0)"><rect x="0" y="0" width="448" height="1560" rx="0" fill="#0B0F14"/>
+<text x="24" y="26" fill="#F4F7FA" font-size="18" font-weight="700">A — Mevcut kimliği rafine et</text>
+<text x="24" y="47" fill="#AAB5C0" font-size="12" font-weight="400">Tasarım önerisi · cihaz ekranı değil</text>
+<rect x="24" y="60" width="400" height="884" rx="36" fill="#0E141B" stroke="#607282"/>
+<rect x="29" y="80" width="390" height="844" rx="28" fill="#0B0F14"/>
+<defs><clipPath id="screen-a"><rect width="390" height="844" rx="28"/></clipPath></defs><g transform="translate(29 80)" clip-path="url(#screen-a)">
+<text x="20" y="22" fill="#AAB5C0" font-size="12" font-weight="600">9:41</text>
+<text x="20" y="64" fill="#7DE2C3" font-size="12" font-weight="700">AI MEMORY</text>
+<rect x="302" y="36" width="68" height="48" rx="14" fill="#121820" stroke="#607282"/>
+<text x="311" y="65" fill="#F4F7FA" font-size="14" font-weight="600">Ayarlar</text>
+<text x="20" y="130" fill="#F4F7FA" font-size="30" font-weight="700">İnsanları hatırla.</text>
+<text x="20" y="166" fill="#F4F7FA" font-size="30" font-weight="700">Bağlamı hatırla.</text>
+<text x="20" y="204" fill="#AAB5C0" font-size="16" font-weight="400">Görüşmeler ve takipler için</text>
+<text x="20" y="228" fill="#AAB5C0" font-size="16" font-weight="400">kişisel hafızan.</text>
+<rect x="20" y="244" width="110" height="80" rx="20" fill="#121820"/>
+<text x="36" y="279" fill="#F4F7FA" font-size="24" font-weight="700">3</text>
+<text x="36" y="306" fill="#AAB5C0" font-size="14" font-weight="400">Kişi</text>
+<rect x="140" y="244" width="110" height="80" rx="20" fill="#121820"/>
+<text x="156" y="279" fill="#F4F7FA" font-size="24" font-weight="700">6</text>
+<text x="156" y="306" fill="#AAB5C0" font-size="14" font-weight="400">Etkileşim</text>
+<rect x="260" y="244" width="110" height="80" rx="20" fill="#121820"/>
+<text x="276" y="279" fill="#F4F7FA" font-size="24" font-weight="700">2</text>
+<text x="276" y="306" fill="#AAB5C0" font-size="14" font-weight="400">Açık takip</text>
+<rect x="20" y="340" width="350" height="112" rx="20" fill="#121820"/>
+<text x="36" y="372" fill="#F4F7FA" font-size="16" font-weight="600">Hafızanda ara</text>
+<rect x="36" y="388" width="318" height="48" rx="14" fill="#0E141B" stroke="#607282"/>
+<text x="52" y="418" fill="#AAB5C0" font-size="14" font-weight="400">Ad, şirket, not veya görüşme…</text>
+<rect x="20" y="468" width="350" height="340" rx="20" fill="#121820"/>
+<text x="36" y="504" fill="#F4F7FA" font-size="20" font-weight="700">Günlük özetin</text>
+<text x="36" y="528" fill="#AAB5C0" font-size="14" font-weight="400">Takiplerinden derlendi.</text>
+<rect x="36" y="548" width="155" height="50" rx="10" fill="#0E141B"/>
+<text x="46" y="567" fill="#AAB5C0" font-size="14" font-weight="400">Geciken</text>
+<text x="46" y="590" fill="#F4F7FA" font-size="20" font-weight="700">0</text>
+<rect x="199" y="548" width="155" height="50" rx="10" fill="#0E141B"/>
+<text x="209" y="567" fill="#AAB5C0" font-size="14" font-weight="400">Bugün</text>
+<text x="209" y="590" fill="#F4F7FA" font-size="20" font-weight="700">1</text>
+<rect x="36" y="606" width="155" height="50" rx="10" fill="#0E141B"/>
+<text x="46" y="625" fill="#AAB5C0" font-size="14" font-weight="400">Önümüzdeki 7 gün</text>
+<text x="46" y="648" fill="#F4F7FA" font-size="20" font-weight="700">1</text>
+<rect x="199" y="606" width="155" height="50" rx="10" fill="#0E141B"/>
+<text x="209" y="625" fill="#AAB5C0" font-size="14" font-weight="400">Tarihsiz</text>
+<text x="209" y="648" fill="#F4F7FA" font-size="20" font-weight="700">0</text>
+<text x="36" y="704" fill="#F4F7FA" font-size="16" font-weight="600">Deniz Örnek</text>
+<text x="36" y="728" fill="#F4F7FA" font-size="14" font-weight="400">Sunum notlarını paylaş</text>
+<text x="36" y="752" fill="#7DE2C3" font-size="14" font-weight="600">Bugün 15.00</text>
+<text x="36" y="780" fill="#AAB5C0" font-size="14" font-weight="400">2 açık takipten 2 tanesi gösteriliyor.</text>
+<rect x="20" y="824" width="350" height="48" rx="14" fill="#0E141B" stroke="#607282"/>
+<text x="36" y="854" fill="#F4F7FA" font-size="16" font-weight="600">Yaşam yönetimi  →</text>
+</g>
+<rect x="29" y="896" width="390" height="28" rx="0" fill="#0B0F14"/>
+<text x="170" y="915" fill="#AAB5C0" font-size="12" font-weight="400">↓  devamı</text>
+<text x="29" y="981" fill="#F4F7FA" font-size="16" font-weight="600">Kaydırınca devam eden aynı içerik</text>
+<rect x="29" y="1004" width="390" height="420" rx="20" fill="#121820"/>
+<text x="45" y="1034" fill="#F4F7FA" font-size="16" font-weight="600">Yaşam yönetimi  →</text>
+<text x="45" y="1070" fill="#F4F7FA" font-size="16" font-weight="600">Günlük asistan  →</text>
+<text x="45" y="1110" fill="#F4F7FA" font-size="18" font-weight="700">Kişiler · 3 eşleşen kayıt</text>
+<rect x="281" y="1081" width="122" height="48" rx="14" fill="#7DE2C3"/>
+<text x="291" y="1110" fill="#07100D" font-size="14" font-weight="600">+ Kişi ekle</text>
+<text x="45" y="1150" fill="#F4F7FA" font-size="20" font-weight="700">Deniz Örnek</text>
+<text x="45" y="1174" fill="#F4F7FA" font-size="14" font-weight="400">Ürün tasarımı · Örnek Atölye</text>
+<text x="45" y="1198" fill="#F4F7FA" font-size="14" font-weight="400">Bağlam: İş bağlantısı</text>
+<text x="45" y="1222" fill="#F4F7FA" font-size="14" font-weight="400">Telefon: örnek alan</text>
+<text x="45" y="1246" fill="#F4F7FA" font-size="14" font-weight="400">Not: Sunum ayrıntıları görüşüldü.</text>
+<text x="45" y="1270" fill="#F4F7FA" font-size="14" font-weight="400">Sonraki adım: Sunum notlarını paylaş</text>
+<text x="45" y="1294" fill="#7DE2C3" font-size="14" font-weight="400">Takip: Bugün 15.00</text>
+<text x="45" y="1318" fill="#AAB5C0" font-size="14" font-weight="400">2 etkileşim · 1 açık takip</text>
+<text x="45" y="1342" fill="#AAB5C0" font-size="14" font-weight="400">Son etkileşim: 19 Kasım 2026</text>
+<text x="45" y="1372" fill="#F4F7FA" font-size="14" font-weight="600">Takiplerin · 2 açık</text>
+<text x="45" y="1400" fill="#AAB5C0" font-size="14" font-weight="400">Son görüşme · Sunum hakkında not</text>
+<rect x="29" y="1440" width="390" height="84" rx="20" fill="#121820"/>
+<rect x="39" y="1450" width="92" height="48" rx="14" fill="#0E141B" stroke="#607282"/>
+<text x="51" y="1480" fill="#F4F7FA" font-size="16" font-weight="600">‹  Geri</text>
+<text x="153" y="1480" fill="#F4F7FA" font-size="20" font-weight="700">Ayarlar</text>
+<text x="153" y="1506" fill="#AAB5C0" font-size="14" font-weight="400">Dil: Türkçe  ›</text>
+<text x="29" y="1549" fill="#AAB5C0" font-size="12" font-weight="400">Örnek içerik · yeni özellik veya kabul iddiası yok</text></g><g transform="translate(448 0)"><rect x="0" y="0" width="448" height="1560" rx="0" fill="#0C1018"/>
+<text x="24" y="26" fill="#F3F6FC" font-size="18" font-weight="700">B — Premium modern koyu</text>
+<text x="24" y="47" fill="#B5C0D2" font-size="12" font-weight="400">Tasarım önerisi · cihaz ekranı değil</text>
+<rect x="24" y="60" width="400" height="884" rx="36" fill="#101724" stroke="#697D95"/>
+<rect x="29" y="80" width="390" height="844" rx="28" fill="#0C1018"/>
+<defs><clipPath id="screen-b"><rect width="390" height="844" rx="28"/></clipPath></defs><g transform="translate(29 80)" clip-path="url(#screen-b)">
+<text x="20" y="22" fill="#B5C0D2" font-size="12" font-weight="600">9:41</text>
+<text x="20" y="64" fill="#B6C4FF" font-size="12" font-weight="700">AI MEMORY</text>
+<rect x="302" y="36" width="68" height="48" rx="12" fill="#151D2B" stroke="#697D95"/>
+<text x="311" y="65" fill="#F3F6FC" font-size="14" font-weight="600">Ayarlar</text>
+<text x="20" y="130" fill="#F3F6FC" font-size="30" font-weight="700">İnsanları hatırla.</text>
+<text x="20" y="166" fill="#F3F6FC" font-size="30" font-weight="700">Bağlamı hatırla.</text>
+<text x="20" y="204" fill="#B5C0D2" font-size="16" font-weight="400">Görüşmeler ve takipler için</text>
+<text x="20" y="228" fill="#B5C0D2" font-size="16" font-weight="400">kişisel hafızan.</text>
+<rect x="20" y="244" width="110" height="80" rx="16" fill="#151D2B"/>
+<text x="36" y="279" fill="#F3F6FC" font-size="24" font-weight="700">3</text>
+<text x="36" y="306" fill="#B5C0D2" font-size="14" font-weight="400">Kişi</text>
+<rect x="140" y="244" width="110" height="80" rx="16" fill="#151D2B"/>
+<text x="156" y="279" fill="#F3F6FC" font-size="24" font-weight="700">6</text>
+<text x="156" y="306" fill="#B5C0D2" font-size="14" font-weight="400">Etkileşim</text>
+<rect x="260" y="244" width="110" height="80" rx="16" fill="#151D2B"/>
+<text x="276" y="279" fill="#F3F6FC" font-size="24" font-weight="700">2</text>
+<text x="276" y="306" fill="#B5C0D2" font-size="14" font-weight="400">Açık takip</text>
+<rect x="20" y="340" width="350" height="112" rx="16" fill="#151D2B"/>
+<text x="36" y="372" fill="#F3F6FC" font-size="16" font-weight="600">Hafızanda ara</text>
+<rect x="36" y="388" width="318" height="48" rx="12" fill="#101724" stroke="#697D95"/>
+<text x="52" y="418" fill="#B5C0D2" font-size="14" font-weight="400">Ad, şirket, not veya görüşme…</text>
+<rect x="20" y="468" width="350" height="340" rx="16" fill="#151D2B"/>
+<text x="36" y="504" fill="#F3F6FC" font-size="20" font-weight="700">Günlük özetin</text>
+<text x="36" y="528" fill="#B5C0D2" font-size="14" font-weight="400">Takiplerinden derlendi.</text>
+<rect x="36" y="548" width="155" height="50" rx="10" fill="#101724"/>
+<text x="46" y="567" fill="#B5C0D2" font-size="14" font-weight="400">Geciken</text>
+<text x="46" y="590" fill="#F3F6FC" font-size="20" font-weight="700">0</text>
+<rect x="199" y="548" width="155" height="50" rx="10" fill="#101724"/>
+<text x="209" y="567" fill="#B5C0D2" font-size="14" font-weight="400">Bugün</text>
+<text x="209" y="590" fill="#F3F6FC" font-size="20" font-weight="700">1</text>
+<rect x="36" y="606" width="155" height="50" rx="10" fill="#101724"/>
+<text x="46" y="625" fill="#B5C0D2" font-size="14" font-weight="400">Önümüzdeki 7 gün</text>
+<text x="46" y="648" fill="#F3F6FC" font-size="20" font-weight="700">1</text>
+<rect x="199" y="606" width="155" height="50" rx="10" fill="#101724"/>
+<text x="209" y="625" fill="#B5C0D2" font-size="14" font-weight="400">Tarihsiz</text>
+<text x="209" y="648" fill="#F3F6FC" font-size="20" font-weight="700">0</text>
+<text x="36" y="704" fill="#F3F6FC" font-size="16" font-weight="600">Deniz Örnek</text>
+<text x="36" y="728" fill="#F3F6FC" font-size="14" font-weight="400">Sunum notlarını paylaş</text>
+<text x="36" y="752" fill="#B6C4FF" font-size="14" font-weight="600">Bugün 15.00</text>
+<text x="36" y="780" fill="#B5C0D2" font-size="14" font-weight="400">2 açık takipten 2 tanesi gösteriliyor.</text>
+<rect x="20" y="824" width="350" height="48" rx="12" fill="#101724" stroke="#697D95"/>
+<text x="36" y="854" fill="#F3F6FC" font-size="16" font-weight="600">Yaşam yönetimi  →</text>
+</g>
+<rect x="29" y="896" width="390" height="28" rx="0" fill="#0C1018"/>
+<text x="170" y="915" fill="#B5C0D2" font-size="12" font-weight="400">↓  devamı</text>
+<text x="29" y="981" fill="#F3F6FC" font-size="16" font-weight="600">Kaydırınca devam eden aynı içerik</text>
+<rect x="29" y="1004" width="390" height="420" rx="16" fill="#151D2B"/>
+<text x="45" y="1034" fill="#F3F6FC" font-size="16" font-weight="600">Yaşam yönetimi  →</text>
+<text x="45" y="1070" fill="#F3F6FC" font-size="16" font-weight="600">Günlük asistan  →</text>
+<text x="45" y="1110" fill="#F3F6FC" font-size="18" font-weight="700">Kişiler · 3 eşleşen kayıt</text>
+<rect x="281" y="1081" width="122" height="48" rx="12" fill="#B6C4FF"/>
+<text x="291" y="1110" fill="#152045" font-size="14" font-weight="600">+ Kişi ekle</text>
+<text x="45" y="1150" fill="#F3F6FC" font-size="20" font-weight="700">Deniz Örnek</text>
+<text x="45" y="1174" fill="#F3F6FC" font-size="14" font-weight="400">Ürün tasarımı · Örnek Atölye</text>
+<text x="45" y="1198" fill="#F3F6FC" font-size="14" font-weight="400">Bağlam: İş bağlantısı</text>
+<text x="45" y="1222" fill="#F3F6FC" font-size="14" font-weight="400">Telefon: örnek alan</text>
+<text x="45" y="1246" fill="#F3F6FC" font-size="14" font-weight="400">Not: Sunum ayrıntıları görüşüldü.</text>
+<text x="45" y="1270" fill="#F3F6FC" font-size="14" font-weight="400">Sonraki adım: Sunum notlarını paylaş</text>
+<text x="45" y="1294" fill="#B6C4FF" font-size="14" font-weight="400">Takip: Bugün 15.00</text>
+<text x="45" y="1318" fill="#B5C0D2" font-size="14" font-weight="400">2 etkileşim · 1 açık takip</text>
+<text x="45" y="1342" fill="#B5C0D2" font-size="14" font-weight="400">Son etkileşim: 19 Kasım 2026</text>
+<text x="45" y="1372" fill="#F3F6FC" font-size="14" font-weight="600">Takiplerin · 2 açık</text>
+<text x="45" y="1400" fill="#B5C0D2" font-size="14" font-weight="400">Son görüşme · Sunum hakkında not</text>
+<rect x="29" y="1440" width="390" height="84" rx="16" fill="#151D2B"/>
+<rect x="39" y="1450" width="92" height="48" rx="12" fill="#101724" stroke="#697D95"/>
+<text x="51" y="1480" fill="#F3F6FC" font-size="16" font-weight="600">‹  Geri</text>
+<text x="153" y="1480" fill="#F3F6FC" font-size="20" font-weight="700">Ayarlar</text>
+<text x="153" y="1506" fill="#B5C0D2" font-size="14" font-weight="400">Dil: Türkçe  ›</text>
+<text x="29" y="1549" fill="#B5C0D2" font-size="12" font-weight="400">Örnek içerik · yeni özellik veya kabul iddiası yok</text></g><g transform="translate(896 0)"><rect x="0" y="0" width="448" height="1560" rx="0" fill="#F4F7F6"/>
+<text x="24" y="26" fill="#152720" font-size="18" font-weight="700">C — Koordineli açık / koyu</text>
+<text x="24" y="47" fill="#4E655C" font-size="12" font-weight="400">Tasarım önerisi · cihaz ekranı değil</text>
+<rect x="24" y="60" width="400" height="884" rx="36" fill="#EDF3F1" stroke="#758C84"/>
+<rect x="29" y="80" width="390" height="844" rx="28" fill="#F4F7F6"/>
+<defs><clipPath id="screen-c"><rect width="390" height="844" rx="28"/></clipPath></defs><g transform="translate(29 80)" clip-path="url(#screen-c)">
+<text x="20" y="22" fill="#4E655C" font-size="12" font-weight="600">9:41</text>
+<text x="20" y="64" fill="#176B54" font-size="12" font-weight="700">AI MEMORY</text>
+<rect x="302" y="36" width="68" height="48" rx="12" fill="#FFFFFF" stroke="#758C84"/>
+<text x="311" y="65" fill="#152720" font-size="14" font-weight="600">Ayarlar</text>
+<text x="20" y="130" fill="#152720" font-size="30" font-weight="700">İnsanları hatırla.</text>
+<text x="20" y="166" fill="#152720" font-size="30" font-weight="700">Bağlamı hatırla.</text>
+<text x="20" y="204" fill="#4E655C" font-size="16" font-weight="400">Görüşmeler ve takipler için</text>
+<text x="20" y="228" fill="#4E655C" font-size="16" font-weight="400">kişisel hafızan.</text>
+<rect x="20" y="244" width="110" height="80" rx="16" fill="#FFFFFF"/>
+<text x="36" y="279" fill="#152720" font-size="24" font-weight="700">3</text>
+<text x="36" y="306" fill="#4E655C" font-size="14" font-weight="400">Kişi</text>
+<rect x="140" y="244" width="110" height="80" rx="16" fill="#FFFFFF"/>
+<text x="156" y="279" fill="#152720" font-size="24" font-weight="700">6</text>
+<text x="156" y="306" fill="#4E655C" font-size="14" font-weight="400">Etkileşim</text>
+<rect x="260" y="244" width="110" height="80" rx="16" fill="#FFFFFF"/>
+<text x="276" y="279" fill="#152720" font-size="24" font-weight="700">2</text>
+<text x="276" y="306" fill="#4E655C" font-size="14" font-weight="400">Açık takip</text>
+<rect x="20" y="340" width="350" height="112" rx="16" fill="#FFFFFF"/>
+<text x="36" y="372" fill="#152720" font-size="16" font-weight="600">Hafızanda ara</text>
+<rect x="36" y="388" width="318" height="48" rx="12" fill="#EDF3F1" stroke="#758C84"/>
+<text x="52" y="418" fill="#4E655C" font-size="14" font-weight="400">Ad, şirket, not veya görüşme…</text>
+<rect x="20" y="468" width="350" height="340" rx="16" fill="#FFFFFF"/>
+<text x="36" y="504" fill="#152720" font-size="20" font-weight="700">Günlük özetin</text>
+<text x="36" y="528" fill="#4E655C" font-size="14" font-weight="400">Takiplerinden derlendi.</text>
+<rect x="36" y="548" width="155" height="50" rx="10" fill="#EDF3F1"/>
+<text x="46" y="567" fill="#4E655C" font-size="14" font-weight="400">Geciken</text>
+<text x="46" y="590" fill="#152720" font-size="20" font-weight="700">0</text>
+<rect x="199" y="548" width="155" height="50" rx="10" fill="#EDF3F1"/>
+<text x="209" y="567" fill="#4E655C" font-size="14" font-weight="400">Bugün</text>
+<text x="209" y="590" fill="#152720" font-size="20" font-weight="700">1</text>
+<rect x="36" y="606" width="155" height="50" rx="10" fill="#EDF3F1"/>
+<text x="46" y="625" fill="#4E655C" font-size="14" font-weight="400">Önümüzdeki 7 gün</text>
+<text x="46" y="648" fill="#152720" font-size="20" font-weight="700">1</text>
+<rect x="199" y="606" width="155" height="50" rx="10" fill="#EDF3F1"/>
+<text x="209" y="625" fill="#4E655C" font-size="14" font-weight="400">Tarihsiz</text>
+<text x="209" y="648" fill="#152720" font-size="20" font-weight="700">0</text>
+<text x="36" y="704" fill="#152720" font-size="16" font-weight="600">Deniz Örnek</text>
+<text x="36" y="728" fill="#152720" font-size="14" font-weight="400">Sunum notlarını paylaş</text>
+<text x="36" y="752" fill="#176B54" font-size="14" font-weight="600">Bugün 15.00</text>
+<text x="36" y="780" fill="#4E655C" font-size="14" font-weight="400">2 açık takipten 2 tanesi gösteriliyor.</text>
+<rect x="20" y="824" width="350" height="48" rx="12" fill="#EDF3F1" stroke="#758C84"/>
+<text x="36" y="854" fill="#152720" font-size="16" font-weight="600">Yaşam yönetimi  →</text>
+</g>
+<rect x="29" y="896" width="390" height="28" rx="0" fill="#F4F7F6"/>
+<text x="170" y="915" fill="#4E655C" font-size="12" font-weight="400">↓  devamı</text>
+<text x="29" y="981" fill="#152720" font-size="16" font-weight="600">Kaydırınca devam eden aynı içerik</text>
+<rect x="29" y="1004" width="390" height="420" rx="16" fill="#FFFFFF"/>
+<text x="45" y="1034" fill="#152720" font-size="16" font-weight="600">Yaşam yönetimi  →</text>
+<text x="45" y="1070" fill="#152720" font-size="16" font-weight="600">Günlük asistan  →</text>
+<text x="45" y="1110" fill="#152720" font-size="18" font-weight="700">Kişiler · 3 eşleşen kayıt</text>
+<rect x="281" y="1081" width="122" height="48" rx="12" fill="#176B54"/>
+<text x="291" y="1110" fill="#FFFFFF" font-size="14" font-weight="600">+ Kişi ekle</text>
+<text x="45" y="1150" fill="#152720" font-size="20" font-weight="700">Deniz Örnek</text>
+<text x="45" y="1174" fill="#152720" font-size="14" font-weight="400">Ürün tasarımı · Örnek Atölye</text>
+<text x="45" y="1198" fill="#152720" font-size="14" font-weight="400">Bağlam: İş bağlantısı</text>
+<text x="45" y="1222" fill="#152720" font-size="14" font-weight="400">Telefon: örnek alan</text>
+<text x="45" y="1246" fill="#152720" font-size="14" font-weight="400">Not: Sunum ayrıntıları görüşüldü.</text>
+<text x="45" y="1270" fill="#152720" font-size="14" font-weight="400">Sonraki adım: Sunum notlarını paylaş</text>
+<text x="45" y="1294" fill="#176B54" font-size="14" font-weight="400">Takip: Bugün 15.00</text>
+<text x="45" y="1318" fill="#4E655C" font-size="14" font-weight="400">2 etkileşim · 1 açık takip</text>
+<text x="45" y="1342" fill="#4E655C" font-size="14" font-weight="400">Son etkileşim: 19 Kasım 2026</text>
+<text x="45" y="1372" fill="#152720" font-size="14" font-weight="600">Takiplerin · 2 açık</text>
+<text x="45" y="1400" fill="#4E655C" font-size="14" font-weight="400">Son görüşme · Sunum hakkında not</text>
+<rect x="29" y="1440" width="390" height="84" rx="16" fill="#FFFFFF"/>
+<rect x="39" y="1450" width="92" height="48" rx="12" fill="#EDF3F1" stroke="#758C84"/>
+<text x="51" y="1480" fill="#152720" font-size="16" font-weight="600">‹  Geri</text>
+<text x="153" y="1480" fill="#152720" font-size="20" font-weight="700">Ayarlar</text>
+<text x="153" y="1506" fill="#4E655C" font-size="14" font-weight="400">Dil: Türkçe  ›</text>
+<text x="29" y="1549" fill="#4E655C" font-size="12" font-weight="400">Örnek içerik · yeni özellik veya kabul iddiası yok</text></g></svg>

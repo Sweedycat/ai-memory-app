@@ -1,5 +1,39 @@
 # Omega engineering handoff
 
+## V3 A checkpoint and independent B1 foundation — 2026-11-20
+
+Milestone A source `a2cb5daf960cad2d2301680a4b445caea027b688` is pushed on
+development. Exact-SHA full CI44630570465 and portability44630570445 succeeded;
+APK44630570497 was skipped as intended. Independent review resolved the operative
+Security Engineer encryption-policy conflict; final30-file review digest
+`9bcc87a9fdbff293fe23073cc3f90f5ba46d954e18fa1eb8348f317f36490d4f` had no remaining
+source findings. TypeScript passed; full serial regression449 tests:447 passed,
+two existing Windows skips, zero failed. Initial parallel regression had two
+engineering CLI deadline failures; unchanged focused serial diagnostics15/15
+and full serial suite passed. Doctor retry21/21 passed after initial TLS failure.
+No assertion/time limit was weakened. Native discovery/invocation limitations
+below remain unresolved; do not claim the new roles fully operational.
+
+B1 now adds an unwired technical foundation: centralized reused TR/EN Life/
+assistant catalogs, system/explicit language resolution, locale-aware formatters
+and an injected versioned preference store with corruption/conflict/interruption/
+readback/invalidation protection. It performs no construction IO, touches no live
+AsyncStorage or records and does not yet add a provider/Settings control or
+translate the whole app. See [foundation evidence](localization-foundation-validation.md).
+This is internal preparation, not a completed user-facing localization increment;
+no version bump or APK is required. App-wide translation/selection remains partial.
+
+The [three concrete design directions](design/DIRECTIONS.md) compare the same
+fabricated content. Static SVGs were XML-validated and the rendered comparison
+visually inspected; they are not app screens/device evidence. Founder approved
+all A/B/C directions: A default classic, B modern dark, C light/dark plus System.
+All are free for every tier, no entitlement gates, centralized tokens/components,
+Settings → Appearance → Theme previews/immediate application/safe persistence;
+every future feature supports all themes. No actual UI styles changed yet.
+Next independent task is the
+provider/catalog/Settings integration and full app-controlled copy extraction;
+then integrate approved shared design without losing drafts or stored records.
+
 ## Master Development V3 — 2026-11-20
 
 Starting clean local/remote development source:
@@ -25,7 +59,7 @@ until checks/review and exact-SHA CI actually complete; older records below are 
 
 Next executable B work: centralized TR/EN/system default/safe language preference
 and completeness tests, plus three coherent visual proposals for founder choice.
-Do not begin substantial visual redesign before approval. Independent encryption
+All three directions are now approved; different visual directions need approval. Independent encryption
 threat-model work may proceed without activating a migration. Preserve current
 records and successful behaviors; correct founder defects before expanding releases.
 

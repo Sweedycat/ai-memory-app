@@ -126,5 +126,12 @@ session: mixed Turkish/English interface, inconsistent visual design, oversized
 Back button and safe-area issues. Preserve records and functionality; scope the
 correction against existing and new screens, then apply the full delivery cycle.
 No substantial visual redesign before the founder approves the visual direction.
+On 2026-11-20 the founder approved all three [directions](design/DIRECTIONS.md):
+A default classic black/mint, B modern navy/periwinkle, C coordinated light/dark,
+plus System following device appearance. All remain free for every membership;
+no entitlement gate or duplicated screens. Settings appearance selection must use
+shared tokens/components, previews, immediate application and safe persistence;
+all future user-facing features support all available themes. Approval is not
+implementation/physical acceptance, and other substantial directions need approval.
 Subsequent backup/Notebook activation, notification reconciliation and commercial
 milestones follow dependencies in [the completion roadmap](../PRODUCT-COMPLETION-ROADMAP.md).

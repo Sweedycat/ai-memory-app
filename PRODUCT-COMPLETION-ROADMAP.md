@@ -2,6 +2,20 @@
 
 Updated 2026-11-20. Starting source `be4e9bf421aaedfd71369dab741c16f2293bc630`, branch `development/omega-commercial-mvp`; local/remote matched, clean tree. Engineering records are English; founder reports and focused device checklists are Turkish. Git preserves the earlier audit. No completion percentages, launch promises or production approval.
 
+V3 A source `a2cb5daf960cad2d2301680a4b445caea027b688` passed full CI44630570465
+and portability44630570445; internal APK job was skipped. Policy/hosted readiness
+changes and prepared role definitions are checkpointed. Initial discovery13 passed,
+but later V2-disabled validation and current-host unknown new role types leave
+native activation unresolved; not all Milestone A role-operational gates passed.
+B1 now adds [tested unwired localization/storage foundations](docs/localization-foundation-validation.md),
+not complete app localization or a user language control. [Design proposals](docs/design/DIRECTIONS.md)
+were presented and the founder approved all three. Theme A stays default, Theme B
+stays modern dark, Theme C provides light/dark, and System follows device appearance.
+All are permanently free to every tier; implement one token/component system,
+Settings → Appearance → Theme previews, immediate application and safe persistence.
+No theme-specific duplicate screens or entitlement gates. Approval is not UI/device
+implementation evidence; every future user-facing feature must support all themes.
+
 ## Independent evidence levels
 
 Track implementation separately from automated, APK, physical and commercial evidence. A partially implemented helper can have passing tests; a disabled feature can have substantial source without being available.
@@ -99,9 +113,9 @@ These are source/test-inventory findings unless an exact checkpoint records exec
 
 | Milestone | Deliverable and dependency gate | Starting status |
 | --- | --- | --- |
-| A | Current-state/PR/CI audit; V3 alignment; English inventory; narrow approval/tool assessment; hosted APK readiness; native role validation | In progress; no APK for internal tooling/docs |
-| B1 | Centralized system-default TR/EN, safe persisted explicit selection, catalogs/completeness tests and locale formatting | Independent technical work permitted; never translate records |
-| B2 | Three coherent directions: familiar refined, premium dark, coordinated light/dark | Prepare alternatives; substantial redesign awaits founder choice |
+| A | Current-state/PR/CI audit; V3 alignment; English inventory; narrow approval/tool assessment; hosted APK readiness; native role validation | Source checkpoint/CI passed; native activation blocked as above; no APK for internal tooling/docs |
+| B1 | Centralized system-default TR/EN, safe persisted explicit selection, catalogs/completeness tests and locale formatting | Unwired foundation implemented/tested; provider, actual Settings choice and full app copy integration still pending; never translate records |
+| B2 | Retain all approved A/B/C directions and System mode, centralized tokens/shared components, free theme previews/selection/persistence under Appearance | Founder approved all directions; actual app theme implementation and device acceptance pending |
 | B3 | Shared tokens/components and functional Settings hierarchy; reported navigation/inset/card/keyboard fixes | B1/B2 integration; no dummy commercial/security controls |
 | C | Reviewed authenticated encryption/platform keys for all sensitive domains; synthetic backwards-compatible migration/rollback | Threat-model preparation independent of B; real migration disabled until review/device gates |
 | D1 | Complete versioned coverage, encrypted manual backup/key UX, authenticated preview/explicit restore/durable rollback | C architecture and data-domain coverage before real transfer/restore |

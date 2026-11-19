@@ -88,6 +88,10 @@ For every completed user-facing feature or significant UI/UX change, follow this
 
 Use [delivery states and evidence](docs/feature-delivery-policy.md) to separate source completion, automated tests, artifact verification, physical acceptance and commercial readiness. Target device checks to risk; do not force repetition of every previously successful test. Await feedback before the next major user-facing release increment; independent non-conflicting technical preparation may continue. Record defects immediately. No installation, uninstall, data clearing, production release or sensitive-feature activation follows from build authority. Internal documentation/invisible refactoring do not independently require an APK.
 
+### Permanent free appearance policy — founder approval 2026-11-20
+
+All three visual directions are approved and must be retained: Theme A is the default classic black/mint identity; Theme B is modern navy/periwinkle dark; Theme C provides coordinated light/dark appearances. System mode follows device appearance using the coordinated light/dark palettes. Settings → Appearance → Theme must offer visual previews, prompt application and safely persistent preferences. All themes and System mode are completely free for every user regardless of Free/Plus/Pro status; never add an entitlement dependency, lock or paid gate. The business sells memory/assistant capabilities, not visual customization. Use centralized tokens and shared components, never duplicated theme-specific screens. Preserve consistent navigation/layout/accessibility/functionality and require every future user-facing feature to support all available themes. Approval of these directions does not claim implementation, physical acceptance, security activation or a production release; a different substantial visual direction still needs founder approval.
+
 ## 10. Mandatory verification before completion
 
 - Before changes, inspect branch, full HEAD, working-tree status, governing documents, and affected architecture. Verify task-specific preconditions; if cleanliness or an exact baseline is required and differs, stop without resetting/stashing owner work.
