@@ -6,6 +6,7 @@ on:
       - security/backup-recovery-key-management
       - feature/contact-actions
       - feature/contact-export
+      - development/omega-commercial-mvp
   workflow_dispatch:
 
 permissions:
@@ -13,6 +14,10 @@ permissions:
 
 jobs:
   verify:
+    # Only this founder-authorized request can auto-build the development branch.
+    # Other development pushes skip all jobs; manual dispatch stays explicit.
+    if: >-
+      github.event_name == 'workflow_dispatch' || github.ref != 'refs/heads/development/omega-commercial-mvp' || (github.event_name == 'push' && github.event.head_commit.message == 'build: prepare Android Preview APK 0.1.0 (2) [APK-20261119-REMOTE-ONE]' && github.run_attempt == 1)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -22,11 +27,14 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - run: npm run doctor
       - run: npm run typecheck
       - run: npm run test:unit
 
   android-apk:
     needs: verify
+    if: >-
+      github.event_name == 'workflow_dispatch' || github.ref != 'refs/heads/development/omega-commercial-mvp' || (github.event_name == 'push' && github.event.head_commit.message == 'build: prepare Android Preview APK 0.1.0 (2) [APK-20261119-REMOTE-ONE]' && github.run_attempt == 1)
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
@@ -59,6 +67,22 @@ jobs:
         run: bash ./gradlew assembleRelease --no-daemon
       - name: Verify release APK exists
         run: test -s android/app/build/outputs/apk/release/app-release.apk
+      - name: Verify APK identity, signature and integrity before upload
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=android/app/build/outputs/apk/release/app-release.apk
+          build_tools=$(find "$ANDROID_SDK_ROOT/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)
+          test -x "$build_tools/apksigner"
+          test -x "$build_tools/aapt"
+          "$build_tools/apksigner" verify --verbose --print-certs "$apk" > "$RUNNER_TEMP/apk-signature.txt"
+          cat "$RUNNER_TEMP/apk-signature.txt"
+          grep -Fxq 'Number of signers: 1' "$RUNNER_TEMP/apk-signature.txt"
+          grep -Fiq 'Signer #1 certificate SHA-256 digest: fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c' "$RUNNER_TEMP/apk-signature.txt"
+          "$build_tools/aapt" dump badging "$apk" > "$RUNNER_TEMP/apk-badging.txt"
+          head -n 1 "$RUNNER_TEMP/apk-badging.txt"
+          grep -Eq "^package: name='com[.]sweedycat[.]aimemory[.]githubtest' versionCode='2' versionName='0[.]1[.]0'([[:space:]]|$)" "$RUNNER_TEMP/apk-badging.txt"
+          sha256sum "$apk"
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:

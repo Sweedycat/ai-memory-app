@@ -4,6 +4,16 @@ This document is a safety gate, **not** a completed or approved installation.
 The owner has valuable on-device person records and notes; never uninstall the
 existing AI Memory Preview or clear its app data.
 
+## Current founder artifact-only authorization — 2026-11-19
+
+The founder separates build authorization from installation. One free GitHub
+Actions test APK is authorized using the historical `githubtest` package/signing
+identity, candidate `0.1.0` / versionCode `2` above verified historical code `1`.
+Installed-device identity is not a precondition for producing this artifact;
+it remains mandatory before separately authorized installation. The older
+EAS Preview checklist below is historical and does not block this authorized
+GitHub Test artifact or authorize a package switch. No installation is authorized.
+
 ## Already verified from the `preview` source
 - `app.json` and `package.json`: display version `0.0.2`.
 - Expo EAS project ID: `16c767fa-215f-497e-a7eb-55ff9435b428`.

@@ -5,6 +5,7 @@
 - Expo's `preview` **build profile** is not the same as the GitHub branch.
 - Changes are promoted only after CI, Android testing, privacy/security review, and owner approval.
 - Never clear or uninstall the existing Preview app. Do not export or upload unencrypted personal memories.
+- Founder clarification: an explicitly authorized test APK may be produced from a verified historical package/signing identity without installed-device metadata. Actual installed package/certificate/versionCode and retained-data checks are required before separately authorized installation; artifact production does not approve installation or promotion.
 - No developer-hosted backup storage or new paid services without approval.
 - The backup snapshot module is only in-memory schema validation. Encryption, Drive, and restore are not implemented.
 
@@ -23,6 +24,6 @@
 - Display version has three numeric positions, read **left-to-right**: `MAJOR.MINOR.PATCH`.
 - Owner-selected cadence: **very light feature/update** increments the **second position** (e.g. `0.0.2 → 0.1.0`); a **major leap / large-scale release** increments the **first position** (e.g. `0.1.0 → 1.0.0`). Reset less significant positions to zero when a higher position increases.
 - Proposed for the remaining **third position**: internal fixes / hotfix-level maintenance (e.g. `0.1.0 → 0.1.1`); use this only as a convention until owner confirms its role.
-- **Current version is `0.0.2`. Do not rename it merely to document this policy.** Do not bump a visible version for every source commit: assign versions to builds/releases.
-- Android `versionCode` is separate from the visible versionName and must increase for signed APK updates. Verify the existing installed Preview's package ID, signing key and update code before publishing an installable build; do not uninstall or clear user data.
+- **Authorized test-update candidate is `0.1.0`, prepared from historical `0.0.2` for a feature update.** Do not bump a visible version for every source commit or merely to document this policy: assign versions to authorized builds/releases.
+- Android `versionCode` is separate from the visible versionName and must increase for signed APK updates. Candidate GitHub Test code `2` is strictly above verified historical code `1`; verify the actual installed package, certificate and code before installation. Do not uninstall or clear user data. Equality wording remains unresolved and is not used for this candidate.
 - Keep `app.json`, `package.json` and `package-lock.json` consistent when assigning a new visible version; `main` stays unchanged until approved.

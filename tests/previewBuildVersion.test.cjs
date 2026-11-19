@@ -8,6 +8,8 @@ const root = path.resolve(__dirname, '..');
 const buildConfigCode = fs.readFileSync(path.join(root, 'app.config.js'), 'utf8');
 const eas = JSON.parse(fs.readFileSync(path.join(root, 'eas.json'), 'utf8'));
 const app = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'));
+const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+const lock = JSON.parse(fs.readFileSync(path.join(root, 'package-lock.json'), 'utf8'));
 
 function evaluateVariant(variant) {
   const context = { module: { exports: {} }, process: { env: { APP_VARIANT: variant } } };
@@ -15,9 +17,9 @@ function evaluateVariant(variant) {
   return context.module.exports({ config: app.expo });
 }
 
-test('Preview 0.0.2 uses a higher Android versionCode than old 0.1.0 (1)', () => {
+test('authorized 0.1.0 candidate preserves EAS Preview identity and code', () => {
   const config = evaluateVariant('preview');
-  assert.equal(config.version, '0.0.2');
+  assert.equal(config.version, '0.1.0');
   assert.equal(config.name, 'AI Memory Preview');
   assert.equal(config.android.package, 'com.sweedycat.aimemory.preview');
   assert.equal(config.android.versionCode, 2);
@@ -38,6 +40,42 @@ test('Preview versioning does not change production application identity or code
 
 test('Preview code does not introduce automatic version upgrades or force install', () => {
   assert.notEqual(eas.build.preview.autoIncrement, true);
-  assert.equal(app.expo.version, '0.0.2');
+  assert.equal(app.expo.version, '0.1.0');
   assert.doesNotMatch(buildConfigCode, /unlink|remove|AsyncStorage|clear|uninstall|fetch\(/);
+});
+
+test('GitHub Test candidate preserves historical package and strictly increases verified historical code 1', () => {
+  const config = evaluateVariant('github-test');
+  assert.equal(config.name, 'AI Memory GitHub Test');
+  assert.equal(config.android.package, 'com.sweedycat.aimemory.githubtest');
+  assert.equal(config.ios.bundleIdentifier, 'com.sweedycat.aimemory.githubtest');
+  assert.equal(config.version, '0.1.0');
+  assert.equal(config.android.versionCode, 2);
+  assert.ok(config.android.versionCode > 1);
+  assert.equal(config.extra.eas.projectId, app.expo.extra.eas.projectId);
+  assert.equal(pkg.version, app.expo.version);
+  assert.equal(lock.version, app.expo.version);
+  assert.equal(lock.packages[''].version, app.expo.version);
+  const settings = fs.readFileSync(path.join(root, 'src/components/SettingsPanel.tsx'), 'utf8');
+  assert.ok(settings.includes('Version ' + app.expo.version + ' ·'));
+});
+
+test('automatic development build is limited to one authorized request and rejects ordinary pushes and reruns', () => {
+  const workflow = fs.readFileSync(path.join(root, '.github/workflows/android-preview-apk.yml'), 'utf8');
+  const expressions = [...workflow.matchAll(/^    if: >-\r?\n      (.+)$/gm)].map(match => match[1]);
+  assert.equal(expressions.length, 2, 'verification and Android jobs each enforce the request guard');
+  const request = { event_name: 'push', ref: 'refs/heads/development/omega-commercial-mvp', run_attempt: 1,
+    event: { head_commit: { message: 'build: prepare Android Preview APK 0.1.0 (2) [APK-20261119-REMOTE-ONE]' } } };
+  for (const expression of expressions) {
+    const allowed = github => new Function('github', 'return (' + expression + ')')(github);
+    assert.equal(allowed(request), true);
+    assert.equal(allowed({ ...request, event: { head_commit: { message: 'docs: ordinary checkpoint' } } }), false);
+    assert.equal(allowed({ ...request, run_attempt: 2 }), false);
+    assert.equal(allowed({ ...request, event_name: 'workflow_dispatch', event: {} }), true);
+  }
+  assert.match(workflow, /android-apk:\s+needs: verify/);
+  assert.match(workflow, /npm run doctor/);
+  assert.match(workflow, /apksigner.*verify --verbose --print-certs/);
+  assert.match(workflow, /fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c/);
+  assert.doesNotMatch(workflow, /keytool|genkey|eas build|APP_VARIANT: preview|autoIncrement/);
 });

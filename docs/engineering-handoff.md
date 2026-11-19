@@ -1,5 +1,27 @@
 # Omega engineering handoff
 
+## Authorized artifact production, installation remains gated — 2026-11-19
+
+The founder explicitly separates APK production from device installation.
+Installed-device identity is required before installation and does not block
+this authorized artifact-only build. Candidate is `0.1.0` / versionCode `2`,
+same `com.sweedycat.aimemory.githubtest` package and historical signing identity;
+code 2 is strictly above the binary-verified historical 1. No installation,
+uninstall, data reset, paid operation, main/preview merge or flag activation.
+
+Read [candidate/build validation](android-test-build-validation.md). The existing
+GitHub Actions APK pipeline receives one uniquely marked request, gates the
+Android build on Doctor/typecheck/full tests, then verifies package/version,
+one signer, historical certificate fingerprint and APK integrity before upload.
+Ordinary development pushes do not build; the unique automatic request cannot
+rerun. Browser workflow dispatch was unavailable due to an expired UI session;
+no credentials, account configuration or signing keys were changed as a workaround.
+
+Installed compatibility and physical acceptance remain UNVERIFIED until the
+founder confirms actual device identity and performs separately authorized tests.
+Earlier pre-build installed-device blockers below are superseded by this explicit
+authorization; the historical artifact identity evidence remains valid.
+
 ## Current founder quota policy and APK task — 2026-11-19
 
 The founder permanently replaced earlier quota instructions with
@@ -13,7 +35,8 @@ restart after reset. Earlier operational quota language below is superseded;
 other security/privacy/financial/release gates remain unchanged.
 
 Current authorization resumes APK artifact/signing investigation and permits one
-free test APK only after installed-identity, signing, version and cost gates pass.
+free test APK after artifact signing, version, exact-source CI and cost gates pass.
+Installed identity is a separate pre-installation gate under the clarification above.
 Preferred prior GitHub Actions artifact: 14132499977, run43643898173, source
 594004718471c4269bf3d75943e9a033fcf6f1c1, github-test variant. It is historical
 build evidence, not proof of the package/certificate/versionCode on the founder's
@@ -26,7 +49,7 @@ download it again unnecessarily. Actual github-test versionCode is **1**, not th
 unverified historical 2. Its certificate matches the current Expo template's
 public development certificate. Read [APK identity evidence and phone-only gate](android-apk-identity-verification.md)
 for hashes, verification limits and the precise missing installed-device data.
-No new APK build was dispatched. Quota policy checkpoint
+At that historical inspection checkpoint no new APK build was dispatched. Quota policy checkpoint
 `ed0cdb668ee8bf39937cb2787be304867884e9e8` passed exact-SHA full CI44548903688
 and portability CI44548903564. Source signing/package/version/flags are unchanged.
 

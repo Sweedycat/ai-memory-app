@@ -1,10 +1,12 @@
 # Historical GitHub Test APK identity — 2026-11-19
 
 The founder authorizes read-only compatibility investigation and one free APK
-build only after all applicable identity, signing, version and financial gates
-pass. The founder is operating remotely from Android without USB access.
-No installed-phone identity has yet been observed. Do not infer it from this
-historical artifact or use an installer attempt as a compatibility test.
+build after the artifact's source, historical identity, signing, version and
+financial gates pass. The founder explicitly separates artifact production from
+installation: missing installed-device metadata does not block this authorized
+build. No installed-phone identity has yet been observed; keep compatibility
+unverified and require actual device identity before separately authorized
+installation. Do not infer it from this historical artifact or test by installing.
 
 ## Artifact and actual binary facts
 
@@ -75,8 +77,10 @@ Required missing device evidence: installed package, versionName/versionCode and
 signer certificate SHA-256. The artifact cannot supply that evidence on behalf
 of the installed application. Installation, retained records/settings/keys,
 biometrics, notifications, restart and failure recovery remain untested.
-No new build has been dispatched; no new key, signing credential, package,
-version, application data or production flag has been changed. Notebook stays off.
+At the historical inspection checkpoint, no new build had been dispatched and
+no key, signing credential, package, version, application data or production flag
+had been changed. Current artifact-only preparation is separately recorded in
+[test-build validation](android-test-build-validation.md). Notebook stays off.
 
 Prefer an already trusted local package inspector. If the founder chooses App
 Manager, its [official manual](https://muntashir.dev/AppManager/en/#subsec:signatures)
@@ -86,9 +90,9 @@ package and read its package/versionCode/certificate SHA-256. No root, ADB,
 backup, upload, scanning, signing, installer or data-clearing action is needed.
 Share only those metadata values. Do not request personal records or keys.
 
-After device evidence is obtained, choose a strictly higher versionCode rather
-than relying on the unresolved equality wording, prepare the visible feature
-version under the existing owner cadence, revalidate the exact source SHA,
-confirm zero-cost runner/artifact capacity, and then dispatch at most the one
-authorized GitHub Test APK build. Do not use EAS Preview as a package substitute.
+For the authorized artifact, prepare candidate version `0.1.0` / code `2`, strictly
+above historical code `1`, revalidate exact-source CI and zero-cost scope, then
+produce at most the one authorized GitHub Test APK. Inspect its package, version,
+signer and integrity against this historical file. Device evidence remains a
+pre-installation gate, not a build gate. Do not use EAS Preview as a package substitute.
 No main/preview merge, paid operation, Play publication or automatic reset resume.
