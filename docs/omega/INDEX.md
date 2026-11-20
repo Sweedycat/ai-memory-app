@@ -1,17 +1,18 @@
-# Omega knowledge center
+# Omega current engineering index
 
-Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
+[TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/evidence authority. V3.2 is cumulative; original45 IDs retained,54 total tasks. B2 is NOT ACCEPTED. No completion percentages, production activation or installed-identity claims.
 
-| ID | Status | Scope | Next action |
+| ID | Status | Scope | Exact next action |
 | --- | --- | --- | --- |
-| V3-A | VERIFIED | Governance and engineering integration | Preserve verified checkpoint and narrow operational boundaries. |
-| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
+| V3-A | IN_PROGRESS | Governance and engineering integration | Preserve verified checkpoint and narrow operational boundaries. |
+| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
 | V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
 | V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
 | V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |
 | V3-F | BLOCKED | Commercial and broader product readiness | Close encryption/recovery/localization/design/device blockers. |
 
-Read [registry](TASK-REGISTRY.json), [progress](PROGRESS.md), [handoff](HANDOFF.md), [issues](KNOWN-ISSUES.md), [queue](TASK-QUEUE.md), [roadmap](ROADMAP.md), [project status](PROJECT-STATUS.md), [APK evidence](APK-STATUS.md), [decisions](DECISION-LOG.md), [approvals](APPROVAL-LOG.md). Change registry first, then synchronize projections in the same checkpoint. Existing TEST-STATUS/compatibility logs are historical evidence indexes, not alternate current task authorities. Retain root inventory and financial/payment/backup/branch policies.
+Read [progress](PROGRESS.md), [handoff](HANDOFF.md), [issues](KNOWN-ISSUES.md), [queue](TASK-QUEUE.md), [roadmap](ROADMAP.md), [decisions](DECISION-LOG.md), [APK evidence](APK-STATUS.md), [approvals](APPROVAL-LOG.md). Update registry first and synchronize summaries.
+
 ## Historical archive (superseded status snapshot)
 
 # Omega engineering knowledge center

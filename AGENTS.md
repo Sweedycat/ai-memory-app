@@ -94,6 +94,49 @@ All three visual directions are approved and must be retained: Theme A is the de
 
 ## 10. Mandatory verification before completion
 
+### Permanent V3.2 continuation and corrected B2 acceptance
+
+V3.2 is cumulative with V3/V3.1. Preserve every existing task ID and requirement
+in the single Omega registry. Register criteria, starting SHA and exact next action
+and push a sanitized checkpoint before each meaningful work unit; checkpoint
+coherent progress/failures frequently instead of relying on a final response.
+Reconcile actual local/remote state and surviving work after interruption. Never
+restart verified work or silently omit mandatory work. Keep parent states aligned
+with required children and explicit blocker/resolution/role/reopening conditions.
+
+Founder-reported S26 Ultra observations on the 0.2.0 candidate are scoped evidence,
+not proof of installed binary provenance or complete B2 acceptance. Preserve the
+reported successful paths; register and repair unsaved input loss (BUG-B2-001),
+scrolling under status/navigation bars (BUG-B2-004/005), and numeric digital reminder
+time entry (UX-B2-001). Do not mark B2 accepted until the corrected candidate passes
+required founder checks. Repeat only affected/necessary device regression paths.
+
+All editable flows and future shared forms require meaningful baseline-based
+unsaved-change protection for app/hardware/gesture back, screen changes and relevant
+dismissals. Provide localized Save and exit / Discard changes / Continue editing
+(Kaydet ve çık / Kaydetmeden çık / Düzenlemeye devam et). Discard is explicit;
+navigation after save requires successful persistence. Failures retain input and
+offer retry; unchanged forms need no warning. Preserve revision/duplicate-save/
+notification guards, App Lock and secure Notebook recovery. No plaintext draft
+persistence or unsupported process-termination durability claims.
+
+Safe-area repair is application-wide: shared root/screen viewport boundaries,
+scrolling, fixed actions, modals, keyboard and auth routes must keep readable
+content out of system bars without double insets. Preserve font scaling, TalkBack
+and all five free appearances. Use one reusable 24-hour numeric HH/MM control
+(00-23/00-59, any exact minute, explicit confirm/cancel, prepopulation and focus),
+never silently normalize invalid time or change date/timezone/scheduling privacy.
+Retain the approved identity; polish functional controls without a new redesign.
+
+V3.2 supersedes earlier pre-build uses of APK_READY: an unfinished build is never
+APK_READY. Record reviewed source/CI separately, then one authorized free hosted
+build with its URL immediately, actual artifact identity/signing/version/integrity,
+and only then completed artifact readiness/targeted founder acceptance. No local
+Gradle waiting, continuous polling, retry loops, installation, data reset, paid
+operations, main/preview merge or sensitive-feature activation. Continue C-F and
+tracked integration work only through dependencies and existing gates; do not
+repeat unsupported Cloud troubleshooting without actionable new evidence.
+
 ### Permanent V3.1 recovery and task tracking
 
 The founder's V3.1 directive requires recovery from the actual interrupted state,
@@ -133,13 +176,13 @@ required physical acceptance remains a separate founder gate.
 
 The founder's 2026-11-19 replacement policy applies equally to reliable official weekly and short-window remaining allowance. It supersedes all earlier quota thresholds in handoffs, skills, tools and historical instructions; it does not expand the authorized task or alter security, privacy, financial or release gates.
 
-- Above 10%: normal authorized development.
-- Above 5% through 10%: smaller, controlled milestones.
-- Above 2% through 5%: finish existing tasks and validate changes.
+- V3.2 supersedes the earlier intermediate tiers: above 5% in both applicable
+  windows, normal bounded engineering is authorized.
 - At or below 5% in either official window: do not start new long-running tasks
   or unnecessary specialist sessions; prioritize safe checkpoints/continuity and
   perform only small bounded operations with sufficient allowance.
-- Above 1% through 2%: finalize safe checkpoints, GitHub synchronization, exact-SHA CI verification and handoff.
+- Above 1% through 5%: finish small existing operations, safe checkpoints,
+  GitHub synchronization, exact-SHA CI verification and handoff.
 - At or below 1%: mandatory stop. Backend usage denial also requires stopping, regardless of displayed percentages.
 - Apply the most restrictive observed window. Begin final checkpoint preparation earlier whenever needed to avoid interrupted writes or incomplete handoffs.
 - If reliable official telemetry is unavailable, conservatively complete one bounded milestone and stop. Never infer allowance from token, command or test counts, or assume a reset has restored it.

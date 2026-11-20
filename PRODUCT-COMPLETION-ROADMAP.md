@@ -1,17 +1,26 @@
-# Product requirement inventory — V3.1
+# Product completion inventory - V3.2
 
-[TASK-REGISTRY.json](docs/omega/TASK-REGISTRY.json) is the **sole current task/status authority**. This file retains the detailed V3 requirements, backup coverage matrix, security risks and physical acceptance inventory. Earlier implementation descriptions below are historical evidence, not an alternate status queue. Owner instructions and topic policies still govern permissions.
+[docs/omega/TASK-REGISTRY.json](docs/omega/TASK-REGISTRY.json) is the sole current task/evidence authority. Original45 tasks retained;54 total. All detailed inherited requirements below are retained. B2 NOT ACCEPTED: founder0.2.0 paths passed selectively, input-loss/system-bar defects failed, digital HH/MM entry requested. See [current progress](docs/omega/PROGRESS.md) for exact reported scope and unverified cases.
 
-Snapshot 2026-11-20: B1 source `48cd226ebc03e3cd14383a4d57636ce08a599166` verified at its checkpoint; B2 source reviewed/tested and exact-SHA CI passed; hosted build c41410e938004677f0b2a78a70b407bb908ea13b triggered once; APK verification/device acceptance pending. Current-host Product & Release Engineer invoked; Both new role types invoked on the current host. All five appearances approved and permanently free. Former B3 scope remains B2-03/B2-04. No B2 physical acceptance or commercial readiness.
-
-| ID | Status | Scope | Next action |
+| ID | Status | Scope | Exact next action |
 | --- | --- | --- | --- |
-| V3-A | VERIFIED | Governance and engineering integration | Preserve verified checkpoint and narrow operational boundaries. |
-| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
+| V3-A | IN_PROGRESS | Governance and engineering integration | Preserve verified checkpoint and narrow operational boundaries. |
+| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
 | V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
 | V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
 | V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |
 | V3-F | BLOCKED | Commercial and broader product readiness | Close encryption/recovery/localization/design/device blockers. |
+
+| ID | Status | Scope | Exact next action |
+| --- | --- | --- | --- |
+| V32-TRACKING | IN_PROGRESS | V3.2 recovery, founder evidence, policy and durable registry | Validate and push sanitized V3.2 starting checkpoint |
+| BUG-B2-001 | PENDING | Application-wide unsaved-change protection | Complete App and other editable-flow guard children; review/integrate/retest |
+| BUG-B2-001-A | PENDING | People creation/edit/notes/interactions/follow-up/reminder navigation guards | Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration |
+| BUG-B2-001-B | PENDING | Profile, report, Life, gated Notebook and future form protection | Audit existing component guards and implement missing navigation/save failure protection |
+| BUG-B2-004 | PENDING | Global status-bar scrolling viewport repair | Inspect viewport versus content padding; repair shared boundary and all routes |
+| BUG-B2-005 | PENDING | Global navigation-bar and bottom action safe area repair | Repair shared bottom viewport handling alongside status-bar audit |
+| UX-B2-001 | PENDING | Shared digital 24-hour reminder HH/MM entry | Build shared digital entry/model and tests; Principal integrates App reminder picker |
+| UX-B2-002 | PENDING | Accessible boolean switches and wording polish | Polish App Lock control within current approved identity; test cancelled/failed changes |
 
 ## Retained detailed V3 inventory (historical descriptions; registry controls current status)
 

@@ -1,22 +1,20 @@
-# Current decisions and preserved ambiguities
+# Current founder decisions
 
-Current-host invocation is now verified separately for both new native roles:
-Product & Release Engineer performed the bounded registry task; Automation &
-Integration Engineer completed a no-tools boundary smoke. Prior CLI/session
-limitations remain historical. Neither proves an authenticated connector or
-live ChatGPT-to-Omega integration; no global permissions/configuration changed.
+[TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/evidence authority. V3.2 is cumulative; original45 IDs retained,54 total tasks. B2 is NOT ACCEPTED. No completion percentages, production activation or installed-identity claims.
 
-Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
-
-| ID | Status | Scope | Next action |
+| ID | Status | Scope | Exact next action |
 | --- | --- | --- | --- |
-| V3-A-02 | VERIFIED | Single registry and sanitized recovery checkpoint | Maintain registry and synchronized continuation after meaningful progress. |
-| V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
-| V3-A-05 | VERIFIED | Quota stop and bounded handoff | Preserve verified checkpoint and narrow operational boundaries. |
-| V3-B2-01 | VERIFIED | Centralized five free theme choices | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
-| V3-C-01 | PENDING | All-domain AEAD/platform key lifecycle | Prepare independently reviewable threat model and domain/key contracts. |
+| V32-TRACKING | IN_PROGRESS | V3.2 recovery, founder evidence, policy and durable registry | Validate and push sanitized V3.2 starting checkpoint |
+| BUG-B2-001 | PENDING | Application-wide unsaved-change protection | Complete App and other editable-flow guard children; review/integrate/retest |
+| BUG-B2-001-A | PENDING | People creation/edit/notes/interactions/follow-up/reminder navigation guards | Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration |
+| BUG-B2-001-B | PENDING | Profile, report, Life, gated Notebook and future form protection | Audit existing component guards and implement missing navigation/save failure protection |
+| BUG-B2-004 | PENDING | Global status-bar scrolling viewport repair | Inspect viewport versus content padding; repair shared boundary and all routes |
+| BUG-B2-005 | PENDING | Global navigation-bar and bottom action safe area repair | Repair shared bottom viewport handling alongside status-bar audit |
+| UX-B2-001 | PENDING | Shared digital 24-hour reminder HH/MM entry | Build shared digital entry/model and tests; Principal integrates App reminder picker |
+| UX-B2-002 | PENDING | Accessible boolean switches and wording polish | Polish App Lock control within current approved identity; test cancelled/failed changes |
 
-V3.1 keeps one JSON authority and existing DECISION-LOG/APK-STATUS names; no duplicate DECISIONS/RELEASE-STATUS. Former B3 is B2-03/B2-04. All five appearances approved/permanently free; approval is not implementation/device acceptance. Current-host product_release_engineer invoked successfully; automation role remains unverified. Third-position version/versionCode equality ambiguities remain unresolved. No price/production promise/self-approval of critical changes.
+V3.2 preserves V3/V3.1 and all free appearance/security/data/financial/version boundaries. >5% normal bounded work; <=5% checkpoint/no long tasks or unnecessary agents; <=1% stop; unknown official allowance one bounded unit. No automatic reset resume. Unfinished builds are not APK_READY. Founder device observations are scoped; corrected B2 acceptance pending. Source roles remain operationally invoked evidence, not a live ChatGPT management bridge.
+
 ## Historical archive (superseded status snapshot)
 
 # Engineering decision log

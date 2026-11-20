@@ -1,32 +1,24 @@
-# Current continuation
+# Exact V3.2 continuation
 
-Current delivery: [run44670257253](https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253) acknowledged in progress from `c41410e938004677f0b2a78a70b407bb908ea13b`; app implementation `aa7565cadc5737fca1581eb1ed52c4f499e45348` passed CI44669846988/44669847036. No APK yet verified. Do not retrigger or poll Gradle. After completion verify the binary, then founder acceptance; no next major feature. Earlier pending instructions below describe prior snapshots.
+[TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/evidence authority. V3.2 is cumulative; original45 IDs retained,54 total tasks. B2 is NOT ACCEPTED. No completion percentages, production activation or installed-identity claims.
 
-B2 implementation and local verification are finished:512/510pass/2 platform
-skips/0fail; TypeScript and Doctor21/21 passed. Independent source review final
-digest42bfd3e3405fc03e2283e35c131ef2df3ee6b66d777fa5ac8d6ec2dca3b9cf93 has
-no remaining blocking finding. Do not repeat those checks without changed source
-or a new concern. Publish the reviewed checkpoint, verify exact-SHA CI, then
-prepare/trigger the existing one-attempt hosted APK path and link it immediately.
-No interactive Gradle waiting; no new major feature before founder acceptance.
-
-Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
-
-| ID | Status | Scope | Next action |
+| ID | Status | Scope | Exact next action |
 | --- | --- | --- | --- |
-| V3-A-02 | VERIFIED | Single registry and sanitized recovery checkpoint | Maintain registry and synchronized continuation after meaningful progress. |
-| V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
-| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
-| V3-B1-02 | VERIFIED | Complete Turkish/English application flows | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
-| V3-B2-01 | VERIFIED | Centralized five free theme choices | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
+| V32-TRACKING | IN_PROGRESS | V3.2 recovery, founder evidence, policy and durable registry | Validate and push sanitized V3.2 starting checkpoint |
+| BUG-B2-001 | PENDING | Application-wide unsaved-change protection | Complete App and other editable-flow guard children; review/integrate/retest |
+| BUG-B2-001-A | PENDING | People creation/edit/notes/interactions/follow-up/reminder navigation guards | Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration |
+| BUG-B2-001-B | PENDING | Profile, report, Life, gated Notebook and future form protection | Audit existing component guards and implement missing navigation/save failure protection |
+| BUG-B2-004 | PENDING | Global status-bar scrolling viewport repair | Inspect viewport versus content padding; repair shared boundary and all routes |
+| BUG-B2-005 | PENDING | Global navigation-bar and bottom action safe area repair | Repair shared bottom viewport handling alongside status-bar audit |
+| UX-B2-001 | PENDING | Shared digital 24-hour reminder HH/MM entry | Build shared digital entry/model and tests; Principal integrates App reminder picker |
+| UX-B2-002 | PENDING | Accessible boolean switches and wording polish | Polish App Lock control within current approved identity; test cancelled/failed changes |
 
-1. Reinspect owner scope, AGENTS, branch/full HEAD/status; preserve WIP.
-2. Registry checkpoint93bd8029f50b0386636ea447ee2fd92406a80c13 is pushed; exact-SHA CI44665731118/full and44665731127/portability passed. B2 source is now frozen and verification is in progress. Do not restart completed App/core/component work.
-3. Resume B1-02/B2-01 through B2-05 in a bounded increment; focused checks/frozen review/checkpoint/exact-SHA CI.
-4. Prepare APK_READY after gates; if one hosted run is triggered, publish URL immediately and stop waiting/polling Gradle. Verify binary separately.
-5. Await founder Samsung observations before next major increment. Apply quota stop; no automatic resume.
+Local/remote starting checkpoint `69d8fd899d81bdae65ffd80442d4af80579c6e82` matched, clean tree. Its exact-SHA CI44670525880/full and44670525876/portability succeeded. Previous app sourceaa7565c and hosted sourcec41410e remain historical. Do not rerun the prior B2 regression without changed source or a new concern.
 
-Baseline `48cd226ebc03e3cd14383a4d57636ce08a599166`; A source `a2cb5daf960cad2d2301680a4b445caea027b688`. Registry writer performed no network/install/build/device/commit/push action. B2 implementation is frozen with scoped synthetic checks; full regression, independent review, new exact-SHA CI/APK and device acceptance remain pending.
+First push this sanitized recovery checkpoint. Then resume BUG-B2-001-A/B, shared bar repairs BUG-B2-004/005 and UX-B2-001; UX-B2-002 preserves the approved identity. Define single writers before edits. Save failures must preserve draft and block exit; no plaintext drafts. Corrected full/focused checks, independent review and exact-SHA CI precede one hosted APK attempt. Link immediately, do not wait/poll Gradle. Verify binary and request targeted founder acceptance before C-F major implementation.
+
+Previous run [44670257253](https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253) succeeded, source `c41410e938004677f0b2a78a70b407bb908ea13b`, [artifact14600286231](https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253/artifacts/14600286231) available. Actual CI aapt/apksigner/sha256sum logs: packagecom.sweedycat.aimemory.githubtest,0.2.0/code3; certificateSHA256 fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c; APK SHA256 cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6. Artifact ZIP digest8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5 is distinct from APK hash. Independent binary download/provenance and installed identity remain unverified. No repeat of that build. Corrected version/code assigned only after current artifact history/gates; no new candidate assigned yet.
+
 ## Historical archive (superseded status snapshot)
 
 # Exact continuation

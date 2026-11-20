@@ -1,13 +1,13 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "b2Verification": {
     "baselineSHA": "93bd8029f50b0386636ea447ee2fd92406a80c13",
     "sourceCommit": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
     "sourceLocator": "Reviewed implementation commit aa7565cadc5737fca1581eb1ed52c4f499e45348; read exact-SHA CI before APK_READY.",
     "automated": "Windows Node24.19.0: final serial regression512 total/510 passed/2 existing platform skips/0 failed; strict TypeScript passed; Expo Doctor21/21 passed. Initial regression had2 negative-fixture failures, corrected without weakening assertions; focused APK8/8 passed.",
     "independentReview": "Independent Reviewer authored none;69-file frozen source diff digest42bfd3e3405fc03e2283e35c131ef2df3ee6b66d777fa5ac8d6ec2dca3b9cf93; P1 negative fixtures corrected/rechecked, no remaining blocker. Not physical/production approval.",
-    "candidate": "0.2.0 / GitHub Test code3; package/signing unchanged; no APK produced yet.",
-    "physical": "Not performed; founder acceptance and installed-device identity remain unverified.",
+    "candidate": "0.2.0/code3 previous artifact; corrected-candidate version/code not assigned yet.",
+    "physical": "Founder-reported 2026-11-20 candidate paths passed/failed as recorded in founderDeviceEvidence; B2 NOT ACCEPTED and installed provenance unverified.",
     "nativeRoles": "Current-host product_release_engineer and automation_integration_engineer each successfully invoked. This is not authenticated connector or live ChatGPT management integration evidence.",
     "ci": [
       "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
@@ -15,9 +15,9 @@
     ]
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-20T03:50:24.780Z",
+  "updatedAt": "2026-11-20T20:15:59.772Z",
   "branch": "development/omega-commercial-mvp",
-  "sourceCheckpoint": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
+  "sourceCheckpoint": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
   "workingTree": "One authorized hosted B2 APK run acknowledged; no application WIP. This follow-up records build/continuation evidence only; no further attempt or interactive Gradle wait.",
   "evidenceProvenance": "Historical A/B1 evidence supplied by Principal and records; no historical rerun/network by registry writer. Current custom Product & Release Engineer invocation confirmed by Principal.",
   "states": [
@@ -41,7 +41,7 @@
     "definition": "Observed before final handoff synchronization:7 explicit require_escalated Git calls and6 saved narrow command-rule events. These are tool events, not manual-popup/business-approval counts; manual UI total is not exposed. Zero repetitive business-authorization questions."
   },
   "policy": {
-    "quota": "<=1% mandatory stop; <=5% no new long tasks/unnecessary agents; unknown official telemetry one bounded milestone then stop; no inferred allowance or automatic reset resume.",
+    "quota": "V3.2: >5% normal bounded engineering; <=5% no new long work/unnecessary specialists, finish checkpoints; <=1% mandatory stop; unknown official allowance one bounded unit then stop. No purchases/resets/autoresume.",
     "appearances": [
       "classic (default)",
       "modern",
@@ -52,7 +52,8 @@
     "themesAlwaysFree": true,
     "notebookProductionEnabled": false,
     "commercial": "Sensitive People/Life/profile plaintext is a critical blocker; App Lock is not encryption.",
-    "activation": "No task state activates real migration/restore/transfer/Notebook/payments/AI/installation/production."
+    "activation": "No task state activates real migration/restore/transfer/Notebook/payments/AI/installation/production.",
+    "delivery": "Unfinished builds are never APK_READY under V3.2; source/CI, actual artifact, installed identity and founder acceptance remain separate."
   },
   "tasks": [
     {
@@ -63,7 +64,7 @@
       "acceptance": [
         "Audited exact source, single registry, operational roles and safe hosted delivery."
       ],
-      "status": "VERIFIED",
+      "status": "IN_PROGRESS",
       "role": "Principal Architect",
       "completed": [
         "A checkpoint and historical exact-SHA CI passed."
@@ -82,16 +83,21 @@
         "commercial": [],
         "implementation": [
           "A checkpoint and historical exact-SHA CI passed."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Preserve verified checkpoint and narrow operational boundaries.",
-      "updatedAt": "2026-11-20T03:47:45.370Z",
+      "updatedAt": "2026-11-20T20:15:59.772Z",
       "description": "Governance and engineering integration",
       "deviceAcceptance": {
         "required": false,
         "criteria": [],
         "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Internal engineering evidence does not grant product readiness."
+      ]
     },
     {
       "id": "V3-A-01",
@@ -122,7 +128,8 @@
         "commercial": [],
         "implementation": [
           "A checkpoint passed both workflows."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Preserve historical evidence.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -131,7 +138,11 @@
         "required": false,
         "criteria": [],
         "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Internal engineering evidence does not grant product readiness."
+      ]
     },
     {
       "id": "V3-A-02",
@@ -163,7 +174,8 @@
         "commercial": [],
         "implementation": [
           "Registry and projections prepared."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Maintain registry and synchronized continuation after meaningful progress.",
       "updatedAt": "2026-11-20T03:36:55.906Z",
@@ -172,7 +184,11 @@
         "required": false,
         "criteria": [],
         "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Internal engineering evidence does not grant product readiness."
+      ]
     },
     {
       "id": "V3-A-03",
@@ -203,7 +219,8 @@
         "commercial": [],
         "implementation": [
           "Historical discovery13; current-host product_release_engineer invocation succeeded."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration.",
       "updatedAt": "2026-11-20T03:45:55.531Z",
@@ -212,7 +229,11 @@
         "required": false,
         "criteria": [],
         "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Internal engineering evidence does not grant product readiness."
+      ]
     },
     {
       "id": "V3-A-04",
@@ -245,7 +266,8 @@
         "commercial": [],
         "implementation": [
           "Hosted pipeline source checkpoint exists; A internal APK skipped."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Preserve verified checkpoint and narrow operational boundaries.",
       "updatedAt": "2026-11-20T03:47:45.370Z",
@@ -254,7 +276,11 @@
         "required": false,
         "criteria": [],
         "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Internal engineering evidence does not grant product readiness."
+      ]
     },
     {
       "id": "V3-A-05",
@@ -283,7 +309,8 @@
         "commercial": [],
         "implementation": [
           "Policy preserved; historical approval total unknown; resumed registry task requested no new approvals as of snapshot."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Preserve verified checkpoint and narrow operational boundaries.",
       "updatedAt": "2026-11-20T03:47:45.370Z",
@@ -292,7 +319,11 @@
         "required": false,
         "criteria": [],
         "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Internal engineering evidence does not grant product readiness."
+      ]
     },
     {
       "id": "V3-B",
@@ -304,7 +335,7 @@
       "acceptance": [
         "Complete TR/EN, shared theme/component system, Settings, founder defects and acceptance."
       ],
-      "status": "DEVICE_ACCEPTANCE_PENDING",
+      "status": "IN_PROGRESS",
       "role": "Principal Architect",
       "completed": [
         "B1 foundation verified; interrupted B2 WIP preserved."
@@ -327,10 +358,11 @@
         "commercial": [],
         "implementation": [
           "B1 foundation verified; interrupted B2 WIP preserved."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting.",
-      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "updatedAt": "2026-11-20T20:15:59.772Z",
       "description": "Bilingual app, five free appearances and functional Settings",
       "deviceAcceptance": {
         "required": true,
@@ -341,7 +373,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-B1-01",
@@ -376,7 +412,8 @@
         "commercial": [],
         "implementation": [
           "Unwired foundation at B1 checkpoint."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Integrate actual application via B1-02.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -390,7 +427,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-B1-02",
@@ -426,11 +467,14 @@
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
         ],
         "apk": [],
-        "device": [],
+        "device": [
+          "Scoped founder0.2.0 observations in founderDeviceEvidence; not full acceptance/provenance."
+        ],
         "commercial": [],
         "implementation": [
           "Provider/catalog/App integration WIP preserved."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Targeted founder device acceptance after verified hosted artifact; do not start next major feature.",
       "updatedAt": "2026-11-20T03:47:45.370Z",
@@ -444,7 +488,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-B2-01",
@@ -479,11 +527,14 @@
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
         ],
         "apk": [],
-        "device": [],
+        "device": [
+          "Scoped founder0.2.0 observations in founderDeviceEvidence; not full acceptance/provenance."
+        ],
         "commercial": [],
         "implementation": [
           "All directions founder approved; provider/theme/preferences WIP exists."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Targeted founder device acceptance after verified hosted artifact; do not start next major feature.",
       "updatedAt": "2026-11-20T03:47:45.370Z",
@@ -497,7 +548,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-B2-02",
@@ -530,9 +585,12 @@
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
         ],
         "apk": [],
-        "device": [],
+        "device": [
+          "Scoped founder0.2.0 observations in founderDeviceEvidence; not full acceptance/provenance."
+        ],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Targeted founder device acceptance after verified hosted artifact; do not start next major feature.",
       "updatedAt": "2026-11-20T03:47:45.370Z",
@@ -546,7 +604,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-B2-03",
@@ -581,7 +643,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Targeted founder device acceptance after verified hosted artifact; do not start next major feature.",
       "updatedAt": "2026-11-20T03:47:45.370Z",
@@ -595,7 +658,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-B2-04",
@@ -607,14 +674,15 @@
       "acceptance": [
         "Reproduce mixed labels/styles, oversized Back, margins/cards/keyboard/navigation/insets; font/TalkBack/gesture and three-button checks in all themes."
       ],
-      "status": "VERIFIED",
+      "status": "VERIFICATION_PENDING",
       "role": "Android Engineer",
       "completed": [
         "Founder observations retained; reproduction/fix not established.",
-        "Reviewed implementation committed/pushed at aa7565cadc5737fca1581eb1ed52c4f499e45348"
+        "Reviewed implementation committed/pushed at aa7565cadc5737fca1581eb1ed52c4f499e45348",
+        "Founder reports tested keyboard/back/large-font paths passed; global bars failed."
       ],
       "remaining": [
-        "APK verification and targeted founder physical acceptance."
+        "Repair BUG-B2-001,BUG-B2-004,BUG-B2-005 and UX-B2-001/002; targeted founder reacceptance."
       ],
       "blockers": [],
       "sourceSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
@@ -632,9 +700,10 @@
         "commercial": [],
         "implementation": [
           "Founder observations retained; reproduction/fix not established."
-        ]
+        ],
+        "independentReview": []
       },
-      "nextAction": "Targeted founder device acceptance after verified hosted artifact; do not start next major feature.",
+      "nextAction": "Correct confirmed defects; do not repeat unrelated passed device tests.",
       "updatedAt": "2026-11-20T03:47:45.370Z",
       "description": "Founder layout/navigation defects (former B3)",
       "deviceAcceptance": {
@@ -646,7 +715,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-B2-05",
@@ -657,12 +730,17 @@
         "V3-B2-02",
         "V3-B2-03",
         "V3-B2-04",
-        "V3-A-04"
+        "V3-A-04",
+        "BUG-B2-001",
+        "BUG-B2-004",
+        "BUG-B2-005",
+        "UX-B2-001",
+        "UX-B2-002"
       ],
       "acceptance": [
         "Design/TR-EN/security/automated checks, independent frozen review, checkpoint/exact-SHA CI, ready trigger, actual APK verification and focused Samsung acceptance."
       ],
-      "status": "APK_READY",
+      "status": "BLOCKED",
       "role": "Product & Release Engineer",
       "completed": [
         "Scoped App49, feature62, core41, Settings3 and gate2 synthetic tests passed at their recorded intermediate scopes.",
@@ -674,7 +752,9 @@
         "Verify exact-SHA CI, prepare hosted APK readiness and verify actual binary.",
         "Obtain targeted founder physical acceptance; preserve existing sensitive gates."
       ],
-      "blockers": [],
+      "blockers": [
+        "Confirmed founder input-loss/system-bar failures and requested digital-time enhancement require repair/new reviewed APK."
+      ],
       "sourceSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
       "evidence": {
         "automated": [
@@ -690,9 +770,10 @@
         ],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
-      "nextAction": "After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting.",
+      "nextAction": "Repair registered B2 defects first; do not mark accepted.",
       "updatedAt": "2026-11-20T03:50:24.780Z",
       "description": "Review, tests, APK_READY and founder acceptance",
       "deviceAcceptance": {
@@ -704,7 +785,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Confirmed founder input-loss/system-bar failures and requested digital-time enhancement require repair/new reviewed APK.",
+          "prevents": "Corrected B2 acceptance and next major feature",
+          "resolution": "Repair, tests, independent review, exact-SHA CI, one verified hosted APK, targeted founder acceptance",
+          "responsibleRole": "Principal Architect",
+          "reopenWhen": "All correction dependencies verified and corrected artifact available",
+          "nextIndependentWork": "Eligible B2 repair children"
+        }
+      ]
     },
     {
       "id": "V3-C",
@@ -734,7 +829,8 @@
         "commercial": [],
         "implementation": [
           "People/Life/profile AsyncStorage remains plaintext; Notebook is separate."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Prepare architecture and synthetic recovery.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -748,7 +844,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Critical commercial blocker; independent/native evidence absent.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Prepare architecture and synthetic recovery.",
+          "responsibleRole": "Security Engineer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-C-01",
@@ -772,7 +882,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Prepare independently reviewable threat model and domain/key contracts.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -786,7 +897,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-C-02",
@@ -812,7 +927,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Prototype fabricated migration fixtures and durable failure recovery.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -826,7 +942,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-C-03",
@@ -854,7 +974,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Obtain review and authorized native evidence before activation.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -868,7 +989,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Physical recovery and owner activation gate absent.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Obtain review and authorized native evidence before activation.",
+          "responsibleRole": "Independent Reviewer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-D",
@@ -900,7 +1035,8 @@
         "commercial": [],
         "implementation": [
           "Experimental envelope/transport/diagnostic/review helpers exist."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Finish full-domain manual recovery before live transport.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -914,7 +1050,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Manual/native recovery absent.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Finish full-domain manual recovery before live transport.",
+          "responsibleRole": "Data Engineer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-D1-01",
@@ -944,7 +1094,8 @@
         "commercial": [],
         "implementation": [
           "V1 owner/People plus separate Notebook review; Life/preferences incomplete."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Design bounded versioned complete snapshot and legacy compatibility.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -958,7 +1109,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-D1-02",
@@ -988,7 +1143,8 @@
         "commercial": [],
         "implementation": [
           "Partial cipher/envelope/key-format/native synthetic diagnostic."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Implement synthetic consent/file/key/archive UX; no real transfers before gates.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1002,7 +1158,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-D1-03",
@@ -1033,7 +1193,8 @@
         "commercial": [],
         "implementation": [
           "Review/admission/generation/Notebook candidates are not production restore."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Test wrong key/tamper/unknown/corrupt/duplicate/low disk/interrupted writes/rollback/key loss.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1047,7 +1208,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-D1-04",
@@ -1076,7 +1241,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Prepare synthetic native recovery checklist; keep real restore/export disabled.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1090,7 +1256,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Native recovery/retention gates unmet.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Prepare synthetic native recovery checklist; keep real restore/export disabled.",
+          "responsibleRole": "QA Engineer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-D2-01",
@@ -1120,7 +1300,8 @@
         "commercial": [],
         "implementation": [
           "Injected list/upload/download/resumable builders only; no live connection."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Review contracts without linking accounts or sending records.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1134,7 +1315,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-D2-02",
@@ -1162,7 +1347,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Close manual gates before enabling background backup.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1176,7 +1362,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Manual recovery/native retention gates unmet.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Close manual gates before enabling background backup.",
+          "responsibleRole": "Data Engineer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-D2-03",
@@ -1206,7 +1406,8 @@
         "commercial": [],
         "implementation": [
           "Logical 3 GiB simulations and multipart guard do not prove product large-file support."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Design bounded resource and failure measurements.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1220,7 +1421,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-D3-01",
@@ -1252,7 +1457,8 @@
         "commercial": [],
         "implementation": [
           "Encrypted Notebook foundation/editor/session tests exist; production flag false."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Preserve false gate; execute only authorized native synthetic plan.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1266,7 +1472,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Android durability/key/recovery/activation evidence absent.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Preserve false gate; execute only authorized native synthetic plan.",
+          "responsibleRole": "Android Engineer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-E",
@@ -1296,7 +1516,8 @@
         "commercial": [],
         "implementation": [
           "People/Life/six local questions exist."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Prioritize founder corrections before next major product increment.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1310,7 +1531,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-E1-01",
@@ -1338,7 +1563,8 @@
         "commercial": [],
         "implementation": [
           "Existing implementation and synthetic inventory."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Target changed integration regressions and retained-record device acceptance.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1352,7 +1578,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-E1-02",
@@ -1380,7 +1610,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Design synthetic compatibility and conflict fixtures.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1394,7 +1625,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-E1-03",
@@ -1421,7 +1656,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Keep inactive until scoped owner instruction and recovery gates.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1435,7 +1671,13 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "deferReason": "Priority/dependency or explicit activation boundaries; not completed",
+      "reopenWhen": "Priority/dependencies and required founder/security/financial authorization satisfied"
     },
     {
       "id": "V3-E2-01",
@@ -1463,7 +1705,8 @@
         "commercial": [],
         "implementation": [
           "Life/store/persistence/panel foundations documented."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Verify changed locale/theme/timezone/durability paths; date-only agenda is not alarms.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1477,7 +1720,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-E2-02",
@@ -1509,7 +1756,8 @@
         "commercial": [],
         "implementation": [
           "People guards exist; disk/native side effects nontransactional; Life alarms absent."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Design durable reconciliation and synthetic native-failure contracts.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1523,7 +1771,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-E3-01",
@@ -1551,7 +1803,8 @@
         "commercial": [],
         "implementation": [
           "groundedAssistant/panel/dailyBriefing foundation documented."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Target changed integration and physical readability.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1565,7 +1818,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-E3-02",
@@ -1597,7 +1854,8 @@
         "commercial": [],
         "implementation": [
           "Substring search and fixed questions are partial foundation."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Design fabricated domain/permission/truthfulness contracts.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1611,7 +1869,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-E3-03",
@@ -1638,7 +1900,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Keep inactive; research only under explicit scoped instruction.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1652,7 +1915,13 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "deferReason": "Priority/dependency or explicit activation boundaries; not completed",
+      "reopenWhen": "Priority/dependencies and required founder/security/financial authorization satisfied"
     },
     {
       "id": "V3-F",
@@ -1686,7 +1955,8 @@
         "commercial": [],
         "implementation": [
           "Policies and partial foundations exist; no commercial readiness."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Close encryption/recovery/localization/design/device blockers.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1700,7 +1970,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Commercial security/recovery/device gates open.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Close encryption/recovery/localization/design/device blockers.",
+          "responsibleRole": "Product & Release Engineer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-F-01",
@@ -1731,7 +2015,8 @@
         "commercial": [],
         "implementation": [
           "Owner/privacy/auth foundations exist; PrivacyGate read-default behavior requires investigation."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Reproduce lifecycle/read failures synthetically before scoped fixes.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1745,7 +2030,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-F-02",
@@ -1775,7 +2064,8 @@
         "commercial": [],
         "implementation": [
           "Reports exist; non-array default/latest-50 behavior needs investigation."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Diagnose fabricated corruption/concurrency/redaction without owner data.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1789,7 +2079,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-F-03",
@@ -1815,7 +2109,8 @@
         "apk": [],
         "device": [],
         "commercial": [],
-        "implementation": []
+        "implementation": [],
+        "independentReview": []
       },
       "nextAction": "Measure risk-based bottlenecks after integrated UI checkpoint.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1829,7 +2124,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-F-04",
@@ -1875,7 +2174,8 @@
         "commercial": [],
         "implementation": [
           "Latest actual GitHub Test build logs: source 5b679b35a535ab723739a7b31d71ceeaa2b75acf, version 0.1.0/code2."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Verify reviewed/published B2 source and exact CI before hosted build; installed-device identity remains unverified.",
       "updatedAt": "2026-11-20T03:36:55.906Z",
@@ -1889,7 +2189,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-F-05",
@@ -1919,7 +2223,8 @@
         "commercial": [],
         "implementation": [
           "Policies only; no live entitlement product."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Prepare disabled contract within approved scope.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1933,7 +2238,11 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ]
     },
     {
       "id": "V3-F-06",
@@ -1965,7 +2274,8 @@
         "commercial": [],
         "implementation": [
           "Strategy exists; live linking/checkout/webhooks/prices/promotions disabled."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Keep providers disabled pending founder/financial/security gates.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -1979,7 +2289,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "No live activation or verified financial/provider readiness.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Keep providers disabled pending founder/financial/security gates.",
+          "responsibleRole": "Product & Release Engineer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-F-07",
@@ -2012,7 +2336,8 @@
         "commercial": [],
         "implementation": [
           "Existing financial/payment policies retained."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Prepare evidence and founder decisions without purchases or promises.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -2026,7 +2351,21 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "blockerDetails": [
+        {
+          "reason": "Security/recovery/device/provider/financial gates open.",
+          "prevents": "Activation or completion of this deliverable, not all independent preparation",
+          "resolution": "Prepare evidence and founder decisions without purchases or promises.",
+          "responsibleRole": "Product & Release Engineer",
+          "reopenWhen": "Required dependency, independent review, physical/financial/founder evidence is recorded",
+          "nextIndependentWork": "Corrected B2 tasks; safe documented preparation only"
+        }
+      ]
     },
     {
       "id": "V3-F-08",
@@ -2057,7 +2396,8 @@
         "commercial": [],
         "implementation": [
           "Direction/proposals/portable source only."
-        ]
+        ],
+        "independentReview": []
       },
       "nextAction": "Keep inactive; draft branches are not delivered products.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
@@ -2071,7 +2411,425 @@
           "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
-      }
+      },
+      "startingSHA": null,
+      "commercialAcceptance": [
+        "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
+      ],
+      "deferReason": "Priority/dependency or explicit activation boundaries; not completed",
+      "reopenWhen": "Priority/dependencies and required founder/security/financial authorization satisfied"
+    },
+    {
+      "id": "V32-TRACKING",
+      "parent": "V3-A",
+      "title": "V3.2 recovery, founder evidence, policy and durable registry",
+      "description": "V3.2 recovery, founder evidence, policy and durable registry",
+      "dependencies": [],
+      "acceptance": [
+        "Preserve all45 original IDs and inherited scope; reconcile source/CI/artifact evidence",
+        "Record all founder pass/fail/unverified paths without B2 acceptance",
+        "Validate schema/unique IDs/dependencies/current summaries and push before implementation"
+      ],
+      "status": "IN_PROGRESS",
+      "role": "Principal Architect",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Validate and push sanitized V3.2 starting checkpoint"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": false,
+        "criteria": [
+          "Preserve all45 original IDs and inherited scope; reconcile source/CI/artifact evidence",
+          "Record all founder pass/fail/unverified paths without B2 acceptance",
+          "Validate schema/unique IDs/dependencies/current summaries and push before implementation"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Validate and push sanitized V3.2 starting checkpoint",
+      "updatedAt": "2026-11-20T20:15:59.772Z"
+    },
+    {
+      "id": "BUG-B2-001",
+      "parent": "V3-B",
+      "title": "Application-wide unsaved-change protection",
+      "description": "Application-wide unsaved-change protection",
+      "dependencies": [
+        "BUG-B2-001-A",
+        "BUG-B2-001-B"
+      ],
+      "acceptance": [
+        "Meaningful saved baselines; unchanged forms do not warn",
+        "Hardware/app/supported gesture back, screen changes and relevant modal dismissal protected",
+        "Localized Save and exit / Discard changes / Continue editing; discard explicit",
+        "Successful persistent save before navigation; failed saves retain input and retry without duplicates/stale overwrite",
+        "No plaintext draft writes, App Lock weakening or OS-process-death durability claim"
+      ],
+      "status": "PENDING",
+      "role": "Principal Architect",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Complete App and other editable-flow guard children; review/integrate/retest"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Meaningful saved baselines; unchanged forms do not warn",
+          "Hardware/app/supported gesture back, screen changes and relevant modal dismissal protected",
+          "Localized Save and exit / Discard changes / Continue editing; discard explicit",
+          "Successful persistent save before navigation; failed saves retain input and retry without duplicates/stale overwrite",
+          "No plaintext draft writes, App Lock weakening or OS-process-death durability claim"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Complete App and other editable-flow guard children; review/integrate/retest",
+      "updatedAt": "2026-11-20T20:15:59.772Z"
+    },
+    {
+      "id": "BUG-B2-001-A",
+      "parent": "BUG-B2-001",
+      "title": "People creation/edit/notes/interactions/follow-up/reminder navigation guards",
+      "description": "People creation/edit/notes/interactions/follow-up/reminder navigation guards",
+      "dependencies": [
+        "V32-TRACKING"
+      ],
+      "acceptance": [
+        "Protect all App entry flows and notification/settings/screen transitions",
+        "Save failure/stale baseline/rapid double action keep edits; successful save acknowledged before exit",
+        "Preserve existing reminders and duplicate/cancellation guards"
+      ],
+      "status": "PENDING",
+      "role": "Software Engineer",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Protect all App entry flows and notification/settings/screen transitions",
+          "Save failure/stale baseline/rapid double action keep edits; successful save acknowledged before exit",
+          "Preserve existing reminders and duplicate/cancellation guards"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration",
+      "updatedAt": "2026-11-20T20:15:59.772Z"
+    },
+    {
+      "id": "BUG-B2-001-B",
+      "parent": "BUG-B2-001",
+      "title": "Profile, report, Life, gated Notebook and future form protection",
+      "description": "Profile, report, Life, gated Notebook and future form protection",
+      "dependencies": [
+        "V32-TRACKING"
+      ],
+      "acceptance": [
+        "Inventory editable Profile/Settings/report/Life/Notebook flows",
+        "Reuse existing secure recovery/revision checks; provide all localized exit choices where applicable",
+        "No warnings for unchanged state, no implicit discard/save or plaintext draft persistence"
+      ],
+      "status": "PENDING",
+      "role": "Software Engineer",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Audit existing component guards and implement missing navigation/save failure protection"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Inventory editable Profile/Settings/report/Life/Notebook flows",
+          "Reuse existing secure recovery/revision checks; provide all localized exit choices where applicable",
+          "No warnings for unchanged state, no implicit discard/save or plaintext draft persistence"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Audit existing component guards and implement missing navigation/save failure protection",
+      "updatedAt": "2026-11-20T20:15:59.772Z"
+    },
+    {
+      "id": "BUG-B2-004",
+      "parent": "V3-B",
+      "title": "Global status-bar scrolling viewport repair",
+      "description": "Global status-bar scrolling viewport repair",
+      "dependencies": [
+        "V32-TRACKING"
+      ],
+      "acceptance": [
+        "Audit all root/screen/scroll/header/modal/auth/Settings/People/Life/assistant/Notebook boundaries",
+        "Content cannot scroll beneath visible status icons; actual native insets, no double padding",
+        "Preserve edge-to-edge, theme/status appearance, font scaling, orientation and keyboard accessibility"
+      ],
+      "status": "PENDING",
+      "role": "Android Engineer",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Inspect viewport versus content padding; repair shared boundary and all routes"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Audit all root/screen/scroll/header/modal/auth/Settings/People/Life/assistant/Notebook boundaries",
+          "Content cannot scroll beneath visible status icons; actual native insets, no double padding",
+          "Preserve edge-to-edge, theme/status appearance, font scaling, orientation and keyboard accessibility"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Inspect viewport versus content padding; repair shared boundary and all routes",
+      "updatedAt": "2026-11-20T20:15:59.772Z"
+    },
+    {
+      "id": "BUG-B2-005",
+      "parent": "V3-B",
+      "title": "Global navigation-bar and bottom action safe area repair",
+      "description": "Global navigation-bar and bottom action safe area repair",
+      "dependencies": [
+        "V32-TRACKING"
+      ],
+      "acceptance": [
+        "Scrollable/fixed bottom content stays above gesture/three-button bars and keyboard",
+        "No clipped actions, excessive blank areas or double insets across all themes/screens"
+      ],
+      "status": "PENDING",
+      "role": "Android Engineer",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Repair shared bottom viewport handling alongside status-bar audit"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Scrollable/fixed bottom content stays above gesture/three-button bars and keyboard",
+          "No clipped actions, excessive blank areas or double insets across all themes/screens"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Repair shared bottom viewport handling alongside status-bar audit",
+      "updatedAt": "2026-11-20T20:15:59.772Z"
+    },
+    {
+      "id": "UX-B2-001",
+      "parent": "V3-B",
+      "title": "Shared digital 24-hour reminder HH/MM entry",
+      "description": "Shared digital 24-hour reminder HH/MM entry",
+      "dependencies": [
+        "V32-TRACKING"
+      ],
+      "acceptance": [
+        "Separate tap-edit numeric HH/MM fields,24-hour00-23/00-59,any exact minute",
+        "Immediate validation,leading zeros,explicit confirmation/cancellation, predictable focus/prepopulation",
+        "TR/EN,all free themes,large text/TalkBack; invalid times never silently normalized",
+        "Preserve dates/timezones/permissions/privacy; midnight/date/DST/edit/cancel/duplicate tests; reuse for future Life reminders"
+      ],
+      "status": "PENDING",
+      "role": "Android Engineer",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Build shared digital entry/model and tests; Principal integrates App reminder picker"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Separate tap-edit numeric HH/MM fields,24-hour00-23/00-59,any exact minute",
+          "Immediate validation,leading zeros,explicit confirmation/cancellation, predictable focus/prepopulation",
+          "TR/EN,all free themes,large text/TalkBack; invalid times never silently normalized",
+          "Preserve dates/timezones/permissions/privacy; midnight/date/DST/edit/cancel/duplicate tests; reuse for future Life reminders"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Build shared digital entry/model and tests; Principal integrates App reminder picker",
+      "updatedAt": "2026-11-20T20:15:59.772Z"
+    },
+    {
+      "id": "UX-B2-002",
+      "parent": "V3-B",
+      "title": "Accessible boolean switches and wording polish",
+      "description": "Accessible boolean switches and wording polish",
+      "dependencies": [
+        "V32-TRACKING"
+      ],
+      "acceptance": [
+        "Use accessible native/modern switches for functional boolean settings, including App Lock",
+        "Retain auth/write-before-apply,all themes,free appearances and clear natural TR/EN",
+        "No redesign or meaning changes to stored records"
+      ],
+      "status": "PENDING",
+      "role": "UI/UX Engineer",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Polish App Lock control within current approved identity; test cancelled/failed changes"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Use accessible native/modern switches for functional boolean settings, including App Lock",
+          "Retain auth/write-before-apply,all themes,free appearances and clear natural TR/EN",
+          "No redesign or meaning changes to stored records"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Polish App Lock control within current approved identity; test cancelled/failed changes",
+      "updatedAt": "2026-11-20T20:15:59.772Z"
+    },
+    {
+      "id": "V3-A-06",
+      "parent": "V3-A",
+      "title": "Remaining official integration and optional architecture research",
+      "description": "Remaining official integration and optional architecture research",
+      "dependencies": [
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "Track official authenticated task exchange/results/remote management and GitHub independent visibility",
+        "Windows/Cloud/Android continuity, narrow approval reuse and hosted delivery remain explicit",
+        "Record unsupported features BLOCKED/DEFERRED with reopening conditions; no repetitive unsupported Cloud probes",
+        "OpenJarvis/Hermes read-only architecture research remains tracked; no untrusted install, public bridge, secret access or paid service"
+      ],
+      "status": "DEFERRED",
+      "role": "Automation & Integration Engineer",
+      "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
+      "sourceSHA": null,
+      "completed": [],
+      "remaining": [
+        "Resume only after corrected B2 priority or during genuinely nonconflicting blocked preparation"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": false,
+        "criteria": [
+          "Track official authenticated task exchange/results/remote management and GitHub independent visibility",
+          "Windows/Cloud/Android continuity, narrow approval reuse and hosted delivery remain explicit",
+          "Record unsupported features BLOCKED/DEFERRED with reopening conditions; no repetitive unsupported Cloud probes",
+          "OpenJarvis/Hermes read-only architecture research remains tracked; no untrusted install, public bridge, secret access or paid service"
+        ],
+        "reason": "Targeted founder acceptance after repairs; successful0.2.0 paths retained."
+      },
+      "commercialAcceptance": [
+        "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
+      ],
+      "nextAction": "Resume only after corrected B2 priority or during genuinely nonconflicting blocked preparation",
+      "updatedAt": "2026-11-20T20:15:59.772Z",
+      "deferReason": "Priority/dependency or explicit activation boundaries; not completed",
+      "reopenWhen": "Priority/dependencies and required founder/security/financial authorization satisfied"
     }
   ],
   "localValidation": {
@@ -2088,7 +2846,7 @@
     "scope": "Local docs/schema validation only; no app tests, review, new CI, build or physical acceptance."
   },
   "delivery": {
-    "state": "BUILD_TRIGGERED",
+    "state": "APK_VERIFIED",
     "implementationSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
     "ci": [
       "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
@@ -2099,14 +2857,63 @@
     "package": "com.sweedycat.aimemory.githubtest",
     "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
     "workflow": ".github/workflows/android-preview-apk.yml",
-    "trigger": "ALREADY TRIGGERED ONCE. Do not create another marker or rerun. After completion inspect actual APK metadata/signature/hash; do not claim APK_VERIFIED yet.",
+    "trigger": "Previous attempt complete. Do not repeat it. Corrected source requires its own reviewed/CI-verified one-attempt hosted build.",
     "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
     "buildSHA": "c41410e938004677f0b2a78a70b407bb908ea13b",
     "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253",
     "installedCompatibility": "UNVERIFIED",
-    "physicalAcceptance": "PENDING",
+    "physicalAcceptance": "NOT_ACCEPTED",
     "observedWorkflowStatus": "in_progress",
-    "artifactURL": null
+    "artifactURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253/artifacts/14600286231",
+    "artifactId": 14600286231,
+    "runResult": "success",
+    "verificationLevel": "Actual CI aapt/apksigner/sha256sum logs and artifact metadata; no independent binary download yet",
+    "apkSha256": "cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6",
+    "artifactZipDigest": "sha256:8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5"
   },
-  "latestPublishedCheckpoint": "c41410e938004677f0b2a78a70b407bb908ea13b"
+  "latestPublishedCheckpoint": "c41410e938004677f0b2a78a70b407bb908ea13b",
+  "founderDeviceEvidence": {
+    "reportedAt": "2026-11-20",
+    "source": "Founder directive V3.2; reported observations, not agent-operated device tests",
+    "device": "Samsung Galaxy S26 Ultra",
+    "candidate": "Reported0.2.0; independently inspected installed binary identity/provenance NOT established",
+    "accepted": false,
+    "passed": [
+      "Existing People records accessible after update",
+      "Existing memory notes accessible",
+      "Historical follow-ups accessible",
+      "All five appearance choices functioned",
+      "Language changes functioned",
+      "Theme/language preferences survived close/reopen",
+      "System appearance followed device light/dark",
+      "Immediate App Lock on background/return",
+      "Device authentication required before protected content",
+      "Reminder notifications received",
+      "Private content hidden in collapsed and expanded notifications",
+      "Notification routing opened correct person after authentication",
+      "English reminder displayed correctly",
+      "Turkish reminder displayed correctly",
+      "Person-detail interface correct in Turkish and English",
+      "Personal records not translated by language changes",
+      "Keyboard/back worked in tested person-creation path",
+      "Completed reminder history showed dates/times",
+      "Increased system font size reflected on person details",
+      "Visible buttons/cards resized appropriately",
+      "Long visible labels wrapped"
+    ],
+    "failed": [
+      "Unsaved person-creation input discarded on Back without warning",
+      "Scrolling content overlapped status bar",
+      "Scrolling content overlapped navigation bar"
+    ],
+    "unverified": [
+      "Installed binary identity and complete artifact provenance",
+      "Large text throughout all Settings screens",
+      "TalkBack",
+      "Every screen in both languages and all appearances",
+      "All App Lock timeout options",
+      "Language updates for previously scheduled notifications",
+      "Exact timing under every native scheduling condition"
+    ]
+  }
 }

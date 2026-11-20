@@ -1,24 +1,28 @@
-# Current task queue
+# Current canonical task projection
 
-Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
+[TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/evidence authority. V3.2 is cumulative; original45 IDs retained,54 total tasks. B2 is NOT ACCEPTED. No completion percentages, production activation or installed-identity claims.
 
-| ID | Status | Scope | Next action |
+| ID | Status | Scope | Exact next action |
 | --- | --- | --- | --- |
+| V3-A | IN_PROGRESS | Governance and engineering integration | Preserve verified checkpoint and narrow operational boundaries. |
 | V3-A-01 | VERIFIED | Source, PR, policy and exact-SHA CI audit | Preserve historical evidence. |
 | V3-A-02 | VERIFIED | Single registry and sanitized recovery checkpoint | Maintain registry and synchronized continuation after meaningful progress. |
 | V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
 | V3-A-04 | VERIFIED | Tested branch-scoped free hosted delivery | Preserve verified checkpoint and narrow operational boundaries. |
 | V3-A-05 | VERIFIED | Quota stop and bounded handoff | Preserve verified checkpoint and narrow operational boundaries. |
+| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
 | V3-B1-01 | VERIFIED | Localization and preference foundation | Integrate actual application via B1-02. |
 | V3-B1-02 | VERIFIED | Complete Turkish/English application flows | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-B2-01 | VERIFIED | Centralized five free theme choices | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-B2-02 | VERIFIED | Theme previews, immediate apply and persistence | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-B2-03 | VERIFIED | Shared components and functional Settings (former B3) | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
-| V3-B2-04 | VERIFIED | Founder layout/navigation defects (former B3) | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
-| V3-B2-05 | APK_READY | Review, tests, APK_READY and founder acceptance | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
+| V3-B2-04 | VERIFICATION_PENDING | Founder layout/navigation defects (former B3) | Correct confirmed defects; do not repeat unrelated passed device tests. |
+| V3-B2-05 | BLOCKED | Review, tests, APK_READY and founder acceptance | Repair registered B2 defects first; do not mark accepted. |
+| V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
 | V3-C-01 | PENDING | All-domain AEAD/platform key lifecycle | Prepare independently reviewable threat model and domain/key contracts. |
 | V3-C-02 | PENDING | Synthetic non-destructive migration and rollback | Prototype fabricated migration fixtures and durable failure recovery. |
 | V3-C-03 | BLOCKED | Independent review and native recovery gate | Obtain review and authorized native evidence before activation. |
+| V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
 | V3-D1-01 | PENDING | Versioned full backup coverage | Design bounded versioned complete snapshot and legacy compatibility. |
 | V3-D1-02 | PENDING | Manual encrypted export/import and recovery key UX | Implement synthetic consent/file/key/archive UX; no real transfers before gates. |
 | V3-D1-03 | PENDING | Authenticated preview, conflict selection and durable restore | Test wrong key/tamper/unknown/corrupt/duplicate/low disk/interrupted writes/rollback/key loss. |
@@ -27,6 +31,7 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | V3-D2-02 | BLOCKED | Verified archives, retention and opt-in automation | Close manual gates before enabling background backup. |
 | V3-D2-03 | PENDING | Bounded streaming and Android large-archive evidence | Design bounded resource and failure measurements. |
 | V3-D3-01 | BLOCKED | Disabled Notebook and native acceptance | Preserve false gate; execute only authorized native synthetic plan. |
+| V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |
 | V3-E1-01 | IMPLEMENTED | People/history/contact/follow-up preservation | Target changed integration regressions and retained-record device acceptance. |
 | V3-E1-02 | PENDING | Multiple commitments/tags/merge/matching | Design synthetic compatibility and conflict fixtures. |
 | V3-E1-03 | DEFERRED | Optional encrypted photos/attachments | Keep inactive until scoped owner instruction and recovery gates. |
@@ -35,6 +40,7 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | V3-E3-01 | IMPLEMENTED | Six grounded local questions/source links preservation | Target changed integration and physical readability. |
 | V3-E3-02 | PENDING | Unified allowed-domain retrieval and local query interpretation | Design fabricated domain/permission/truthfulness contracts. |
 | V3-E3-03 | DEFERRED | Optional AI/camera/voice/face/wearables | Keep inactive; research only under explicit scoped instruction. |
+| V3-F | BLOCKED | Commercial and broader product readiness | Close encryption/recovery/localization/design/device blockers. |
 | V3-F-01 | VERIFICATION_PENDING | Onboarding/profile/App Lock/privacy/permission lifecycle | Reproduce lifecycle/read failures synthetically before scoped fixes. |
 | V3-F-02 | VERIFICATION_PENDING | Safe bug reports, redaction and failure/version UX | Diagnose fabricated corruption/concurrency/redaction without owner data. |
 | V3-F-03 | PENDING | Measured offline/accessibility/performance/storage | Measure risk-based bottlenecks after integrated UI checkpoint. |
@@ -43,6 +49,17 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | V3-F-06 | BLOCKED | Play/StoreKit/Patreon/website payment readiness | Keep providers disabled pending founder/financial/security gates. |
 | V3-F-07 | BLOCKED | Bootstrap-first financial/store/legal readiness | Prepare evidence and founder decisions without purchases or promises. |
 | V3-F-08 | DEFERRED | Cloud accounts/sync/web/desktop/iOS/B2B direction | Keep inactive; draft branches are not delivered products. |
+| V32-TRACKING | IN_PROGRESS | V3.2 recovery, founder evidence, policy and durable registry | Validate and push sanitized V3.2 starting checkpoint |
+| BUG-B2-001 | PENDING | Application-wide unsaved-change protection | Complete App and other editable-flow guard children; review/integrate/retest |
+| BUG-B2-001-A | PENDING | People creation/edit/notes/interactions/follow-up/reminder navigation guards | Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration |
+| BUG-B2-001-B | PENDING | Profile, report, Life, gated Notebook and future form protection | Audit existing component guards and implement missing navigation/save failure protection |
+| BUG-B2-004 | PENDING | Global status-bar scrolling viewport repair | Inspect viewport versus content padding; repair shared boundary and all routes |
+| BUG-B2-005 | PENDING | Global navigation-bar and bottom action safe area repair | Repair shared bottom viewport handling alongside status-bar audit |
+| UX-B2-001 | PENDING | Shared digital 24-hour reminder HH/MM entry | Build shared digital entry/model and tests; Principal integrates App reminder picker |
+| UX-B2-002 | PENDING | Accessible boolean switches and wording polish | Polish App Lock control within current approved identity; test cancelled/failed changes |
+| V3-A-06 | DEFERRED | Remaining official integration and optional architecture research | Resume only after corrected B2 priority or during genuinely nonconflicting blocked preparation |
+
+All V3 C-F encryption/migration/backup/Drive/Notebook/People/Life/assistant/commercial/payment/platform/wearable requirements remain in the registry and detailed root inventory. Real sensitive capabilities remain disabled/gated. New integration taskV3-A-06 keeps official exchange/continuity/OpenJarvis/Hermes research explicit; no unsupported Cloud retry or new bridge/install.
 
 ## Historical archive (superseded status snapshot)
 

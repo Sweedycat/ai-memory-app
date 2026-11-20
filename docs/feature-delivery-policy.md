@@ -9,6 +9,21 @@ verification, device acceptance and commercial readiness are separate evidence.
 
 ## Mandatory delivery cycle
 
+V3.2 cumulative correction: preserve the registry's original45 entries and add
+new defects/enhancements with starting SHA, criteria and next action before work.
+Push recovery checkpoints throughout execution. Founder-reported 0.2.0 paths are
+scoped observations; B2 is not accepted while confirmed input-loss/system-bar
+defects and requested digital HH/MM entry remain. Repair these before later major
+features. At >5% normal bounded work is allowed; <=5% starts no long work or
+unnecessary agents; <=1% stops. Unknown official allowance permits one bounded unit.
+
+V3.2 supersedes the older pre-build APK_READY wording below: source/CI readiness
+is VERIFIED, an acknowledged unfinished run is BUILD_TRIGGERED/BUILD_RUNNING,
+and actual completed artifact verification precedes APK_READY and targeted founder
+acceptance. Never label an incomplete build APK_READY. Link one authorized free
+hosted run immediately and let it finish independently. Build success, artifact
+identity, installed identity and founder acceptance are separate evidence levels.
+
 V3.1 makes [TASK-REGISTRY.json](omega/TASK-REGISTRY.json) the single task-status
 authority. Register work and push a sanitized checkpoint before substantial
 implementation; synchronize human-readable summaries after progress. Recover

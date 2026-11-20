@@ -1,22 +1,16 @@
-# Current APK and device evidence
+# Current APK and acceptance evidence
 
-Current delivery: [run44670257253](https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253) acknowledged in progress from `c41410e938004677f0b2a78a70b407bb908ea13b`; app implementation `aa7565cadc5737fca1581eb1ed52c4f499e45348` passed CI44669846988/44669847036. No APK yet verified. Do not retrigger or poll Gradle. After completion verify the binary, then founder acceptance; no next major feature. Earlier pending instructions below describe prior snapshots.
+[TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/evidence authority. V3.2 is cumulative; original45 IDs retained,54 total tasks. B2 is NOT ACCEPTED. No completion percentages, production activation or installed-identity claims.
 
-Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
-
-| ID | Status | Scope | Next action |
+| ID | Status | Scope | Exact next action |
 | --- | --- | --- | --- |
-| V3-A-04 | VERIFIED | Tested branch-scoped free hosted delivery | Preserve verified checkpoint and narrow operational boundaries. |
-| V3-B2-05 | APK_READY | Review, tests, APK_READY and founder acceptance | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
+| V3-B2-05 | BLOCKED | Review, tests, APK_READY and founder acceptance | Repair registered B2 defects first; do not mark accepted. |
 | V3-F-04 | PENDING | Safe upgrades, versions and retained records | Verify reviewed/published B2 source and exact CI before hosted build; installed-device identity remains unverified. |
 
-No B2 artifact/physical acceptance verified; A internal APK job skipped. B1 tests are not an APK. Preserve release states APK_READY, BUILD_TRIGGERED, BUILD_RUNNING, APK_VERIFIED, FOUNDER_ACCEPTANCE_PENDING and ACCEPTED separately from task status.
+Previous run [44670257253](https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253) succeeded, source `c41410e938004677f0b2a78a70b407bb908ea13b`, [artifact14600286231](https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253/artifacts/14600286231) available. Actual CI aapt/apksigner/sha256sum logs: packagecom.sweedycat.aimemory.githubtest,0.2.0/code3; certificateSHA256 fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c; APK SHA256 cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6. Artifact ZIP digest8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5 is distinct from APK hash. Independent binary download/provenance and installed identity remain unverified. No repeat of that build. Corrected version/code assigned only after current artifact history/gates; no new candidate assigned yet.
 
-Latest artifact evidence supplied by Principal from re-inspected build-tools logs (binary not downloaded again): successful [run44565432466](https://github.com/Sweedycat/ai-memory-app/actions/runs/44565432466), source `5b679b35a535ab723739a7b31d71ceeaa2b75acf`, job135706101231. Package `com.sweedycat.aimemory.githubtest`, versionName `0.1.0`, code `2`; apksigner V2 certificate SHA-256 `fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c`; APK SHA-256 `1478dd14018c759a8807730234b1bc7e606e5137d03c249c627e1054b63e5446`. [Artifact14552436266](https://github.com/Sweedycat/ai-memory-app/actions/runs/44565432466/artifacts/14552436266). This historical artifact is not B2; installed-device compatibility remains unverified.
+Passed founder paths are in [progress](PROGRESS.md); failed paths require corrected artifact and targeted reacceptance. Automated artifact checks are separate from actual installed identity. Preserve package/signing, user records, security flags and one free hosted attempt; no installation/uninstall/reset.
 
-B2 `0.2.0/code3` source aa7565cadc5737fca1581eb1ed52c4f499e45348 passed exact-SHA CI44669846988/full and44669847036/portability; APK_READY, no produced binary or physical acceptance yet. Preserve Preview/GitHub Test identities/signing; verify current artifact metadata before higher code. Installation remains separately authorized; never uninstall/reset/replace signing. This follow-up records the single authorized B2 app build; it starts no second build.
-
-Focused Turkish checklist when candidate is ready: Sistem/TR/EN seçimi yeniden açılışta korunmalı; değişen ekranlarda karışık dil olmamalı. Beş ücretsiz temanın önizleme/uygulama/yeniden açılış ve sistem değişimi sınanmalı. Kayıtlar korunmalı; Geri/klavye/kenar boşlukları/büyük yazı/TalkBack ve etkilenen Ayarlar/Uygulama Kilidi yolları kontrol edilmeli. Aday APK ve beklenen/gözlenen sonuç kaydedilmeli.
 ## Historical archive (superseded status snapshot)
 
 # APK and device acceptance

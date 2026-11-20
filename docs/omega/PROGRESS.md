@@ -1,21 +1,60 @@
-# Current progress
+# Current verified progress
 
-Current delivery: [run44670257253](https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253) acknowledged in progress from `c41410e938004677f0b2a78a70b407bb908ea13b`; app implementation `aa7565cadc5737fca1581eb1ed52c4f499e45348` passed CI44669846988/44669847036. No APK yet verified. Do not retrigger or poll Gradle. After completion verify the binary, then founder acceptance; no next major feature. Earlier pending instructions below describe prior snapshots.
+[TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/evidence authority. V3.2 is cumulative; original45 IDs retained,54 total tasks. B2 is NOT ACCEPTED. No completion percentages, production activation or installed-identity claims.
 
-B2 final local verification:512 tests/510 passed/2 existing Windows skips/0 failed;
-strict TypeScript and Doctor21/21 passed. Independent69-file review closed its
-P1 negative-fixture finding, with no remaining blocker. See
-[B2 validation](../b2-localization-theme-validation.md). Publication/exact-SHA CI,
-APK and founder acceptance remain pending; these are not completed device tasks.
-
-Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
-
-| ID | Status | Scope | Next action |
+| ID | Status | Scope | Exact next action |
 | --- | --- | --- | --- |
-| V3-A-02 | VERIFIED | Single registry and sanitized recovery checkpoint | Maintain registry and synchronized continuation after meaningful progress. |
-| V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
-| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
-| V3-B1-02 | VERIFIED | Complete Turkish/English application flows | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
-| V3-B2-01 | VERIFIED | Centralized five free theme choices | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
+| V32-TRACKING | IN_PROGRESS | V3.2 recovery, founder evidence, policy and durable registry | Validate and push sanitized V3.2 starting checkpoint |
+| BUG-B2-001 | PENDING | Application-wide unsaved-change protection | Complete App and other editable-flow guard children; review/integrate/retest |
+| BUG-B2-001-A | PENDING | People creation/edit/notes/interactions/follow-up/reminder navigation guards | Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration |
+| BUG-B2-001-B | PENDING | Profile, report, Life, gated Notebook and future form protection | Audit existing component guards and implement missing navigation/save failure protection |
+| BUG-B2-004 | PENDING | Global status-bar scrolling viewport repair | Inspect viewport versus content padding; repair shared boundary and all routes |
+| BUG-B2-005 | PENDING | Global navigation-bar and bottom action safe area repair | Repair shared bottom viewport handling alongside status-bar audit |
+| UX-B2-001 | PENDING | Shared digital 24-hour reminder HH/MM entry | Build shared digital entry/model and tests; Principal integrates App reminder picker |
+| UX-B2-002 | PENDING | Accessible boolean switches and wording polish | Polish App Lock control within current approved identity; test cancelled/failed changes |
 
-B1 source `48cd226ebc03e3cd14383a4d57636ce08a599166`: reported 467 tests, 465 passed, 2 Windows skips, 0 failures; 18 focused core tests. Exact-SHA CI [44635443807](https://github.com/Sweedycat/ai-memory-app/actions/runs/44635443807) and [44635443790](https://github.com/Sweedycat/ai-memory-app/actions/runs/44635443790) successful. Historical B1 evidence does not validate B2 WIP.
+Local/remote starting checkpoint `69d8fd899d81bdae65ffd80442d4af80579c6e82` matched, clean tree. Its exact-SHA CI44670525880/full and44670525876/portability succeeded. Previous app sourceaa7565c and hosted sourcec41410e remain historical. Do not rerun the prior B2 regression without changed source or a new concern.
+
+## Founder-reported0.2.0 observations (2026-11-20)
+
+Samsung Galaxy S26 Ultra; tested paths only, installed binary provenance not independently established. B2 NOT ACCEPTED.
+
+### PASSED
+
+- Existing People records accessible after update
+- Existing memory notes accessible
+- Historical follow-ups accessible
+- All five appearance choices functioned
+- Language changes functioned
+- Theme/language preferences survived close/reopen
+- System appearance followed device light/dark
+- Immediate App Lock on background/return
+- Device authentication required before protected content
+- Reminder notifications received
+- Private content hidden in collapsed and expanded notifications
+- Notification routing opened correct person after authentication
+- English reminder displayed correctly
+- Turkish reminder displayed correctly
+- Person-detail interface correct in Turkish and English
+- Personal records not translated by language changes
+- Keyboard/back worked in tested person-creation path
+- Completed reminder history showed dates/times
+- Increased system font size reflected on person details
+- Visible buttons/cards resized appropriately
+- Long visible labels wrapped
+
+### FAILED
+
+- Unsaved person-creation input discarded on Back without warning
+- Scrolling content overlapped status bar
+- Scrolling content overlapped navigation bar
+
+### UNVERIFIED
+
+- Installed binary identity and complete artifact provenance
+- Large text throughout all Settings screens
+- TalkBack
+- Every screen in both languages and all appearances
+- All App Lock timeout options
+- Language updates for previously scheduled notifications
+- Exact timing under every native scheduling condition
