@@ -6,7 +6,7 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | --- | --- | --- | --- |
 | V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
 | V3-A-04 | VERIFIED | Tested branch-scoped free hosted delivery | Preserve verified checkpoint and narrow operational boundaries. |
-| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | One hosted APK attempt, actual binary verification, then targeted founder acceptance. |
+| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
 | V3-B1-02 | VERIFIED | Complete Turkish/English application flows | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-B2-01 | VERIFIED | Centralized five free theme choices | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
