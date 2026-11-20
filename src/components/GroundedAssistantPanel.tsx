@@ -48,7 +48,7 @@ export function GroundedAssistantPanel({ people, onBack, onOpenPerson, onOpenLif
       <Text style={styles.text}>{label}</Text>
     </Pressable>;
   }
-  return <SafeAreaView style={styles.safe}>
+  return <SafeAreaView edges={[]} style={styles.safe}>
     <View style={styles.top}><AppHeader onBack={onBack} backLabel={copy.back} accessibilityLabel={copy.back} title={copy.title} /></View>
     <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <Text style={styles.caption}>{copy.scope}</Text>

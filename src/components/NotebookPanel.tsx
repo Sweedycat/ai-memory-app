@@ -25,6 +25,7 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
   const { theme } = useTheme();
   const { copy: catalog, locale } = useI18n();
   const copy = catalog.ui.notebook;
+  const navigation = catalog.navigation;
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [busy, setBusy] = useState(false), [failed, setFailed] = useState(false);
   const [query, setQuery] = useState(''), [selectedId, setSelectedId] = useState<string | null>(null);
@@ -32,12 +33,13 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
   const [review, setReview] = useState(false);
   const [exitRisk, setExitRisk] = useState(false);
   const [confirmation, setConfirmation] = useState<'delete' | 'commit' | 'discard' | 'close' | null>(null);
+  const [exitAfterRecovery, setExitAfterRecovery] = useState(false);
   const workspace = useRef<PersistentNotebook | null>(null), editorRef = useRef<NotebookEditor | null>(null);
-  const mounted = useRef(true), pending = useRef(false), generation = useRef(0);
+  const mounted = useRef(true), pending = useRef(false), generation = useRef(0), exited = useRef(false);
 
   function clearPrivate() {
     editorRef.current?.dispose(); editorRef.current = null;
-    setEditor(null); setSnapshot(null); setSelectedId(null); setQuery(''); setReview(false); setConfirmation(null);
+    setEditor(null); setSnapshot(null); setSelectedId(null); setQuery(''); setReview(false); setConfirmation(null); setExitAfterRecovery(false);
   }
   function publish(w: PersistentNotebook) {
     const notes = w.getSession().snapshot(), recovery = w.getRecovery();
@@ -81,15 +83,19 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
     };
   }, [lifecycle]);
 
+  function exitPanel() {
+    if (!mounted.current || exited.current || AppState.currentState !== 'active') return;
+    exited.current = true; onBack();
+  }
   function back() {
     if (pending.current || busy || editorRef.current) return;
-    if (confirmation) { setConfirmation(null); return; }
-    if (review) { setReview(false); return; }
+    if (confirmation) { setConfirmation(null); setExitAfterRecovery(false); return; }
+    if (review) { setReview(false); setExitAfterRecovery(false); return; }
     if (selectedId) { setSelectedId(null); return; }
     if (exitRisk) {
       setConfirmation('close'); return;
     }
-    onBack();
+    exitPanel();
   }
   useEffect(() => {
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -99,20 +105,41 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
     return () => subscription.remove();
   }, [busy, confirmation, review, selectedId, exitRisk]);
 
-  async function operate(action: (w: PersistentNotebook) => Promise<void>) {
+  async function operate(action: (w: PersistentNotebook) => Promise<void>, exitOnSuccess = false) {
     const w = workspace.current;
     if (!w || pending.current || AppState.currentState !== 'active') return;
     pending.current = true; setBusy(true);
     const token = generation.current;
     try {
       await action(w);
-      if (mounted.current && token === generation.current) { publish(w); setConfirmation(null); }
+      if (mounted.current && token === generation.current) {
+        publish(w); setConfirmation(null); setExitAfterRecovery(false);
+        if (exitOnSuccess && w.getRecovery().status === 'none' && !w.getRecovery().candidate) exitPanel();
+      }
     } catch {
       if (mounted.current && token === generation.current) { clearPrivate(); setExitRisk(true); setFailed(true); }
     } finally {
       pending.current = false;
       if (mounted.current && token === generation.current) setBusy(false);
     }
+  }
+  async function reviewBeforeExit(choice: 'retry' | 'discard') {
+    if (pending.current || busy) return;
+    const token = generation.current;
+    // Failed/uncertain writes require authenticated reopening before any recovery decision.
+    if (!snapshot) await open();
+    if (!mounted.current || token !== generation.current || AppState.currentState !== 'active') return;
+    const w = workspace.current;
+    if (!w) return;
+    try {
+      const recovery = w.getRecovery();
+      if (!recovery.candidate) { if (recovery.status === 'none') exitPanel(); return; }
+      const changes = notebookRecoveryChanges(w.getSession().snapshot(), recovery.candidate);
+      setReview(true); setExitAfterRecovery(true);
+      // Keep comparison and the existing second confirmation. Never retry conflicts or multi-note intents.
+      setConfirmation(choice === 'discard' ? 'discard'
+        : recovery.status !== 'conflict' && changes.length <= 1 ? 'commit' : null);
+    } catch { clearPrivate(); setExitRisk(true); setFailed(true); }
   }
   function finishEditor() {
     editorRef.current?.dispose(); editorRef.current = null; setEditor(null);
@@ -138,7 +165,7 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
   }
   function button(label: string, action: () => void, disabled = busy) {
     return <Pressable accessibilityRole="button" accessibilityLabel={label} disabled={disabled}
-      accessibilityState={{ disabled }} onPress={action} style={styles.button}><Text style={styles.text}>{label}</Text></Pressable>;
+      accessibilityState={{ disabled }} onPress={() => { if (!disabled && !pending.current && !exited.current) action(); }} style={styles.button}><Text style={styles.text}>{label}</Text></Pressable>;
   }
   function noteContent(note: PersonalNote | null) {
     return note ? <View style={styles.note}>
@@ -148,16 +175,23 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
       <Text style={styles.meta}>{copy.updated(new Date(note.updatedAt).toLocaleString(locale))}</Text>
     </View> : <Text style={styles.text}>{copy.missing}</Text>;
   }
-  if (editor) return <SafeAreaView style={styles.root}><PersonalNoteEditor editor={editor} onClose={finishEditor} onSaved={finishEditor} /></SafeAreaView>;
+  if (editor) return <SafeAreaView edges={[]} style={styles.root}><PersonalNoteEditor editor={editor} onClose={finishEditor} onSaved={finishEditor} /></SafeAreaView>;
   const selected = snapshot?.notes.find(note => note.id === selectedId) ?? null;
   const visible = snapshot ? searchPersonalNotebook(snapshot.notes, query) : [];
   const recovery = snapshot?.recovery;
   const changes = snapshot && recovery?.candidate ? notebookRecoveryChanges(snapshot.notes, recovery.candidate) : [];
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView edges={[]} style={styles.root}>
       <View style={styles.header}><AppHeader onBack={back} backLabel={selected || review ? copy.backToList : copy.back}
         accessibilityLabel={selected || review ? copy.backToList : copy.back} title={copy.title} backDisabled={busy} /></View>
-      {!snapshot ? <View style={styles.content}>
+      {confirmation === 'close' ? <ScrollView contentContainerStyle={styles.content}>
+        <Text accessibilityRole="header" style={styles.title}>{navigation.title}</Text>
+        <Text style={styles.text}>{navigation.body}</Text>
+        <Text accessibilityRole="alert" style={styles.text}>{snapshot ? copy.closeWarning : copy.uncertainCloseWarning}</Text>
+        {button(navigation.saveExit, () => { void reviewBeforeExit('retry'); })}
+        {button(navigation.discard, () => { void reviewBeforeExit('discard'); })}
+        {button(navigation.stay, () => setConfirmation(null))}
+      </ScrollView> : !snapshot ? <View style={styles.content}>
         <Text accessibilityRole={failed ? 'alert' : undefined} style={styles.text}>{busy ? copy.loading : failed ? copy.unavailable : copy.locked}</Text>
         {!busy && button(copy.reopen, () => { void open(); })}
       </View> : review && recovery?.candidate ? <ScrollView contentContainerStyle={styles.content}>
@@ -173,13 +207,13 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
         {button(copy.discardRecovery, () => setConfirmation('discard'))}
         {confirmation === 'commit' && <>
           <Text accessibilityRole="alert" style={styles.text}>{copy.saveWarning}</Text>
-          {button(copy.confirmSave, () => { void operate(w => w.resolveRecovery('retry')); })}
-          {button(copy.cancel, () => setConfirmation(null))}
+          {button(copy.confirmSave, () => { void operate(w => w.resolveRecovery('retry'), exitAfterRecovery); })}
+          {button(copy.cancel, () => { setConfirmation(null); setExitAfterRecovery(false); })}
         </>}
         {confirmation === 'discard' && <>
           <Text accessibilityRole="alert" style={styles.text}>{copy.discardWarning}</Text>
-          {button(copy.confirmDiscard, () => { void operate(w => w.resolveRecovery('discard')); })}
-          {button(copy.keep, () => setConfirmation(null))}
+          {button(copy.confirmDiscard, () => { void operate(w => w.resolveRecovery('discard'), exitAfterRecovery); })}
+          {button(copy.keep, () => { setConfirmation(null); setExitAfterRecovery(false); })}
         </>}
       </ScrollView> : selected ? <ScrollView contentContainerStyle={styles.content}>
         {noteContent(selected)}
@@ -206,10 +240,6 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
             <Text style={styles.text} numberOfLines={2}>{item.body}</Text>
             <Text style={styles.meta}>{copy.updated(new Date(item.updatedAt).toLocaleString(locale))}</Text>
           </Pressable>} />
-      </View>}
-      {confirmation === 'close' && <View style={styles.note}>
-        <Text accessibilityRole="alert" style={styles.text}>{snapshot ? copy.closeWarning : copy.uncertainCloseWarning}</Text>
-        {button(copy.confirmClose, onBack)}{button(copy.keep, () => setConfirmation(null))}
       </View>}
     </SafeAreaView>
   );

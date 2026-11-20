@@ -20,6 +20,8 @@ const { catalog, catalogIssues } = load('src/i18n/catalog.ts', {
   './catalogs/app': loadPure('src/i18n/catalogs/app.ts'), './catalogs/ui': loadPure('src/i18n/catalogs/ui.ts'),
   './catalogs/notifications': loadPure('src/i18n/catalogs/notifications.ts'),
   './catalogs/generated': loadPure('src/i18n/catalogs/generated.ts'),
+  './catalogs/navigation': loadPure('src/i18n/catalogs/navigation.ts'),
+  './catalogs/timeEntry': loadPure('src/i18n/catalogs/timeEntry.ts'),
 });
 const formats = load('src/i18n/format.ts', { './language': language, '../utils/lifeRecords': load('src/utils/lifeRecords.ts') });
 

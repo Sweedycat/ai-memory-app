@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { BackHandler, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { BackHandler, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { BackupSafetyDiagnostics } from './BackupSafetyDiagnostics';
 import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
 import { ReminderPermissionActions } from './ReminderPermissionActions';
@@ -23,28 +23,34 @@ export function SettingsPanel({ displayName, role = '', onClose, onEditProfile, 
   const privacy = usePrivacyControls();
   const [section, setSection] = useState<Section>('main');
   const [changingLock, setChangingLock] = useState(false);
+  const changingLockRef = useRef(false);
   const [privacyMessage, setPrivacyMessage] = useState<PrivacyMessage>('');
-  const goBack = () => section === 'main' ? onClose() : setSection(section === 'theme' ? 'appearance' : 'main');
+  const goBack = () => {
+    if (changingLockRef.current) return;
+    if (section === 'main') onClose(); else setSection(section === 'theme' ? 'appearance' : 'main');
+  };
   useEffect(() => {
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => { goBack(); return true; });
     return () => subscription.remove();
   }, [section, onClose]);
   async function toggleLock() {
-    if (changingLock || !privacy.settingsReady) return;
+    if (changingLockRef.current || !privacy.settingsReady) return;
+    changingLockRef.current = true;
     setChangingLock(true); setPrivacyMessage('');
     const target = !privacy.appLockEnabled;
     try {
       const changed = await privacy.setAppLockEnabled(target);
       setPrivacyMessage(changed ? target ? 'enabled' : 'disabled' : target ? 'enableFailed' : 'disableFailed');
     } catch { setPrivacyMessage(target ? 'enableFailed' : 'disableFailed'); }
-    finally { setChangingLock(false); }
+    finally { changingLockRef.current = false; setChangingLock(false); }
   }
   async function chooseDelay(seconds: LockDelaySeconds) {
-    if (changingLock || !privacy.settingsReady) return;
+    if (changingLockRef.current || !privacy.settingsReady) return;
+    changingLockRef.current = true;
     setChangingLock(true); setPrivacyMessage('');
     try { await privacy.setLockDelaySeconds(seconds); }
     catch { setPrivacyMessage('delayFailed'); }
-    finally { setChangingLock(false); }
+    finally { changingLockRef.current = false; setChangingLock(false); }
   }
   function action(label: string, onPress: () => void, detail?: string) {
     return <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={styles.row}>
@@ -65,7 +71,7 @@ export function SettingsPanel({ displayName, role = '', onClose, onEditProfile, 
   const heading = section === 'main' ? c.title : c[section];
   return <Screen><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
     <AppHeader onBack={goBack} backLabel={section === 'main' ? 'AI Memory' : c.back}
-      accessibilityLabel={section === 'main' ? c.close : c.back} title={heading} />
+      accessibilityLabel={section === 'main' ? c.close : c.back} title={heading} backDisabled={changingLock} />
     {section === 'main' && <>
       <Text style={styles.meta}>{c.intro}</Text>
       <View style={styles.card}>{action(c.profile, onEditProfile, displayName + (role.trim() ? ' · ' + role : ''))}</View>
@@ -109,11 +115,14 @@ export function SettingsPanel({ displayName, role = '', onClose, onEditProfile, 
     {section === 'security' && <View style={styles.card}>
       <View style={styles.row}><View style={styles.flex}><Text style={styles.text}>{c.appLock}</Text>
         <Text style={styles.meta}>{privacy.appLockEnabled ? c.lockOn : c.lockOff}</Text></View>
-        <Pressable accessibilityRole="switch" accessibilityLabel={c.appLock}
+        <View style={styles.switch}>
+        <Switch accessibilityRole="switch" accessibilityLabel={c.appLock}
           accessibilityState={{ checked: privacy.appLockEnabled, disabled: changingLock || !privacy.settingsReady }}
-          disabled={changingLock || !privacy.settingsReady} onPress={() => { void toggleLock(); }} style={styles.switch}>
-          <Text style={styles.link}>{privacy.appLockEnabled ? '●' : '○'}</Text>
-        </Pressable></View>
+          value={privacy.appLockEnabled} disabled={changingLock || !privacy.settingsReady}
+          trackColor={{ false: appearance.theme.colors.controlBorder, true: appearance.theme.colors.accent }}
+          thumbColor={appearance.theme.colors.surface} ios_backgroundColor={appearance.theme.colors.controlBorder}
+          onValueChange={() => { void toggleLock(); }} />
+        </View></View>
       {privacy.appLockEnabled && <><Text style={styles.text}>{c.delay}</Text><Text style={styles.meta}>{c.delayBody}</Text>
         {delayOptions.map(([seconds, label]) => choice(label, privacy.lockDelaySeconds === seconds,
           changingLock || !privacy.settingsReady, () => { void chooseDelay(seconds); }))}

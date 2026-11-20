@@ -12,6 +12,7 @@ const languageModel = loadPure('src/i18n/languageStore.ts');
 async function screen(initialLanguage = 'en') {
   const raw = new Map(), writes = [];
   let fail = false, dirty = false, cursor = 0, pending = [], output, backHandler, closeCount = 0, authenticationCount = 0;
+  let authenticate = async () => false;
   const slots = [], effects = [];
   const storage = { async getItem(key) { return raw.get(key) ?? null; },
     async setItem(key, value) { if (fail) throw Error('Synthetic full disk'); raw.set(key, value); writes.push(key); } };
@@ -25,6 +26,7 @@ async function screen(initialLanguage = 'en') {
     createElement: (type, props, ...children) => ({ type, props: { ...props, children } }), Fragment: 'Fragment',
     useState(initial) { const i = cursor++; if (!(i in slots)) slots[i] = typeof initial === 'function' ? initial() : initial;
       return [slots[i], next => { slots[i] = typeof next === 'function' ? next(slots[i]) : next; dirty = true; }]; },
+    useRef(initial) { return slots[cursor++] ??= { current: initial }; },
     useEffect(callback, deps) { const i = cursor++, prior = effects[i];
       if (!prior || deps.some((d, j) => !Object.is(d, prior.deps[j]))) pending.push(() => { prior?.cleanup?.(); effects[i] = { deps, cleanup: callback() }; }); },
   };
@@ -34,7 +36,7 @@ async function screen(initialLanguage = 'en') {
   const themes = { useTheme: () => ({ ...appearance.getState(), theme: selectedTheme(), mode: appearance.getState().preference ?? 'classic',
     changeMode: next => appearance.save(next, appearance.getState()), reload: appearance.reload }) };
   const styles = { useThemedStyles: create => create(selectedTheme()) };
-  const native = Object.fromEntries(['Pressable', 'ScrollView', 'Text', 'View'].map(name => [name, name]));
+  const native = Object.fromEntries(['Pressable', 'ScrollView', 'Text', 'View', 'Switch'].map(name => [name, name]));
   native.StyleSheet = { create: x => x }; native.BackHandler = { addEventListener(_name, callback) { backHandler = callback; return { remove() { backHandler = null; } }; } };
   function load(file, imports) {
     const module = { exports: {} };
@@ -48,7 +50,7 @@ async function screen(initialLanguage = 'en') {
   const boundary = load('src/components/ui/Screen.tsx', { ...shared,
     'react-native-safe-area-context': { SafeAreaView: 'NativeSafeArea' }, '../../theme/ThemeProvider': themes });
   const privacy = { appLockEnabled: true, lockDelaySeconds: 0, settingsReady: true,
-    async setAppLockEnabled() { authenticationCount++; return false; }, async setLockDelaySeconds(value) { privacy.lockDelaySeconds = value; }, lockNow() {} };
+    async setAppLockEnabled(target) { authenticationCount++; const changed = await authenticate(target); if (changed) privacy.appLockEnabled = target; return changed; }, async setLockDelaySeconds(value) { privacy.lockDelaySeconds = value; }, lockNow() {} };
   const Settings = load('src/components/SettingsPanel.tsx', { ...shared, './ui/AppHeader': header, './ui/Screen': boundary,
     '../i18n/LanguageProvider': i18n, '../theme/ThemeProvider': themes, '../theme/useThemedStyles': styles,
     '../theme/tokens': loadPure('src/theme/tokens.ts'), '../../app.json': { __esModule: true, default: require('../app.json') },
@@ -69,8 +71,10 @@ async function screen(initialLanguage = 'en') {
     get nodes() { return expand(output); }, get copy() { return catalog[selectedLanguage()]; }, appearance, language, writes, raw,
     get closes() { return closeCount; }, get authentications() { return authenticationCount; },
     fail(value) { fail = value; }, async flush() { await flush(); },
-    async press(label) { const node = expand(output).find(n => n.props.accessibilityLabel === label && n.type === 'Pressable');
-      assert.ok(node, 'Missing ' + label); assert.notEqual(node.props.disabled, true, 'Disabled ' + label); await node.props.onPress(); await flush(); },
+    authenticate(callback) { authenticate = callback; },
+    async press(label) { const node = expand(output).find(n => n.props.accessibilityLabel === label && ['Pressable', 'Switch'].includes(n.type));
+      assert.ok(node, 'Missing ' + label); assert.notEqual(node.props.disabled, true, 'Disabled ' + label);
+      if (node.type === 'Switch') node.props.onValueChange(!node.props.value); else await node.props.onPress(); await flush(); },
     async back() { assert.equal(backHandler(), true); await flush(); },
     unmount() { effects.forEach(effect => effect?.cleanup?.()); },
   };
@@ -101,4 +105,22 @@ test('Settings keeps confirmed theme on failed storage, exposes reload and does 
   ui.fail(false); await ui.press(c.reload); assert.equal(ui.appearance.getState().status, 'ready');
   await ui.back(); await ui.back(); await ui.press(c.security); await ui.press(c.appLock);
   assert.equal(ui.authentications, 1); assert.ok(ui.nodes.find(n => n.props.accessibilityLabel === c.appLock).props.accessibilityState.checked);
+});
+
+for (const outcome of ['cancelled', 'failed']) test(`native App Lock Switch retains confirmed state after ${outcome}; duplicate events request one authentication`, async t => {
+  const ui = await screen(); t.after(ui.unmount); const c = ui.copy.ui.settings;
+  await ui.press(c.security);
+  const toggle = ui.nodes.find(node => node.type === 'Switch' && node.props.accessibilityLabel === c.appLock);
+  assert.ok(toggle); assert.equal(toggle.props.value, true); assert.equal(toggle.props.accessibilityState.checked, true);
+  const wrapper = ui.nodes.find(node => node.type === 'View' && node.props.children?.includes(toggle));
+  assert.ok(wrapper); assert.equal(wrapper.props.style.minHeight, 48); assert.equal(wrapper.props.style.minWidth, 48);
+  let settle;
+  ui.authenticate(() => new Promise((resolve, reject) => { settle = () => outcome === 'failed' ? reject(Error('Synthetic authentication failure')) : resolve(false); }));
+  toggle.props.onValueChange(false); toggle.props.onValueChange(false); await ui.flush();
+  assert.equal(ui.authentications, 1); assert.equal(ui.nodes.find(node => node.type === 'Switch').props.disabled, true);
+  await ui.back(); assert.ok(ui.nodes.some(node => node.type === 'Switch'), 'Back stays inside security while authentication is pending');
+  settle(); await ui.flush();
+  const confirmed = ui.nodes.find(node => node.type === 'Switch');
+  assert.equal(confirmed.props.value, true); assert.equal(confirmed.props.accessibilityState.checked, true); assert.equal(confirmed.props.disabled, false);
+  assert.ok(ui.nodes.some(node => node.type === 'Text' && node.props.children.includes(c.disableFailed)));
 });

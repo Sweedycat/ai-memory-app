@@ -10,7 +10,12 @@ const STORAGE_KEY = '@ai-memory/people-v1';
 // failed, unsaved changes remain available in memory until an explicit retry.
 const writer = createMemorySaveQueue(value => AsyncStorage.setItem(STORAGE_KEY, value));
 
-export type PeopleSaveState = { status: MemorySaveStatus; retry: () => void };
+export type PeopleSaveState = {
+  status: MemorySaveStatus;
+  getStatus: () => MemorySaveStatus;
+  retry: () => void;
+  confirm: (next: MemoryPerson[], signal?: AbortSignal) => Promise<boolean>;
+};
 
 export function usePersistentPeople(
   initialPeople: MemoryPerson[],
@@ -62,5 +67,9 @@ export function usePersistentPeople(
   }, [isReady, people]);
 
   const retry = useCallback(() => { if (isReady && !loadError) writer.retry(); }, [isReady, loadError]);
-  return [people, setPeople, isReady, loadError, { status: saveStatus, retry }];
+  const confirm = useCallback((next: MemoryPerson[], signal?: AbortSignal) => {
+    if (!isReady || loadError || observed.current !== next) return Promise.resolve(false);
+    return writer.waitFor(JSON.stringify(next), signal);
+  }, [isReady, loadError]);
+  return [people, setPeople, isReady, loadError, { status: saveStatus, getStatus: writer.getStatus, retry, confirm }];
 }

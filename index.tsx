@@ -1,6 +1,6 @@
 import React from 'react';
-import { KeyboardAvoidingView, Platform, StatusBar, StyleSheet } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { KeyboardAvoidingView, Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { registerRootComponent } from 'expo';
 
 import App from './App';
@@ -22,17 +22,23 @@ function RootContent() {
       behavior={Platform.OS === 'android' ? 'height' : undefined}
     >
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-      <PrivacyGate>
-        <OwnerProfileGate>
-          <NotebookBoundary><App /></NotebookBoundary>
-        </OwnerProfileGate>
-      </PrivacyGate>
+      <SafeAreaView edges={['top', 'right', 'bottom', 'left']} style={styles.root}>
+        {/* Clip the viewport, not just scroll content: overscroll must stay inside system bars. */}
+        <View style={styles.viewport}>
+          <PrivacyGate>
+            <OwnerProfileGate>
+              <NotebookBoundary><App /></NotebookBoundary>
+            </OwnerProfileGate>
+          </PrivacyGate>
+        </View>
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  viewport: { flex: 1, overflow: 'hidden' },
 });
 
 registerRootComponent(Root);

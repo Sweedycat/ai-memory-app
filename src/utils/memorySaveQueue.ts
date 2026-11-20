@@ -7,6 +7,9 @@ export function createMemorySaveQueue(write: (value: string) => Promise<void>) {
   let pending: string | null = null;
   let running = false;
   let idle: Promise<void> = Promise.resolve();
+  let acknowledged: string | null = null;
+  let inFlight: string | null = null;
+  const acknowledgements = new Set<{ value: string; finish: (saved: boolean) => void }>();
   const listeners = new Set<(status: MemorySaveStatus) => void>();
 
   function publish(next: MemorySaveStatus) {
@@ -23,8 +26,13 @@ export function createMemorySaveQueue(write: (value: string) => Promise<void>) {
       try {
         while (pending !== null) {
           const value = pending;
+          inFlight = value;
           publish('saving');
           await write(value);
+          acknowledged = value;
+          for (const waiter of [...acknowledgements]) {
+            if (waiter.value === value) waiter.finish(pending === value);
+          }
           if (pending === value) pending = null;
         }
         publish('idle');
@@ -33,6 +41,10 @@ export function createMemorySaveQueue(write: (value: string) => Promise<void>) {
         // Retrying a replacement is idempotent even if acknowledgement failed.
         publish('error');
       } finally {
+        inFlight = null;
+        for (const waiter of [...acknowledgements]) {
+          if (waiter.value !== pending) waiter.finish(false);
+        }
         running = false;
       }
     });
@@ -41,10 +53,33 @@ export function createMemorySaveQueue(write: (value: string) => Promise<void>) {
   return {
     enqueue(value: string) {
       pending = value;
+      for (const waiter of [...acknowledgements]) {
+        if (waiter.value !== value && waiter.value !== inFlight) waiter.finish(false);
+      }
       if (status !== 'error') start();
     },
+    // A failed adapter acknowledgement is ambiguous. Keep waiting through an
+    // explicit retry of these exact final-record bytes; never replay UI/native
+    // side effects. Abort only detaches this caller, not the queued write.
+    waitFor(value: string, signal?: AbortSignal): Promise<boolean> {
+      if (signal?.aborted) return Promise.resolve(false);
+      if (pending === null && acknowledged === value) return Promise.resolve(true);
+      if (pending !== value && inFlight !== value) return Promise.resolve(false);
+      return new Promise(resolve => {
+        const abort = () => waiter.finish(false);
+        const waiter = { value, finish(saved: boolean) {
+          acknowledgements.delete(waiter);
+          signal?.removeEventListener('abort', abort);
+          resolve(saved);
+        } };
+        acknowledgements.add(waiter);
+        signal?.addEventListener('abort', abort, { once: true });
+      });
+    },
     retry() { start(); },
-    getStatus: () => status,
+    // enqueue schedules the adapter on a microtask. Expose pending intent as
+    // saving immediately so callers cannot mutate during that render gap.
+    getStatus: (): MemorySaveStatus => status === 'idle' && pending !== null ? 'saving' : status,
     getPending: () => pending,
     whenIdle: () => idle,
     subscribe(listener: (status: MemorySaveStatus) => void) {

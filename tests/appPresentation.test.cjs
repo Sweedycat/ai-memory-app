@@ -41,6 +41,8 @@ function presentation({ language = 'en', mode = 'classic', ready = true, loadErr
     'src/i18n/LanguageProvider': { useI18n: () => ({ language: selectedLanguage,
       locale: selectedLanguage === 'tr' ? 'tr-TR' : 'en-US', copy: {
         app: load('src/i18n/catalogs/app')[selectedLanguage === 'tr' ? 'appTr' : 'appEn'],
+        navigation: load('src/i18n/catalogs/navigation')[selectedLanguage === 'tr' ? 'navigationTr' : 'navigationEn'],
+        timeEntry: load('src/i18n/catalogs/timeEntry')[selectedLanguage === 'tr' ? 'timeEntryTr' : 'timeEntryEn'],
         lifeAdmin: load('src/strings/lifeAdmin')[selectedLanguage === 'tr' ? 'lifeAdminTr' : 'lifeAdminEn'],
         assistant: load('src/strings/assistant')[selectedLanguage === 'tr' ? 'assistantTr' : 'assistantEn'],
       } }) },
@@ -50,7 +52,7 @@ function presentation({ language = 'en', mode = 'classic', ready = true, loadErr
     'src/data/mockPeople': { mockPeople: [fixture] },
     'src/hooks/usePersistentPeople': { usePersistentPeople: () => [[fixture], () => {
       throw Error('Presentation checks must not write personal records');
-    }, ready, loadError, { status: 'saved' }] },
+    }, ready, loadError, { status: 'idle', getStatus: () => 'idle' }] },
     'src/utils/followUpNotifications': { cancelFollowUpNotification: noop, scheduleFollowUpNotification: noop },
   };
   for (const name of ['MemorySaveNotice', 'DailyBriefingCard', 'LifeAdminPanel', 'GroundedAssistantPanel', 'NotebookPanel', 'PersonHistory']) {
@@ -114,14 +116,14 @@ function presentation({ language = 'en', mode = 'classic', ready = true, loadErr
 }
 
 for (const language of ['en', 'tr']) for (const mode of ['classic', 'modern', 'light', 'dark']) {
-  test(`App renders ${language} home, detail and form using free ${mode} tokens and real safe insets`, () => {
+  test(`App renders ${language} home, detail and form using free ${mode} tokens inside the shared root viewport`, () => {
     const original = JSON.stringify(fixture), ui = presentation({ language, mode }), c = ui.copy(), theme = ui.theme();
     assert.ok(ui.text().includes(c.heroTitle));
     assert.ok(ui.nodes().some(node => node.props.accessibilityLabel === c.openSettings));
     assert.equal(ui.nodes()[0].props.style.backgroundColor, theme.colors.background);
     const scroll = ui.nodes().find(node => node.type === 'ScrollView');
     assert.equal(scroll.props.contentContainerStyle[0].paddingHorizontal, 20);
-    assert.deepEqual(scroll.props.contentContainerStyle[1], { paddingTop: 43, paddingBottom: 41 });
+    assert.deepEqual(scroll.props.contentContainerStyle[1], { paddingTop: 12, paddingBottom: 24 });
     const search = ui.nodes().find(node => node.type === 'TextInput');
     assert.equal(search.props.placeholder, c.searchPlaceholder);
     assert.equal(search.props.placeholderTextColor, theme.colors.textMuted);

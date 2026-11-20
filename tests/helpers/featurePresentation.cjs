@@ -1,6 +1,7 @@
 const { loadPure, presentationImports } = require('./presentation.cjs');
 const { catalog } = loadPure('src/i18n/catalog.ts');
 const { THEMES } = loadPure('src/theme/tokens.ts');
+const { bindNavigation } = require('./navigation.cjs');
 
 // The context is mutable to simulate language/theme changes without remounting.
 function createPresentation(load, react, native, { language = 'en', mode = 'classic' } = {}) {
@@ -13,6 +14,8 @@ function createPresentation(load, react, native, { language = 'en', mode = 'clas
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
     '../../theme/useThemedStyles': contexts['../theme/useThemedStyles'],
   });
-  return { imports: contexts, state, catalog, THEMES };
+  const navigation = bindNavigation(load, react, native, contexts['../i18n/LanguageProvider']);
+  contexts['../hooks/useUnsavedChanges'] = navigation.module;
+  return { imports: contexts, state, catalog, THEMES, navigation };
 }
 module.exports = { createPresentation, pureSource: loadPure, catalog, THEMES };

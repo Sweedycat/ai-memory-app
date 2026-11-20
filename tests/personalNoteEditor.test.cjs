@@ -1,4 +1,4 @@
-const { createPresentation } = require('./helpers/featurePresentation.cjs');
+const { createPresentation, catalog } = require('./helpers/featurePresentation.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -14,8 +14,9 @@ function load(file, imports = {}) {
   return local.exports;
 }
 const copy = load('src/strings/notebookEditor.en.ts').notebookEditorEn;
+const navigation = catalog.en.navigation;
 const target = { kind: 'create', id: h.note.id, createdAt: h.note.createdAt };
-function renderEditor(editor, initialState = 'active') {
+function renderEditor(editor, initialState = 'active', language = 'en') {
   const slots = [], effects = [];
   let cursor = 0, dirty = false, output, mounted = true, closed = 0, saved = 0, listener, back;
   const state = { currentState: initialState, addEventListener: (_, callback) => {
@@ -37,7 +38,7 @@ function renderEditor(editor, initialState = 'active') {
   const native = Object.fromEntries(['Pressable', 'ScrollView', 'Text', 'TextInput', 'View'].map(name => [name, name]));
   native.AppState = state; native.StyleSheet = { create: value => value };
   native.BackHandler = { addEventListener: (_, callback) => { back = callback; return { remove() { back = undefined; } }; } };
-  const presentation = createPresentation(load, react, native);
+  const presentation = createPresentation(load, react, native, { language });
   const component = load('src/components/PersonalNoteEditor.tsx', {
     ...presentation.imports,
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
@@ -88,7 +89,7 @@ test('uncheckpointed close requires confirmation and background immediately hide
   const ui = renderEditor(create(w, target, () => h.note.updatedAt));
   ui.find('TextInput', copy.bodyLabel).props.onChangeText(h.note.body); await ui.flush();
   ui.find('Pressable', copy.close).props.onPress(); await ui.flush(); assert.equal(ui.closed, 0);
-  ui.find('Pressable', copy.stay).props.onPress(); await ui.flush();
+  ui.find('Pressable', navigation.stay).props.onPress(); await ui.flush();
   ui.background(); await ui.flush();
   assert.equal(ui.nodes.filter(node => node.type === 'TextInput').length, 0);
   assert.ok(!JSON.stringify(ui.nodes).includes(h.note.body));
@@ -126,14 +127,14 @@ test('uncertain and unpersisted recovery close require confirmation and never pr
   ui.find('Pressable', copy.save).props.onPress(); await ui.flush();
   assert.equal(editor.getView().mode, 'uncertain');
   ui.find('Pressable', copy.close).props.onPress(); await ui.flush();
-  assert.equal(ui.closed, 0); ui.find('Pressable', copy.stay).props.onPress(); await ui.flush();
+  assert.equal(ui.closed, 0); ui.find('Pressable', navigation.stay).props.onPress(); await ui.flush();
   f.database.replace = replace;
   ui.find('Pressable', copy.review).props.onPress(); await ui.flush();
   assert.equal(editor.getView().mode, 'recoverable'); assert.equal(editor.getView().checkpointed, false);
   assert.equal(ui.nodes.some(node => node.props?.accessibilityLabel === copy.protectedClose), false);
   ui.find('Pressable', copy.close).props.onPress(); await ui.flush();
   assert.equal(ui.closed, 0);
-  ui.find('Pressable', copy.confirmClose).props.onPress(); assert.equal(ui.closed, 1);
+  ui.find('Pressable', navigation.discard).props.onPress(); await ui.flush(); assert.equal(ui.closed, 1);
   assert.equal((await f.database.read()).draft, null); ui.unmount(); w.close();
 });
 
@@ -146,7 +147,7 @@ test('failed checkpoint with hidden fields still protects dirty in-memory text o
   assert.equal(editor.getView().mode, 'unavailable'); assert.equal(editor.getView().dirty, true);
   ui.find('Pressable', copy.close).props.onPress(); await ui.flush();
   assert.equal(ui.closed, 0);
-  ui.find('Pressable', copy.stay).props.onPress(); await ui.flush();
+  ui.find('Pressable', navigation.stay).props.onPress(); await ui.flush();
   f.database.replace = replace;
   ui.find('Pressable', copy.review).props.onPress(); await ui.flush();
   assert.equal(editor.getView().body, h.note.body); ui.unmount(); w.close();
@@ -157,9 +158,56 @@ test('Android hardware Back asks about dirty text; repeated Back cancels instead
   const ui = renderEditor(create(w, target, () => h.note.updatedAt));
   ui.find('TextInput', copy.bodyLabel).props.onChangeText(h.note.body); await ui.flush();
   assert.equal(ui.back(), true); await ui.flush();
-  ui.find('Pressable', copy.confirmClose); assert.equal(ui.closed, 0);
+  ui.find('Pressable', navigation.discard); assert.equal(ui.closed, 0);
   ui.back(); await ui.flush(); assert.equal(ui.closed, 0);
-  assert.equal(ui.nodes.some(node => node.props?.accessibilityLabel === copy.confirmClose), false);
-  ui.back(); await ui.flush(); ui.find('Pressable', copy.confirmClose).props.onPress();
+  assert.equal(ui.nodes.some(node => node.props?.accessibilityLabel === navigation.discard), false);
+  ui.back(); await ui.flush(); ui.find('Pressable', navigation.discard).props.onPress(); await ui.flush();
   assert.equal(ui.closed, 1); ui.unmount(); w.close();
+});
+
+test('unchanged new and existing Notebook editors close directly without storage writes',async t=>{
+  const f=await h.fixture(t),w=await f.open();
+  const empty=renderEditor(create(w,target,()=>h.note.updatedAt));empty.find('Pressable',copy.close).props.onPress();
+  assert.equal(empty.closed,1);assert.equal((await f.database.read()).draft,null);empty.unmount();
+  await w.getSession().save(h.note,null);const before=JSON.stringify(await f.database.read());
+  const existing=renderEditor(create(w,{kind:'edit',id:h.note.id},()=>h.note.updatedAt));existing.back();await existing.flush();
+  assert.equal(existing.closed,1);assert.equal(JSON.stringify(await f.database.read()),before);existing.unmount();w.close();
+});
+
+for(const language of ['en','tr'])test('localized three-way editor exit saves exactly once before success callback: '+language,async t=>{
+  const f=await h.fixture(t),w=await f.open(),editor=create(w,target,()=>h.note.updatedAt);
+  const ui=renderEditor(editor,'active',language),c=catalog[language].ui.notebookEditor,n=catalog[language].navigation;
+  ui.find('TextInput',c.bodyLabel).props.onChangeText(h.note.body);await ui.flush();ui.back();await ui.flush();
+  ui.find('Pressable',n.stay).props.onPress();await ui.flush();assert.equal(ui.find('TextInput',c.bodyLabel).props.value,h.note.body);
+  ui.back();await ui.flush();ui.find('Pressable',n.discard);
+  const save=ui.find('Pressable',n.saveExit).props.onPress,discard=ui.find('Pressable',n.discard).props.onPress;save();discard();save();await ui.flush();
+  assert.equal(ui.saved,1);assert.equal(ui.closed,0);assert.equal(w.getSession().snapshot()[0].body,h.note.body);
+  assert.equal((await f.database.read()).draft,null);ui.unmount();w.close();
+});
+
+test('failed save-and-exit and failed authenticated journal discard retain the recovery until retry succeeds',async t=>{
+  const f=await h.fixture(t),w=await f.open(),replace=f.database.replace;
+  const editor=create(w,target,()=>h.note.updatedAt),ui=renderEditor(editor);
+  ui.find('TextInput',copy.bodyLabel).props.onChangeText(h.note.body);await ui.flush();ui.back();await ui.flush();
+  f.database.replace=async(expected,next)=>{if(next.draft===null)throw Error('Synthetic full disk clearing journal');return replace(expected,next);};
+  ui.find('Pressable',navigation.saveExit).props.onPress();await ui.flush();
+  assert.equal(ui.saved,0);assert.equal(ui.closed,0);assert.ok((await f.database.read()).draft);
+  assert.ok(ui.nodes.some(n=>n.type==='Text'&&n.props.children.includes(navigation.failedBody)));
+  ui.find('Pressable',navigation.discard).props.onPress();await ui.flush();
+  assert.equal(ui.closed,0);assert.ok((await f.database.read()).draft);
+  f.database.replace=replace;ui.find('Pressable',navigation.discard).props.onPress();await ui.flush();
+  assert.equal(ui.closed,1);assert.equal(ui.saved,0);assert.equal((await f.database.read()).draft,null);assert.equal((await f.database.read()).active,null);
+  ui.unmount();w.close();
+});
+
+test('save-and-exit cannot overwrite an externally changed Notebook revision',async t=>{
+  const f=await h.fixture(t),w=await f.open();await w.getSession().save(h.note,null);
+  const editor=create(w,{kind:'edit',id:h.note.id},()=>h.note.updatedAt),ui=renderEditor(editor);
+  ui.find('TextInput',copy.bodyLabel).props.onChangeText('Synthetic unsaved older edit');await ui.flush();
+  const newer=await f.open();await newer.getSession().save({...h.note,body:'Synthetic newer saved revision'},h.note);newer.close();
+  const before=JSON.stringify(await f.database.read());ui.back();await ui.flush();ui.find('Pressable',navigation.saveExit).props.onPress();await ui.flush();
+  assert.equal(ui.saved,0);assert.equal(ui.closed,0);assert.equal(JSON.stringify(await f.database.read()),before);
+  ui.find('Pressable',copy.review).props.onPress();await ui.flush();assert.equal(editor.getView().mode,'conflict');
+  assert.equal(ui.find('Pressable',navigation.saveExit).props.disabled,true);
+  assert.equal(editor.getView().body,'Synthetic unsaved older edit');ui.unmount();w.close();
 });

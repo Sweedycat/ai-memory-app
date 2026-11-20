@@ -15,10 +15,10 @@
     ]
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-20T20:45:06.779Z",
+  "updatedAt": "2026-11-20T20:58:30.484Z",
   "branch": "development/omega-commercial-mvp",
   "sourceCheckpoint": "83214faab9125a237b256b6fb03005bc2078447a",
-  "workingTree": "Local V3.2 repair source/tests survive on disk. Do not discard/reset or restart implemented work. Read workUnit ownership/checks, inspect actual diff and finish verification; current public source checkpoint is 83214faab9125a237b256b6fb03005bc2078447a.",
+  "workingTree": "V3.2 repair source/tests included in this checkpoint; no discarded owner data or work.",
   "evidenceProvenance": "Historical A/B1 evidence supplied by Principal and records; no historical rerun/network by registry writer. Current custom Product & Release Engineer invocation confirmed by Principal.",
   "states": [
     "PENDING",
@@ -341,10 +341,10 @@
         "B1 foundation verified; interrupted B2 WIP preserved."
       ],
       "remaining": [
-        "Complete bounded B2 integration and focused gates."
+        "Corrected B2 source implemented/reviewed; integrated release verification, exact-SHA CI, corrected APK and founder acceptance remain."
       ],
       "blockers": [
-        "B2 WIP untested/unreviewed/no APK."
+        "B2 is not accepted; corrected artifact not built."
       ],
       "sourceSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
       "evidence": {
@@ -361,8 +361,8 @@
         ],
         "independentReview": []
       },
-      "nextAction": "After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting.",
-      "updatedAt": "2026-11-20T20:15:59.772Z",
+      "nextAction": "Complete missing verification from the surviving V3.2 checkpoint, then hosted artifact and targeted acceptance.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "description": "Bilingual app, five free appearances and functional Settings",
       "deviceAcceptance": {
         "required": true,
@@ -682,9 +682,11 @@
         "Founder reports tested keyboard/back/large-font paths passed; global bars failed."
       ],
       "remaining": [
-        "Repair BUG-B2-001,BUG-B2-004,BUG-B2-005 and UX-B2-001/002; targeted founder reacceptance."
+        "Corrected B2 source implemented/reviewed; integrated release verification, exact-SHA CI, corrected APK and founder acceptance remain."
       ],
-      "blockers": [],
+      "blockers": [
+        "B2 is not accepted; corrected artifact not built."
+      ],
       "sourceSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
       "evidence": {
         "automated": [
@@ -703,8 +705,8 @@
         ],
         "independentReview": []
       },
-      "nextAction": "Correct confirmed defects; do not repeat unrelated passed device tests.",
-      "updatedAt": "2026-11-20T03:47:45.370Z",
+      "nextAction": "Complete missing verification from the surviving V3.2 checkpoint, then hosted artifact and targeted acceptance.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "description": "Founder layout/navigation defects (former B3)",
       "deviceAcceptance": {
         "required": true,
@@ -750,11 +752,10 @@
         "Exact-SHA source CI succeeded; one hosted run acknowledged at https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253 from c41410e938004677f0b2a78a70b407bb908ea13b."
       ],
       "remaining": [
-        "Verify exact-SHA CI, prepare hosted APK readiness and verify actual binary.",
-        "Obtain targeted founder physical acceptance; preserve existing sensitive gates."
+        "Corrected B2 source implemented/reviewed; integrated release verification, exact-SHA CI, corrected APK and founder acceptance remain."
       ],
       "blockers": [
-        "Confirmed founder input-loss/system-bar failures and requested digital-time enhancement require repair/new reviewed APK."
+        "B2 is not accepted; corrected artifact not built."
       ],
       "sourceSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
       "evidence": {
@@ -774,8 +775,8 @@
         "implementation": [],
         "independentReview": []
       },
-      "nextAction": "Repair registered B2 defects first; do not mark accepted.",
-      "updatedAt": "2026-11-20T03:50:24.780Z",
+      "nextAction": "Complete missing verification from the surviving V3.2 checkpoint, then hosted artifact and targeted acceptance.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "description": "Review, tests, APK_READY and founder acceptance",
       "deviceAcceptance": {
         "required": true,
@@ -2480,18 +2481,26 @@
         "Successful persistent save before navigation; failed saves retain input and retry without duplicates/stale overwrite",
         "No plaintext draft writes, App Lock weakening or OS-process-death durability claim"
       ],
-      "status": "IN_PROGRESS",
+      "status": "VERIFICATION_PENDING",
       "role": "Principal Architect",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
-      "completed": [],
-      "remaining": [
-        "Complete App and other editable-flow guard children; review/integrate/retest"
+      "completed": [
+        "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings."
       ],
-      "blockers": [],
+      "remaining": [
+        "Confirm final full regression and Doctor evidence; verify published exact-SHA full and portability CI; one hosted APK and targeted founder acceptance."
+      ],
+      "blockers": [
+        "Short-window quota checkpoint; no new corrected APK produced."
+      ],
       "evidence": {
-        "automated": [],
-        "independentReview": [],
+        "automated": [
+          "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive."
+        ],
+        "independentReview": [
+          "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
+        ],
         "ci": [],
         "apk": [],
         "device": [],
@@ -2511,8 +2520,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Complete App and other editable-flow guard children; review/integrate/retest",
-      "updatedAt": "2026-11-20T20:15:59.772Z"
+      "nextAction": "Resume only missing integrated verification, exact-SHA CI, then one authorized free hosted corrected APK; do not restart implementation.",
+      "updatedAt": "2026-11-20T20:58:30.484Z"
     },
     {
       "id": "BUG-B2-001-A",
@@ -2532,16 +2541,22 @@
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
       "completed": [
-        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
+        "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings."
       ],
       "remaining": [
-        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
-        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
+        "Confirm final full regression and Doctor evidence; verify published exact-SHA full and portability CI; one hosted APK and targeted founder acceptance."
       ],
-      "blockers": [],
+      "blockers": [
+        "Short-window quota checkpoint; no new corrected APK produced."
+      ],
       "evidence": {
-        "automated": [],
-        "independentReview": [],
+        "automated": [
+          "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive."
+        ],
+        "independentReview": [
+          "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
+        ],
         "ci": [],
         "apk": [],
         "device": [],
@@ -2559,8 +2574,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
-      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "nextAction": "Resume only missing integrated verification, exact-SHA CI, then one authorized free hosted corrected APK; do not restart implementation.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2581,16 +2596,22 @@
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
       "completed": [
-        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
+        "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings."
       ],
       "remaining": [
-        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
-        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
+        "Confirm final full regression and Doctor evidence; verify published exact-SHA full and portability CI; one hosted APK and targeted founder acceptance."
       ],
-      "blockers": [],
+      "blockers": [
+        "Short-window quota checkpoint; no new corrected APK produced."
+      ],
       "evidence": {
-        "automated": [],
-        "independentReview": [],
+        "automated": [
+          "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive."
+        ],
+        "independentReview": [
+          "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
+        ],
         "ci": [],
         "apk": [],
         "device": [],
@@ -2608,8 +2629,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
-      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "nextAction": "Resume only missing integrated verification, exact-SHA CI, then one authorized free hosted corrected APK; do not restart implementation.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2630,16 +2651,22 @@
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
       "completed": [
-        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
+        "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings."
       ],
       "remaining": [
-        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
-        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
+        "Confirm final full regression and Doctor evidence; verify published exact-SHA full and portability CI; one hosted APK and targeted founder acceptance."
       ],
-      "blockers": [],
+      "blockers": [
+        "Short-window quota checkpoint; no new corrected APK produced."
+      ],
       "evidence": {
-        "automated": [],
-        "independentReview": [],
+        "automated": [
+          "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive."
+        ],
+        "independentReview": [
+          "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
+        ],
         "ci": [],
         "apk": [],
         "device": [],
@@ -2657,8 +2684,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
-      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "nextAction": "Resume only missing integrated verification, exact-SHA CI, then one authorized free hosted corrected APK; do not restart implementation.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2678,16 +2705,22 @@
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
       "completed": [
-        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
+        "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings."
       ],
       "remaining": [
-        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
-        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
+        "Confirm final full regression and Doctor evidence; verify published exact-SHA full and portability CI; one hosted APK and targeted founder acceptance."
       ],
-      "blockers": [],
+      "blockers": [
+        "Short-window quota checkpoint; no new corrected APK produced."
+      ],
       "evidence": {
-        "automated": [],
-        "independentReview": [],
+        "automated": [
+          "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive."
+        ],
+        "independentReview": [
+          "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
+        ],
         "ci": [],
         "apk": [],
         "device": [],
@@ -2704,8 +2737,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
-      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "nextAction": "Resume only missing integrated verification, exact-SHA CI, then one authorized free hosted corrected APK; do not restart implementation.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2727,16 +2760,22 @@
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
       "completed": [
-        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
+        "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings."
       ],
       "remaining": [
-        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
-        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
+        "Confirm final full regression and Doctor evidence; verify published exact-SHA full and portability CI; one hosted APK and targeted founder acceptance."
       ],
-      "blockers": [],
+      "blockers": [
+        "Short-window quota checkpoint; no new corrected APK produced."
+      ],
       "evidence": {
-        "automated": [],
-        "independentReview": [],
+        "automated": [
+          "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive."
+        ],
+        "independentReview": [
+          "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
+        ],
         "ci": [],
         "apk": [],
         "device": [],
@@ -2755,8 +2794,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
-      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "nextAction": "Resume only missing integrated verification, exact-SHA CI, then one authorized free hosted corrected APK; do not restart implementation.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2777,16 +2816,22 @@
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
       "completed": [
-        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
+        "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings."
       ],
       "remaining": [
-        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
-        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
+        "Confirm final full regression and Doctor evidence; verify published exact-SHA full and portability CI; one hosted APK and targeted founder acceptance."
       ],
-      "blockers": [],
+      "blockers": [
+        "Short-window quota checkpoint; no new corrected APK produced."
+      ],
       "evidence": {
-        "automated": [],
-        "independentReview": [],
+        "automated": [
+          "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive."
+        ],
+        "independentReview": [
+          "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
+        ],
         "ci": [],
         "apk": [],
         "device": [],
@@ -2804,8 +2849,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
-      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "nextAction": "Resume only missing integrated verification, exact-SHA CI, then one authorized free hosted corrected APK; do not restart implementation.",
+      "updatedAt": "2026-11-20T20:58:30.484Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2871,20 +2916,27 @@
         "Explicit picker cancellation preserves the existing reminder; invalid/DST-gap clock never silently becomes another valid time",
         "Preserve all scheduling/revision/privacy guards and avoid duplicate alerts"
       ],
-      "status": "IN_PROGRESS",
+      "status": "VERIFICATION_PENDING",
       "role": "Software Engineer",
       "startingSHA": "64b2d064d180f51705949b9279a37e2a9c3994fa",
       "sourceSHA": null,
       "completed": [
-        "Source-level gap identified before independent review; not claimed device reproduction"
+        "Source-level gap identified before independent review; not claimed device reproduction",
+        "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings."
       ],
       "remaining": [
-        "Implement staged picker state/snapshot integration and actual Back/save/cancel/DST regressions"
+        "Confirm final full regression and Doctor evidence; verify published exact-SHA full and portability CI; one hosted APK and targeted founder acceptance."
       ],
-      "blockers": [],
+      "blockers": [
+        "Short-window quota checkpoint; no new corrected APK produced."
+      ],
       "evidence": {
-        "automated": [],
-        "independentReview": [],
+        "automated": [
+          "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive."
+        ],
+        "independentReview": [
+          "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
+        ],
         "ci": [],
         "apk": [],
         "device": [],
@@ -2901,8 +2953,8 @@
       "commercialAcceptance": [
         "No lost reminder edits, silent clock normalization, duplicate schedule or fabricated acceptance"
       ],
-      "nextAction": "Fix the staged picker boundary under single App writer; then re-freeze and review.",
-      "updatedAt": "2026-11-20T20:45:06.779Z"
+      "nextAction": "Resume only missing integrated verification, exact-SHA CI, then one authorized free hosted corrected APK; do not restart implementation.",
+      "updatedAt": "2026-11-20T20:58:30.484Z"
     }
   ],
   "localValidation": {
@@ -2919,31 +2971,58 @@
     "scope": "Local docs/schema validation only; no app tests, review, new CI, build or physical acceptance."
   },
   "delivery": {
-    "state": "APK_VERIFIED",
+    "state": "VERIFICATION_PENDING",
     "implementationSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
     "ci": [
       "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
       "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
     ],
-    "expectedVersion": "0.2.0",
-    "expectedVersionCode": 3,
+    "expectedVersion": "0.3.0",
+    "expectedVersionCode": 4,
     "package": "com.sweedycat.aimemory.githubtest",
     "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
     "workflow": ".github/workflows/android-preview-apk.yml",
-    "trigger": "Previous attempt complete. Do not repeat it. Corrected source requires its own reviewed/CI-verified one-attempt hosted build.",
+    "trigger": "After final required checks and exact-SHA CI, exactly one empty commit subject build: preview APK [APK_READY] on development branch; publish run immediately, no Gradle polling.",
     "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
-    "buildSHA": "c41410e938004677f0b2a78a70b407bb908ea13b",
-    "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253",
+    "buildSHA": null,
+    "runURL": null,
     "installedCompatibility": "UNVERIFIED",
     "physicalAcceptance": "NOT_ACCEPTED",
-    "observedWorkflowStatus": "in_progress",
-    "artifactURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253/artifacts/14600286231",
-    "artifactId": 14600286231,
+    "observedWorkflowStatus": "NOT_TRIGGERED",
+    "artifactURL": null,
+    "artifactId": null,
     "runResult": "success",
-    "verificationLevel": "Actual CI aapt/apksigner/sha256sum logs and artifact metadata; no independent binary download yet",
+    "verificationLevel": "Historical0.2/code3 artifact verified; corrected0.3/code4 not built.",
     "apkSha256": "cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6",
     "artifactZipDigest": "sha256:8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5",
-    "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository."
+    "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository.",
+    "historicalArtifact": {
+      "state": "APK_VERIFIED",
+      "implementationSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
+      "ci": [
+        "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
+        "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
+      ],
+      "expectedVersion": "0.2.0",
+      "expectedVersionCode": 3,
+      "package": "com.sweedycat.aimemory.githubtest",
+      "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+      "workflow": ".github/workflows/android-preview-apk.yml",
+      "trigger": "Previous attempt complete. Do not repeat it. Corrected source requires its own reviewed/CI-verified one-attempt hosted build.",
+      "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
+      "buildSHA": "c41410e938004677f0b2a78a70b407bb908ea13b",
+      "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253",
+      "installedCompatibility": "UNVERIFIED",
+      "physicalAcceptance": "NOT_ACCEPTED",
+      "observedWorkflowStatus": "in_progress",
+      "artifactURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253/artifacts/14600286231",
+      "artifactId": 14600286231,
+      "runResult": "success",
+      "verificationLevel": "Actual CI aapt/apksigner/sha256sum logs and artifact metadata; no independent binary download yet",
+      "apkSha256": "cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6",
+      "artifactZipDigest": "sha256:8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5",
+      "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository."
+    }
   },
   "latestPublishedCheckpoint": "c41410e938004677f0b2a78a70b407bb908ea13b",
   "founderDeviceEvidence": {
@@ -2993,39 +3072,43 @@
   "workUnit": {
     "baselineSHA": "83214faab9125a237b256b6fb03005bc2078447a",
     "tasks": [
+      "BUG-B2-001",
       "BUG-B2-001-A",
       "BUG-B2-001-B",
       "BUG-B2-004",
       "BUG-B2-005",
+      "BUG-B2-006",
       "UX-B2-001",
       "UX-B2-002"
     ],
-    "state": "Implementation exists in local working tree; focused regression and independent review still in progress. No corrected APK/version assigned.",
+    "state": "Implementation frozen and independently reviewed; release verification pending quota-safe continuation.",
     "ownership": {
       "Principal": "Shared navigation hook/catalog,Profile/BugReport/Settings,registry/integration",
       "SoftwareEngineer": "App/People persistence ACK/input fencing and related tests; additional parent-flow tests only",
       "AndroidEngineer": "Root/safe viewport,digital entry,Life/Notebook UI and corresponding tests"
     },
     "checks": [
-      "Android first unit34focused passed, source/typecheck passed",
-      "App/People54focused passed including pending-writer remount chain",
-      "Parent existing Profile/BugReport/Settings21focused passed",
-      "Android second unit62focused passed; final typecheck result pending"
+      "Final strict TypeScript exit0",
+      "Parent47/47 focused pass; App84 and final affected58 pass; Life42 pass (overlap, do not sum)",
+      "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct."
     ],
     "remaining": [
-      "Finish newly added failure/navigation tests",
-      "Freeze full source diff and obtain qualified independent review",
-      "Full regression/strict TS/Doctor/exact-SHA CI",
-      "Assign next verified version/code; one free hosted APK; binary checks and targeted founder acceptance"
+      "Inspect .tmp-v32-regression.log/session71904 final result; repeat only if incomplete or failed",
+      "Doctor session42113/.tmp-v32-doctor.log completion unavailable; establish missing result safely",
+      "Exact published SHA full and portability CI",
+      "One free hosted APK0.3.0/code4; verify binary; targeted founder acceptance"
     ],
-    "privacy": "No plaintext draft persistence, real migration,Notebookactivation,device access or paid operation."
+    "privacy": "No plaintext draft persistence, real migration,Notebookactivation,device access or paid operation.",
+    "latestContinuationBase": "ec7905d7d998bbed191fbb94930d2d6fa0b94663",
+    "regressionTail": "m\u0000s\u0000)\u0000\r\u0000\n\u0000\u0014' \u0000a\u0000 \u0000s\u0000t\u0000a\u0000l\u0000e\u0000 \u0000r\u0000e\u0000c\u0000o\u0000v\u0000e\u0000r\u0000y\u0000 \u0000d\u0000e\u0000c\u0000i\u0000s\u0000i\u0000o\u0000n\u0000 \u0000i\u0000s\u0000 \u0000r\u0000e\u0000j\u0000e\u0000c\u0000t\u0000e\u0000d\u0000 \u0000t\u0000r\u0000a\u0000n\u0000s\u0000a\u0000c\u0000t\u0000i\u0000o\u0000n\u0000a\u0000l\u0000l\u0000y\u0000 \u0000a\u0000n\u0000d\u0000 \u0000c\u0000a\u0000n\u0000 \u0000b\u0000e\u0000 \u0000r\u0000e\u0000o\u0000p\u0000e\u0000n\u0000e\u0000d\u0000 \u0000f\u0000o\u0000r\u0000 \u0000a\u0000n\u0000o\u0000t\u0000h\u0000e\u0000r\u0000 \u0000r\u0000e\u0000v\u0000i\u0000e\u0000w\u0000 \u0000(\u00009\u00008\u0000.\u00002\u00005\u00003\u00008\u0000m\u0000s\u0000)\u0000\r\u0000\n\u0000\u0014' \u0000i\u0000n\u0000t\u0000e\u0000r\u0000r\u0000u\u0000p\u0000t\u0000e\u0000d\u0000 \u0000d\u0000e\u0000l\u0000e\u0000t\u0000i\u0000o\u0000n\u0000 \u0000r\u0000e\u0000c\u0000o\u0000v\u0000e\u0000r\u0000s\u0000 \u0000a\u0000s\u0000 \u0000a\u0000n\u0000 \u0000e\u0000m\u0000p\u0000t\u0000y\u0000 \u0000c\u0000a\u0000n\u0000d\u0000i\u0000d\u0000a\u0000t\u0000e\u0000;\u0000 \u0000p\u0000r\u0000e\u0000v\u0000i\u0000o\u0000u\u0000s\u0000 \u0000s\u0000n\u0000a\u0000p\u0000s\u0000h\u0000o\u0000t\u0000 \u0000i\u0000s\u0000 \u0000n\u0000e\u0000v\u0000e\u0000r\u0000 \u0000a\u0000u\u0000t\u0000o\u0000-\u0000p\u0000r\u0000o\u0000m\u0000o\u0000t\u0000e\u0000d\u0000 \u0000(\u00001\u00001\u00007\u0000.\u00003\u00009\u00008\u00003\u0000m\u0000s\u0000)\u0000\r\u0000\n\u0000\u0014' \u0000w\u0000r\u0000o\u0000n\u0000g\u0000 \u0000k\u0000e\u0000y\u0000s\u0000 \u0000a\u0000n\u0000d\u0000 \u0000c\u0000o\u0000r\u0000r\u0000u\u0000p\u0000t\u0000 \u0000a\u0000c\u0000t\u0000i\u0000v\u0000e\u0000/\u0000p\u0000r\u0000e\u0000v\u0000i\u0000o\u0000u\u0000s\u0000/\u0000j\u0000o\u0000u\u0000r\u0000n\u0000a\u0000l\u0000 \u0000d\u0000a\u0000t\u0000a\u0000 \u0000f\u0000a\u0000i\u0000l\u0000 \u0000c\u0000l\u0000o\u0000s\u0000e\u0000d\u0000 \u0000w\u0000i\u0000t\u0000h\u0000o\u0000u\u0000t\u0000 \u0000w\u0000r\u0000i\u0000t\u0000i\u0000n\u0000g\u0000 \u0000(\u00001\u00005\u00005\u0000.\u00006\u00002\u00007\u00001\u0000m\u0000s\u0000)\u0000\r\u0000\n\u0000\u0014' \u0000a\u0000u\u0000t\u0000h\u0000e\u0000n\u0000t\u0000i\u0000c\u0000a\u0000t\u0000e\u0000d\u0000 \u0000m\u0000a\u0000l\u0000f\u0000o\u0000r\u0000m\u0000e\u0000d\u0000/\u0000f\u0000o\u0000r\u0000e\u0000i\u0000g\u0000n\u0000/\u0000o\u0000v\u0000e\u0000r\u0000s\u0000i\u0000z\u0000e\u0000d\u0000 \u0000r\u0000e\u0000c\u0000o\u0000v\u0000e\u0000r\u0000y\u0000 \u0000j\u0000o\u0000u\u0000r\u0000n\u0000a\u0000l\u0000s\u0000 \u0000c\u0000a\u0000n\u0000n\u0000o\u0000t\u0000 \u0000e\u0000n\u0000t\u0000e\u0000r\u0000 \u0000r\u0000e\u0000c\u0000o\u0000v\u0000e\u0000r\u0000y\u0000 \u0000(\u00007\u00003\u00008\u0000.\u00005\u00009\u00002\u00007\u0000m\u0000s\u0000)\u0000\r\u0000\n\u0000\u0014' \u0000l\u0000o\u0000c\u0000k\u0000i\u0000n\u0000g\u0000 \u0000d\u0000u\u0000r\u0000i\u0000n\u0000g\u0000 \u0000j\u0000o\u0000u\u0000r\u0000n\u0000a\u0000l\u0000 \u0000s\u0000t\u0000a\u0000g\u0000i\u0000n\u0000g\u0000 \u0000r\u0000e\u0000v\u0000o\u0000k\u0000e\u0000s\u0000 \u0000o\u0000l\u0000d\u0000 \u0000r\u0000e\u0000f\u0000e\u0000r\u0000e\u0000n\u0000c\u0000e\u0000s\u0000 \u0000a\u0000n\u0000d\u0000 \u0000r\u0000e\u0000o\u0000p\u0000e\u0000n\u0000i\u0000n\u0000g\u0000 \u0000d\u0000r\u0000a\u0000i\u0000n\u0000s\u0000 \u0000b\u0000e\u0000f\u0000o\u0000r\u0000e\u0000 \u0000r\u0000e\u0000a\u0000d\u0000i\u0000n\u0000g\u0000 \u0000(\u00007\u00003\u0000.\u00004\u00003\u00002\u00004\u0000m\u0000s\u0000)\u0000\r\u0000\n\u0000\u0014' \u0000f\u0000a\u0000i\u0000l\u0000e\u0000d\u0000 \u0000r\u0000e\u0000o\u0000p\u0000e\u0000n\u0000 \u0000r\u0000e\u0000v\u0000o\u0000k\u0000e\u0000s\u0000 \u0000a\u0000n\u0000 \u0000o\u0000l\u0000d\u0000e\u0000r\u0000 \u0000r\u0000e\u0000c\u0000o\u0000v\u0000e\u0000r\u0000y\u0000 \u0000r\u0000e\u0000v\u0000i\u0000e\u0000w\u0000 \u0000a\u0000n\u0000d\u0000 \u0000p\u0000r\u0000e\u0000s\u0000e\u0000r\u0000v\u0000e\u0000s\u0000 \u0000c\u0000o\u0000r\u0000r\u0000u\u0000p\u0000t\u0000 \u0000a\u0000c\u0000t\u0000i\u0000v\u0000e\u0000/\u0000p\u0000r\u0000e\u0000v\u0000i\u0000o\u0000u\u0000s\u0000/\u0000j\u0000o\u0000u\u0000r\u0000n\u0000a\u0000l\u0000 \u0000e\u0000v\u0000i\u0000d\u0000e\u0000n\u0000c\u0000e\u0000 \u0000(\u00002\u00000\u00009\u0000.\u00008\u00000\u00002\u00005\u0000m\u0000s\u0000)\u0000\r\u0000\n\u0000\u0014' \u0000a\u0000 \u0000f\u0000a\u0000i\u0000l\u0000e\u0000d\u0000 \u0000r\u0000e\u0000c\u0000o\u0000v\u0000e\u0000r\u0000y\u0000 \u0000w\u0000r\u0000i\u0000t\u0000e\u0000 \u0000r\u0000e\u0000v\u0000o\u0000k\u0000e\u0000s\u0000 \u0000r\u0000e\u0000v\u0000i\u0000e\u0000w\u0000 \u0000a\u0000u\u0000t\u0000h\u0000o\u0000r\u0000i\u0000t\u0000y\u0000 \u0000u\u0000n\u0000t\u0000i\u0000l\u0000 \u0000a\u0000n\u0000o\u0000t\u0000h\u0000e\u0000r\u0000 \u0000a\u0000u\u0000t\u0000h\u0000e\u0000n\u0000t\u0000i\u0000c\u0000a\u0000t\u0000e\u0000d\u0000 \u0000r\u0000e\u0000o\u0000p\u0000e\u0000n\u0000 \u0000(\u00007\u00002\u0000.\u00001\u00005\u00009\u00005\u0000m\u0000s\u0000)\u0000\r\u0000\n\u0000\u0014' \u0000a\u0000 \u0000t\u0000e\u0000r\u0000m\u0000i\u0000n\u0000a\u0000t\u0000e\u0000d\u0000 \u0000h\u0000o\u0000s\u0000t\u0000 \u0000p\u0000r\u0000o\u0000c\u0000e\u0000s\u0000s\u0000 \u0000l\u0000e\u0000a\u0000v\u0000e\u0000s\u0000 \u0000o\u0000n\u0000l\u0000y\u0000 \u0000e\u0000n\u0000c\u0000r\u0000y\u0000p\u0000t\u0000e\u0000d\u0000 \u0000i\u0000n\u0000t\u0000e\u0000n\u0000t\u0000 \u0000t\u0000h\u0000a\u0000t\u0000 \u0000c\u0000a\u0000n\u0000 \u0000b\u0000e\u0000 \u0000a\u0000u\u0000t\u0000h\u0000e\u0000n\u0000t\u0000i\u0000c\u0000a\u0000t\u0000e\u0000d\u0000 \u0000a\u0000n\u0000d\u0000 \u0000r\u0000e\u0000v\u0000i\u0000e\u0000w\u0000e\u0000d\u0000 \u0000(\u00001\u00003\u00003\u00003\u0000.\u00004\u00007\u00006\u00004\u0000m\u0000s\u0000)\u0000\r\u0000\n\u0000",
+    "doctorTail": "t\u0000e\u0000d\u0000 \u0000b\u0000y\u0000 \u0000y\u0000o\u0000u\u0000r\u0000 \u0000o\u0000p\u0000e\u0000r\u0000a\u0000t\u0000i\u0000n\u0000g\u0000 \u0000s\u0000y\u0000s\u0000t\u0000e\u0000m\u0000.\u0000\r\u0000\n\u0000n\u0000p\u0000m\u0000 \u0000e\u0000r\u0000r\u0000o\u0000r\u0000 \u0000I\u0000t\u0000'\u0000s\u0000 \u0000p\u0000o\u0000s\u0000s\u0000i\u0000b\u0000l\u0000e\u0000 \u0000t\u0000h\u0000a\u0000t\u0000 \u0000t\u0000h\u0000e\u0000 \u0000f\u0000i\u0000l\u0000e\u0000 \u0000w\u0000a\u0000s\u0000 \u0000a\u0000l\u0000r\u0000e\u0000a\u0000d\u0000y\u0000 \u0000i\u0000n\u0000 \u0000u\u0000s\u0000e\u0000 \u0000(\u0000b\u0000y\u0000 \u0000a\u0000 \u0000t\u0000e\u0000x\u0000t\u0000 \u0000e\u0000d\u0000i\u0000t\u0000o\u0000r\u0000 \u0000o\u0000r\u0000 \u0000a\u0000n\u0000t\u0000i\u0000v\u0000i\u0000r\u0000u\u0000s\u0000)\u0000,\u0000 \u0000o\u0000r\u0000 \u0000t\u0000h\u0000a\u0000t\u0000 \u0000y\u0000o\u0000u\u0000 \u0000l\u0000a\u0000c\u0000k\u0000 \u0000p\u0000e\u0000r\u0000m\u0000i\u0000s\u0000s\u0000i\u0000o\u0000n\u0000s\u0000 \u0000\r\u0000\n\u0000t\u0000o\u0000 \u0000a\u0000c\u0000c\u0000e\u0000s\u0000s\u0000 \u0000i\u0000t\u0000.\u0000\r\u0000\n\u0000n\u0000p\u0000m\u0000 \u0000e\u0000r\u0000r\u0000o\u0000r\u0000\r\u0000\n\u0000n\u0000p\u0000m\u0000 \u0000e\u0000r\u0000r\u0000o\u0000r\u0000 \u0000I\u0000f\u0000 \u0000y\u0000o\u0000u\u0000 \u0000b\u0000e\u0000l\u0000i\u0000e\u0000v\u0000e\u0000 \u0000t\u0000h\u0000i\u0000s\u0000 \u0000m\u0000i\u0000g\u0000h\u0000t\u0000 \u0000b\u0000e\u0000 \u0000a\u0000 \u0000p\u0000e\u0000r\u0000m\u0000i\u0000s\u0000s\u0000i\u0000o\u0000n\u0000s\u0000 \u0000i\u0000s\u0000s\u0000u\u0000e\u0000,\u0000 \u0000p\u0000l\u0000e\u0000a\u0000s\u0000e\u0000 \u0000d\u0000o\u0000u\u0000b\u0000l\u0000e\u0000-\u0000c\u0000h\u0000e\u0000c\u0000k\u0000 \u0000t\u0000h\u0000e\u0000 \u0000p\u0000e\u0000r\u0000m\u0000i\u0000s\u0000s\u0000i\u0000o\u0000n\u0000s\u0000 \u0000o\u0000f\u0000 \u0000t\u0000h\u0000e\u0000 \u0000f\u0000i\u0000l\u0000e\u0000 \u0000a\u0000n\u0000d\u0000 \u0000i\u0000t\u0000s\u0000 \u0000c\u0000o\u0000n\u0000\r\u0000\n\u0000t\u0000a\u0000i\u0000n\u0000i\u0000n\u0000g\u0000 \u0000d\u0000i\u0000r\u0000e\u0000c\u0000t\u0000o\u0000r\u0000i\u0000e\u0000s\u0000,\u0000 \u0000o\u0000r\u0000 \u0000t\u0000r\u0000y\u0000 \u0000r\u0000u\u0000n\u0000n\u0000i\u0000n\u0000g\u0000 \u0000t\u0000h\u0000e\u0000 \u0000c\u0000o\u0000m\u0000m\u0000a\u0000n\u0000d\u0000 \u0000a\u0000g\u0000a\u0000i\u0000n\u0000 \u0000a\u0000s\u0000 \u0000r\u0000o\u0000o\u0000t\u0000/\u0000A\u0000d\u0000m\u0000i\u0000n\u0000i\u0000s\u0000t\u0000r\u0000a\u0000t\u0000o\u0000r\u0000.\u0000\r\u0000\n\u0000n\u0000p\u0000m\u0000 \u0000e\u0000r\u0000r\u0000o\u0000r\u0000 \u0000L\u0000o\u0000g\u0000 \u0000f\u0000i\u0000l\u0000e\u0000s\u0000 \u0000w\u0000e\u0000r\u0000e\u0000 \u0000n\u0000o\u0000t\u0000 \u0000w\u0000r\u0000i\u0000t\u0000t\u0000e\u0000n\u0000 \u0000d\u0000u\u0000e\u0000 \u0000t\u0000o\u0000 \u0000a\u0000n\u0000 \u0000e\u0000r\u0000r\u0000o\u0000r\u0000 \u0000w\u0000r\u0000i\u0000t\u0000i\u0000n\u0000g\u0000 \u0000t\u0000o\u0000 \u0000t\u0000h\u0000e\u0000 \u0000d\u0000i\u0000r\u0000e\u0000c\u0000t\u0000o\u0000r\u0000y\u0000:\u0000 \u0000C\u0000:\u0000\\\u0000U\u0000s\u0000e\u0000r\u0000s\u0000\\\u0000r\u0000a\u0000o\u0000n\u0000s\u0000\\\u0000A\u0000p\u0000p\u0000D\u0000a\u0000t\u0000a\u0000\\\u0000L\u0000o\u0000c\u0000a\u0000l\u0000\\\u0000n\u0000p\u0000m\u0000-\u0000c\u0000a\u0000c\u0000h\u0000e\u0000\\\u0000_\u0000\r\u0000\n\u0000l\u0000o\u0000g\u0000s\u0000\r\u0000\n\u0000n\u0000p\u0000m\u0000 \u0000e\u0000r\u0000r\u0000o\u0000r\u0000 \u0000Y\u0000o\u0000u\u0000 \u0000c\u0000a\u0000n\u0000 \u0000r\u0000e\u0000r\u0000u\u0000n\u0000 \u0000t\u0000h\u0000e\u0000 \u0000c\u0000o\u0000m\u0000m\u0000a\u0000n\u0000d\u0000 \u0000w\u0000i\u0000t\u0000h\u0000 \u0000`\u0000-\u0000-\u0000l\u0000o\u0000g\u0000l\u0000e\u0000v\u0000e\u0000l\u0000=\u0000v\u0000e\u0000r\u0000b\u0000o\u0000s\u0000e\u0000`\u0000 \u0000t\u0000o\u0000 \u0000s\u0000e\u0000e\u0000 \u0000t\u0000h\u0000e\u0000 \u0000l\u0000o\u0000g\u0000s\u0000 \u0000i\u0000n\u0000 \u0000y\u0000o\u0000u\u0000r\u0000 \u0000t\u0000e\u0000r\u0000m\u0000i\u0000n\u0000a\u0000l\u0000\r\u0000\n\u0000"
   },
   "currentApprovalAccounting": {
-    "scope": "V3.2 through initial recovery checkpoint",
+    "scope": "V3.2 recovery and implementation checkpoint",
     "explicitEscalationCalls": 1,
     "newSavedNarrowRules": 1,
     "manualPopupTotal": null,
     "repetitiveBusinessQuestions": 0,
-    "asOf": "2026-11-20T20:40:19.789Z"
+    "asOf": "2026-11-20T20:58:30.484Z"
   }
 }

@@ -6,7 +6,8 @@ import { useThemedStyles } from '../theme/useThemedStyles';
 import type { ThemeTokens } from '../theme/tokens';
 import appConfig from '../../app.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -27,6 +28,8 @@ type BugReportPanelProps = {
 };
 
 type BugArea = 'App lock' | 'Owner profile' | 'People' | 'Search' | 'Other';
+type BugDraft = { area: BugArea; description: string; steps: string; expected: string };
+const draftSignature = (draft: BugDraft) => JSON.stringify([draft.area, draft.description.trim(), draft.steps.trim(), draft.expected.trim()]);
 
 type BugReport = {
   id: string;
@@ -42,6 +45,13 @@ type BugReport = {
 const STORAGE_KEY = '@ai-memory/bug-reports/v1';
 const APP_VERSION = appConfig.expo.version;
 const AREAS: BugArea[] = ['App lock', 'Owner profile', 'People', 'Search', 'Other'];
+let reportSequence = 0;
+function validReport(value: unknown): value is BugReport {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const record = value as Record<string, unknown>;
+  return ['id', 'createdAt', 'area', 'description', 'steps', 'expected', 'reporterName', 'appVersion']
+    .every(key => typeof record[key] === 'string') && AREAS.includes(record.area as BugArea);
+}
 
 function buildShareText(report: BugReport, copy: ReturnType<typeof useI18n>['copy']['ui']['bug'], locale: string) {
   return [
@@ -77,47 +87,89 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
   const [expected, setExpected] = useState('');
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<'' | 'saved' | 'failed'>('');
+  const emptySignature = JSON.stringify(['Other', '', '', '']);
+  const liveDraft = useRef<BugDraft>({ area, description, steps, expected });
+  const savedSignature = useRef(emptySignature);
+  const alive = useRef(true), savingRef = useRef(false);
+  const attempt = useRef<{ signature: string; report: BugReport } | null>(null);
+  useEffect(() => { alive.current = true; return () => { alive.current = false; }; }, []);
+  function changeDraft(patch: Partial<BugDraft>) {
+    if (savingRef.current) return;
+    liveDraft.current = { ...liveDraft.current, ...patch };
+    if (patch.area !== undefined) setArea(patch.area);
+    if (patch.description !== undefined) setDescription(patch.description);
+    if (patch.steps !== undefined) setSteps(patch.steps);
+    if (patch.expected !== undefined) setExpected(patch.expected);
+  }
 
   const canSubmit = useMemo(() => Boolean(description.trim()) && !saving, [description, saving]);
 
-  async function saveAndShare() {
-    if (!canSubmit) return;
+  async function saveReport(share: boolean): Promise<boolean> {
+    if (!alive.current || !liveDraft.current.description.trim() || savingRef.current) return false;
+    const input = liveDraft.current;
+    const signature = draftSignature(input);
 
-    const report: BugReport = {
-      id: `bug-${Date.now()}`,
+    const report: BugReport = attempt.current?.signature === signature ? attempt.current.report : {
+      id: `bug-${Date.now()}-${++reportSequence}`,
       createdAt: new Date().toISOString(),
-      area,
-      description: description.trim(),
-      steps: steps.trim(),
-      expected: expected.trim(),
+      area: input.area,
+      description: input.description.trim(),
+      steps: input.steps.trim(),
+      expected: input.expected.trim(),
       reporterName: reporterName.trim(),
       appVersion: APP_VERSION,
     };
+    attempt.current = { signature, report };
 
-    setSaving(true);
+    savingRef.current = true; setSaving(true);
     setStatus('');
 
     try {
       const raw = await AsyncStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? JSON.parse(raw) : [];
-      const current = Array.isArray(parsed) ? parsed : [];
-      const next = [report, ...current].slice(0, 50);
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      if (raw !== null && raw.length > 1_000_000) throw new Error('Report history too large');
+      const parsed: unknown = raw === null ? [] : JSON.parse(raw);
+      if (!Array.isArray(parsed) || !parsed.every(validReport) || new Set(parsed.map(item => item.id)).size !== parsed.length)
+        throw new Error('Invalid report history');
+      const existing = parsed.find(item => item.id === report.id);
+      if (existing && JSON.stringify(existing) !== JSON.stringify(report)) throw new Error('Report conflict');
+      const next = existing ? parsed : [report, ...parsed];
+      if (next.length > 1000) throw new Error('Report history full');
+      const bytes = JSON.stringify(next);
+      if (bytes.length > 1_000_000) throw new Error('Report candidate too large');
+      if (!alive.current) return false;
+      if (!existing) {
+        if (await AsyncStorage.getItem(STORAGE_KEY) !== raw) throw new Error('Report history changed');
+        if (!alive.current) return false;
+        await AsyncStorage.setItem(STORAGE_KEY, bytes);
+      }
+      if (await AsyncStorage.getItem(STORAGE_KEY) !== bytes) throw new Error('Report save unconfirmed');
+      if (!alive.current) return false;
 
       setStatus('saved');
-      await Share.share({
+      savedSignature.current = signature;
+      if (share) await Share.share({
         title: copy.reportTitle,
         message: buildShareText(report, copy, locale),
       });
+      return true;
     } catch {
-      setStatus('failed');
+      if (alive.current) setStatus('failed');
+      return false;
     } finally {
-      setSaving(false);
+      savingRef.current = false;
+      if (alive.current) setSaving(false);
     }
   }
+  const exit = useUnsavedChanges({
+    get dirty() { return draftSignature(liveDraft.current) !== savedSignature.current; },
+    get revision() { return draftSignature(liveDraft.current); }, busy: saving,
+    save: () => saveReport(false),
+    discard: () => changeDraft({ area: 'Other', description: '', steps: '', expected: '' }),
+    onBack: onClose,
+  });
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView edges={[]} style={styles.safe}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <KeyboardAvoidingView style={styles.safe} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
@@ -125,7 +177,7 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <AppHeader onBack={onClose} backLabel={copy.back} accessibilityLabel={copy.close} />
+          <AppHeader onBack={() => exit.requestExit(onClose)} backLabel={copy.back} accessibilityLabel={copy.close} backDisabled={saving || exit.saving} />
 
           <Text style={styles.brand}>{copy.brand}</Text>
           <Text style={styles.title}>{copy.title}</Text>
@@ -144,7 +196,8 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
                   key={item}
                   accessibilityRole="button"
                   accessibilityState={{ selected: area === item }}
-                  onPress={() => setArea(item)}
+                  disabled={saving}
+                  onPress={() => changeDraft({ area: item })}
                   style={[styles.chip, area === item && styles.chipActive]}
                 >
                   <Text style={[styles.chipText, area === item && styles.chipTextActive]}>{copy.areas[item]}</Text>
@@ -156,7 +209,8 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
             <TextInput
               accessibilityLabel={copy.describe}
               value={description}
-              onChangeText={setDescription}
+              editable={!saving}
+              onChangeText={value => changeDraft({ description: value })}
               multiline
               placeholder={copy.descriptionPlaceholder}
               placeholderTextColor={theme.colors.textSecondary}
@@ -167,7 +221,8 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
             <TextInput
               accessibilityLabel={copy.stepsLabel}
               value={steps}
-              onChangeText={setSteps}
+              editable={!saving}
+              onChangeText={value => changeDraft({ steps: value })}
               multiline
               placeholder={copy.stepsPlaceholder}
               placeholderTextColor={theme.colors.textSecondary}
@@ -178,7 +233,8 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
             <TextInput
               accessibilityLabel={copy.expectedLabel}
               value={expected}
-              onChangeText={setExpected}
+              editable={!saving}
+              onChangeText={value => changeDraft({ expected: value })}
               multiline
               placeholder={copy.expectedPlaceholder}
               placeholderTextColor={theme.colors.textSecondary}
@@ -191,7 +247,7 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
               accessibilityRole="button"
               accessibilityLabel={copy.saveLabel}
               disabled={!canSubmit}
-              onPress={() => void saveAndShare()}
+              onPress={() => void saveReport(true)}
               style={[styles.primaryButton, !canSubmit && styles.disabled]}
             >
               <Text style={styles.primaryButtonText}>{saving ? copy.saving : copy.save}</Text>

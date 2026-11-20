@@ -73,7 +73,7 @@ jobs:
               lock.version !== config.version || lock.packages?.['']?.version !== config.version) throw Error('Inconsistent APK version');
           // Last verified/reported delivered candidate: code 2. Recheck the latest
           // actual artifact before every increment; this floor is not release history.
-          if (!Number.isSafeInteger(config.android.versionCode) || config.android.versionCode <= 2) throw Error('APK update code must exceed verified baseline 2');
+          if (!Number.isSafeInteger(config.android.versionCode) || config.android.versionCode <= 3) throw Error('APK update code must exceed verified baseline 3');
           console.log('version=' + config.version);
           console.log('version_code=' + config.android.versionCode);
           CHECKPOINT

@@ -1,4 +1,4 @@
-const { createPresentation } = require('./helpers/featurePresentation.cjs');
+const { createPresentation, catalog } = require('./helpers/featurePresentation.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -7,7 +7,7 @@ const ts = require('typescript');
 const h = require('./helpers/notebookRuntime.cjs');
 const { createNotebookLifecycle } = h.load('notebookLifecycle');
 const editorModule = h.load('notebookEditor');
-const navigation = h.load('notebookNavigation');
+const navigationModel = h.load('notebookNavigation');
 function load(file, imports = {}) {
   const local = { exports: {} };
   new Function('require', 'module', 'exports', ts.transpileModule(fs.readFileSync(path.join(__dirname, '..', file), 'utf8'),
@@ -16,6 +16,7 @@ function load(file, imports = {}) {
   return local.exports;
 }
 const copy = load('src/strings/notebook.en.ts').notebookEn;
+const navigation = catalog.en.navigation;
 
 // Runs the real panel hooks/controllers with host SQLite/AES. Native elements,
 // events and FlatList expansion are mocked; this is not a device rendering test.
@@ -54,7 +55,7 @@ function screen(lifecycle, { state = 'active', createId = async () => 'new-synth
     ...presentation.imports,
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
     '../utils/notebookEditor': editorModule, '../utils/personalNotebook': h.model,
-    '../utils/notebookNavigation': navigation, '../utils/screenInsets': { SCREEN_TOP_PADDING: 24 },
+    '../utils/notebookNavigation': navigationModel, '../utils/screenInsets': { SCREEN_TOP_PADDING: 24 },
     '../strings/notebook.en': { notebookEn: copy }, './PersonalNoteEditor': { __esModule: true, default: 'PersonalNoteEditor' },
   }).NotebookPanel;
   const props = { lifecycle, createId, now: () => '2026-11-18T12:00:00.000Z', onBack: () => { backs++; } };
@@ -200,10 +201,11 @@ test('memory-only recovery cannot be lost through an unconfirmed panel Back acti
   const ui = screen(createNotebookLifecycle(async () => w)); await ui.flush();
   ui.find('Pressable', copy.reopen).props.onPress(); await ui.flush();
   assert.equal(w.getRecovery().durable, false);
-  ui.back(); await ui.flush(); assert.equal(ui.backs, 0); ui.find('Pressable', copy.confirmClose);
+  ui.back(); await ui.flush(); assert.equal(ui.backs, 0); ui.find('Pressable', navigation.discard);
   ui.back(); await ui.flush(); assert.equal(ui.backs, 0);
-  ui.back(); await ui.flush(); ui.find('Pressable', copy.confirmClose).props.onPress();
-  assert.equal(ui.backs, 1); ui.unmount();
+  ui.back(); await ui.flush(); ui.find('Pressable', navigation.discard).props.onPress(); await ui.flush();
+  assert.equal(ui.backs,0);ui.find('Pressable',copy.confirmDiscard).props.onPress();await ui.flush();
+  assert.equal(ui.backs, 1);assert.equal(w.getRecovery().status,'none');ui.unmount();
 });
 
 test('failed deletion clears private UI but preserves exit confirmation and recoverable in-memory intent', async t => {
@@ -216,15 +218,16 @@ test('failed deletion clears private UI but preserves exit confirmation and reco
   ui.find('Pressable', copy.confirmDelete).props.onPress(); await ui.flush();
   assert.ok(ui.text(copy.unavailable)); assert.equal(ui.has(copy.search), false);
   ui.back(); await ui.flush(); assert.equal(ui.backs, 0);
-  assert.ok(ui.text(copy.uncertainCloseWarning)); ui.find('Pressable', copy.confirmClose);
-  ui.find('Pressable', copy.keep).props.onPress(); await ui.flush(); assert.equal(ui.backs, 0);
+  assert.ok(ui.text(copy.uncertainCloseWarning)); ui.find('Pressable', navigation.discard);
+  ui.find('Pressable', navigation.stay).props.onPress(); await ui.flush(); assert.equal(ui.backs, 0);
   f.database.replace = replace;
   ui.find('Pressable', copy.reopen).props.onPress(); await ui.flush();
   assert.equal(lifecycle.get().getRecovery().durable, false);
   assert.deepEqual(lifecycle.get().getRecovery().candidate, []);
   assert.equal(JSON.stringify(await f.database.read()), before);
-  ui.back(); await ui.flush(); ui.find('Pressable', copy.confirmClose).props.onPress();
-  assert.equal(ui.backs, 1); ui.unmount();
+  ui.back(); await ui.flush(); ui.find('Pressable', navigation.discard).props.onPress();await ui.flush();
+  assert.equal(ui.backs,0);ui.find('Pressable',copy.confirmDiscard).props.onPress();await ui.flush();
+  assert.equal(ui.backs, 1);assert.equal(JSON.stringify(await f.database.read()),before);ui.unmount();
 });
 
 test('production Notebook flag stays off and protects both route and entry point', () => {
@@ -233,4 +236,31 @@ test('production Notebook flag stays off and protects both route and entry point
   assert.match(boundary, /NOTEBOOK_PRODUCTION_ENABLED = false/);
   assert.match(app, /screen === 'notebook' && NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle/);
   assert.match(app, /NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label=\{c.notebookTitle\}/);
+});
+
+test('memory-only save-and-exit waits for review, confirmation and persistence; failure retains recovery for retry',async t=>{
+  const f=await h.fixture(t),w=await f.open(),replace=f.database.replace;
+  f.database.replace=async()=>{throw Error('Synthetic staging failure');};await assert.rejects(w.getSession().save(h.note,null));f.database.replace=replace;
+  const ui=screen(createNotebookLifecycle(async()=>w));await ui.flush();
+  ui.find('Pressable',copy.reopen).props.onPress();await ui.flush();
+  ui.back();await ui.flush();ui.find('Pressable',navigation.saveExit).props.onPress();await ui.flush();
+  assert.ok(ui.text(copy.memorySource));assert.ok(ui.text(h.note.body));assert.equal(ui.backs,0);assert.equal((await f.database.read()).active,null);
+  f.database.replace=async()=>{throw Error('Synthetic retry full disk');};
+  const confirm=ui.find('Pressable',copy.confirmSave).props.onPress;confirm();confirm();await ui.flush();
+  assert.equal(ui.backs,0);assert.ok(ui.text(copy.unavailable));assert.equal((await f.database.read()).active,null);
+  f.database.replace=replace;ui.back();await ui.flush();ui.find('Pressable',navigation.saveExit).props.onPress();await ui.flush();
+  assert.equal(ui.backs,0);ui.find('Pressable',copy.confirmSave).props.onPress();await ui.flush();
+  assert.equal(ui.backs,1);assert.equal(w.getSession().snapshot()[0].body,h.note.body);assert.equal(w.getRecovery().status,'none');ui.unmount();
+});
+
+test('conflicting exit recovery never offers apply and explicit discard preserves the newer saved revision',async t=>{
+  const f=await h.fixture(t),w=await f.open(),replace=f.database.replace;
+  f.database.replace=async()=>{throw Error('Synthetic initial staging failure');};await assert.rejects(w.getSession().save(h.note,null));f.database.replace=replace;
+  const other=await f.open();await other.getSession().save({...h.note,body:'Synthetic separately saved newer note'},null);other.close();
+  const before=JSON.stringify(await f.database.read()),ui=screen(createNotebookLifecycle(async()=>w));await ui.flush();
+  ui.find('Pressable',copy.reopen).props.onPress();await ui.flush();ui.back();await ui.flush();
+  ui.find('Pressable',navigation.saveExit).props.onPress();await ui.flush();
+  assert.ok(ui.text(copy.conflict));assert.equal(ui.has(copy.confirmSave),false);assert.equal(ui.backs,0);
+  ui.find('Pressable',copy.discardRecovery).props.onPress();await ui.flush();ui.find('Pressable',copy.confirmDiscard).props.onPress();await ui.flush();
+  assert.equal(ui.backs,1);assert.equal(JSON.stringify(await f.database.read()),before);ui.unmount();
 });

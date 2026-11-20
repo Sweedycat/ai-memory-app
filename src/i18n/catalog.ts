@@ -5,6 +5,8 @@ import { appEn, appTr } from './catalogs/app';
 import { uiEn, uiTr } from './catalogs/ui';
 import { notificationsEn, notificationsTr } from './catalogs/notifications';
 import { generatedEn, generatedTr } from './catalogs/generated';
+import { navigationEn, navigationTr } from './catalogs/navigation';
+import { timeEntryEn, timeEntryTr } from './catalogs/timeEntry';
 
 const commonEn = {
   language: 'Language', system: 'System language', en: 'English', tr: 'Turkish',
@@ -26,6 +28,8 @@ const commonTr: typeof commonEn = {
 };
 
 export type Catalog = {
+  timeEntry: typeof timeEntryEn;
+  navigation: typeof navigationEn;
   generated: typeof generatedEn;
   notifications: typeof notificationsEn;
   app: typeof appEn;
@@ -37,8 +41,8 @@ export type Catalog = {
 
 /** Existing feature translations retain their original object identity and signatures. */
 export const catalog: Record<Language, Catalog> = {
-  en: { generated: generatedEn, notifications: notificationsEn, app: appEn, ui: uiEn, common: commonEn, lifeAdmin: lifeAdminEn, assistant: assistantEn },
-  tr: { generated: generatedTr, notifications: notificationsTr, app: appTr, ui: uiTr, common: commonTr, lifeAdmin: lifeAdminTr, assistant: assistantTr },
+  en: { timeEntry: timeEntryEn, navigation: navigationEn, generated: generatedEn, notifications: notificationsEn, app: appEn, ui: uiEn, common: commonEn, lifeAdmin: lifeAdminEn, assistant: assistantEn },
+  tr: { timeEntry: timeEntryTr, navigation: navigationTr, generated: generatedTr, notifications: notificationsTr, app: appTr, ui: uiTr, common: commonTr, lifeAdmin: lifeAdminTr, assistant: assistantTr },
 };
 
 const placeholders = (text: string): string =>

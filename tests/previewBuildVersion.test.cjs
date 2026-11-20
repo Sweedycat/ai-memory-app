@@ -19,7 +19,7 @@ function evaluateVariant(variant) {
 
 test('B2 display version preserves EAS Preview identity and its separate code', () => {
   const config = evaluateVariant('preview');
-  assert.equal(config.version, '0.2.0');
+  assert.equal(config.version, '0.3.0');
   assert.equal(config.name, 'AI Memory Preview');
   assert.equal(config.android.package, 'com.sweedycat.aimemory.preview');
   assert.equal(config.android.versionCode, 2);
@@ -40,18 +40,18 @@ test('Preview versioning does not change production application identity or code
 
 test('Preview code does not introduce automatic version upgrades or force install', () => {
   assert.notEqual(eas.build.preview.autoIncrement, true);
-  assert.equal(app.expo.version, '0.2.0');
+  assert.equal(app.expo.version, '0.3.0');
   assert.doesNotMatch(buildConfigCode, /unlink|remove|AsyncStorage|clear|uninstall|fetch\(/);
 });
 
-test('GitHub Test candidate preserves historical package and strictly increases latest verified delivered code 2', () => {
+test('GitHub Test correction preserves historical package and strictly increases latest verified delivered code 3', () => {
   const config = evaluateVariant('github-test');
   assert.equal(config.name, 'AI Memory GitHub Test');
   assert.equal(config.android.package, 'com.sweedycat.aimemory.githubtest');
   assert.equal(config.ios.bundleIdentifier, 'com.sweedycat.aimemory.githubtest');
-  assert.equal(config.version, '0.2.0');
-  assert.equal(config.android.versionCode, 3);
-  assert.ok(config.android.versionCode > 2);
+  assert.equal(config.version, '0.3.0');
+  assert.equal(config.android.versionCode, 4);
+  assert.ok(config.android.versionCode > 3);
   assert.equal(config.extra.eas.projectId, app.expo.extra.eas.projectId);
   assert.equal(pkg.version, app.expo.version);
   assert.equal(lock.version, app.expo.version);
@@ -85,7 +85,7 @@ test('automatic development build is limited to one authorized request and rejec
 test('reviewed checkpoint metadata rejects stale update codes and mismatched manifests without building', () => {
   const workflow = fs.readFileSync(path.join(root, '.github/workflows/android-preview-apk.yml'), 'utf8');
   const code = workflow.match(/node <<'CHECKPOINT' >> "\$GITHUB_OUTPUT"\r?\n([\s\S]+?)\r?\n          CHECKPOINT/)[1];
-  function metadata({ version = '0.2.0', versionCode = 3, packageId = 'com.sweedycat.aimemory.githubtest', packageVersion = version } = {}) {
+  function metadata({ version = '0.3.0', versionCode = 4, packageId = 'com.sweedycat.aimemory.githubtest', packageVersion = version } = {}) {
     const output = [];
     const files = { 'app.json': { expo: { version } }, 'package.json': { version: packageVersion },
       'package-lock.json': { version, packages: { '': { version } } } };
@@ -95,8 +95,8 @@ test('reviewed checkpoint metadata rejects stale update codes and mismatched man
       console: { log: value => output.push(value) } });
     return output;
   }
-  assert.deepEqual(metadata(), ['version=0.2.0', 'version_code=3']);
-  for (const versionCode of [1, 2, 2.5, NaN, '3', Number.MAX_SAFE_INTEGER + 1]) assert.throws(() => metadata({ versionCode }));
+  assert.deepEqual(metadata(), ['version=0.3.0', 'version_code=4']);
+  for (const versionCode of [1, 2, 3, 3.5, NaN, '4', Number.MAX_SAFE_INTEGER + 1]) assert.throws(() => metadata({ versionCode }));
   assert.throws(() => metadata({ packageId: 'com.sweedycat.aimemory.preview' }));
   assert.throws(() => metadata({ packageVersion: '0.1.0' }));
   assert.throws(() => metadata({ version: '0.2.0\nother=value' }));

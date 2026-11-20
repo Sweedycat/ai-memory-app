@@ -25,7 +25,7 @@ export default function PersonalNotebookPreview({ onBack }: { onBack: () => void
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = examples.find(note => note.id === selectedId);
   const visible = searchPersonalNotebook(examples, query);
-  return <SafeAreaView style={styles.root}>
+  return <SafeAreaView edges={[]} style={styles.root}>
     <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <AppHeader onBack={selected ? () => setSelectedId(null) : onBack} backLabel={copy.back} accessibilityLabel={copy.back} />
       <Text accessibilityRole="header" style={styles.heading}>{copy.title}</Text>

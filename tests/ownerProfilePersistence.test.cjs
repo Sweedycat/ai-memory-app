@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
 const { presentationImports } = require('./helpers/presentation.cjs');
+const { bindNavigation } = require('./helpers/navigation.cjs');
 
 function load(file, imports = {}) {
   const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
@@ -62,8 +63,11 @@ function harness(storage) {
     'ScrollView', 'StatusBar', 'Text', 'TextInput', 'View'].map(name => [name, name]));
   native.Platform = { OS: 'android' };
   native.StyleSheet = { create: styles => styles };
+  const presentation = presentationImports();
+  const navigation = bindNavigation(load, react, native, presentation['../i18n/LanguageProvider']);
   const { OwnerProfileGate: component } = load('src/components/OwnerProfileGate.tsx', {
-    ...presentationImports(),
+    ...presentation,
+    '../hooks/useUnsavedChanges': navigation.module,
     '@react-native-async-storage/async-storage': { __esModule: true, default: storage },
     react: { __esModule: true, default: react, ...react },
     'react-native': native,
@@ -86,7 +90,8 @@ function harness(storage) {
     if (!node || typeof node !== 'object') return [];
     return [node, ...nodes(node.props?.children)];
   }
-  return {
+  const ui = {
+    get alerts() { return navigation.alerts; },
     get nodes() { return nodes(output); },
     find(type, label) {
       const found = nodes(output).find(node => node.type === type &&
@@ -101,7 +106,10 @@ function harness(storage) {
       }
     },
     unmount() { mounted = false; effects.forEach(effect => effect?.cleanup?.()); },
+    async back() { for (const callback of [...navigation.backs].reverse()) if (callback()) break; await ui.flush(); },
+    async choose(label) { const button = navigation.alerts.at(-1)?.buttons.find(item => item.text === label); assert.ok(button, label); button.onPress(); await ui.flush(); },
   };
+  return ui;
 }
 
 function storageFixture(raw, { failRead = false, failWrite = false } = {}) {
@@ -232,6 +240,9 @@ test('valid and name-only legacy profiles open without writes and preserve setti
     await h.flush();
     h.find('Pressable', 'Cancel editing owner profile').props.onPress();
     await h.flush();
+    assert.ok(h.nodes.some(node => node.type === 'TextInput'), 'Dirty cancel keeps input until explicit discard');
+    const discard = h.alerts.at(-1).buttons.find(button => button.text === 'Discard changes');
+    assert.ok(discard); discard.onPress(); await h.flush();
     h.find('SettingsPanel').props.onClose();
     await h.flush();
     assert.ok(h.nodes.includes(privateChild));
@@ -311,4 +322,79 @@ test('unmount while a retry read is pending never applies the late profile or wr
   await h.flush();
   assert.equal(storage.raw, '');
   assert.equal(storage.writes, 0);
+});
+
+async function editProfile(h) {
+  await h.flush(); h.find('OwnerProvider').props.value.openSettings(); await h.flush();
+  h.find('SettingsPanel').props.onEditProfile(); await h.flush();
+}
+
+test('profile input followed by captured cancel before rendering preserves and saves the latest input', async t => {
+  const storage = storageFixture(JSON.stringify(profile)), h = harness(storage); t.after(h.unmount); await editProfile(h);
+  const cancel = h.find('Pressable', 'Cancel editing owner profile').props.onPress;
+  h.find('TextInput', 'Your full name').props.onChangeText('Synthetic immediate owner');
+  cancel();
+  assert.equal(h.alerts.at(-1).buttons.at(-1).text, 'Save and exit');
+  await h.choose('Save and exit');
+  assert.equal(JSON.parse(storage.raw).name, 'Synthetic immediate owner');
+  assert.equal(storage.writes, 1);
+});
+
+test('unchanged profile cancels without prompting; dirty choices retain input and save failure retries', async t => {
+  const storage = storageFixture(JSON.stringify(profile)), h = harness(storage); t.after(h.unmount); await editProfile(h);
+  h.find('Pressable', 'Cancel editing owner profile').props.onPress(); await h.flush();
+  assert.equal(h.alerts.length, 0); assert.equal(storage.writes, 0);
+  h.find('SettingsPanel').props.onEditProfile(); await h.flush();
+  h.find('TextInput', 'Your full name').props.onChangeText('Synthetic changed owner'); await h.flush();
+  await h.back();
+  assert.deepEqual(h.alerts.at(-1).buttons.map(item => item.text), ['Continue editing', 'Discard changes', 'Save and exit']);
+  await h.choose('Continue editing'); assert.equal(h.find('TextInput', 'Your full name').props.value, 'Synthetic changed owner');
+  storage.failWrite = true; await h.back(); await h.choose('Save and exit');
+  assert.equal(h.find('TextInput', 'Your full name').props.value, 'Synthetic changed owner');
+  assert.equal(storage.raw, JSON.stringify(profile)); assert.equal(storage.writes, 1);
+  storage.failWrite = false; await h.back(); await h.choose('Save and exit');
+  assert.equal(h.find('SettingsPanel').props.displayName, profile.preferredName); assert.equal(JSON.parse(storage.raw).name, 'Synthetic changed owner');
+});
+
+test('profile pending ACK fences duplicate save/input/back callbacks and never sets state after unmount', async () => {
+  for (const unmount of [false, true]) {
+    const storage = storageFixture(JSON.stringify(profile)), h = harness(storage); await editProfile(h);
+    const field = h.find('TextInput', 'Your full name').props.onChangeText;
+    field('Synthetic pending owner'); await h.flush();
+    let release;
+    storage.setItem = async (_key, value) => { storage.writes++; await new Promise(resolve => { release = resolve; }); storage.raw = value; };
+    const save = h.find('Pressable', 'Save owner profile changes').props.onPress;
+    save(); save(); field('Must not replace pending input'); await h.flush(); await h.back();
+    assert.equal(storage.writes, 1); assert.equal(h.find('TextInput', 'Your full name').props.value, 'Synthetic pending owner');
+    assert.equal(h.nodes.some(node => node.type === 'SettingsPanel'), false);
+    if (unmount) h.unmount(); release(); await h.flush();
+    assert.equal(JSON.parse(storage.raw).name, 'Synthetic pending owner');
+    if (!unmount) { assert.ok(h.nodes.some(node => node.type === 'SettingsPanel')); h.unmount(); }
+  }
+});
+
+test('profile save refuses externally changed or corrupt baseline bytes without overwriting', async () => {
+  for (const foreign of ['{synthetic corrupt', JSON.stringify({ ...profile, role: 'Synthetic external revision' })]) {
+    const storage = storageFixture(JSON.stringify(profile)), h = harness(storage); await editProfile(h);
+    h.find('TextInput', 'Your full name').props.onChangeText('Synthetic preserved draft'); await h.flush();
+    storage.raw = foreign; h.find('Pressable', 'Save owner profile changes').props.onPress(); await h.flush();
+    assert.equal(storage.raw, foreign); assert.equal(storage.writes, 0);
+    assert.equal(h.find('TextInput', 'Your full name').props.value, 'Synthetic preserved draft'); h.unmount();
+  }
+});
+
+for (const failure of ['lost-ack', 'readback']) test(`profile reconciles ${failure} on retry without a duplicate write`, async t => {
+  const storage = storageFixture(JSON.stringify(profile)), h = harness(storage); t.after(h.unmount); await editProfile(h);
+  h.find('TextInput', 'Your full name').props.onChangeText('Synthetic reconciled owner'); await h.flush();
+  const read = storage.getItem.bind(storage); let failReadback = false;
+  storage.getItem = async key => { if (failReadback) { failReadback = false; throw Error('Synthetic readback failure'); } return read(key); };
+  storage.setItem = async (_key, value) => {
+    storage.writes++; storage.raw = value;
+    if (failure === 'lost-ack') throw Error('Synthetic lost ACK');
+    failReadback = true;
+  };
+  h.find('Pressable', 'Save owner profile changes').props.onPress(); await h.flush();
+  assert.equal(h.find('TextInput', 'Your full name').props.value, 'Synthetic reconciled owner'); assert.equal(storage.writes, 1);
+  h.find('Pressable', 'Save owner profile changes').props.onPress(); await h.flush();
+  assert.equal(storage.writes, 1); assert.ok(h.nodes.some(node => node.type === 'SettingsPanel'));
 });

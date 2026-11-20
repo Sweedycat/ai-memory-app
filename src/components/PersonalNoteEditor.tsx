@@ -14,9 +14,12 @@ export default function PersonalNoteEditor({ editor, onClose, onSaved }: {
   const styles = useThemedStyles(createStyles);
   const { copy: catalog } = useI18n();
   const copy = catalog.ui.notebookEditor;
+  const navigation = catalog.navigation;
   const [, render] = useState(0);
   const [confirmation, setConfirmation] = useState<'close' | 'discard' | null>(null);
+  const [exitFailed, setExitFailed] = useState(false);
   const mounted = useRef(true);
+  const pending = useRef(false);
   const notified = useRef(false);
   const hardwareBack = useRef<() => void>(() => undefined);
   const view = AppState.currentState === 'active' ? editor.getView()
@@ -28,16 +31,19 @@ export default function PersonalNoteEditor({ editor, onClose, onSaved }: {
     if (AppState.currentState !== 'active') { editor.lock(); refresh(); }
     const listener = AppState.addEventListener('change', state => {
       if (!mounted.current) return;
-      if (state !== 'active') { editor.lock(); setConfirmation(null); refresh(); }
+      if (state !== 'active') { editor.lock(); setConfirmation(null); setExitFailed(false); refresh(); }
     });
     const back = BackHandler.addEventListener('hardwareBackPress', () => { hardwareBack.current(); return true; });
     return () => { mounted.current = false; listener.remove(); back.remove(); editor.dispose(); };
   }, [editor]);
 
   async function act(action: () => Promise<void>) {
-    const pending = action();
-    refresh();
-    try { await pending; } finally {
+    if (pending.current || editor.getView().busy) return;
+    pending.current = true; setExitFailed(false);
+    try { const operation = action(); refresh(); await operation; }
+    catch { if (mounted.current) setExitFailed(true); }
+    finally {
+      pending.current = false;
       if (mounted.current) {
         refresh();
         if (editor.getView().mode === 'saved' && !notified.current) {
@@ -47,19 +53,49 @@ export default function PersonalNoteEditor({ editor, onClose, onSaved }: {
     }
   }
   function close() {
-    if (view.busy) return;
-    if (view.dirty && !view.checkpointed && view.mode !== 'saved' && confirmation !== 'close') {
+    const latest = editor.getView();
+    if (pending.current || latest.busy || notified.current) return;
+    if (latest.dirty && !latest.checkpointed && latest.mode !== 'saved') {
       setConfirmation('close'); return;
     }
-    editor.dispose(); onClose();
+    notified.current = true; editor.dispose(); onClose();
   }
-  hardwareBack.current = () => { if (confirmation) setConfirmation(null); else close(); };
+  function saveAndExit() {
+    void act(async () => {
+      const latest = editor.getView();
+      if (latest.mode === 'editing') await editor.save();
+      else if (latest.mode === 'recoverable') await editor.commitRecovery();
+      // An uncertain or conflicting result needs explicit authenticated review.
+      if (mounted.current && editor.getView().mode !== 'saved') setExitFailed(true);
+    });
+  }
+  function discardAndExit() {
+    void act(async () => {
+      let latest = editor.getView();
+      if (latest.mode === 'uncertain' || latest.mode === 'unavailable') {
+        await editor.review(); latest = editor.getView();
+      }
+      if (latest.mode === 'recoverable' || latest.mode === 'conflict') {
+        await editor.discardRecovery(); latest = editor.getView();
+      }
+      if (!mounted.current || AppState.currentState !== 'active') return;
+      if (latest.mode === 'saved') return; // act notifies onSaved exactly once.
+      if (latest.mode !== 'editing' || latest.busy) { setExitFailed(true); return; }
+      // No unresolved journal remains. Only explicit discard may drop the in-memory draft.
+      notified.current = true; editor.dispose(); onClose();
+    });
+  }
+  hardwareBack.current = () => {
+    if (pending.current || editor.getView().busy) return;
+    if (confirmation) setConfirmation(null); else close();
+  };
   const editable = view.mode === 'editing' && !view.busy;
   const valid = Boolean(view.title.trim() || view.body.trim()) &&
     view.title.length <= MAX_NOTE_TITLE && view.body.length <= MAX_NOTE_BODY;
   function button(text: string, action: () => void, disabled = view.busy) {
     return <Pressable accessibilityRole="button" accessibilityLabel={text}
-      accessibilityState={{ disabled }} disabled={disabled} onPress={action} style={styles.button}>
+      accessibilityState={{ disabled }} disabled={disabled}
+      onPress={() => { if (!disabled && !pending.current && !editor.getView().busy && !notified.current) action(); }} style={styles.button}>
       <Text style={styles.text}>{text}</Text>
     </Pressable>;
   }
@@ -102,10 +138,16 @@ export default function PersonalNoteEditor({ editor, onClose, onSaved }: {
         {button(copy.confirmDiscard, () => { setConfirmation(null); void act(editor.discardRecovery); })}
         {button(copy.keep, () => setConfirmation(null))}
       </View>}
+      {exitFailed && <View>
+        <Text accessibilityRole="alert" style={styles.text}>{navigation.failedTitle}</Text>
+        <Text style={styles.text}>{navigation.failedBody}</Text>
+      </View>}
       {confirmation === 'close' ? <View>
-        <Text accessibilityRole="alert" style={styles.text}>{copy.unsaved}</Text>
-        {button(copy.confirmClose, close)}
-        {button(copy.stay, () => setConfirmation(null))}
+        <Text accessibilityRole="header" style={styles.heading}>{navigation.title}</Text>
+        <Text accessibilityRole="alert" style={styles.text}>{navigation.body}</Text>
+        {button(navigation.saveExit, saveAndExit, view.busy || !valid || (view.mode !== 'editing' && view.mode !== 'recoverable'))}
+        {button(navigation.discard, discardAndExit)}
+        {button(navigation.stay, () => setConfirmation(null))}
       </View> : button(view.checkpointed ? copy.protectedClose : copy.close, close)}
     </ScrollView>
   );

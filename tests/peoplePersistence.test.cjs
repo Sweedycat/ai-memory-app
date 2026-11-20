@@ -106,11 +106,29 @@ test('read and validation failure preserve original bytes and block retry', asyn
     assert.equal(h.value[2], false);
     assert.equal(h.value[3], true);
     h.value[4].retry();
+    assert.equal(await h.value[4].confirm([person]), false);
     h.value[1]([person]);
     await h.flush();
     assert.equal(writes, 0);
     h.unmount();
   }
+});
+
+test('confirmation requires the current observed revision and a disk ACK; abort preserves final data', async () => {
+  let raw = '[]', release;
+  const h = harness({ getItem: async () => raw,
+    setItem: (_, value) => new Promise(resolve => { release = () => { raw = value; resolve(); }; }) });
+  await h.flush();
+  h.value[1]([person]); await h.flush();
+  const current = h.value[0], lifetime = new AbortController();
+  let completed = false;
+  const confirmation = h.value[4].confirm(current, lifetime.signal).then(saved => { completed = true; return saved; });
+  await h.flush(); assert.equal(completed, false);
+  assert.equal(await h.value[4].confirm([]), false);
+  lifetime.abort(); assert.equal(await confirmation, false);
+  h.unmount(); release(); h.remount(); await h.flush();
+  assert.equal(h.value[0][0].id, person.id); assert.equal(h.value[4].status, 'idle');
+  h.unmount();
 });
 
 test('failed edits stay visible through lock-style remount; retry saves latest without repeating native actions', async () => {

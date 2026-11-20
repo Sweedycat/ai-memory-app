@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
+  BackHandler,
   Platform,
   Pressable,
   ScrollView,
@@ -19,6 +20,7 @@ import {
 import { BugReportPanel } from './BugReportPanel';
 import { ReminderPermissionGate } from './ReminderPermissionGate';
 import { SettingsPanel } from './SettingsPanel';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 
 type OwnerProfileGateProps = {
   children: React.ReactNode;
@@ -75,7 +77,13 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   const { theme } = useTheme();
   const placeholderColor = theme.colors.textMuted;
   const [profile, setProfile] = useState<OwnerProfile | null>(null);
-  const [draft, setDraft] = useState<OwnerProfile>(emptyProfile);
+  const [draft, setDraftState] = useState<OwnerProfile>(emptyProfile);
+  const liveDraft = useRef<OwnerProfile>(emptyProfile);
+  function setDraft(next: OwnerProfile | ((current: OwnerProfile) => OwnerProfile)) {
+    const value = typeof next === 'function' ? next(liveDraft.current) : next;
+    liveDraft.current = value;
+    setDraftState(value);
+  }
   const [ready, setReady] = useState(false);
   const [loadError, setLoadError] = useState(false);
   const [loadAttempt, setLoadAttempt] = useState(0);
@@ -86,9 +94,11 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   const [returnToSettingsAfterEdit, setReturnToSettingsAfterEdit] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<'' | 'saveError'>('');
+  const profileBytes = useRef<string | null>(null), savingRef = useRef(false), alive = useRef(true);
 
   useEffect(() => {
     let mounted = true;
+    alive.current = true;
     loading.current = true;
 
     async function loadProfile() {
@@ -97,6 +107,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
         const parsed = saved === null ? null : normalizeProfile(JSON.parse(saved));
         if (saved !== null && !parsed) throw new Error('Invalid owner profile');
         if (!mounted) return;
+        profileBytes.current = saved;
         setProfile(parsed);
         setDraft(parsed ?? emptyProfile);
         setLoadError(false);
@@ -116,6 +127,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
 
     return () => {
       mounted = false;
+      alive.current = false;
     };
   }, [loadAttempt]);
 
@@ -140,20 +152,30 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
     [displayName],
   );
 
-  async function saveProfile() {
-    if (!ready || loadError || loading.current || !draft.name.trim() || saving) return;
+  async function saveProfile(): Promise<boolean> {
+    if (!alive.current || !ready || loadError || loading.current || !liveDraft.current.name.trim() || savingRef.current) return false;
 
     const next: OwnerProfile = {
-      name: draft.name.trim(),
-      preferredName: draft.preferredName.trim(),
-      role: draft.role.trim(),
+      name: liveDraft.current.name.trim(),
+      preferredName: liveDraft.current.preferredName.trim(),
+      role: liveDraft.current.role.trim(),
     };
 
-    setSaving(true);
+    savingRef.current = true; setSaving(true);
     setError('');
 
     try {
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      const bytes = JSON.stringify(next);
+      const before = await AsyncStorage.getItem(STORAGE_KEY);
+      if (!alive.current) return false;
+      // Reconcile a previous lost acknowledgement without overwriting a foreign revision.
+      if (before !== bytes) {
+        if (before !== profileBytes.current) throw new Error('Profile changed');
+        await AsyncStorage.setItem(STORAGE_KEY, bytes);
+      }
+      if (await AsyncStorage.getItem(STORAGE_KEY) !== bytes) throw new Error('Profile save unconfirmed');
+      if (!alive.current) return false;
+      profileBytes.current = bytes;
       setProfile(next);
       setDraft(next);
       setEditing(false);
@@ -161,10 +183,13 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
         setReturnToSettingsAfterEdit(false);
         setSettingsOpen(true);
       }
+      return true;
     } catch {
-      setError("saveError");
+      if (alive.current) setError('saveError');
+      return false;
     } finally {
-      setSaving(false);
+      savingRef.current = false;
+      if (alive.current) setSaving(false);
     }
   }
 
@@ -188,9 +213,20 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
     }
   }
 
+  const profileForm = !profile || editing;
+  const profileRevision = () => JSON.stringify([liveDraft.current.name.trim(), liveDraft.current.preferredName.trim(), liveDraft.current.role.trim()]);
+  const savedRevision = JSON.stringify([profile?.name ?? '', profile?.preferredName ?? '', profile?.role ?? '']);
+  const profileExit = useUnsavedChanges({
+    get dirty() { return ready && profileForm && profileRevision() !== savedRevision; },
+    get revision() { return profileRevision(); }, busy: saving, enabled: ready && !loadError && profileForm,
+    save: saveProfile,
+    discard: () => { setDraft(profile ?? emptyProfile); setError(''); },
+    onBack: () => { if (profile) cancelProfileEdit(); else BackHandler.exitApp(); },
+  });
+
   if (loadError) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView edges={[]} style={styles.safe}>
         <View style={styles.center}>
           <Text style={styles.brand}>AI MEMORY</Text>
           <Text accessibilityRole="header" style={styles.title}>{c.recovery.loadTitle}</Text>
@@ -208,7 +244,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
 
   if (!ready) {
     return (
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView edges={[]} style={styles.safe}>
         <View style={styles.center}>
           <Text style={styles.brand}>AI MEMORY</Text>
           <Text style={styles.loading}>{c.profilePreparing}</Text>
@@ -249,7 +285,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
     const saveDisabled = !draft.name.trim() || saving;
 
     return (
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView edges={[]} style={styles.safe}>
         <KeyboardAvoidingView
           style={styles.safe}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -272,7 +308,8 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
               <TextInput
                 accessibilityLabel={c.nameInput}
                 value={draft.name}
-                onChangeText={(name) => setDraft((current) => ({ ...current, name }))}
+                editable={!saving}
+                onChangeText={(name) => { if (!savingRef.current) setDraft((current) => ({ ...current, name })); }}
                 placeholder={c.nameInput}
                 placeholderTextColor={placeholderColor}
                 autoCapitalize="words"
@@ -285,7 +322,8 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
               <TextInput
                 accessibilityLabel={c.preferredInput}
                 value={draft.preferredName}
-                onChangeText={(preferredName) => setDraft((current) => ({ ...current, preferredName }))}
+                editable={!saving}
+                onChangeText={(preferredName) => { if (!savingRef.current) setDraft((current) => ({ ...current, preferredName })); }}
                 placeholder={c.preferredPlaceholder}
                 placeholderTextColor={placeholderColor}
                 autoCapitalize="words"
@@ -298,7 +336,8 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
               <TextInput
                 accessibilityLabel={c.roleInput}
                 value={draft.role}
-                onChangeText={(role) => setDraft((current) => ({ ...current, role }))}
+                editable={!saving}
+                onChangeText={(role) => { if (!savingRef.current) setDraft((current) => ({ ...current, role })); }}
                 placeholder={c.rolePlaceholder}
                 placeholderTextColor={placeholderColor}
                 returnKeyType="done"
@@ -329,7 +368,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={c.cancelEdit}
-                  onPress={cancelProfileEdit}
+                  onPress={() => profileExit.requestExit(cancelProfileEdit)}
                   style={styles.secondaryButton}
                 >
                   <Text style={styles.secondaryButtonText}>{c.cancel}</Text>

@@ -21,6 +21,7 @@ test('one writer coalesces rapid edits and never allows old writes to finish las
   }));
   queue.subscribe(value => statuses.push(value));
   queue.enqueue('first');
+  assert.equal(queue.getStatus(), 'saving', 'Queued intent is visible before adapter microtask');
   await tick();
   queue.enqueue('second');
   queue.enqueue('latest');
@@ -96,4 +97,41 @@ test('synchronous adapter failures are contained and disposed subscribers receiv
   await queue.whenIdle();
   assert.equal(queue.getStatus(), 'error');
   assert.equal(notifications, 0);
+});
+
+test('exact acknowledgement waits through failure and a lost ACK without replaying the mutation', async () => {
+  let writes = 0, raw = 'old', acknowledged = false;
+  const queue = create(async value => { raw = value; if (++writes === 1) throw Error('Synthetic lost ACK'); });
+  queue.enqueue('final');
+  const saved = queue.waitFor('final').then(result => { acknowledged = result; return result; });
+  await queue.whenIdle();
+  assert.equal(raw, 'final'); assert.equal(acknowledged, false);
+  assert.equal(queue.getStatus(), 'error');
+  queue.retry();
+  assert.equal(await saved, true); assert.equal(writes, 2);
+  assert.equal(await queue.waitFor('final'), true);
+});
+
+test('superseded in-flight and coalesced revisions never acknowledge navigation', async () => {
+  const releases = [];
+  const queue = create(() => new Promise(resolve => releases.push(resolve)));
+  queue.enqueue('old'); const old = queue.waitFor('old'); await tick();
+  queue.enqueue('skipped'); const skipped = queue.waitFor('skipped');
+  queue.enqueue('latest'); const latest = queue.waitFor('latest');
+  assert.equal(await skipped, false);
+  releases.shift()(); await tick();
+  assert.equal(await old, false);
+  let done = false; void latest.then(() => { done = true; }); await tick(); assert.equal(done, false);
+  releases.shift()(); assert.equal(await latest, true);
+  await queue.whenIdle(); assert.equal(await queue.waitFor('old'), false);
+});
+
+test('unmount abort detaches an acknowledgement waiter while final bytes remain queued', async () => {
+  let release, raw;
+  const queue = create(value => new Promise(resolve => { release = () => { raw = value; resolve(); }; }));
+  queue.enqueue('final'); const lifecycle = new AbortController();
+  const saved = queue.waitFor('final', lifecycle.signal); await tick();
+  lifecycle.abort(); assert.equal(await saved, false); assert.equal(queue.getPending(), 'final');
+  release(); await queue.whenIdle(); assert.equal(raw, 'final');
+  assert.equal(await queue.waitFor('final'), true);
 });

@@ -16,6 +16,7 @@ import {
   AppState,
   AppStateStatus,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -359,19 +360,19 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
 
   if (!settingsReady) {
     content = (
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.container}>
+      <SafeAreaView edges={[]} style={styles.safe}>
+        <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.brand}>AI MEMORY</Text>
           <Text style={styles.body}>{c.preparing}</Text>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     );
   } else if (!settings.appLockEnabled || !locked) {
     content = <>{children}</>;
   } else {
     content = (
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.container}>
+      <SafeAreaView edges={[]} style={styles.safe}>
+        <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.iconWrap} accessibilityElementsHidden>
             <Text style={styles.icon}>🔒</Text>
           </View>
@@ -392,7 +393,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
           </Pressable>
           <Text style={styles.caption}>
             {c.delayCaption}</Text>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
@@ -410,10 +411,11 @@ const createStyles = (theme: ThemeTokens) => StyleSheet.create({
     backgroundColor: theme.colors.background,
   },
   container: {
-    flex: 1,
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: theme.metrics.screenGutter,
+    paddingVertical: theme.spacing.section,
   },
   iconWrap: {
     width: 82,

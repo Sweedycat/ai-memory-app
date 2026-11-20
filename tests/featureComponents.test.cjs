@@ -50,12 +50,15 @@ function mount(name, props = {}, imports = {}, options = {}) {
   function text(node) { return Array.isArray(node) ? node.map(text).join('') : node && typeof node === 'object' ? text(node.props?.children) : node == null || typeof node === 'boolean' ? '' : String(node); }
   render();
   const ui = {
+    get alerts() { return presentation.navigation.alerts; },
     get nodes() { return nodes(output); }, get text() { return text(output); },
     find(type, label) { const found = nodes(output).find(node => node.type === type && (!label || node.props.accessibilityLabel === label || text(node) === label));
       assert.ok(found, 'Missing ' + type + ': ' + label); return found; },
     async flush() { for (let i = 0; i < 8; i++) { await new Promise(resolve => setImmediate(resolve)); if (mounted && dirty) render(); } },
     async press(label) { const node = ui.find('Pressable', label); assert.ok(!node.props.disabled, 'Enabled: ' + label); node.props.onPress(); await ui.flush(); },
     async input(label, value) { ui.find('TextInput', label).props.onChangeText(value); await ui.flush(); },
+    async back() { for (const callback of [...presentation.navigation.backs].reverse()) if (callback()) break; await ui.flush(); },
+    async choose(label) { const button = ui.alerts.at(-1)?.buttons?.find(item => item.text === label); assert.ok(button, label); button.onPress(); await ui.flush(); },
     async language(language) { presentation.state.language = language; render(); await ui.flush(); },
     async theme(mode) { presentation.state.mode = mode; render(); await ui.flush(); },
     update(next) { Object.assign(props, next); render(); },
@@ -181,9 +184,10 @@ test('backup corruption prevents preference overwrite; explicit synthetic diagno
 
 test('bug report localizes display/share copy while persisting stable English area values and configured version', async t => {
   const writes = [], shares = [], config = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8'));
+  let raw = '[]';
   const ui = mount('BugReportPanel', { onClose() {}, reporterName: 'Synthetic reporter' }, {
     '../../app.json': config,
-    '@react-native-async-storage/async-storage': { __esModule: true, default: { async getItem() { return '[]'; }, async setItem(key, value) { writes.push([key, JSON.parse(value)]); } } },
+    '@react-native-async-storage/async-storage': { __esModule: true, default: { async getItem() { return raw; }, async setItem(key, value) { writes.push([key, JSON.parse(value)]); raw = value; } } },
   }, { language: 'tr', mode: 'light', native: { Share: { async share(payload) { shares.push(payload); } } } }); t.after(ui.unmount);
   await ui.press(catalog.tr.ui.bug.areas['App lock']); await ui.input(catalog.tr.ui.bug.describe, 'Synthetic description in English');
   await ui.press(catalog.tr.ui.bug.saveLabel);
@@ -232,4 +236,123 @@ test('synthetic notebook preview localizes examples and preserves separate list/
   await ui.language('en'); assert.ok(ui.text.includes(catalog.en.ui.notebookPreview.inspectionBody));
   await ui.press(catalog.en.ui.notebookPreview.back); assert.equal(backs, 0);
   await ui.press(catalog.en.ui.notebookPreview.back); assert.equal(backs, 1);
+});
+
+function syntheticReport(id) {
+  return { id, createdAt: '2026-01-01T12:00:00Z', area: 'Other', description: 'Synthetic retained report',
+    steps: '', expected: '', reporterName: 'Synthetic reporter', appVersion: '0.2.0' };
+}
+function bugFixture(raw = '[]', { language = 'en' } = {}) {
+  const state = { raw, writes: 0, reads: 0, shares: [], closed: 0, failRead: false };
+  const storage = {
+    async getItem(key) { assert.equal(key, '@ai-memory/bug-reports/v1'); state.reads++; if (state.failRead) throw Error('Synthetic read failure'); return state.raw; },
+    async setItem(key, value) { assert.equal(key, '@ai-memory/bug-reports/v1'); state.writes++; state.raw = value; },
+    async clear() { assert.fail('Never clear reports'); }, async removeItem() { assert.fail('Never delete reports'); },
+  };
+  const ui = mount('BugReportPanel', { onClose() { state.closed++; }, reporterName: 'Synthetic reporter' }, {
+    '../../app.json': require('../app.json'),
+    '@react-native-async-storage/async-storage': { __esModule: true, default: storage },
+  }, { language, native: { Share: { async share(payload) { state.shares.push(payload); } } } });
+  return { state, storage, ui };
+}
+
+test('bug input followed by captured close before rendering saves the latest input without Share', async t => {
+  const { state, ui } = bugFixture(); t.after(ui.unmount); const c = catalog.en.ui.bug;
+  const close = ui.find('Pressable', c.close).props.onPress;
+  ui.find('TextInput', c.describe).props.onChangeText('Synthetic immediate report');
+  close();
+  assert.equal(ui.alerts.at(-1).title, catalog.en.navigation.title);
+  await ui.choose(catalog.en.navigation.saveExit);
+  assert.equal(state.closed, 1); assert.equal(state.writes, 1); assert.equal(state.shares.length, 0);
+  assert.equal(JSON.parse(state.raw)[0].description, 'Synthetic immediate report');
+});
+
+test('oversized bug candidate preserves near-limit history and input without writing or sharing', async t => {
+  const retained = syntheticReport('synthetic-near-limit'); retained.description = 'x'.repeat(999000);
+  const original = JSON.stringify([retained]); assert.ok(original.length < 1000000);
+  const { state, ui } = bugFixture(original); t.after(ui.unmount); const c = catalog.en.ui.bug;
+  const draft = 'Synthetic oversized report '.repeat(100);
+  await ui.input(c.describe, draft); await ui.press(c.saveLabel);
+  assert.equal(state.raw, original); assert.equal(state.writes, 0); assert.equal(state.shares.length, 0);
+  assert.equal(ui.find('TextInput', c.describe).props.value, draft); assert.ok(ui.text.includes(c.failed));
+});
+
+for (const language of ['en', 'tr']) test(`bug Back offers all localized choices and Save and exit never opens Share in ${language}`, async t => {
+  const { state, ui } = bugFixture('[]', { language }); t.after(ui.unmount);
+  const c = catalog[language].ui.bug, nav = catalog[language].navigation;
+  await ui.input(c.describe, 'Synthetic bug draft'); await ui.back();
+  assert.equal(ui.alerts.at(-1).title, nav.title);
+  assert.deepEqual(ui.alerts.at(-1).buttons.map(item => item.text), [nav.stay, nav.discard, nav.saveExit]);
+  await ui.choose(nav.stay); assert.equal(ui.find('TextInput', c.describe).props.value, 'Synthetic bug draft');
+  await ui.press(c.close); await ui.choose(nav.saveExit);
+  assert.equal(state.closed, 1); assert.equal(state.writes, 1); assert.equal(state.shares.length, 0);
+  assert.equal(JSON.parse(state.raw)[0].description, 'Synthetic bug draft');
+});
+
+test('bug discard requires explicit selection and leaves original bytes untouched', async t => {
+  const { state, ui } = bugFixture(); t.after(ui.unmount); const c = catalog.en.ui.bug;
+  await ui.input(c.describe, 'Synthetic discarded draft'); await ui.back();
+  assert.equal(state.closed, 0); await ui.choose(catalog.en.navigation.discard);
+  assert.equal(state.closed, 1); assert.equal(state.raw, '[]'); assert.equal(state.writes, 0); assert.equal(state.shares.length, 0);
+});
+
+test('bug invalid/non-array/malformed/read-failed histories retain all original bytes and typed input', async () => {
+  const originals = ['{invalid', '{}', 'null', '42', '[null]', JSON.stringify([{ ...syntheticReport('synthetic-bad'), description: 42 }]),
+    JSON.stringify([syntheticReport('synthetic-duplicate'), syntheticReport('synthetic-duplicate')]), '[]'];
+  for (const original of originals) {
+    const { state, ui } = bugFixture(original); if (original === '[]') state.failRead = true;
+    await ui.input(catalog.en.ui.bug.describe, 'Synthetic retained draft'); await ui.press(catalog.en.ui.bug.saveLabel);
+    assert.equal(state.raw, original); assert.equal(state.writes, 0); assert.equal(state.shares.length, 0);
+    assert.equal(ui.find('TextInput', catalog.en.ui.bug.describe).props.value, 'Synthetic retained draft');
+    assert.ok(ui.text.includes(catalog.en.ui.bug.failed)); ui.unmount();
+  }
+});
+
+test('bug second-read conflict preserves external history without save or Share', async t => {
+  const { state, storage, ui } = bugFixture(); t.after(ui.unmount);
+  const external = JSON.stringify([syntheticReport('synthetic-external')]);
+  storage.getItem = async () => { if (++state.reads === 2) state.raw = external; return state.raw; };
+  await ui.input(catalog.en.ui.bug.describe, 'Synthetic conflict draft'); await ui.press(catalog.en.ui.bug.saveLabel);
+  assert.equal(state.raw, external); assert.equal(state.writes, 0); assert.equal(state.shares.length, 0);
+  assert.equal(ui.find('TextInput', catalog.en.ui.bug.describe).props.value, 'Synthetic conflict draft');
+});
+
+for (const failure of ['lost-ack', 'readback']) test(`bug ${failure} retry reconciles the same report ID and shares only after verified success`, async t => {
+  const { state, storage, ui } = bugFixture(); t.after(ui.unmount); const c = catalog.en.ui.bug;
+  const read = storage.getItem; let failReadback = false;
+  storage.getItem = async key => { if (failReadback) { failReadback = false; throw Error('Synthetic unconfirmed readback'); } return read(key); };
+  storage.setItem = async (_key, value) => {
+    state.writes++; state.raw = value;
+    if (failure === 'lost-ack') throw Error('Synthetic lost write ACK');
+    failReadback = true;
+  };
+  await ui.input(c.describe, 'Synthetic retry report'); await ui.press(c.saveLabel);
+  const id = JSON.parse(state.raw)[0].id;
+  assert.equal(state.writes, 1); assert.equal(state.shares.length, 0); assert.ok(ui.text.includes(c.failed));
+  await ui.press(c.saveLabel);
+  assert.equal(state.writes, 1); assert.equal(JSON.parse(state.raw).length, 1); assert.equal(JSON.parse(state.raw)[0].id, id);
+  assert.equal(state.shares.length, 1); assert.ok(ui.text.includes(c.saved));
+});
+
+test('bug history retains more than fifty entries and rejects capacity exhaustion without deletion', async () => {
+  for (const count of [55, 1000]) {
+    const reports = Array.from({ length: count }, (_, i) => syntheticReport('synthetic-retained-' + i));
+    const original = JSON.stringify(reports), { state, ui } = bugFixture(original);
+    await ui.input(catalog.en.ui.bug.describe, 'Synthetic newest report'); await ui.press(catalog.en.ui.bug.saveLabel);
+    if (count === 55) {
+      const saved = JSON.parse(state.raw); assert.equal(saved.length, 56); assert.deepEqual(saved.slice(1), reports);
+    } else { assert.equal(state.raw, original); assert.equal(state.writes, 0); assert.equal(state.shares.length, 0); }
+    ui.unmount();
+  }
+});
+
+test('pending bug write fences duplicate submit/input and unmount suppresses late state and sharing', async () => {
+  const { state, storage, ui } = bugFixture(); const c = catalog.en.ui.bug;
+  await ui.input(c.describe, 'Synthetic pending report'); let release;
+  storage.setItem = async (_key, value) => { state.writes++; await new Promise(resolve => { release = resolve; }); state.raw = value; };
+  const save = ui.find('Pressable', c.saveLabel).props.onPress, input = ui.find('TextInput', c.describe).props.onChangeText;
+  save(); save(); input('Must not replace pending report'); await ui.flush();
+  assert.equal(state.writes, 1); assert.equal(ui.find('TextInput', c.describe).props.value, 'Synthetic pending report');
+  ui.unmount(); release(); await ui.flush(); assert.equal(state.shares.length, 0); assert.equal(state.closed, 0);
+  assert.equal(JSON.parse(state.raw).length, 1);
 });

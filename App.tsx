@@ -31,8 +31,10 @@ import { createInteractionTimestamp, formatInteractionDate } from './src/utils/i
 import { planReminderEdit } from './src/utils/reminderEditDecision';
 import { useI18n } from './src/i18n/LanguageProvider';
 import { useTheme } from './src/theme/ThemeProvider';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useUnsavedChanges } from './src/hooks/useUnsavedChanges';
 import { AppHeader } from './src/components/ui/AppHeader';
+import { DigitalTimeInput } from './src/components/ui/DigitalTimeInput';
+import { applyDigitalReminderTime, digitalReminderFields } from './src/utils/digitalReminderTime';
 import type { appEn } from './src/i18n/catalogs/app';
 import { normalizeStandardPhone } from './src/utils/standardPhone';
 import {
@@ -41,7 +43,7 @@ import {
 } from './src/utils/followUpNotifications';
 
 type Screen = 'home' | 'detail' | 'add' | 'edit' | 'notebook' | 'life' | 'assistant';
-type PickerMode = 'date' | 'time' | 'datetime' | null;
+type PickerMode = 'date' | 'time' | null;
 type PersonOperation = 'save' | 'complete' | 'delete' | 'add' | 'note' | 'interaction';
 type PersonForm = {
   name: string;
@@ -64,6 +66,20 @@ const emptyForm: PersonForm = {
   followUp: '',
   followUpReminderAt: '',
 };
+
+function formFromPerson(person: MemoryPerson): PersonForm {
+  return { name: person.name, role: person.role ?? '', company: person.company ?? '',
+    phone: person.phone ?? '', relationship: person.relationship, note: person.notes[0] ?? '',
+    followUp: person.followUp?.text ?? '', followUpReminderAt: person.followUp?.reminderAt ?? '' };
+}
+
+function meaningfulForm(form: PersonForm) {
+  return JSON.stringify(Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()])));
+}
+
+function pickerSignature(date: Date, fields: { hour: string; minute: string }) {
+  return JSON.stringify([date.getFullYear(), date.getMonth(), date.getDate(), fields.hour, fields.minute]);
+}
 
 function reminderAtTomorrow(hour = 9) {
   const date = new Date();
@@ -157,9 +173,15 @@ export default function App() {
   const [memoryText, setMemoryText] = useState('');
   const [form, setForm] = useState<PersonForm>(emptyForm);
   const [pickerMode, setPickerMode] = useState<PickerMode>(null);
+  const [pickerDraft, setPickerDraft] = useState<Date>(defaultCustomReminder);
+  const [pickerFields, setPickerFields] = useState(() => digitalReminderFields(pickerDraft));
+  const pickerBaseline = useRef<string | null>(null);
+  const drafts = useRef({ form, memoryText, interactionText, pickerDraft, pickerFields, pickerMode });
+  drafts.current = { form, memoryText, interactionText, pickerDraft, pickerFields, pickerMode };
   const [busy, setBusy] = useState<PersonOperation | null>(null);
   const operation = useRef<PersonOperation | null>(null);
   const mounted = useRef(true);
+  const saveLifetime = useRef(new AbortController());
   const editBase = useRef<MemoryPerson | null>(null);
   const latestPeople = useRef(people);
   const view = useRef({ screen, selectedId });
@@ -167,12 +189,15 @@ export default function App() {
     before: MemoryPerson[];
     accepted: (next: MemoryPerson[]) => boolean;
     resolve: (accepted: boolean) => void;
+    afterSaved?: () => Promise<void>;
   } | null>(null);
 
   useEffect(() => {
     mounted.current = true;
+    saveLifetime.current = new AbortController();
     return () => {
       mounted.current = false;
+      saveLifetime.current.abort();
       pendingChange.current?.resolve(false);
       pendingChange.current = null;
     };
@@ -184,12 +209,23 @@ export default function App() {
     const pending = pendingChange.current;
     if (pending && people !== pending.before) {
       pendingChange.current = null;
-      pending.resolve(pending.accepted(people));
+      if (!pending.accepted(people)) pending.resolve(false);
+      else {
+        // Native cleanup follows acknowledged final bytes even if App Lock
+        // detaches this editor. The queue settles superseded waiters as false.
+        const cleanup = pending.afterSaved
+          ? saveState.confirm(people).then(async saved => { if (saved) await pending.afterSaved?.(); })
+          : Promise.resolve();
+        void saveState.confirm(people, saveLifetime.current.signal).then(async saved => {
+          if (saved) await cleanup;
+          pending.resolve(saved && mounted.current);
+        });
+      }
     }
   }, [people, screen, selectedId]);
 
   function beginOperation(kind: PersonOperation) {
-    if (!mounted.current || operation.current) return false;
+    if (!mounted.current || operation.current || saveState.getStatus() !== 'idle') return false;
     operation.current = kind;
     setBusy(kind);
     return true;
@@ -200,12 +236,14 @@ export default function App() {
     if (mounted.current) setBusy(null);
   }
 
-  // Acknowledges React's in-memory update only, never disk durability or a
-  // transaction with native notifications. Updaters stay pure under replay.
+  // Accept the immutable revision, then wait for the single writer's exact
+  // AsyncStorage acknowledgement. This is not native crash durability or a
+  // transaction with notifications. Updaters stay pure under React replay.
   function changePeople(update: (current: MemoryPerson[]) => MemoryPerson[],
-    accepted: (next: MemoryPerson[]) => boolean): Promise<boolean> {
+    accepted: (next: MemoryPerson[]) => boolean, afterSaved?: () => Promise<void>): Promise<boolean> {
+    if (!mounted.current || saveState.getStatus() !== 'idle') return Promise.resolve(false);
     return new Promise(resolve => {
-      pendingChange.current = { before: latestPeople.current, accepted, resolve };
+      pendingChange.current = { before: latestPeople.current, accepted, resolve, afterSaved };
       setPeople(update);
     });
   }
@@ -250,6 +288,40 @@ export default function App() {
 
   const recentMemory = useMemo(() => recentPersonMemory(people), [people]);
 
+  // Every input callback rejects changes synchronously during an operation.
+  // This also fences the two-step detail save, whose own intermediate draft
+  // clearing must not invalidate Save and exit before React's next render.
+  const { requestExit } = useUnsavedChanges({
+    // An accessor sees native text events immediately, including Back delivered
+    // before React renders the new controlled value. These refs are never stored.
+    get dirty() {
+      const next = drafts.current;
+      if (screen === 'detail') return Boolean(next.memoryText.trim() || next.interactionText.trim());
+      if (screen !== 'add' && screen !== 'edit') return false;
+      return meaningfulForm(next.form) !== meaningfulForm(
+        screen === 'edit' && editBase.current ? formFromPerson(editBase.current) : emptyForm)
+        || (next.pickerMode !== null && pickerSignature(next.pickerDraft, next.pickerFields) !== pickerBaseline.current);
+    },
+    busy: busy !== null,
+    enabled: isReady && !loadError && ['home', 'add', 'edit', 'detail'].includes(screen),
+    save: async () => {
+      if (screen === 'add') return addPerson();
+      if (screen === 'edit') return saveEditedPerson();
+      if (drafts.current.memoryText.trim() && !await addMemoryNote()) return false;
+      if (drafts.current.interactionText.trim() && !await addInteraction()) return false;
+      return true;
+    },
+    discard: () => {
+      drafts.current.form = emptyForm; drafts.current.memoryText = ''; drafts.current.interactionText = '';
+      setForm(emptyForm); setMemoryText(''); setInteractionText(''); closePicker();
+    },
+    onBack: screen === 'home' ? undefined : () => setScreen(screen === 'edit' ? 'detail' : 'home'),
+  });
+  // Notification listeners live for this mount; always consult the current
+  // editor/operation rather than the clean first-render closure.
+  const navigation = useRef(requestExit);
+  navigation.current = requestExit;
+
   useEffect(() => {
     function openFromNotification(response: Notifications.NotificationResponse) {
       if (!mounted.current) return;
@@ -257,11 +329,13 @@ export default function App() {
       const personId = typeof data?.personId === 'string' ? data.personId : null;
       if (!personId) return;
 
-      setSelectedId(personId);
-      setBriefing('');
-      setInteractionText('');
-      setMemoryText('');
-      setScreen('detail');
+      navigation.current(() => {
+        setSelectedId(personId);
+        setBriefing('');
+        setInteractionText('');
+        setMemoryText('');
+        setScreen('detail');
+      });
     }
 
     const subscription = Notifications.addNotificationResponseReceivedListener(openFromNotification);
@@ -273,11 +347,13 @@ export default function App() {
   }, []);
 
   function openPerson(id: string) {
-    setSelectedId(id);
-    setBriefing('');
-    setInteractionText('');
-    setMemoryText('');
-    setScreen('detail');
+    requestExit(() => {
+      setSelectedId(id);
+      setBriefing('');
+      setInteractionText('');
+      setMemoryText('');
+      setScreen('detail');
+    });
   }
 
   async function openContactAction(action: 'call' | 'sms' | 'whatsapp') {
@@ -328,47 +404,46 @@ export default function App() {
   }
 
   function openAddPerson() {
-    if (!mounted.current || operation.current) return;
-    editBase.current = null;
-    setForm(emptyForm);
-    setPickerMode(null);
-    setScreen('add');
+    if (!mounted.current || operation.current || saveState.getStatus() !== 'idle') return;
+    requestExit(() => {
+      if (saveState.getStatus() !== 'idle') return;
+      editBase.current = null;
+      setForm(emptyForm);
+      setPickerMode(null);
+      setScreen('add');
+    });
   }
 
   function openEditPerson() {
-    if (!selected || !mounted.current || operation.current) return;
+    if (!selected || !mounted.current || operation.current || saveState.getStatus() !== 'idle') return;
 
-    // People updates are immutable; retain the full original record, including
-    // notes/history, rather than treating a matching follow-up ID as a revision.
-    editBase.current = selected;
-
-    setForm({
-      name: selected.name,
-      role: selected.role ?? '',
-      company: selected.company ?? '',
-      phone: selected.phone ?? '',
-      relationship: selected.relationship,
-      note: selected.notes[0] ?? '',
-      followUp: selected.followUp?.text ?? '',
-      followUpReminderAt: selected.followUp?.reminderAt ?? '',
+    const personId = selected.id;
+    requestExit(() => {
+      if (saveState.getStatus() !== 'idle') return;
+      const current = latestPeople.current.find(person => person.id === personId);
+      if (!current) return;
+      // Retain the full revision, including notes/history.
+      editBase.current = current;
+      setForm(formFromPerson(current));
+      setPickerMode(null);
+      setScreen('edit');
     });
-    setPickerMode(null);
-    setScreen('edit');
   }
 
   async function buildFollowUp(
     personId: string,
     personName: string,
+    draft: PersonForm,
     existing?: MemoryFollowUp,
   ): Promise<MemoryFollowUp | undefined> {
-    const text = form.followUp.trim();
+    const text = draft.followUp.trim();
     if (!text) return undefined;
 
     const followUp: MemoryFollowUp = {
       id: existing?.id ?? `follow-up-${Date.now()}`,
       text,
       createdAt: existing?.createdAt ?? new Date().toISOString(),
-      reminderAt: form.followUpReminderAt || undefined,
+      reminderAt: draft.followUpReminderAt || undefined,
     };
 
     if (followUp.reminderAt) {
@@ -394,68 +469,73 @@ export default function App() {
     return followUp;
   }
 
-  async function addPerson() {
-    if (!mounted.current || operation.current || !form.name.trim()) return;
+  async function addPerson(): Promise<boolean> {
+    if (!mounted.current || operation.current) return false;
+    const draft = formForSave();
+    if (!draft?.name.trim()) return false;
     let phone: string | undefined;
     try {
-      phone = normalizeStandardPhone(form.phone);
+      phone = normalizeStandardPhone(draft.phone);
     } catch {
       Alert.alert(c.checkPhone, c.phoneFormat);
-      return;
+      return false;
     }
 
-    if (!beginOperation('add')) return;
+    if (!beginOperation('add')) return false;
     try {
       const id = `person-${Date.now()}`;
-      const followUp = await buildFollowUp(id, form.name.trim());
+      const followUp = await buildFollowUp(id, draft.name.trim(), draft);
       if (!mounted.current) {
         await cancelFollowUpNotification(followUp?.notificationId);
-        return;
+        return false;
       }
       const person: MemoryPerson = {
         id,
-        name: form.name.trim(),
-        role: form.role.trim() || undefined,
-        company: form.company.trim() || undefined,
+        name: draft.name.trim(),
+        role: draft.role.trim() || undefined,
+        company: draft.company.trim() || undefined,
         phone,
-        relationship: form.relationship.trim() || c.newContact,
+        relationship: draft.relationship.trim() || c.newContact,
         lastInteraction: c.noInteractionsValue,
-        notes: form.note.trim() ? [form.note.trim()] : [],
+        notes: draft.note.trim() ? [draft.note.trim()] : [],
         followUp,
         followUpHistory: [],
         interactions: [],
       };
 
       const applied = await changePeople((current) => [person, ...current], next => next.includes(person));
-      if (!applied || !mounted.current || view.current.screen !== 'add') return;
+      if (!applied || !mounted.current || view.current.screen !== 'add') return false;
       setForm(emptyForm);
       setPickerMode(null);
       setSelectedId(id);
       setBriefing('');
       setScreen('detail');
+      return true;
     } finally {
       finishOperation();
     }
   }
 
-  async function saveEditedPerson() {
-    if (!selected || !mounted.current || operation.current || !form.name.trim()) return;
+  async function saveEditedPerson(): Promise<boolean> {
+    if (!selected || !mounted.current || operation.current) return false;
+    const draft = formForSave();
+    if (!draft?.name.trim()) return false;
     const base = editBase.current;
     if (!base || selected.id !== base.id || !samePerson(latestPeople.current.find(person => person.id === base.id), base)) {
       Alert.alert(c.personChanged, c.draftKept);
-      return;
+      return false;
     }
     let phone: string | undefined;
     try {
-      phone = normalizeStandardPhone(form.phone);
+      phone = normalizeStandardPhone(draft.phone);
     } catch {
       Alert.alert(c.checkPhone, c.phoneFormat);
-      return;
+      return false;
     }
 
-    const nextName = form.name.trim();
-    const nextText = form.followUp.trim();
-    const nextReminderAt = form.followUpReminderAt || undefined;
+    const nextName = draft.name.trim();
+    const nextText = draft.followUp.trim();
+    const nextReminderAt = draft.followUpReminderAt || undefined;
     const oldFollowUp = base.followUp;
 
     const reminderPlan = planReminderEdit({
@@ -471,10 +551,10 @@ export default function App() {
         c.futureReminder,
         c.pastReminder,
       );
-      return;
+      return false;
     }
 
-    if (!beginOperation('save')) return;
+    if (!beginOperation('save')) return false;
     try {
       let nextFollowUp: MemoryFollowUp | undefined;
       let createdNotificationId: string | undefined;
@@ -502,14 +582,14 @@ export default function App() {
 
           if (!mounted.current) {
             if (newNotificationId) await cancelFollowUpNotification(newNotificationId);
-            return;
+            return false;
           }
           if (!newNotificationId) {
             Alert.alert(
               c.reminderNotUpdated,
               c.previousNotCancelled,
             );
-            return;
+            return false;
           }
 
           nextFollowUp.notificationId = newNotificationId;
@@ -517,30 +597,35 @@ export default function App() {
         }
       }
 
-      const firstNote = form.note.trim();
+      const firstNote = draft.note.trim();
       const replacement: MemoryPerson = {
         ...base,
         name: nextName,
-        role: form.role.trim() || undefined,
-        company: form.company.trim() || undefined,
+        role: draft.role.trim() || undefined,
+        company: draft.company.trim() || undefined,
         phone,
-        relationship: form.relationship.trim() || c.contact,
+        relationship: draft.relationship.trim() || c.contact,
         notes: firstNote ? [firstNote, ...base.notes.slice(1)] : base.notes.slice(1),
         followUp: nextFollowUp,
       };
       const applied = await changePeople(current => current.map(person =>
-        person.id === base.id && samePerson(person, base) ? replacement : person), next => next.includes(replacement));
+        person.id === base.id && samePerson(person, base) ? replacement : person), next => next.includes(replacement),
+      async () => {
+        if (oldFollowUp?.notificationId && oldFollowUp.notificationId !== nextFollowUp?.notificationId) {
+          await cancelFollowUpNotification(oldFollowUp.notificationId);
+        }
+      });
       if (!applied) {
-        if (createdNotificationId) await cancelFollowUpNotification(createdNotificationId);
-        if (mounted.current) Alert.alert(c.personChanged, c.draftKept);
-        return;
+        // An aborted UI waiter does not undo an intentional pending final save.
+        // Only clean up a new alarm when the revision was actually rejected.
+        if (!latestPeople.current.includes(replacement)) {
+          if (createdNotificationId) await cancelFollowUpNotification(createdNotificationId);
+          if (mounted.current) Alert.alert(c.personChanged, c.draftKept);
+        }
+        return false;
       }
 
-      if (oldFollowUp?.notificationId && oldFollowUp.notificationId !== nextFollowUp?.notificationId) {
-        await cancelFollowUpNotification(oldFollowUp.notificationId);
-      }
-
-      if (!mounted.current) return;
+      if (!mounted.current) return false;
       editBase.current = replacement;
       if (view.current.selectedId === base.id) {
         setBriefing('');
@@ -551,42 +636,47 @@ export default function App() {
       if (reminderPlan === 'schedule' && oldFollowUp?.reminderAt) {
         Alert.alert(c.reminderUpdated, c.rescheduled);
       }
+      return true;
     } finally {
       finishOperation();
     }
   }
 
-  async function addInteraction() {
-    const text = interactionText.trim();
-    if (!selected || !text || !beginOperation('interaction')) return;
+  async function addInteraction(): Promise<boolean> {
+    const text = drafts.current.interactionText.trim();
+    if (!selected || !text || !beginOperation('interaction')) return false;
     const personId = selected.id;
 
     try {
       const timestamp = createInteractionTimestamp();
       const interaction = { id: `interaction-${Date.now()}`, date: timestamp, summary: text, source: 'manual' as const };
-      await changePeople(current => current.map(person => person.id === personId
+      const applied = await changePeople(current => current.map(person => person.id === personId
         ? { ...person, lastInteraction: timestamp, interactions: [interaction, ...person.interactions] }
         : person), next => next.some(person => person.id === personId && person.interactions.includes(interaction)));
-      if (!mounted.current || view.current.selectedId !== personId) return;
+      if (!applied || !mounted.current || view.current.selectedId !== personId) return false;
       setInteractionText('');
+      drafts.current.interactionText = '';
       setBriefing('');
+      return true;
     } finally {
       finishOperation();
     }
   }
 
-  async function addMemoryNote() {
-    const text = memoryText.trim();
-    if (!selected || !text || !beginOperation('note')) return;
+  async function addMemoryNote(): Promise<boolean> {
+    const text = drafts.current.memoryText.trim();
+    if (!selected || !text || !beginOperation('note')) return false;
     const personId = selected.id;
 
     try {
-      await changePeople(current => current.map(person => person.id === personId
+      const applied = await changePeople(current => current.map(person => person.id === personId
         ? { ...person, notes: [text, ...person.notes] }
         : person), next => next.some(person => person.id === personId));
-      if (!mounted.current || view.current.selectedId !== personId) return;
+      if (!applied || !mounted.current || view.current.selectedId !== personId) return false;
       setMemoryText('');
+      drafts.current.memoryText = '';
       setBriefing('');
+      return true;
     } finally {
       finishOperation();
     }
@@ -598,14 +688,13 @@ export default function App() {
     try {
       const personId = selected.id;
       const completed = selected.followUp;
-      await cancelFollowUpNotification(completed.notificationId);
-      if (!mounted.current) return;
       const historyItem = { ...completed, completedAt: new Date().toISOString(), notificationId: undefined };
 
       await changePeople(current => current.map(person =>
         person.id === personId && sameFollowUp(person.followUp, completed)
           ? { ...person, followUp: undefined, followUpHistory: [historyItem, ...(person.followUpHistory ?? [])] }
-          : person), next => next.some(person => person.id === personId && person.followUpHistory?.includes(historyItem)));
+          : person), next => next.some(person => person.id === personId && person.followUpHistory?.includes(historyItem)),
+      () => cancelFollowUpNotification(completed.notificationId));
       if (mounted.current && view.current.selectedId === personId) setBriefing('');
     } finally {
       finishOperation();
@@ -613,7 +702,7 @@ export default function App() {
   }
 
   function deleteSelectedPerson() {
-    if (!selected || !mounted.current || operation.current) return;
+    if (!selected || !mounted.current || operation.current || saveState.getStatus() !== 'idle') return;
     const base = selected;
 
     Alert.alert(
@@ -633,10 +722,9 @@ export default function App() {
             if (!beginOperation('delete')) return;
             void (async () => {
               try {
-                await cancelFollowUpNotification(base.followUp?.notificationId);
-                if (!mounted.current) return;
                 const applied = await changePeople(current => current.filter(person =>
-                  person.id !== base.id || !samePerson(person, base)), next => !next.some(person => person.id === base.id));
+                  person.id !== base.id || !samePerson(person, base)), next => !next.some(person => person.id === base.id),
+                () => cancelFollowUpNotification(base.followUp?.notificationId));
                 if (!applied || !mounted.current || view.current.selectedId !== base.id) return;
                 setSelectedId(null);
                 setBriefing('');
@@ -653,54 +741,78 @@ export default function App() {
 
   function setReminder(date?: Date) {
     if (!mounted.current || operation.current) return;
-    setForm((current) => ({
-      ...current,
+    const next = {
+      ...drafts.current.form,
       followUpReminderAt: date ? date.toISOString() : '',
-    }));
+    };
+    drafts.current.form = next;
+    setForm(next);
+    closePicker();
+  }
+
+  function changeForm(update: (current: PersonForm) => PersonForm) {
+    if (!mounted.current || operation.current || saveState.getStatus() !== 'idle') return;
+    const next = update(drafts.current.form);
+    drafts.current.form = next;
+    setForm(next);
+  }
+
+  function formForSave(): PersonForm | null {
+    const current = drafts.current;
+    if (current.pickerMode === null || !current.form.followUp.trim()
+      || pickerSignature(current.pickerDraft, current.pickerFields) === pickerBaseline.current) return current.form;
+    const result = applyDigitalReminderTime(current.pickerDraft, current.pickerFields.hour, current.pickerFields.minute);
+    if (!result.ok) {
+      Alert.alert(copy.timeEntry.title, copy.timeEntry[result.reason]);
+      return null;
+    }
+    if (result.date.getTime() <= Date.now()) {
+      Alert.alert(c.futureTime, c.futureTimeHelp);
+      return null;
+    }
+    return { ...current.form, followUpReminderAt: result.date.toISOString() };
+  }
+
+  function closePicker() {
+    if (!mounted.current || operation.current) return;
+    drafts.current.pickerMode = null;
+    setPickerMode(null);
   }
 
   function openCustomReminderPicker() {
     if (!mounted.current || operation.current) return;
-    if (!form.followUpReminderAt) setReminder(defaultCustomReminder());
-    setPickerMode(Platform.OS === 'ios' ? 'datetime' : 'date');
+    const date = drafts.current.form.followUpReminderAt ? new Date(drafts.current.form.followUpReminderAt) : defaultCustomReminder();
+    const fields = digitalReminderFields(date);
+    pickerBaseline.current = pickerSignature(date, fields);
+    Object.assign(drafts.current, { pickerDraft: date, pickerFields: fields, pickerMode: 'date' });
+    setPickerDraft(date);
+    setPickerFields(fields);
+    setPickerMode('date');
   }
 
   function handleReminderPicker(event: DateTimePickerEvent, picked?: Date) {
     if (!mounted.current || operation.current) return;
     if (event.type === 'dismissed' || !picked) {
-      if (Platform.OS === 'android') setPickerMode(null);
+      closePicker();
       return;
     }
-
-    const current = form.followUpReminderAt
-      ? new Date(form.followUpReminderAt)
-      : defaultCustomReminder();
-
-    if (pickerMode === 'datetime') {
-      setReminder(picked);
-      return;
-    }
-
     if (pickerMode === 'date') {
       const next = new Date(picked);
-      next.setHours(current.getHours(), current.getMinutes(), 0, 0);
-      setReminder(next);
-      setPickerMode('time');
+      // Carry the requested wall clock as raw fields. Applying setHours here
+      // could silently turn a DST-gap 02:30 into 03:30 before validation.
+      setPickerDraft(next);
+      drafts.current.pickerDraft = next;
+      if (Platform.OS !== 'ios') { drafts.current.pickerMode = 'time'; setPickerMode('time'); }
+    }
+  }
+
+  function confirmReminderTime(next: Date) {
+    if (!mounted.current || operation.current) return;
+    if (!Number.isFinite(next.getTime()) || next.getTime() <= Date.now()) {
+      Alert.alert(c.futureTime, c.futureTimeHelp);
       return;
     }
-
-    if (pickerMode === 'time') {
-      const next = new Date(current);
-      next.setHours(picked.getHours(), picked.getMinutes(), 0, 0);
-      setPickerMode(null);
-
-      if (next.getTime() <= Date.now()) {
-        Alert.alert(c.futureTime, c.futureTimeHelp);
-        return;
-      }
-
-      setReminder(next);
-    }
+    setReminder(next);
   }
 
   if (loadError) {
@@ -740,13 +852,9 @@ export default function App() {
 
   if (screen === 'add' || screen === 'edit') {
     const isEdit = screen === 'edit';
-    const pickerValue = form.followUpReminderAt
-      ? new Date(form.followUpReminderAt)
-      : defaultCustomReminder();
-
     return (
       <Page key={screen} saveState={saveState} busy={busy !== null}>
-        <Back onPress={() => setScreen(isEdit ? 'detail' : 'home')} />
+        <Back onPress={() => requestExit(() => setScreen(isEdit ? 'detail' : 'home'))} />
         <Text style={styles.titleSmall}>{isEdit ? c.editPerson : c.addPerson}</Text>
         <Text style={styles.sub}>
           {isEdit
@@ -755,10 +863,10 @@ export default function App() {
         </Text>
 
         <Card>
-          <Field label={c.nameLabel} value={form.name} editable={busy === null} onChange={(name) => setForm((current) => ({ ...current, name }))} />
-          <Field label={c.roleLabel} value={form.role} editable={busy === null} onChange={(role) => setForm((current) => ({ ...current, role }))} />
-          <Field label={c.companyLabel} value={form.company} editable={busy === null} onChange={(company) => setForm((current) => ({ ...current, company }))} />
-          <Field label={c.phoneLabel} value={form.phone} editable={busy === null} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
+          <Field label={c.nameLabel} value={form.name} editable={busy === null} onChange={(name) => changeForm((current) => ({ ...current, name }))} />
+          <Field label={c.roleLabel} value={form.role} editable={busy === null} onChange={(role) => changeForm((current) => ({ ...current, role }))} />
+          <Field label={c.companyLabel} value={form.company} editable={busy === null} onChange={(company) => changeForm((current) => ({ ...current, company }))} />
+          <Field label={c.phoneLabel} value={form.phone} editable={busy === null} onChange={(phone) => changeForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
           <Text style={styles.muted}>
             {c.phoneScope}
           </Text>
@@ -766,20 +874,20 @@ export default function App() {
             label={c.relationshipLabel}
             editable={busy === null}
             value={form.relationship}
-            onChange={(relationship) => setForm((current) => ({ ...current, relationship }))}
+            onChange={(relationship) => changeForm((current) => ({ ...current, relationship }))}
           />
           <Field
             label={isEdit ? c.primaryMemory : c.firstMemory}
             editable={busy === null}
             value={form.note}
-            onChange={(note) => setForm((current) => ({ ...current, note }))}
+            onChange={(note) => changeForm((current) => ({ ...current, note }))}
             multiline
           />
           <Field
             label={c.followUpLabel}
             editable={busy === null}
             value={form.followUp}
-            onChange={(followUp) => setForm((current) => ({ ...current, followUp }))}
+            onChange={(followUp) => changeForm((current) => ({ ...current, followUp }))}
             multiline
           />
 
@@ -810,32 +918,45 @@ export default function App() {
                 <ReminderChip label={c.pickDate} onPress={openCustomReminderPicker} />
               </View>
 
-              {pickerMode ? (
+              {pickerMode === 'date' ? (
                 <View style={styles.pickerWrap}>
                   <DateTimePicker
                     locale={locale}
                     themeVariant={theme.isDark ? 'dark' : 'light'}
                     accentColor={theme.colors.accent}
-                    value={pickerValue}
-                    mode={pickerMode}
+                    value={pickerDraft}
+                    mode="date"
                     minimumDate={new Date()}
                     onChange={handleReminderPicker}
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                   />
-                  {Platform.OS === 'ios' ? (
-                    <Pressable style={styles.pickerDone} onPress={() => setPickerMode(null)}>
+                  {Platform.OS === 'ios' ? (<>
+                    <Pressable style={styles.pickerDone} onPress={closePicker}>
+                      <Text style={styles.pickerDoneText}>{c.cancel}</Text>
+                    </Pressable>
+                    <Pressable style={styles.pickerDone} onPress={() => {
+                      if (!mounted.current || operation.current) return;
+                      drafts.current.pickerMode = 'time'; setPickerMode('time');
+                    }}>
                       <Text style={styles.pickerDoneText}>{c.done}</Text>
                     </Pressable>
-                  ) : null}
+                  </>) : null}
                 </View>
               ) : null}
+              {pickerMode === 'time' && <DigitalTimeInput value={pickerDraft} fields={pickerFields}
+                onFieldsChange={fields => {
+                  if (mounted.current && !operation.current && saveState.getStatus() === 'idle') {
+                    drafts.current.pickerFields = fields; setPickerFields(fields);
+                  }
+                }}
+                onConfirm={confirmReminderTime} onCancel={closePicker} disabled={busy !== null} />}
             </View>
           ) : null}
 
           <Action
             label={busy === 'save' || busy === 'add' ? c.saving : isEdit ? c.saveChanges : c.savePerson}
             onPress={isEdit ? () => void saveEditedPerson() : () => void addPerson()}
-            disabled={!form.name.trim() || busy !== null}
+            disabled={!form.name.trim() || busy !== null || saveState.status !== 'idle'}
           />
         </Card>
       </Page>
@@ -845,7 +966,7 @@ export default function App() {
   if (screen === 'detail' && selected) {
     return (
       <Page key={screen} saveState={saveState} busy={busy !== null}>
-        <Back onPress={() => setScreen('home')} />
+        <Back onPress={() => requestExit(() => setScreen('home'))} />
 
         <View style={styles.profile}>
           <View style={styles.avatarLarge}>
@@ -866,8 +987,8 @@ export default function App() {
             </View>
           ) : null}
           <View style={styles.profileActions}>
-            <MiniAction label={c.edit} onPress={openEditPerson} disabled={busy !== null} />
-            <MiniAction label={c.delete} onPress={deleteSelectedPerson} danger disabled={busy !== null} />
+            <MiniAction label={c.edit} onPress={openEditPerson} disabled={busy !== null || saveState.status !== 'idle'} />
+            <MiniAction label={c.delete} onPress={deleteSelectedPerson} danger disabled={busy !== null || saveState.status !== 'idle'} />
           </View>
         </View>
 
@@ -884,13 +1005,14 @@ export default function App() {
           <TextInput
             accessibilityLabel={c.memoryPlaceholder}
             value={memoryText}
-            onChangeText={setMemoryText}
+            onChangeText={text => { if (mounted.current && !operation.current && saveState.getStatus() === 'idle') { drafts.current.memoryText = text; setMemoryText(text); } }}
+            editable={busy === null && saveState.status === 'idle'}
             multiline
             placeholder={c.memoryPlaceholder}
             placeholderTextColor={theme.colors.textMuted}
             style={[styles.input, styles.multilineSmall]}
           />
-          <OutlineAction label={c.addNote} onPress={() => void addMemoryNote()} disabled={!memoryText.trim() || busy !== null} />
+          <OutlineAction label={c.addNote} onPress={() => void addMemoryNote()} disabled={!memoryText.trim() || busy !== null || saveState.status !== 'idle'} />
 
           {selected.followUp ? (
             <View style={styles.followUp}>
@@ -906,10 +1028,10 @@ export default function App() {
               <Text style={styles.followUpText}>{selected.followUp.text}</Text>
               <Text style={styles.followUpReminder}>⏰ {formatReminder(selected.followUp.reminderAt, c, locale)}</Text>
               <View style={styles.followUpActions}>
-                <Pressable onPress={() => void completeFollowUp()} disabled={busy !== null} style={[styles.followUpDone, busy !== null && styles.disabled]}>
+                <Pressable onPress={() => void completeFollowUp()} disabled={busy !== null || saveState.status !== 'idle'} style={[styles.followUpDone, (busy !== null || saveState.status !== 'idle') && styles.disabled]}>
                   <Text style={styles.followUpDoneText}>{c.markCompleted}</Text>
                 </Pressable>
-                <Pressable onPress={openEditPerson} disabled={busy !== null} style={[styles.followUpEdit, busy !== null && styles.disabled]}>
+                <Pressable onPress={openEditPerson} disabled={busy !== null || saveState.status !== 'idle'} style={[styles.followUpEdit, (busy !== null || saveState.status !== 'idle') && styles.disabled]}>
                   <Text style={styles.followUpEditText}>{c.editReminder}</Text>
                 </Pressable>
               </View>
@@ -933,13 +1055,14 @@ export default function App() {
           <TextInput
             accessibilityLabel={c.interactionPlaceholder}
             value={interactionText}
-            onChangeText={setInteractionText}
+            onChangeText={text => { if (mounted.current && !operation.current && saveState.getStatus() === 'idle') { drafts.current.interactionText = text; setInteractionText(text); } }}
+            editable={busy === null && saveState.status === 'idle'}
             multiline
             placeholder={c.interactionPlaceholder}
             placeholderTextColor={theme.colors.textMuted}
             style={[styles.input, styles.multiline]}
           />
-          <Action label={c.addInteraction} onPress={() => void addInteraction()} disabled={!interactionText.trim() || busy !== null} />
+          <Action label={c.addInteraction} onPress={() => void addInteraction()} disabled={!interactionText.trim() || busy !== null || saveState.status !== 'idle'} />
         </Card>
 
         <PersonHistory key={selected.id} interactions={selected.interactions} completed={selected.followUpHistory ?? []} />
@@ -955,7 +1078,7 @@ export default function App() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={c.openSettings}
-            onPress={openSettings}
+            onPress={() => requestExit(openSettings)}
             style={styles.settingsButton}
           >
             <Text style={styles.settingsIcon}>⚙</Text>
@@ -984,16 +1107,16 @@ export default function App() {
       </Card>
 
       {!query.trim() && <DailyBriefingCard people={people} onOpenPerson={openPerson} />}
-      <OutlineAction label={copy.lifeAdmin.title} onPress={() => { setLifeTarget(undefined); setScreen('life'); }} />
-      <OutlineAction label={copy.assistant.title} onPress={() => setScreen('assistant')} />
-      {NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label={c.notebookTitle} onPress={() => setScreen('notebook')} />}
+      <OutlineAction label={copy.lifeAdmin.title} onPress={() => requestExit(() => { setLifeTarget(undefined); setScreen('life'); })} />
+      <OutlineAction label={copy.assistant.title} onPress={() => requestExit(() => setScreen('assistant'))} />
+      {NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label={c.notebookTitle} onPress={() => requestExit(() => setScreen('notebook'))} />}
 
       <View style={styles.sectionHeader}>
         <View>
           <Text style={styles.sectionTitle}>{c.people}</Text>
           <Text style={styles.muted}>{c.matchingMemories(filtered.length)}</Text>
         </View>
-        <Pressable style={[styles.addButton, busy !== null && styles.disabled]} onPress={openAddPerson} disabled={busy !== null}>
+        <Pressable style={[styles.addButton, (busy !== null || saveState.status !== 'idle') && styles.disabled]} onPress={openAddPerson} disabled={busy !== null || saveState.status !== 'idle'}>
           <Text style={styles.addButtonText}>{c.addPersonButton}</Text>
         </Pressable>
       </View>
@@ -1091,10 +1214,9 @@ function Page({ children, saveState, busy = false }: { children: React.ReactNode
   const styles = useAppStyles();
   const { copy } = useI18n();
   const c = copy.app;
-  const insets = useSafeAreaInsets();
   return (
     <View style={styles.safe}>      <ScrollView
-        contentContainerStyle={[styles.container, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 24 }]}
+        contentContainerStyle={[styles.container, { paddingTop: 12, paddingBottom: 24 }]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >

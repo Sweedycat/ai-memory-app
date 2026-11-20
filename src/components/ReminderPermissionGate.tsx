@@ -61,7 +61,7 @@ export function ReminderPermissionGate({ children }: { children: React.ReactNode
 
   if (!ready) {
     return (
-      <SafeAreaView style={styles.screen}>
+      <SafeAreaView edges={[]} style={styles.screen}>
         <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
         <View style={styles.center}>
           <Text style={styles.sub}>{copy.preparing}</Text>
@@ -73,7 +73,7 @@ export function ReminderPermissionGate({ children }: { children: React.ReactNode
   if (!showSetup) return <>{children}</>;
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <SafeAreaView edges={[]} style={styles.screen}>
       <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.brand}>{copy.brand}</Text>
@@ -89,19 +89,18 @@ export function ReminderPermissionGate({ children }: { children: React.ReactNode
           <Text style={styles.sectionLabel}>{copy.details}</Text>
           <PermissionOverview />
         </View>
+        <View style={styles.footer}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={copy.continueLabel}
+            style={styles.primary}
+            onPress={() => void continueToApp()}
+          >
+            <Text style={styles.primaryText}>{copy.continue}</Text>
+          </Pressable>
+          <Text style={styles.note}>{copy.optional}</Text>
+        </View>
       </ScrollView>
-
-      <View style={styles.footer}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={copy.continueLabel}
-          style={styles.primary}
-          onPress={() => void continueToApp()}
-        >
-          <Text style={styles.primaryText}>{copy.continue}</Text>
-        </Pressable>
-        <Text style={styles.note}>{copy.optional}</Text>
-      </View>
     </SafeAreaView>
   );
 }
@@ -117,7 +116,7 @@ const createStyles = (theme: ThemeTokens) => StyleSheet.create({
   card: { backgroundColor: theme.colors.surface, borderRadius: theme.radii.card, borderColor: theme.colors.border, borderWidth: 1, padding: theme.metrics.cardPadding, marginTop: theme.metrics.cardPadding },
   footer: {
     backgroundColor: theme.colors.background, borderTopColor: theme.colors.border,
-    borderTopWidth: 1, paddingHorizontal: theme.metrics.screenGutter, paddingTop: theme.spacing.md, paddingBottom: theme.spacing.md,
+    borderTopWidth: 1, marginTop: theme.spacing.lg, paddingTop: theme.spacing.md, paddingBottom: theme.spacing.md,
   },
   primary: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', borderRadius: theme.radii.control, backgroundColor: theme.colors.accent, paddingVertical: theme.spacing.md, alignItems: 'center' },
   primaryText: { color: theme.colors.onAccent, fontSize: theme.typography.meta.fontSize, fontWeight: '900' },
