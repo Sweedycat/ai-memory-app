@@ -9,7 +9,7 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
-| V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
-| V3-A-05 | IMPLEMENTED | Quota stop and bounded handoff | Apply official limits privately; finish safe checkpoint without inferred allowance. |
+| V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
+| V3-A-05 | VERIFIED | Quota stop and bounded handoff | Preserve verified checkpoint and narrow operational boundaries. |
 
-Historical request total: unknown. Resumed task observed require_escalated Git invocations: 2; one newly saved narrow approval rule. The manual popup count is not exposed. Existing narrow tools reused under explicit docs ownership. No network/install/build/signing/device/commit/push/sensitive activation by registry writer. Later records must state action/scope/result without account/session identifiers; tool availability is not authority.
+Historical request total: unknown. See registry approvalAccounting for timestamped observed tool counts. Manual popup counts are not exposed. Existing narrow tools reused under explicit docs ownership. No network/install/build/signing/device/commit/push/sensitive activation by registry writer. Later records must state action/scope/result without account/session identifiers; tool availability is not authority.

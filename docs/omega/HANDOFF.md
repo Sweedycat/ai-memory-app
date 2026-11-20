@@ -13,10 +13,10 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
 | V3-A-02 | VERIFIED | Single registry and sanitized recovery checkpoint | Maintain registry and synchronized continuation after meaningful progress. |
-| V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
-| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
-| V3-B1-02 | VERIFICATION_PENDING | Complete Turkish/English application flows | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
-| V3-B2-01 | VERIFICATION_PENDING | Centralized five free theme choices | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
+| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | One hosted APK attempt, actual binary verification, then targeted founder acceptance. |
+| V3-B1-02 | VERIFIED | Complete Turkish/English application flows | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
+| V3-B2-01 | VERIFIED | Centralized five free theme choices | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 
 1. Reinspect owner scope, AGENTS, branch/full HEAD/status; preserve WIP.
 2. Registry checkpoint93bd8029f50b0386636ea447ee2fd92406a80c13 is pushed; exact-SHA CI44665731118/full and44665731127/portability passed. B2 source is now frozen and verification is in progress. Do not restart completed App/core/component work.

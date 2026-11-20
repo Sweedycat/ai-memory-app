@@ -1,5 +1,13 @@
 # Omega engineering handoff
 
+Current V3.1 continuation/status authority: [Omega registry](omega/TASK-REGISTRY.json)
+and [handoff](omega/HANDOFF.md). B2 implementation source
+`aa7565cadc5737fca1581eb1ed52c4f499e45348` passed exact-SHA full CI44669846988
+and portability44669847036. Local512 tests/510 pass/2 existing Windows skips;
+TypeScript/Doctor21/21 and independent frozen review passed. B2 is APK_READY,
+not physically accepted; use the current registry for any later build/run state.
+The dated sections below are historical; do not restart B1 or completed B2 work.
+
 ## V3 A checkpoint and independent B1 foundation — 2026-11-20
 
 Milestone A source `a2cb5daf960cad2d2301680a4b445caea027b688` is pushed on

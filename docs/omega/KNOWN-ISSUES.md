@@ -4,11 +4,11 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
-| V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
-| V3-A-04 | VERIFICATION_PENDING | Tested branch-scoped free hosted delivery | Revalidate path at qualifying app milestone; no APK for this docs task. |
-| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
-| V3-B1-02 | VERIFICATION_PENDING | Complete Turkish/English application flows | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
-| V3-B2-01 | VERIFICATION_PENDING | Centralized five free theme choices | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
+| V3-A-04 | VERIFIED | Tested branch-scoped free hosted delivery | Preserve verified checkpoint and narrow operational boundaries. |
+| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | One hosted APK attempt, actual binary verification, then targeted founder acceptance. |
+| V3-B1-02 | VERIFIED | Complete Turkish/English application flows | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
+| V3-B2-01 | VERIFIED | Centralized five free theme choices | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
 | V3-C-03 | BLOCKED | Independent review and native recovery gate | Obtain review and authorized native evidence before activation. |
 | V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |

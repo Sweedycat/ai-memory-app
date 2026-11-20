@@ -4,8 +4,8 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
-| V3-A | VERIFICATION_PENDING | Governance and engineering integration | Complete registry checkpoint and remaining role/trigger validation. |
-| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
+| V3-A | VERIFIED | Governance and engineering integration | Preserve verified checkpoint and narrow operational boundaries. |
+| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | One hosted APK attempt, actual binary verification, then targeted founder acceptance. |
 | V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
 | V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
 | V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |

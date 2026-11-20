@@ -11,9 +11,9 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
 | V3-A-02 | VERIFIED | Single registry and sanitized recovery checkpoint | Maintain registry and synchronized continuation after meaningful progress. |
-| V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
-| V3-A-05 | IMPLEMENTED | Quota stop and bounded handoff | Apply official limits privately; finish safe checkpoint without inferred allowance. |
-| V3-B2-01 | VERIFICATION_PENDING | Centralized five free theme choices | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-A-03 | VERIFIED | Native roles, scoped tools and approval reuse | Reuse supported narrow tools; do not claim live ChatGPT-to-Omega integration. |
+| V3-A-05 | VERIFIED | Quota stop and bounded handoff | Preserve verified checkpoint and narrow operational boundaries. |
+| V3-B2-01 | VERIFIED | Centralized five free theme choices | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-C-01 | PENDING | All-domain AEAD/platform key lifecycle | Prepare independently reviewable threat model and domain/key contracts. |
 
 V3.1 keeps one JSON authority and existing DECISION-LOG/APK-STATUS names; no duplicate DECISIONS/RELEASE-STATUS. Former B3 is B2-03/B2-04. All five appearances approved/permanently free; approval is not implementation/device acceptance. Current-host product_release_engineer invoked successfully; automation role remains unverified. Third-position version/versionCode equality ambiguities remain unresolved. No price/production promise/self-approval of critical changes.
