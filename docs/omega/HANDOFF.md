@@ -1,5 +1,7 @@
 # Exact V3.2 continuation
 
+New source finding BUG-B2-006: staged date/raw digital time is outside main form dirty state; DST date prepopulation can normalize clock before validation. Registered before implementation; App writer must close/test this boundary before review/APK. Registry now55 tasks; original45 retained.
+
 Active source work is local/uncommitted against `83214faab9125a237b256b6fb03005bc2078447a`: App/People ACK+guards,root viewport,digital entry,Profile/Bug/Settings and gated Life/Notebook guards implemented. Focused34/App54/parent21/Notebook-Life62 checks passed at their scopes (overlap; do not sum). New failure tests, qualified review and integrated release checks remain. Inspect surviving diff/ownership in registry workUnit; no source reset/restart or corrected APK claim.
 
 [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/evidence authority. V3.2 is cumulative; original45 IDs retained,54 total tasks. B2 is NOT ACCEPTED. No completion percentages, production activation or installed-identity claims.

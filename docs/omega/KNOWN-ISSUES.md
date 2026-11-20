@@ -1,5 +1,7 @@
 # Current defects and blockers
 
+New source finding BUG-B2-006: staged date/raw digital time is outside main form dirty state; DST date prepopulation can normalize clock before validation. Registered before implementation; App writer must close/test this boundary before review/APK. Registry now55 tasks; original45 retained.
+
 [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/evidence authority. V3.2 is cumulative; original45 IDs retained,54 total tasks. B2 is NOT ACCEPTED. No completion percentages, production activation or installed-identity claims.
 
 | ID | Status | Scope | Exact next action |

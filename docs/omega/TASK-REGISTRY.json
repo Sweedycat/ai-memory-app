@@ -15,7 +15,7 @@
     ]
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-20T20:40:19.789Z",
+  "updatedAt": "2026-11-20T20:45:06.779Z",
   "branch": "development/omega-commercial-mvp",
   "sourceCheckpoint": "83214faab9125a237b256b6fb03005bc2078447a",
   "workingTree": "Local V3.2 repair source/tests survive on disk. Do not discard/reset or restart implemented work. Read workUnit ownership/checks, inspect actual diff and finish verification; current public source checkpoint is 83214faab9125a237b256b6fb03005bc2078447a.",
@@ -735,7 +735,8 @@
         "BUG-B2-004",
         "BUG-B2-005",
         "UX-B2-001",
-        "UX-B2-002"
+        "UX-B2-002",
+        "BUG-B2-006"
       ],
       "acceptance": [
         "Design/TR-EN/security/automated checks, independent frozen review, checkpoint/exact-SHA CI, ready trigger, actual APK verification and focused Samsung acceptance."
@@ -2469,7 +2470,8 @@
       "description": "Application-wide unsaved-change protection",
       "dependencies": [
         "BUG-B2-001-A",
-        "BUG-B2-001-B"
+        "BUG-B2-001-B",
+        "BUG-B2-006"
       ],
       "acceptance": [
         "Meaningful saved baselines; unchanged forms do not warn",
@@ -2854,6 +2856,53 @@
       "updatedAt": "2026-11-20T20:15:59.772Z",
       "deferReason": "Priority/dependency or explicit activation boundaries; not completed",
       "reopenWhen": "Priority/dependencies and required founder/security/financial authorization satisfied"
+    },
+    {
+      "id": "BUG-B2-006",
+      "parent": "V3-B",
+      "title": "Unconfirmed reminder picker navigation and DST prepopulation",
+      "description": "Source inspection found staged date/digital HH/MM can be lost by Back while main saved form remains unchanged; Date.setHours can normalize intended clock on a DST-gap day before the digital validator sees it.",
+      "dependencies": [
+        "V32-TRACKING"
+      ],
+      "acceptance": [
+        "Changed staged date/raw HH/MM participate in navigation protection; unchanged opening does not warn",
+        "Save and exit includes the exact valid picker snapshot in the intentionally persisted People record before navigation",
+        "Explicit picker cancellation preserves the existing reminder; invalid/DST-gap clock never silently becomes another valid time",
+        "Preserve all scheduling/revision/privacy guards and avoid duplicate alerts"
+      ],
+      "status": "IN_PROGRESS",
+      "role": "Software Engineer",
+      "startingSHA": "64b2d064d180f51705949b9279a37e2a9c3994fa",
+      "sourceSHA": null,
+      "completed": [
+        "Source-level gap identified before independent review; not claimed device reproduction"
+      ],
+      "remaining": [
+        "Implement staged picker state/snapshot integration and actual Back/save/cancel/DST regressions"
+      ],
+      "blockers": [],
+      "evidence": {
+        "automated": [],
+        "independentReview": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Edit an existing reminder date/time, Back with raw numeric changes, inspect all exit choices and retained record/notification",
+          "Synthetic DST cases plus targeted real reminder edits/cancellations"
+        ],
+        "reason": "New picker integration boundary"
+      },
+      "commercialAcceptance": [
+        "No lost reminder edits, silent clock normalization, duplicate schedule or fabricated acceptance"
+      ],
+      "nextAction": "Fix the staged picker boundary under single App writer; then re-freeze and review.",
+      "updatedAt": "2026-11-20T20:45:06.779Z"
     }
   ],
   "localValidation": {
