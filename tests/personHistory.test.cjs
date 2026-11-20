@@ -1,3 +1,4 @@
+const { createPresentation, pureSource } = require('./helpers/featurePresentation.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -10,7 +11,7 @@ function load(file, imports = {}) {
     name => { if (!(name in imports)) throw Error('Unexpected import: ' + name); return imports[name]; }, local, local.exports);
   return local.exports;
 }
-const dates = load('src/utils/interactionDates.ts');
+const dates = pureSource('src/utils/interactionDates.ts');
 const history = load('src/utils/personHistory.ts', { './interactionDates': dates });
 const copy = load('src/strings/personHistory.en.ts').personHistoryEn;
 const interaction = (id, date, summary = 'Synthetic ' + id) => ({ id, date, summary, source: 'manual' });
@@ -63,14 +64,16 @@ test('latest dated interaction and global recent memory use dates rather than pe
 function renderHistory(interactions, completed) {
   const slots = []; let cursor = 0, output;
   const react = {
-    createElement(type, props, ...children) { return { type, props: { ...props, children } }; },
+    createElement(type, props, ...children) { return typeof type === 'function' ? type({ ...props, children }) : { type, props: { ...props, children } }; },
     useState(initial) { const index = cursor++; if (!(index in slots)) slots[index] = initial;
       return [slots[index], next => { slots[index] = typeof next === 'function' ? next(slots[index]) : next; }]; },
     useMemo(callback) { cursor++; return callback(); },
   };
   const native = Object.fromEntries(['Pressable', 'Text', 'TextInput', 'View'].map(name => [name, name]));
   native.StyleSheet = { create: value => value };
+  const presentation = createPresentation(load, react, native);
   const component = load('src/components/PersonHistory.tsx', {
+    ...presentation.imports,
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
     '../utils/personHistory': history, '../utils/interactionDates': dates, '../strings/personHistory.en': { personHistoryEn: copy },
   }).PersonHistory;

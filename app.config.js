@@ -7,10 +7,10 @@ module.exports = ({ config }) => {
     name: isGithubTest ? 'AI Memory GitHub Test' : isPreview ? 'AI Memory Preview' : config.name,
     android: {
       ...config.android,
-      // The verified historical GitHub Test APK has versionCode 1.
-      // Candidate 2 is strictly higher; installation still needs device checks.
+      // Latest verified GitHub Test artifact: 0.1.0 / code 2 (run 44565432466).
+      // B2 candidate 3 is strictly higher; installation still needs device checks.
       // Preserve the existing EAS Preview code and production code configuration.
-      ...(isPreview || isGithubTest ? { versionCode: 2 } : {}),
+      ...(isGithubTest ? { versionCode: 3 } : isPreview ? { versionCode: 2 } : {}),
       package: isGithubTest
         ? 'com.sweedycat.aimemory.githubtest'
         : isPreview ? 'com.sweedycat.aimemory.preview' : config.android?.package,

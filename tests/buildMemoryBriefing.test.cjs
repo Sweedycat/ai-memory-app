@@ -5,15 +5,25 @@ const path = require('node:path');
 const vm = require('node:vm');
 const ts = require('typescript');
 
+const generatedScope = { module: { exports: {} } };
+generatedScope.exports = generatedScope.module.exports;
+vm.runInNewContext(ts.transpileModule(
+  fs.readFileSync(path.join(__dirname, '..', 'src/i18n/catalogs/generated.ts'), 'utf8'),
+  { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+).outputText, generatedScope);
+
 const source = fs.readFileSync(path.join(__dirname, '..', 'src/utils/buildMemoryBriefing.ts'), 'utf8');
 const js = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 },
 }).outputText;
 const scope = { module: { exports: {} } };
 scope.require = name => {
+  if (name === '../i18n/catalogs/generated') return generatedScope.module.exports;
   assert.equal(name, './interactionDates');
   const dateSource = fs.readFileSync(path.join(__dirname, '..', 'src/utils/interactionDates.ts'), 'utf8');
-  const dateScope = { module: { exports: {} } }; dateScope.exports = dateScope.module.exports;
+  const dateScope = { module: { exports: {} }, require(name) {
+    assert.equal(name, '../i18n/catalogs/generated'); return generatedScope.module.exports;
+  } }; dateScope.exports = dateScope.module.exports;
   vm.runInNewContext(ts.transpileModule(dateSource, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, dateScope);
   return dateScope.module.exports;
 };
@@ -100,4 +110,43 @@ test('embedded completed follow-ups cannot become a promised next step; invalid 
   const result = buildMemoryBriefing(person({ followUp: { ...person().followUp, completedAt: '2026-01-01T12:00:00Z' } }));
   assert.ok(!result.includes('Next step:'));
   assert.throws(() => buildMemoryBriefing(person(), new Date('invalid')), /Invalid briefing date/);
+});
+
+test('Turkish briefing translates generated templates while preserving all original record text', () => {
+  const record = person();
+  const original = JSON.stringify(record);
+  const result = buildMemoryBriefing(record, new Date('2026-11-20T12:00:00Z'), 'tr-TR');
+  assert.match(result, /^Test Person — Engineer · Testing Co\./);
+  assert.ok(result.includes('Bağlam: Worked on the prototype.'));
+  assert.ok(result.includes('Kayıtlı etkileşim (tarih kaydedilmedi): Discussed project milestones'));
+  assert.ok(result.includes('en son etkileşim doğrulanamıyor'));
+  assert.ok(result.includes('Hatırla: Keep private test data offline Check launch plan'));
+  assert.ok(result.includes('Sonraki adım: Revisit the test next week.'));
+  assert.ok(!result.includes('Context:'));
+  assert.ok(!result.includes('Next step:'));
+  assert.equal(JSON.stringify(record), original);
+});
+
+test('Turkish briefing retains uncertainty and completed-follow-up exclusion', () => {
+  const record = person({ interactions: [
+    { id: 'future', date: '2099-01-01T12:00:00Z', summary: 'Original future record', source: 'manual' },
+    { id: 'past', date: '2026-11-04T09:30:00Z', summary: 'Original past record', source: 'manual' },
+  ], followUp: { ...person().followUp, completedAt: '2026-11-01T12:00:00Z' } });
+  const now = new Date('2026-11-20T12:00:00Z');
+  const dated = buildMemoryBriefing(record, now, 'tr-TR');
+  assert.ok(dated.includes('Son tarihli etkileşim'));
+  assert.ok(dated.includes('Kas'));
+  assert.ok(dated.includes('Original past record'));
+  assert.ok(dated.includes('Gelecek tarihli etkileşimler incelenmeli.'));
+  assert.ok(!dated.includes('Sonraki adım:'));
+  const future = buildMemoryBriefing({ ...record, interactions: record.interactions.slice(0, 1) }, now, 'tr-TR');
+  assert.ok(future.includes('Kayıtlı etkileşim (gelecek tarihli, incelenmeli): Original future record'));
+});
+
+test('standalone generated catalogs preserve exact English and Turkish briefing output', () => {
+  const now = new Date('2026-11-20T12:00:00Z');
+  assert.equal(buildMemoryBriefing(person(), now),
+    'Test Person is Engineer at Testing Co. Context: Worked on the prototype. Saved interaction (date not recorded): Discussed project milestones Some interaction dates are not recorded; the latest interaction cannot be confirmed. Remember: Keep private test data offline Check launch plan Next step: Revisit the test next week.');
+  assert.equal(buildMemoryBriefing(person(), now, 'tr-TR'),
+    'Test Person — Engineer · Testing Co. Bağlam: Worked on the prototype. Kayıtlı etkileşim (tarih kaydedilmedi): Discussed project milestones Bazı etkileşimlerin tarihi kaydedilmemiş; en son etkileşim doğrulanamıyor. Hatırla: Keep private test data offline Check launch plan Sonraki adım: Revisit the test next week.');
 });

@@ -2,7 +2,7 @@
 
 [TASK-REGISTRY.json](docs/omega/TASK-REGISTRY.json) is the **sole current task/status authority**. This file retains the detailed V3 requirements, backup coverage matrix, security risks and physical acceptance inventory. Earlier implementation descriptions below are historical evidence, not an alternate status queue. Owner instructions and topic policies still govern permissions.
 
-Snapshot 2026-11-20: B1 source `48cd226ebc03e3cd14383a4d57636ce08a599166` verified at its checkpoint; interrupted B2 WIP untested/unreviewed/no APK. Current-host Product & Release Engineer invoked; Automation & Integration Engineer validation open. All five appearances approved and permanently free. Former B3 scope remains B2-03/B2-04. No B2 physical acceptance or commercial readiness.
+Snapshot 2026-11-20: B1 source `48cd226ebc03e3cd14383a4d57636ce08a599166` verified at its checkpoint; B2 source integrated/frozen with scoped tests; final regression/review/new CI/APK/device evidence pending. Current-host Product & Release Engineer invoked; Automation & Integration Engineer validation open. All five appearances approved and permanently free. Former B3 scope remains B2-03/B2-04. No B2 physical acceptance or commercial readiness.
 
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |

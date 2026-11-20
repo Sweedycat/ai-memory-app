@@ -1,12 +1,16 @@
+import { AppHeader } from './ui/AppHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useI18n } from '../i18n/LanguageProvider';
+import { useTheme } from '../theme/ThemeProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, BackHandler, FlatList, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AppState, BackHandler, FlatList, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { createNotebookLifecycle } from '../utils/notebookLifecycle';
 import type { PersistentNotebook } from '../utils/persistentNotebook';
 import { createNotebookEditor, type NotebookEditor } from '../utils/notebookEditor';
 import { searchPersonalNotebook, type PersonalNote } from '../utils/personalNotebook';
 import { notebookRecoveryChanges } from '../utils/notebookNavigation';
-import { SCREEN_TOP_PADDING } from '../utils/screenInsets';
-import { notebookEn as copy } from '../strings/notebook.en';
 import PersonalNoteEditor from './PersonalNoteEditor';
 
 type Snapshot = { notes: PersonalNote[]; recovery: ReturnType<PersistentNotebook['getRecovery']> };
@@ -17,6 +21,10 @@ const clock = () => new Date().toISOString();
 // Production navigation is separately gated in App. No automatic background open,
 // storage reset or recovery application. A new mount owns one lifecycle consumer.
 export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Props) {
+  const styles = useThemedStyles(createStyles);
+  const { theme } = useTheme();
+  const { copy: catalog, locale } = useI18n();
+  const copy = catalog.ui.notebook;
   const [snapshot, setSnapshot] = useState<Snapshot | null>(null);
   const [busy, setBusy] = useState(false), [failed, setFailed] = useState(false);
   const [query, setQuery] = useState(''), [selectedId, setSelectedId] = useState<string | null>(null);
@@ -136,8 +144,8 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
     return note ? <View style={styles.note}>
       <Text accessibilityRole="header" style={styles.title}>{note.title || copy.untitled}</Text>
       <Text selectable style={styles.text}>{note.body}</Text>
-      <Text style={styles.meta}>{copy.created(new Date(note.createdAt).toLocaleString())}</Text>
-      <Text style={styles.meta}>{copy.updated(new Date(note.updatedAt).toLocaleString())}</Text>
+      <Text style={styles.meta}>{copy.created(new Date(note.createdAt).toLocaleString(locale))}</Text>
+      <Text style={styles.meta}>{copy.updated(new Date(note.updatedAt).toLocaleString(locale))}</Text>
     </View> : <Text style={styles.text}>{copy.missing}</Text>;
   }
   if (editor) return <SafeAreaView style={styles.root}><PersonalNoteEditor editor={editor} onClose={finishEditor} onSaved={finishEditor} /></SafeAreaView>;
@@ -147,10 +155,8 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
   const changes = snapshot && recovery?.candidate ? notebookRecoveryChanges(snapshot.notes, recovery.candidate) : [];
   return (
     <SafeAreaView style={styles.root}>
-      <View style={styles.header}>
-        {button(selected || review ? copy.backToList : copy.back, back)}
-        <Text accessibilityRole="header" style={styles.heading}>{copy.title}</Text>
-      </View>
+      <View style={styles.header}><AppHeader onBack={back} backLabel={selected || review ? copy.backToList : copy.back}
+        accessibilityLabel={selected || review ? copy.backToList : copy.back} title={copy.title} backDisabled={busy} /></View>
       {!snapshot ? <View style={styles.content}>
         <Text accessibilityRole={failed ? 'alert' : undefined} style={styles.text}>{busy ? copy.loading : failed ? copy.unavailable : copy.locked}</Text>
         {!busy && button(copy.reopen, () => { void open(); })}
@@ -185,7 +191,7 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
           {button(copy.cancel, () => setConfirmation(null))}
         </>}
       </ScrollView> : <View style={styles.list}>
-        <TextInput accessibilityLabel={copy.search} placeholder={copy.search} placeholderTextColor="#9CA3AF"
+        <TextInput accessibilityLabel={copy.search} placeholder={copy.search} placeholderTextColor={theme.colors.textSecondary}
           value={query} onChangeText={setQuery} editable={!busy} maxLength={100} style={styles.input} />
         {recovery?.status !== 'none' && <View style={styles.note}>
           <Text style={styles.text}>{copy.draft}</Text>
@@ -198,7 +204,7 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
           renderItem={({ item }) => <Pressable accessibilityRole="button" onPress={() => setSelectedId(item.id)} style={styles.note}>
             <Text style={styles.title}>{item.title || copy.untitled}</Text>
             <Text style={styles.text} numberOfLines={2}>{item.body}</Text>
-            <Text style={styles.meta}>{copy.updated(new Date(item.updatedAt).toLocaleString())}</Text>
+            <Text style={styles.meta}>{copy.updated(new Date(item.updatedAt).toLocaleString(locale))}</Text>
           </Pressable>} />
       </View>}
       {confirmation === 'close' && <View style={styles.note}>
@@ -208,13 +214,13 @@ export function NotebookPanel({ lifecycle, onBack, createId, now = clock }: Prop
     </SafeAreaView>
   );
 }
-const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#10151e' }, header: { paddingHorizontal: 20, paddingTop: SCREEN_TOP_PADDING, gap: 8 },
-  heading: { color: '#F8FAFC', fontSize: 26, fontWeight: '700' },
-  content: { padding: 20, gap: 12 }, list: { flex: 1, padding: 20, gap: 10 },
-  note: { padding: 14, gap: 8, borderRadius: 14, backgroundColor: '#1E293B', marginBottom: 8 },
-  title: { color: '#F8FAFC', fontSize: 18, fontWeight: '600' }, text: { color: '#E2E8F0', fontSize: 16, lineHeight: 23 },
-  meta: { color: '#A8B4C5', fontSize: 13, lineHeight: 19 },
-  input: { borderWidth: 1, borderColor: '#64748B', borderRadius: 12, minHeight: 48, padding: 12, color: '#F8FAFC' },
-  button: { minHeight: 48, padding: 10, justifyContent: 'center', backgroundColor: '#243447', borderRadius: 12 },
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
+  root: { flex: 1, backgroundColor: theme.colors.background }, header: { paddingHorizontal: theme.metrics.screenGutter, paddingTop: theme.spacing.md, gap: theme.spacing.sm },
+  heading: { color: theme.colors.text, fontSize: theme.typography.title.fontSize, fontWeight: '700' },
+  content: { padding: theme.metrics.screenGutter, gap: theme.spacing.md }, list: { flex: 1, padding: theme.metrics.screenGutter, gap: theme.spacing.sm },
+  note: { padding: theme.spacing.md, gap: theme.spacing.sm, borderRadius: theme.radii.control, backgroundColor: theme.colors.surfaceRaised, marginBottom: theme.spacing.sm },
+  title: { color: theme.colors.text, fontSize: theme.typography.section.fontSize, fontWeight: '600' }, text: { color: theme.colors.text, fontSize: theme.typography.body.fontSize, lineHeight: theme.typography.body.lineHeight },
+  meta: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight },
+  input: { borderWidth: 1, borderColor: theme.colors.controlBorder, borderRadius: theme.radii.control, minHeight: theme.metrics.controlMinHeight, padding: theme.spacing.md, color: theme.colors.text },
+  button: { minHeight: theme.metrics.controlMinHeight, padding: theme.spacing.sm, justifyContent: 'center', backgroundColor: theme.colors.surfaceRaised, borderRadius: theme.radii.control },
 });

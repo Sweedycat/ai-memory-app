@@ -1,9 +1,14 @@
+import { AppHeader } from './ui/AppHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useI18n } from '../i18n/LanguageProvider';
+import { useTheme } from '../theme/ThemeProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, BackHandler, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { AppState, BackHandler, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useLifeRecords } from '../hooks/useLifeRecords';
 import { CATEGORIES, LIFE_LIMITS, lifeAgenda, localLifeDate, validLifeDate, type LifeRecord } from '../utils/lifeRecords';
 import { lifeAdminCopy } from '../strings/lifeAdmin';
-import { SCREEN_TOP_PADDING } from '../utils/screenInsets';
 
 type Group = 'overdue' | 'today' | 'upcoming' | 'completed';
 type Mode = 'list' | 'detail' | 'edit' | 'complete';
@@ -11,9 +16,13 @@ type Confirmation = { kind: 'delete' | 'discard' | 'review'; target: LifeRecord 
 
 // Uses the existing outer owner/privacy gates. No native reminder, export or
 // account permission is requested. Date-only records never pass through UTC.
-export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Intl.DateTimeFormat().resolvedOptions().locale }: {
+export function LifeAdminPanel({ onBack, createId, initialRecordId, locale: suppliedLocale }: {
   onBack: () => void; createId: () => Promise<string>; initialRecordId?: string; locale?: string;
 }) {
+  const styles = useThemedStyles(createStyles);
+  const { theme } = useTheme();
+  const { locale: contextLocale } = useI18n();
+  const locale = suppliedLocale ?? contextLocale;
   const store = useLifeRecords();
   const copy = lifeAdminCopy(locale);
   const [mode, setMode] = useState<Mode>('list');
@@ -25,7 +34,7 @@ export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Int
   const [now, setNow] = useState(() => new Date());
   const [nextDate, setNextDate] = useState('');
   const [confirmation, setConfirmation] = useState<Confirmation>(null);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<'' | 'missing' | 'saveError' | 'invalid' | 'saved' | 'invalidNext'>('');
   const [working, setWorking] = useState(false);
   const mounted = useRef(true), pending = useRef(false), hardwareBack = useRef<() => void>(() => undefined);
   const initialTargetUsed = useRef(false);
@@ -40,7 +49,7 @@ export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Int
     if (!initialRecordId || initialTargetUsed.current || store.status !== 'ready') return;
     initialTargetUsed.current = true;
     const record = store.records.find(item => item.id === initialRecordId);
-    if (record) open(record); else setMessage(copy.missing);
+    if (record) open(record); else setMessage('missing');
   }, [initialRecordId, store.status, store.records]);
 
   useEffect(() => {
@@ -72,7 +81,7 @@ export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Int
     if (pending.current) return;
     pending.current = true; setWorking(true); setMessage('');
     try { await action(); }
-    catch { if (mounted.current) setMessage(copy.saveError); }
+    catch { if (mounted.current) setMessage('saveError'); }
     finally { pending.current = false; if (mounted.current) setWorking(false); }
   }
   function open(record: LifeRecord) { setBase(record); setDraft(record); setMode('detail'); setConfirmation(null); setMessage(''); }
@@ -88,22 +97,22 @@ export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Int
       editable={canWrite} autoCapitalize={multiline ? 'sentences' : 'none'} style={[styles.input, multiline && styles.notes]} /></View>;
   }
   async function save() {
-    if (!draft || !draft.title.trim() || !validLifeDate(draft.dueDate)) { setMessage(copy.invalid); return; }
+    if (!draft || !draft.title.trim() || !validLifeDate(draft.dueDate)) { setMessage('invalid'); return; }
     const candidate = { ...draft, title: draft.title.trim() };
-    if (await store.save(candidate, base) && mounted.current) { setConfirmation(null); setBase(candidate); setDraft(candidate); setMode('detail'); setMessage(copy.saved); }
+    if (await store.save(candidate, base) && mounted.current) { setConfirmation(null); setBase(candidate); setDraft(candidate); setMode('detail'); setMessage('saved'); }
   }
   async function finish(renew: boolean) {
     if (!base) return;
     if (renew && (!validLifeDate(nextDate) || nextDate <= base.dueDate || nextDate <= localLifeDate(new Date()))) {
-      setMessage(copy.invalidNext); return;
+      setMessage('invalidNext'); return;
     }
     if (await store.complete(base, renew ? nextDate : null) && mounted.current) {
-      setConfirmation(null); setMode('list'); setBase(null); setDraft(null); setMessage(copy.saved);
+      setConfirmation(null); setMode('list'); setBase(null); setDraft(null); setMessage('saved');
     }
   }
   const errorText = store.error === 'load' ? copy.loadError : store.error === 'save' ? copy.saveError : store.error === 'conflict' ? copy.conflict : '';
   return <SafeAreaView style={styles.safe}>
-    <View style={styles.top}>{button(copy.back, leave, working || store.busy)}<Text accessibilityRole="header" style={styles.heading}>{copy.title}</Text></View>
+    <View style={styles.top}><AppHeader onBack={leave} backLabel={copy.back} accessibilityLabel={copy.back} title={copy.title} backDisabled={working || store.busy} /></View>
     <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
       <Text style={styles.caption}>{copy.scope}</Text>
       {store.status === 'loading' && <Text style={styles.text}>{copy.loading}</Text>}
@@ -113,7 +122,7 @@ export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Int
             const id = await createId(); if (!mounted.current) return;
             setConfirmation(null); setBase(null); setDraft({ id, title: '', category: 'other', dueDate: '', notes: '', recurring: false, history: [] }); setMode('edit');
           }); })}
-          <TextInput accessibilityLabel={copy.search} placeholder={copy.search} placeholderTextColor="#9CAAB9" value={query}
+          <TextInput accessibilityLabel={copy.search} placeholder={copy.search} placeholderTextColor={theme.colors.textSecondary} value={query}
             onChangeText={value => { setQuery(value); setVisible(30); }} style={styles.input} />
           <View style={styles.wrap}>{(['overdue', 'today', 'upcoming', 'completed'] as const).map(key =>
             button(`${copy[key]} (${agenda[key].length})`, () => { setGroup(key); setVisible(30); }, working || store.busy, group === key))}</View>
@@ -172,7 +181,7 @@ export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Int
         <Text accessibilityRole="alert" style={styles.text}>{confirmation.kind === 'delete' ? copy.deleteWarning : confirmation.kind === 'review' ? copy.reviewWarning : copy.discardWarning}</Text>
         {confirmation.target && <Text style={styles.text}>{confirmation.target.title} · {confirmation.target.dueDate}</Text>}
         {confirmation.kind === 'delete' ? button(copy.confirmDelete, () => { const target = confirmation.target; void act(async () => {
-          if (target && await store.remove(target) && mounted.current) { setConfirmation(null); setBase(null); setDraft(null); setMode('list'); setMessage(copy.saved); }
+          if (target && await store.remove(target) && mounted.current) { setConfirmation(null); setBase(null); setDraft(null); setMode('list'); setMessage('saved'); }
         }); }) : button(copy.discard, () => {
           if (confirmation.kind === 'review' && confirmation.target) open(confirmation.target);
           else { setConfirmation(null); setMode('list'); setBase(null); setDraft(null); setMessage(''); }
@@ -181,22 +190,22 @@ export function LifeAdminPanel({ onBack, createId, initialRecordId, locale = Int
       </View>}
     </ScrollView>
     {(message || errorText || working || store.busy) && <View style={styles.notice}>
-      <Text accessibilityRole={errorText ? 'alert' : undefined} accessibilityLiveRegion="polite" style={styles.text}>{errorText || message || copy.busy}</Text>
+      <Text accessibilityRole={errorText ? 'alert' : undefined} accessibilityLiveRegion="polite" style={styles.text}>{errorText || (message ? copy[message] : copy.busy)}</Text>
       {errorText && button(copy.reload, () => { void act(store.reload); }, working || store.busy)}
     </View>}
   </SafeAreaView>;
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0C1118', paddingTop: SCREEN_TOP_PADDING },
-  top: { paddingHorizontal: 20, paddingBottom: 8, gap: 8 }, content: { padding: 20, gap: 14 },
-  heading: { color: '#F4F7FA', fontSize: 25, fontWeight: '800' }, title: { color: '#F4F7FA', fontSize: 18, fontWeight: '700' },
-  text: { color: '#E1E8EF', fontSize: 15, lineHeight: 23 }, caption: { color: '#B2C1CC', fontSize: 13, lineHeight: 20 },
-  wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }, field: { gap: 6 },
-  input: { minHeight: 48, padding: 12, borderRadius: 12, borderWidth: 1, borderColor: '#526577', color: '#F4F7FA', fontSize: 16, backgroundColor: '#151E29' },
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
+  safe: { flex: 1, backgroundColor: theme.colors.background },
+  top: { paddingHorizontal: theme.metrics.screenGutter, paddingTop: theme.spacing.md, paddingBottom: theme.spacing.sm, gap: theme.spacing.sm }, content: { padding: theme.metrics.screenGutter, gap: theme.spacing.md },
+  heading: { color: theme.colors.text, fontSize: theme.typography.title.fontSize, fontWeight: '800' }, title: { color: theme.colors.text, fontSize: theme.typography.section.fontSize, fontWeight: '700' },
+  text: { color: theme.colors.text, fontSize: theme.typography.body.fontSize, lineHeight: theme.typography.body.lineHeight }, caption: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight },
+  wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.sm }, field: { gap: theme.spacing.sm },
+  input: { minHeight: theme.metrics.controlMinHeight, padding: theme.spacing.md, borderRadius: theme.radii.control, borderWidth: 1, borderColor: theme.colors.controlBorder, color: theme.colors.text, fontSize: theme.typography.body.fontSize, backgroundColor: theme.colors.input },
   notes: { minHeight: 120, textAlignVertical: 'top' },
-  button: { minHeight: 48, justifyContent: 'center', padding: 12, borderRadius: 12, backgroundColor: '#203343', borderWidth: 1, borderColor: '#526577' },
-  selected: { borderColor: '#7DE2C3', backgroundColor: '#194436' }, disabled: { opacity: 0.5 },
-  card: { padding: 16, gap: 8, borderRadius: 16, borderWidth: 1, borderColor: '#3F5669', backgroundColor: '#121E29' },
-  notice: { padding: 12, gap: 8, backgroundColor: '#27303D', borderTopWidth: 1, borderColor: '#526577' },
+  button: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', padding: theme.spacing.md, borderRadius: theme.radii.control, backgroundColor: theme.colors.surfaceRaised, borderWidth: 1, borderColor: theme.colors.controlBorder },
+  selected: { borderColor: theme.colors.accent, backgroundColor: theme.colors.surfaceRaised }, disabled: { opacity: 0.5 },
+  card: { padding: theme.metrics.cardPadding, gap: theme.spacing.sm, borderRadius: theme.radii.card, borderWidth: 1, borderColor: theme.colors.border, backgroundColor: theme.colors.surface },
+  notice: { padding: theme.spacing.md, gap: theme.spacing.sm, backgroundColor: theme.colors.surfaceRaised, borderTopWidth: 1, borderColor: theme.colors.controlBorder },
 });

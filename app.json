@@ -2,13 +2,19 @@
   "expo": {
     "name": "AI Memory",
     "slug": "ai-memory-app",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "plugins": [
       "expo-notifications",
+      "expo-system-ui",
       "expo-sqlite",
-      ["expo-secure-store", { "configureAndroidBackup": true }],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true
+        }
+      ],
       [
         "expo-local-authentication",
         {

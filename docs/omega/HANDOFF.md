@@ -1,22 +1,30 @@
 # Current continuation
 
+B2 implementation and local verification are finished:512/510pass/2 platform
+skips/0fail; TypeScript and Doctor21/21 passed. Independent source review final
+digest42bfd3e3405fc03e2283e35c131ef2df3ee6b66d777fa5ac8d6ec2dca3b9cf93 has
+no remaining blocking finding. Do not repeat those checks without changed source
+or a new concern. Publish the reviewed checkpoint, verify exact-SHA CI, then
+prepare/trigger the existing one-attempt hosted APK path and link it immediately.
+No interactive Gradle waiting; no new major feature before founder acceptance.
+
 Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
 
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
-| V3-A-02 | VERIFICATION_PENDING | Single registry and sanitized recovery checkpoint | Principal review, local validation, docs-only checkpoint/push and exact-SHA CI. |
+| V3-A-02 | VERIFIED | Single registry and sanitized recovery checkpoint | Maintain registry and synchronized continuation after meaningful progress. |
 | V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
 | V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
-| V3-B1-02 | IN_PROGRESS | Complete Turkish/English application flows | Complete language control and full catalog/flow audit; verify storage errors. |
-| V3-B2-01 | IN_PROGRESS | Centralized five free theme choices | Complete shared integration without duplicate theme screens. |
+| V3-B1-02 | VERIFICATION_PENDING | Complete Turkish/English application flows | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-B2-01 | VERIFICATION_PENDING | Centralized five free theme choices | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
 
 1. Reinspect owner scope, AGENTS, branch/full HEAD/status; preserve WIP.
-2. Principal validates/reviews this sanitized docs checkpoint before substantial App work. Principal owns application/policy/Git integration.
+2. Registry checkpoint93bd8029f50b0386636ea447ee2fd92406a80c13 is pushed; exact-SHA CI44665731118/full and44665731127/portability passed. B2 source is now frozen and verification is in progress. Do not restart completed App/core/component work.
 3. Resume B1-02/B2-01 through B2-05 in a bounded increment; focused checks/frozen review/checkpoint/exact-SHA CI.
 4. Prepare APK_READY after gates; if one hosted run is triggered, publish URL immediately and stop waiting/polling Gradle. Verify binary separately.
 5. Await founder Samsung observations before next major increment. Apply quota stop; no automatic resume.
 
-Baseline `48cd226ebc03e3cd14383a4d57636ce08a599166`; A source `a2cb5daf960cad2d2301680a4b445caea027b688`. Registry writer performed no network/install/build/device/commit/push action. B2 WIP has no validation claim.
+Baseline `48cd226ebc03e3cd14383a4d57636ce08a599166`; A source `a2cb5daf960cad2d2301680a4b445caea027b688`. Registry writer performed no network/install/build/device/commit/push action. B2 implementation is frozen with scoped synthetic checks; full regression, independent review, new exact-SHA CI/APK and device acceptance remain pending.
 ## Historical archive (superseded status snapshot)
 
 # Exact continuation

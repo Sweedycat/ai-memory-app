@@ -17,9 +17,9 @@ function evaluateVariant(variant) {
   return context.module.exports({ config: app.expo });
 }
 
-test('authorized 0.1.0 candidate preserves EAS Preview identity and code', () => {
+test('B2 display version preserves EAS Preview identity and its separate code', () => {
   const config = evaluateVariant('preview');
-  assert.equal(config.version, '0.1.0');
+  assert.equal(config.version, '0.2.0');
   assert.equal(config.name, 'AI Memory Preview');
   assert.equal(config.android.package, 'com.sweedycat.aimemory.preview');
   assert.equal(config.android.versionCode, 2);
@@ -40,24 +40,24 @@ test('Preview versioning does not change production application identity or code
 
 test('Preview code does not introduce automatic version upgrades or force install', () => {
   assert.notEqual(eas.build.preview.autoIncrement, true);
-  assert.equal(app.expo.version, '0.1.0');
+  assert.equal(app.expo.version, '0.2.0');
   assert.doesNotMatch(buildConfigCode, /unlink|remove|AsyncStorage|clear|uninstall|fetch\(/);
 });
 
-test('GitHub Test candidate preserves historical package and strictly increases verified historical code 1', () => {
+test('GitHub Test candidate preserves historical package and strictly increases latest verified delivered code 2', () => {
   const config = evaluateVariant('github-test');
   assert.equal(config.name, 'AI Memory GitHub Test');
   assert.equal(config.android.package, 'com.sweedycat.aimemory.githubtest');
   assert.equal(config.ios.bundleIdentifier, 'com.sweedycat.aimemory.githubtest');
-  assert.equal(config.version, '0.1.0');
-  assert.equal(config.android.versionCode, 2);
-  assert.ok(config.android.versionCode > 1);
+  assert.equal(config.version, '0.2.0');
+  assert.equal(config.android.versionCode, 3);
+  assert.ok(config.android.versionCode > 2);
   assert.equal(config.extra.eas.projectId, app.expo.extra.eas.projectId);
   assert.equal(pkg.version, app.expo.version);
   assert.equal(lock.version, app.expo.version);
   assert.equal(lock.packages[''].version, app.expo.version);
   const settings = fs.readFileSync(path.join(root, 'src/components/SettingsPanel.tsx'), 'utf8');
-  assert.ok(settings.includes('Version ' + app.expo.version + ' ·'));
+  assert.match(settings, /\{c\.version\} \{manifest\.expo\.version\}/);
 });
 
 test('automatic development build is limited to one authorized request and rejects ordinary pushes and reruns', () => {

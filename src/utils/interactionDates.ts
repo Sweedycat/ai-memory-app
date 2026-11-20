@@ -1,3 +1,5 @@
+import { generatedCopy } from '../i18n/catalogs/generated';
+
 /**
  * Historical relative date labels (e.g. "Just now" or "Last week") were
  * persisted by early Preview builds. They cannot be reconstructed into
@@ -18,19 +20,19 @@ export function interactionInstant(value?: string): number | null {
   return Number.isFinite(time) ? time : null;
 }
 
-export function formatInteractionDate(value?: string): string {
+export function formatInteractionDate(value?: string, locale?: string): string {
   const instant = interactionInstant(value);
-  if (instant === null) return 'Date not recorded';
+  const copy = generatedCopy(locale);
+  if (instant === null) return copy.unknownDate;
   const date = new Date(instant);
 
-  return (
-    date.toLocaleDateString(undefined, {
+  return copy.dateTime(
+    date.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    }) +
-    ' · ' +
-    date.toLocaleTimeString(undefined, {
+    }),
+    date.toLocaleTimeString(locale, {
       hour: '2-digit',
       minute: '2-digit',
     })

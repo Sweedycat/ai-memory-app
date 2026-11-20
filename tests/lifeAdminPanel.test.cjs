@@ -1,3 +1,4 @@
+const { createPresentation } = require('./helpers/featurePresentation.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -30,7 +31,7 @@ function screen({ records = [], createId = async () => 'new-synthetic', locale =
     async reload() { calls.push(['reload']); store.status = 'ready'; store.error = null; dirty = true; },
   };
   const react = {
-    createElement(type, props, ...children) { return { type, props: { ...props, children } }; },
+    createElement(type, props, ...children) { return typeof type === 'function' ? type({ ...props, children }) : { type, props: { ...props, children } }; },
     useState(initial) { const index = cursor++; if (!(index in slots)) slots[index] = typeof initial === 'function' ? initial() : initial;
       return [slots[index], next => { assert.ok(mounted, 'No late panel state update'); slots[index] = typeof next === 'function' ? next(slots[index]) : next; dirty = true; }]; },
     useRef(initial) { return slots[cursor++] ??= { current: initial }; },
@@ -41,7 +42,9 @@ function screen({ records = [], createId = async () => 'new-synthetic', locale =
   native.StyleSheet = { create: value => value };
   native.AppState = { currentState: 'active', addEventListener: (_, callback) => { listeners.add(callback); return { remove() { listeners.delete(callback); } }; } };
   native.BackHandler = { addEventListener: (_, callback) => { backs.add(callback); return { remove() { backs.delete(callback); } }; } };
+  const presentation = createPresentation(load, react, native);
   const Component = load('src/components/LifeAdminPanel.tsx', {
+    ...presentation.imports,
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
     '../hooks/useLifeRecords': { useLifeRecords: () => store }, '../utils/lifeRecords': model,
     '../strings/lifeAdmin': strings, '../utils/screenInsets': { SCREEN_TOP_PADDING: 24 },

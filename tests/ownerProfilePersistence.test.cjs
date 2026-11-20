@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
+const { presentationImports } = require('./helpers/presentation.cjs');
 
 function load(file, imports = {}) {
   const source = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
@@ -62,6 +63,7 @@ function harness(storage) {
   native.Platform = { OS: 'android' };
   native.StyleSheet = { create: styles => styles };
   const { OwnerProfileGate: component } = load('src/components/OwnerProfileGate.tsx', {
+    ...presentationImports(),
     '@react-native-async-storage/async-storage': { __esModule: true, default: storage },
     react: { __esModule: true, default: react, ...react },
     'react-native': native,

@@ -22,6 +22,33 @@ function deferred() {
   return { promise, resolve };
 }
 
+const appCatalog = load('src/i18n/catalogs/app.ts');
+const classicTheme = load('src/theme/tokens.ts').THEMES.classic;
+
+for (const scheduleResult of [null, 'synthetic-new-alarm']) {
+  test(`Turkish App passes notification language and preserves reminder safety on scheduling result ${scheduleResult}`, async t => {
+    const ui = screen({ language: 'tr', scheduleResult }); t.after(ui.unmount); await ui.open();
+    const c = appCatalog.appTr;
+    await ui.press(c.edit); await ui.input(c.followUpLabel, 'Original synthetic draft stays unchanged');
+    await ui.press(c.saveChanges);
+    const scheduled = ui.calls.find(call => call[0] === 'schedule');
+    assert.equal(scheduled[1].language, 'tr');
+    assert.equal(scheduled[1].text, 'Original synthetic draft stays unchanged');
+    if (scheduleResult === null) {
+      assert.equal(ui.alerts.at(-1).title, c.reminderNotUpdated);
+      assert.equal(ui.alerts.at(-1).message, c.previousNotCancelled);
+      assert.equal(ui.person.followUp.text, person.followUp.text);
+      assert.ok(ui.alarms.has('synthetic-old-alarm'));
+      assert.ok(!ui.calls.some(call => call[0] === 'cancel'));
+      assert.equal(ui.field(c.followUpLabel).props.value, 'Original synthetic draft stays unchanged');
+    } else {
+      assert.equal(ui.person.followUp.notificationId, scheduleResult);
+      assert.ok(!ui.alarms.has('synthetic-old-alarm'));
+      assert.ok(ui.alarms.has(scheduleResult));
+    }
+  });
+}
+
 const person = {
   id: 'synthetic-person', name: 'Synthetic Person', relationship: 'Contact', lastInteraction: 'Unknown',
   notes: ['Original synthetic note'], interactions: [], followUpHistory: [],
@@ -32,7 +59,7 @@ const other = { ...person, id: 'other-synthetic', name: 'Other Synthetic', follo
 
 // Real App handlers, people hook, validation and save queue. React rendering,
 // AsyncStorage and native notifications are simulated; no Android claim.
-function screen({ cancelGate, scheduleGate, scheduleResult = 'synthetic-new-alarm', failWrites = false } = {}) {
+function screen({ cancelGate, scheduleGate, scheduleResult = 'synthetic-new-alarm', failWrites = false, language = 'en' } = {}) {
   const slots = [], effects = [], calls = [], alerts = [], alarms = new Set(['synthetic-old-alarm']);
   let cursor = 0, dirty = false, scheduled = [], mounted = true, output, peopleState, notificationHandler;
   let raw = JSON.stringify([person, other]), writes = 0, failing = failWrites;
@@ -80,6 +107,11 @@ function screen({ cancelGate, scheduleGate, scheduleResult = 'synthetic-new-alar
       addNotificationResponseReceivedListener(callback) { notificationHandler = callback; return { remove() {} }; },
       getLastNotificationResponseAsync: async () => null,
     },
+    'react-native-safe-area-context': { useSafeAreaInsets: () => ({ top: 24, bottom: 0 }) },
+    './src/i18n/LanguageProvider': { useI18n: () => ({ language, locale: language === 'tr' ? 'tr-TR' : 'en-US',
+      copy: { app: language === 'tr' ? appCatalog.appTr : appCatalog.appEn, lifeAdmin: { title: 'Life' }, assistant: { title: 'Assistant' } } }) },
+    './src/theme/ThemeProvider': { useTheme: () => ({ theme: classicTheme }) },
+    './src/components/ui/AppHeader': { AppHeader: noop },
     './src/components/OwnerProfileGate': { useOwnerControls: () => ({ openSettings: noop }) },
     './src/components/NotebookBoundary': { NOTEBOOK_PRODUCTION_ENABLED: false, useNotebookLifecycle: () => null },
     './src/components/MemorySaveNotice': { MemorySaveNotice: noop },

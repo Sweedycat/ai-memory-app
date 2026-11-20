@@ -1,425 +1,148 @@
-import React, { useState } from 'react';
-import {
-  Pressable,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-
+import React, { useEffect, useState } from 'react';
+import { BackHandler, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BackupSafetyDiagnostics } from './BackupSafetyDiagnostics';
 import { LockDelaySeconds, usePrivacyControls } from './PrivacyGate';
 import { ReminderPermissionActions } from './ReminderPermissionActions';
 import { PermissionOverview } from './PermissionOverview';
-import { SCREEN_TOP_PADDING } from '../utils/screenInsets';
+import { AppHeader } from './ui/AppHeader';
+import { Screen } from './ui/Screen';
+import { useI18n } from '../i18n/LanguageProvider';
+import { useTheme } from '../theme/ThemeProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import { THEMES, THEME_MODES, type ThemeMode, type ThemeTokens } from '../theme/tokens';
+import manifest from '../../app.json';
 
-type SettingsPanelProps = {
-  displayName: string;
-  role?: string;
-  onClose: () => void;
-  onEditProfile: () => void;
-  onReportBug: () => void;
-};
+type Section = 'main' | 'language' | 'appearance' | 'theme' | 'security' | 'privacy' | 'notifications' | 'backup' | 'help' | 'about';
+type Props = { displayName: string; role?: string; onClose(): void; onEditProfile(): void; onReportBug(): void };
+type PrivacyMessage = '' | 'enableFailed' | 'disableFailed' | 'enabled' | 'disabled' | 'delayFailed';
 
-type DelayOption = {
-  seconds: LockDelaySeconds;
-  label: string;
-};
-
-const DELAY_OPTIONS: DelayOption[] = [
-  { seconds: 0, label: 'Immediately' },
-  { seconds: 30, label: '30 sec' },
-  { seconds: 60, label: '1 min' },
-  { seconds: 300, label: '5 min' },
-];
-
-export function SettingsPanel({
-  displayName,
-  role = '',
-  onClose,
-  onEditProfile,
-  onReportBug,
-}: SettingsPanelProps) {
-  const {
-    appLockEnabled,
-    lockDelaySeconds,
-    setAppLockEnabled,
-    setLockDelaySeconds,
-    lockNow,
-  } = usePrivacyControls();
+export function SettingsPanel({ displayName, role = '', onClose, onEditProfile, onReportBug }: Props) {
+  const i18n = useI18n(), appearance = useTheme();
+  const c = i18n.copy.ui.settings;
+  const styles = useThemedStyles(createStyles);
+  const privacy = usePrivacyControls();
+  const [section, setSection] = useState<Section>('main');
   const [changingLock, setChangingLock] = useState(false);
-  const [privacyMessage, setPrivacyMessage] = useState('');
-  const [showPermissionDetails, setShowPermissionDetails] = useState(false);
-
-  const initials =
-    displayName
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part[0]?.toUpperCase())
-      .join('') || 'ME';
-
-  async function toggleAppLock() {
-    if (changingLock) return;
-
-    setChangingLock(true);
-    setPrivacyMessage('');
-
-    const target = !appLockEnabled;
-    const changed = await setAppLockEnabled(target);
-
-    if (!changed) {
-      setPrivacyMessage(
-        target
-          ? 'Could not enable the app lock. Please try again.'
-          : 'App lock stayed on because owner authentication was cancelled or failed.',
-      );
-    } else {
-      setPrivacyMessage(target ? 'App lock enabled.' : 'App lock disabled for this device.');
-    }
-
-    setChangingLock(false);
-  }
-
-  async function chooseDelay(seconds: LockDelaySeconds) {
-    setPrivacyMessage('');
-
+  const [privacyMessage, setPrivacyMessage] = useState<PrivacyMessage>('');
+  const goBack = () => section === 'main' ? onClose() : setSection(section === 'theme' ? 'appearance' : 'main');
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => { goBack(); return true; });
+    return () => subscription.remove();
+  }, [section, onClose]);
+  async function toggleLock() {
+    if (changingLock || !privacy.settingsReady) return;
+    setChangingLock(true); setPrivacyMessage('');
+    const target = !privacy.appLockEnabled;
     try {
-      await setLockDelaySeconds(seconds);
-    } catch {
-      setPrivacyMessage('Could not save the lock delay. Please try again.');
-    }
+      const changed = await privacy.setAppLockEnabled(target);
+      setPrivacyMessage(changed ? target ? 'enabled' : 'disabled' : target ? 'enableFailed' : 'disableFailed');
+    } catch { setPrivacyMessage(target ? 'enableFailed' : 'disableFailed'); }
+    finally { setChangingLock(false); }
   }
-
-  return (
-    <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" />
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Close settings" onPress={onClose}>
-          <Text style={styles.back}>‹ AI Memory</Text>
-        </Pressable>
-
-        <Text style={styles.brand}>AI MEMORY</Text>
-        <Text style={styles.title}>Settings</Text>
-        <Text style={styles.body}>Your profile, privacy controls and beta feedback live here.</Text>
-
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Edit owner profile"
-          onPress={onEditProfile}
-          style={styles.profileCard}
-        >
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>{initials}</Text>
+  async function chooseDelay(seconds: LockDelaySeconds) {
+    if (changingLock || !privacy.settingsReady) return;
+    setChangingLock(true); setPrivacyMessage('');
+    try { await privacy.setLockDelaySeconds(seconds); }
+    catch { setPrivacyMessage('delayFailed'); }
+    finally { setChangingLock(false); }
+  }
+  function action(label: string, onPress: () => void, detail?: string) {
+    return <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={styles.row}>
+      <View style={styles.flex}><Text style={styles.text}>{label}</Text>{detail ? <Text style={styles.meta}>{detail}</Text> : null}</View>
+      <Text style={styles.link} accessibilityElementsHidden>›</Text>
+    </Pressable>;
+  }
+  function choice(label: string, selected: boolean, disabled: boolean, onPress: () => void) {
+    return <Pressable accessibilityRole="radio" accessibilityLabel={label} key={label}
+      accessibilityState={{ selected, disabled }} disabled={disabled} onPress={onPress}
+      style={[styles.choice, selected && styles.selected, disabled && styles.disabled]}>
+      <Text style={styles.text}>{label}</Text><Text style={styles.link} accessibilityElementsHidden>{selected ? '●' : '○'}</Text>
+    </Pressable>;
+  }
+  const delayOptions: [LockDelaySeconds, string][] = [[0, c.immediate], [30, c.seconds30], [60, c.minute1], [300, c.minutes5]];
+  const descriptions: Record<ThemeMode, string> = { classic: c.classicDescription, modern: c.modernDescription,
+    light: c.lightDescription, dark: c.darkDescription, system: c.systemDescription };
+  const heading = section === 'main' ? c.title : c[section];
+  return <Screen><ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <AppHeader onBack={goBack} backLabel={section === 'main' ? 'AI Memory' : c.back}
+      accessibilityLabel={section === 'main' ? c.close : c.back} title={heading} />
+    {section === 'main' && <>
+      <Text style={styles.meta}>{c.intro}</Text>
+      <View style={styles.card}>{action(c.profile, onEditProfile, displayName + (role.trim() ? ' · ' + role : ''))}</View>
+      <View style={styles.card}>{(['language', 'appearance', 'security', 'privacy', 'notifications', 'backup', 'help', 'about'] as const)
+        .map(key => <React.Fragment key={key}>{action(c[key], () => setSection(key))}</React.Fragment>)}</View>
+    </>}
+    {section === 'language' && <View style={styles.card}>
+      <Text style={styles.meta}>{c.languageBody}</Text>
+      {(['system', 'en', 'tr'] as const).map(preference => choice(i18n.copy.common[preference], i18n.preference === preference,
+        i18n.status !== 'ready' || i18n.busy, () => { void i18n.changeLanguage(preference); }))}
+      {i18n.status === 'loading' && <Text style={styles.meta}>{c.loading}</Text>}
+      {i18n.busy && <Text accessibilityLiveRegion="polite" style={styles.meta}>{c.saving}</Text>}
+      {i18n.status === 'error' && <><Text accessibilityRole="alert" style={styles.error}>
+        {i18n.copy.common.errors[i18n.error === 'save' ? 'save' : i18n.error === 'conflict' ? 'conflict' : 'load']}</Text>
+        {action(i18n.copy.common.reload, () => { void i18n.reload(); })}</>}
+    </View>}
+    {section === 'appearance' && <View style={styles.card}>
+      <Text style={styles.meta}>{c.appearanceBody}</Text>{action(c.theme, () => setSection('theme'), c[appearance.mode])}
+    </View>}
+    {section === 'theme' && <View style={styles.card}>
+      <Text style={styles.meta}>{c.appearanceBody}</Text>
+      {THEME_MODES.map(mode => {
+        const preview = THEMES[mode === 'system' ? 'light' : mode];
+        const selected = appearance.mode === mode, disabled = appearance.status !== 'ready' || appearance.busy;
+        return <Pressable key={mode} accessibilityRole="radio" accessibilityLabel={c[mode] + '. ' + descriptions[mode]}
+          accessibilityState={{ selected, disabled }} disabled={disabled} onPress={() => { void appearance.changeMode(mode); }}
+          style={[styles.choice, selected && styles.selected, disabled && styles.disabled]}>
+          <View style={[styles.preview, { backgroundColor: preview.colors.background }]} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+            <View style={[styles.swatch, { backgroundColor: preview.colors.surface, borderColor: preview.colors.controlBorder }]} />
+            <View style={[styles.swatch, { backgroundColor: mode === 'system' ? THEMES.dark.colors.background : preview.colors.accent }]} />
           </View>
-          <View style={styles.flex}>
-            <Text style={styles.profileName}>{displayName}</Text>
-            <Text style={styles.profileMeta}>{role.trim() || 'Private owner profile'}</Text>
-          </View>
-          <Text style={styles.chevron}>›</Text>
-        </Pressable>
-
-        <View style={styles.card}>
-          <Text style={styles.label}>PRIVACY</Text>
-
-          <View style={styles.statusRow}>
-            <View style={styles.statusIconWrap}>
-              <Text style={styles.statusIcon}>🔒</Text>
-            </View>
-            <View style={styles.flex}>
-              <View style={styles.statusTop}>
-                <View style={styles.flex}>
-                  <Text style={styles.statusTitle}>App lock</Text>
-                  <Text style={styles.statusText}>
-                    {appLockEnabled
-                      ? 'Protect AI Memory with your phone owner authentication.'
-                      : 'AI Memory opens without its separate privacy lock.'}
-                  </Text>
-                </View>
-                <Pressable
-                  accessibilityRole="switch"
-                  accessibilityLabel="App lock"
-                  accessibilityState={{ checked: appLockEnabled, disabled: changingLock }}
-                  disabled={changingLock}
-                  onPress={() => void toggleAppLock()}
-                  style={[
-                    styles.switchTrack,
-                    appLockEnabled && styles.switchTrackOn,
-                    changingLock && styles.switchDisabled,
-                  ]}
-                >
-                  <View style={[styles.switchThumb, appLockEnabled && styles.switchThumbOn]} />
-                </Pressable>
-              </View>
-            </View>
-          </View>
-
-          {appLockEnabled ? (
-            <>
-              <Divider />
-              <View>
-                <View style={styles.delayHeader}>
-                  <View>
-                    <Text style={styles.statusTitle}>Lock after leaving app</Text>
-                    <Text style={styles.statusText}>Choose how quickly AI Memory locks in the background.</Text>
-                  </View>
-                </View>
-                <View style={styles.delayOptions}>
-                  {DELAY_OPTIONS.map((option) => {
-                    const selected = lockDelaySeconds === option.seconds;
-                    return (
-                      <Pressable
-                        key={option.seconds}
-                        accessibilityRole="button"
-                        accessibilityState={{ selected }}
-                        accessibilityLabel={`Lock ${option.label.toLowerCase()} after leaving app`}
-                        onPress={() => void chooseDelay(option.seconds)}
-                        style={[styles.delayChip, selected && styles.delayChipActive]}
-                      >
-                        <Text style={[styles.delayChipText, selected && styles.delayChipTextActive]}>
-                          {option.label}
-                        </Text>
-                      </Pressable>
-                    );
-                  })}
-                </View>
-
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel="Lock AI Memory now"
-                  onPress={lockNow}
-                  style={styles.lockNowButton}
-                >
-                  <Text style={styles.lockNowText}>Lock now</Text>
-                </Pressable>
-              </View>
-            </>
-          ) : null}
-
-          <Divider />
-          <SettingStatus
-            icon="◉"
-            title="Memory storage"
-            value="Local"
-            text="Your owner profile, people and conversations stay on this device for now."
-          />
-          <Divider />
-          <SettingStatus
-            icon="◇"
-            title="Bug report privacy"
-            value="Protected"
-            text="Saved people, notes and conversations are never attached automatically."
-          />
-
-          {privacyMessage ? <Text style={styles.privacyMessage}>{privacyMessage}</Text> : null}
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.label}>PERMISSIONS & PRIVACY</Text>
-          <Text style={styles.statusText}>
-            See what AI Memory can access today, why it needs permission, and
-            which future features are not requesting access.
-          </Text>
-          <ReminderPermissionActions />
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={showPermissionDetails ? 'Hide all permission details' : 'Show all permission details'}
-            accessibilityState={{ expanded: showPermissionDetails }}
-            onPress={() => setShowPermissionDetails((value) => !value)}
-            style={styles.permissionDisclosureToggle}
-          >
-            <Text style={styles.permissionDisclosureText}>
-              {showPermissionDetails ? 'Hide full permission details' : 'View all permissions and future access'}
-            </Text>
-          </Pressable>
-          {showPermissionDetails ? <PermissionOverview /> : null}
-        </View>
-
-        <BackupSafetyDiagnostics />
-
-        <View style={styles.card}>
-          <Text style={styles.label}>SUPPORT & BETA</Text>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Report a bug"
-            onPress={onReportBug}
-            style={styles.actionRow}
-          >
-            <View style={styles.actionIconWrap}>
-              <Text style={styles.actionIcon}>🐞</Text>
-            </View>
-            <View style={styles.flex}>
-              <Text style={styles.actionTitle}>Report a bug</Text>
-              <Text style={styles.actionText}>Tell us what went wrong without exposing your memories.</Text>
-            </View>
-            <Text style={styles.chevron}>›</Text>
-          </Pressable>
-        </View>
-
-        <View style={styles.versionBox}>
-          <Text style={styles.versionTitle}>AI Memory · Private Beta</Text>
-          <Text style={styles.versionText}>Version 0.1.0 · Phone first, smart-glasses ready later.</Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+          <View style={styles.flex}><Text style={styles.text}>{c[mode]}</Text><Text style={styles.meta}>{descriptions[mode]}</Text></View>
+          <Text style={styles.link} accessibilityElementsHidden>{selected ? '●' : '○'}</Text>
+        </Pressable>;
+      })}
+      {appearance.status === 'loading' && <Text style={styles.meta}>{c.loading}</Text>}
+      {appearance.busy && <Text accessibilityLiveRegion="polite" style={styles.meta}>{c.saving}</Text>}
+      {appearance.status === 'error' && <><Text accessibilityRole="alert" style={styles.error}>{c.appearanceError}</Text>
+        {action(c.reload, () => { void appearance.reload(); })}</>}
+    </View>}
+    {section === 'security' && <View style={styles.card}>
+      <View style={styles.row}><View style={styles.flex}><Text style={styles.text}>{c.appLock}</Text>
+        <Text style={styles.meta}>{privacy.appLockEnabled ? c.lockOn : c.lockOff}</Text></View>
+        <Pressable accessibilityRole="switch" accessibilityLabel={c.appLock}
+          accessibilityState={{ checked: privacy.appLockEnabled, disabled: changingLock || !privacy.settingsReady }}
+          disabled={changingLock || !privacy.settingsReady} onPress={() => { void toggleLock(); }} style={styles.switch}>
+          <Text style={styles.link}>{privacy.appLockEnabled ? '●' : '○'}</Text>
+        </Pressable></View>
+      {privacy.appLockEnabled && <><Text style={styles.text}>{c.delay}</Text><Text style={styles.meta}>{c.delayBody}</Text>
+        {delayOptions.map(([seconds, label]) => choice(label, privacy.lockDelaySeconds === seconds,
+          changingLock || !privacy.settingsReady, () => { void chooseDelay(seconds); }))}
+        {action(c.lockNow, privacy.lockNow)}</>}
+      {privacyMessage ? <Text accessibilityLiveRegion="polite" style={styles.meta}>{c[privacyMessage]}</Text> : null}
+    </View>}
+    {section === 'privacy' && <View style={styles.card}><Text style={styles.text}>{c.local}</Text>
+      <Text style={styles.meta}>{c.localBody}</Text><Text style={styles.meta}>{c.reportPrivacy}</Text>
+      <Text style={styles.meta}>{c.permissions}</Text><PermissionOverview /></View>}
+    {section === 'notifications' && <View style={styles.card}><ReminderPermissionActions /></View>}
+    {section === 'backup' && <BackupSafetyDiagnostics />}
+    {section === 'help' && <View style={styles.card}>{action(c.bug, onReportBug, c.reportBody)}<Text style={styles.meta}>{c.reportPrivacy}</Text></View>}
+    {section === 'about' && <View style={styles.card}><Text style={styles.text}>{c.beta}</Text>
+      <Text style={styles.meta}>{c.version} {manifest.expo.version}</Text></View>}
+  </ScrollView></Screen>;
 }
-
-function SettingStatus({
-  icon,
-  title,
-  value,
-  text,
-}: {
-  icon: string;
-  title: string;
-  value: string;
-  text: string;
-}) {
-  return (
-    <View style={styles.statusRow}>
-      <View style={styles.statusIconWrap}>
-        <Text style={styles.statusIcon}>{icon}</Text>
-      </View>
-      <View style={styles.flex}>
-        <View style={styles.statusTop}>
-          <Text style={styles.statusTitle}>{title}</Text>
-          <Text style={styles.statusValue}>{value}</Text>
-        </View>
-        <Text style={styles.statusText}>{text}</Text>
-      </View>
-    </View>
-  );
-}
-
-function Divider() {
-  return <View style={styles.divider} />;
-}
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0B0F14' },
-  container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: SCREEN_TOP_PADDING, paddingBottom: 44 },
-  back: { color: '#7DE2C3', fontSize: 15, fontWeight: '800', paddingVertical: 8, marginBottom: 14 },
-  brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 2, marginBottom: 10 },
-  title: { color: '#F4F7FA', fontSize: 34, lineHeight: 40, fontWeight: '900' },
-  body: { color: '#98A3AF', fontSize: 15, lineHeight: 22, marginTop: 8, marginBottom: 20 },
-  flex: { flex: 1 },
-  profileCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#121820',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#25313C',
-    padding: 15,
-    marginBottom: 12,
-  },
-  avatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#17352D',
-    borderWidth: 1,
-    borderColor: '#315B4F',
-    marginRight: 13,
-  },
-  avatarText: { color: '#7DE2C3', fontSize: 17, fontWeight: '900' },
-  profileName: { color: '#F4F7FA', fontSize: 16, fontWeight: '900' },
-  profileMeta: { color: '#7F8B97', fontSize: 12, marginTop: 4 },
-  chevron: { color: '#66727E', fontSize: 27, marginLeft: 8 },
-  card: {
-    backgroundColor: '#121820',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#202B36',
-    padding: 16,
-    marginBottom: 12,
-  },
-  label: { color: '#7DE2C3', fontSize: 10, fontWeight: '900', letterSpacing: 1.2, marginBottom: 12 },
-  statusRow: { flexDirection: 'row', alignItems: 'flex-start', paddingVertical: 4 },
-  statusIconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#10251F',
-    marginRight: 11,
-  },
-  statusIcon: { fontSize: 16, color: '#7DE2C3' },
-  statusTop: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 },
-  statusTitle: { color: '#E7EDF2', fontSize: 14, fontWeight: '800' },
-  statusValue: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
-  statusText: { color: '#7F8B97', fontSize: 12, lineHeight: 18, marginTop: 4 },
-  divider: { height: 1, backgroundColor: '#202B36', marginVertical: 12, marginLeft: 49 },
-  switchTrack: {
-    width: 48,
-    height: 28,
-    borderRadius: 999,
-    backgroundColor: '#29333D',
-    borderWidth: 1,
-    borderColor: '#394651',
-    padding: 3,
-    justifyContent: 'center',
-  },
-  switchTrackOn: { backgroundColor: '#315B4F', borderColor: '#4B8877' },
-  switchThumb: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#AAB5BE',
-    alignSelf: 'flex-start',
-  },
-  switchThumbOn: { backgroundColor: '#7DE2C3', alignSelf: 'flex-end' },
-  switchDisabled: { opacity: 0.55 },
-  delayHeader: { marginLeft: 49 },
-  delayOptions: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 11, marginLeft: 49 },
-  delayChip: {
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: '#293541',
-    backgroundColor: '#0E141B',
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-  },
-  delayChipActive: { borderColor: '#4B8877', backgroundColor: '#17352D' },
-  delayChipText: { color: '#7F8B97', fontSize: 10, fontWeight: '800' },
-  delayChipTextActive: { color: '#7DE2C3' },
-  lockNowButton: {
-    alignSelf: 'flex-start',
-    marginLeft: 49,
-    marginTop: 12,
-    borderRadius: 11,
-    borderWidth: 1,
-    borderColor: '#355348',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  lockNowText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
-  privacyMessage: { color: '#9CC9BC', fontSize: 11, lineHeight: 17, marginTop: 13, marginLeft: 49 },
-  permissionDisclosureToggle: { paddingVertical: 14, marginTop: 12, borderTopColor: '#293541', borderTopWidth: 1 },
-  permissionDisclosureText: { color: '#7DE2C3', fontWeight: '900', fontSize: 12 },
-  actionRow: { flexDirection: 'row', alignItems: 'center' },
-  actionIconWrap: {
-    width: 42,
-    height: 42,
-    borderRadius: 13,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#201A12',
-    borderWidth: 1,
-    borderColor: '#66532F',
-    marginRight: 11,
-  },
-  actionIcon: { fontSize: 18 },
-  actionTitle: { color: '#F4F7FA', fontSize: 14, fontWeight: '900' },
-  actionText: { color: '#7F8B97', fontSize: 12, lineHeight: 18, marginTop: 3 },
-  versionBox: { paddingHorizontal: 6, paddingTop: 10 },
-  versionTitle: { color: '#83909C', fontSize: 11, fontWeight: '900', textAlign: 'center' },
-  versionText: { color: '#596571', fontSize: 10, lineHeight: 16, textAlign: 'center', marginTop: 4 },
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
+  content: { flexGrow: 1, paddingHorizontal: theme.metrics.screenGutter, paddingTop: 12, paddingBottom: 24, gap: 12 },
+  card: { padding: theme.metrics.cardPadding, backgroundColor: theme.colors.surface, borderWidth: 1,
+    borderColor: theme.colors.border, borderRadius: theme.radii.card, gap: 12 },
+  row: { minHeight: 48, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
+  choice: { minHeight: 56, padding: 12, gap: 12, flexDirection: 'row', alignItems: 'center',
+    borderWidth: 1, borderColor: theme.colors.controlBorder, borderRadius: theme.radii.control },
+  selected: { borderColor: theme.colors.accent, backgroundColor: theme.colors.surfaceRaised },
+  flex: { flex: 1, minWidth: 0 }, text: { ...theme.typography.body, color: theme.colors.text, fontWeight: '600' },
+  meta: { ...theme.typography.meta, color: theme.colors.textSecondary }, link: { color: theme.colors.accent, fontSize: 20 },
+  error: { ...theme.typography.meta, color: theme.colors.danger }, disabled: { opacity: 0.55 },
+  switch: { minWidth: 48, minHeight: 48, alignItems: 'center', justifyContent: 'center', borderWidth: 1,
+    borderColor: theme.colors.controlBorder, borderRadius: theme.radii.control },
+  preview: { width: 60, height: 44, borderRadius: 8, padding: 6, flexDirection: 'row', gap: 4 },
+  swatch: { flex: 1, borderWidth: 1, borderRadius: 4 },
 });

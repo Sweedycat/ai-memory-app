@@ -1,9 +1,13 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useI18n } from '../i18n/LanguageProvider';
+import { useTheme } from '../theme/ThemeProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import {
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -22,6 +26,10 @@ const SEEN_KEY = '@ai-memory/permission-transparency-setup/v2';
  * All controls are also reachable later from Settings.
  */
 export function ReminderPermissionGate({ children }: { children: React.ReactNode }) {
+  const styles = useThemedStyles(createStyles);
+  const { isDark } = useTheme();
+  const { copy: catalog } = useI18n();
+  const copy = catalog.ui.reminder;
   const [ready, setReady] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
 
@@ -54,9 +62,9 @@ export function ReminderPermissionGate({ children }: { children: React.ReactNode
   if (!ready) {
     return (
       <SafeAreaView style={styles.screen}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
         <View style={styles.center}>
-          <Text style={styles.sub}>Preparing reminder setup…</Text>
+          <Text style={styles.sub}>{copy.preparing}</Text>
         </View>
       </SafeAreaView>
     );
@@ -66,22 +74,19 @@ export function ReminderPermissionGate({ children }: { children: React.ReactNode
 
   return (
     <SafeAreaView style={styles.screen}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.brand}>AI MEMORY · FIRST RUN</Text>
-        <Text style={styles.title}>Your permissions. Your choice.</Text>
-        <Text style={styles.sub}>
-          Before you use reminders, here is what this beta asks from Android and
-          why. Permissions are not granted automatically when you install the app.
-        </Text>
+        <Text style={styles.brand}>{copy.brand}</Text>
+        <Text style={styles.title}>{copy.title}</Text>
+        <Text style={styles.sub}>{copy.intro}</Text>
 
         <View style={styles.card}>
-          <Text style={styles.sectionLabel}>CHOOSE REMINDER ACCESS</Text>
+          <Text style={styles.sectionLabel}>{copy.access}</Text>
           <ReminderPermissionActions />
         </View>
 
         <View style={styles.card}>
-          <Text style={styles.sectionLabel}>FULL PERMISSION DETAILS</Text>
+          <Text style={styles.sectionLabel}>{copy.details}</Text>
           <PermissionOverview />
         </View>
       </ScrollView>
@@ -89,35 +94,32 @@ export function ReminderPermissionGate({ children }: { children: React.ReactNode
       <View style={styles.footer}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Continue to AI Memory without requiring permissions"
+          accessibilityLabel={copy.continueLabel}
           style={styles.primary}
           onPress={() => void continueToApp()}
         >
-          <Text style={styles.primaryText}>Continue to AI Memory</Text>
+          <Text style={styles.primaryText}>{copy.continue}</Text>
         </Pressable>
-        <Text style={styles.note}>
-          All these permissions are optional for saving local memories.
-          You can manage them later in Settings.
-        </Text>
+        <Text style={styles.note}>{copy.optional}</Text>
       </View>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#0B0F14' },
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
+  screen: { flex: 1, backgroundColor: theme.colors.background },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: 27, paddingBottom: 25 },
-  brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 1.7, marginBottom: 13 },
-  title: { color: '#F4F7FA', fontSize: 30, lineHeight: 37, fontWeight: '900' },
-  sub: { color: '#98A3AF', fontSize: 14, lineHeight: 21, marginTop: 10 },
-  sectionLabel: { color: '#7DE2C3', fontSize: 11, fontWeight: '900', letterSpacing: 0.7 },
-  card: { backgroundColor: '#121820', borderRadius: 20, borderColor: '#202B36', borderWidth: 1, padding: 17, marginTop: 17 },
+  container: { flexGrow: 1, paddingHorizontal: theme.metrics.screenGutter, paddingTop: theme.spacing.md, paddingBottom: 25 },
+  brand: { color: theme.colors.accent, fontSize: theme.typography.meta.fontSize, fontWeight: '900', letterSpacing: 1.7, marginBottom: 13 },
+  title: { color: theme.colors.text, fontSize: theme.typography.hero.fontSize, lineHeight: theme.typography.hero.lineHeight, fontWeight: '900' },
+  sub: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.body.lineHeight, marginTop: theme.spacing.sm },
+  sectionLabel: { color: theme.colors.accent, fontSize: theme.typography.meta.fontSize, fontWeight: '900', letterSpacing: 0.7 },
+  card: { backgroundColor: theme.colors.surface, borderRadius: theme.radii.card, borderColor: theme.colors.border, borderWidth: 1, padding: theme.metrics.cardPadding, marginTop: theme.metrics.cardPadding },
   footer: {
-    backgroundColor: '#0B0F14', borderTopColor: '#202B36',
-    borderTopWidth: 1, paddingHorizontal: 22, paddingTop: 12, paddingBottom: 12,
+    backgroundColor: theme.colors.background, borderTopColor: theme.colors.border,
+    borderTopWidth: 1, paddingHorizontal: theme.metrics.screenGutter, paddingTop: theme.spacing.md, paddingBottom: theme.spacing.md,
   },
-  primary: { borderRadius: 15, backgroundColor: '#7DE2C3', paddingVertical: 15, alignItems: 'center' },
-  primaryText: { color: '#07100D', fontSize: 14, fontWeight: '900' },
-  note: { color: '#8C98A4', fontSize: 11, lineHeight: 17, marginTop: 8, textAlign: 'center' },
+  primary: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', borderRadius: theme.radii.control, backgroundColor: theme.colors.accent, paddingVertical: theme.spacing.md, alignItems: 'center' },
+  primaryText: { color: theme.colors.onAccent, fontSize: theme.typography.meta.fontSize, fontWeight: '900' },
+  note: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight, marginTop: theme.spacing.sm, textAlign: 'center' },
 });

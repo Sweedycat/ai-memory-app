@@ -5,14 +5,14 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
 | V3-A-04 | VERIFICATION_PENDING | Tested branch-scoped free hosted delivery | Revalidate path at qualifying app milestone; no APK for this docs task. |
-| V3-B2-05 | PENDING | Review, tests, APK_READY and founder acceptance | Complete implementation gates; await founder feedback before next major increment. |
-| V3-F-04 | PENDING | Safe upgrades, versions and retained records | Verify next candidate metadata; 0.2.0/code3 is planned only after gates, not assigned. |
+| V3-B2-05 | IN_PROGRESS | Review, tests, APK_READY and founder acceptance | Read integrated test result and independent findings; do not start next major user-facing milestone. |
+| V3-F-04 | PENDING | Safe upgrades, versions and retained records | Verify reviewed/published B2 source and exact CI before hosted build; installed-device identity remains unverified. |
 
 No B2 artifact/physical acceptance verified; A internal APK job skipped. B1 tests are not an APK. Preserve release states APK_READY, BUILD_TRIGGERED, BUILD_RUNNING, APK_VERIFIED, FOUNDER_ACCEPTANCE_PENDING and ACCEPTED separately from task status.
 
 Latest artifact evidence supplied by Principal from re-inspected build-tools logs (binary not downloaded again): successful [run44565432466](https://github.com/Sweedycat/ai-memory-app/actions/runs/44565432466), source `5b679b35a535ab723739a7b31d71ceeaa2b75acf`, job135706101231. Package `com.sweedycat.aimemory.githubtest`, versionName `0.1.0`, code `2`; apksigner V2 certificate SHA-256 `fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c`; APK SHA-256 `1478dd14018c759a8807730234b1bc7e606e5137d03c249c627e1054b63e5446`. [Artifact14552436266](https://github.com/Sweedycat/ai-memory-app/actions/runs/44565432466/artifacts/14552436266). This historical artifact is not B2; installed-device compatibility remains unverified.
 
-Next B2 `0.2.0/code3` is planned only after completion gates, not assigned. Preserve Preview/GitHub Test identities/signing; verify current artifact metadata before higher code. Installation remains separately authorized; never uninstall/reset/replace signing. No build for this docs milestone.
+B2 `0.2.0/code3` is assigned in the uncommitted candidate source; it is not a produced or APK_READY artifact. Preserve Preview/GitHub Test identities/signing; verify current artifact metadata before higher code. Installation remains separately authorized; never uninstall/reset/replace signing. No build for this docs milestone.
 
 Focused Turkish checklist when candidate is ready: Sistem/TR/EN seçimi yeniden açılışta korunmalı; değişen ekranlarda karışık dil olmamalı. Beş ücretsiz temanın önizleme/uygulama/yeniden açılış ve sistem değişimi sınanmalı. Kayıtlar korunmalı; Geri/klavye/kenar boşlukları/büyük yazı/TalkBack ve etkilenen Ayarlar/Uygulama Kilidi yolları kontrol edilmeli. Aday APK ve beklenen/gözlenen sonuç kaydedilmeli.
 ## Historical archive (superseded status snapshot)

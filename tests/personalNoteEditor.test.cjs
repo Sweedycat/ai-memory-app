@@ -1,3 +1,4 @@
+const { createPresentation } = require('./helpers/featurePresentation.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -21,7 +22,7 @@ function renderEditor(editor, initialState = 'active') {
     listener = callback; return { remove() { listener = undefined; } };
   } };
   const react = {
-    createElement(type, props, ...children) { return { type, props: { ...props, children } }; },
+    createElement(type, props, ...children) { return typeof type === 'function' ? type({ ...props, children }) : { type, props: { ...props, children } }; },
     useState(initial) {
       const index = cursor++;
       if (!(index in slots)) slots[index] = typeof initial === 'function' ? initial() : initial;
@@ -36,7 +37,9 @@ function renderEditor(editor, initialState = 'active') {
   const native = Object.fromEntries(['Pressable', 'ScrollView', 'Text', 'TextInput', 'View'].map(name => [name, name]));
   native.AppState = state; native.StyleSheet = { create: value => value };
   native.BackHandler = { addEventListener: (_, callback) => { back = callback; return { remove() { back = undefined; } }; } };
+  const presentation = createPresentation(load, react, native);
   const component = load('src/components/PersonalNoteEditor.tsx', {
+    ...presentation.imports,
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
     '../utils/personalNotebook': h.model, '../strings/notebookEditor.en': { notebookEditorEn: copy },
   }).default;

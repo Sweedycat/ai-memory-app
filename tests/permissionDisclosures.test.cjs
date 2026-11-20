@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const ts = require('typescript');
+const { loadPure } = require('./helpers/presentation.cjs');
 
 const projectRoot = path.resolve(__dirname, '..');
 const read = (relative) => fs.readFileSync(path.join(projectRoot, relative), 'utf8');
@@ -70,23 +71,25 @@ test('onboarding is first-run, non-blocking and offers all permission descriptio
   const gate = read('src/components/ReminderPermissionGate.tsx');
   assert.match(gate, /permission-transparency-setup\/v2/);
   assert.match(gate, /<PermissionOverview \/>/);
-  assert.match(gate, /Continue to AI Memory/);
+  assert.match(gate, /accessibilityLabel=\{copy\.continueLabel\}/);
+  assert.match(loadPure('src/i18n/catalog.ts').catalog.en.ui.reminder.continueLabel, /without requiring permissions/);
   assert.match(gate, /setShowSetup\(false\)/);
 });
 
 test('all permission details can be reopened from Settings', () => {
   const settings = read('src/components/SettingsPanel.tsx');
-  assert.match(settings, /PERMISSIONS & PRIVACY/);
-  assert.match(settings, /showPermissionDetails/);
+  assert.match(settings, /section === 'privacy'/);
+  assert.match(settings, /section === 'notifications'/);
   assert.match(settings, /<PermissionOverview \/>/);
   assert.match(settings, /<ReminderPermissionActions \/>/);
 });
 
 test('Android notification channel is set up before requesting runtime permission', () => {
   const actions = read('src/components/ReminderPermissionActions.tsx');
-  const channel = actions.indexOf('await ensurePrivateFollowUpChannel()');
+  const channel = actions.indexOf('await ensurePrivateFollowUpChannel(language)');
   const ask = actions.indexOf('Notifications.requestPermissionsAsync()');
   assert.ok(channel > 0 && ask > channel);
   assert.match(actions, /REQUEST_SCHEDULE_EXACT_ALARM/);
-  assert.match(actions, /Returning here does not confirm/);
+  assert.match(actions, /'reviewMessage'/);
+  assert.match(loadPure('src/i18n/catalog.ts').catalog.en.ui.reminder.reviewMessage, /Returning here does not confirm/);
 });

@@ -13,7 +13,8 @@ function load(file, imports = {}) {
 }
 const language = load('src/i18n/language.ts');
 const { createLanguagePreferenceStore: create, decodeLanguagePreference: decode, LANGUAGE_PREFERENCE_KEY: KEY } =
-  load('src/i18n/languageStore.ts', { './language': language });
+  load('src/i18n/languageStore.ts', { './language': language,
+    '../preferences/enumPreferenceStore': load('src/preferences/enumPreferenceStore.ts') });
 const document = (preference = 'system', revision = 0) => JSON.stringify({ version: 1, revision, preference });
 function memory(initial = null) {
   let raw = initial, writes = 0, reads = 0;

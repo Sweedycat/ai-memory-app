@@ -1,12 +1,15 @@
+import { useTheme } from '../theme/ThemeProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useI18n } from '../i18n/LanguageProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -16,7 +19,6 @@ import {
 import { BugReportPanel } from './BugReportPanel';
 import { ReminderPermissionGate } from './ReminderPermissionGate';
 import { SettingsPanel } from './SettingsPanel';
-import { ownerProfileEn } from '../strings/ownerProfile.en';
 
 type OwnerProfileGateProps = {
   children: React.ReactNode;
@@ -67,6 +69,11 @@ function normalizeProfile(value: unknown): OwnerProfile | null {
 }
 
 export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
+  const { copy } = useI18n();
+  const c = copy.ui.gates;
+  const styles = useThemedStyles(createStyles);
+  const { theme } = useTheme();
+  const placeholderColor = theme.colors.textMuted;
   const [profile, setProfile] = useState<OwnerProfile | null>(null);
   const [draft, setDraft] = useState<OwnerProfile>(emptyProfile);
   const [ready, setReady] = useState(false);
@@ -78,7 +85,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   const [reportingBug, setReportingBug] = useState(false);
   const [returnToSettingsAfterEdit, setReturnToSettingsAfterEdit] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<'' | 'saveError'>('');
 
   useEffect(() => {
     let mounted = true;
@@ -121,8 +128,8 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   }
 
   const displayName = useMemo(
-    () => profile?.preferredName.trim() || profile?.name.trim() || 'Owner',
-    [profile],
+    () => profile?.preferredName.trim() || profile?.name.trim() || c.owner,
+    [profile, c.owner],
   );
 
   const controls = useMemo<OwnerControls>(
@@ -155,7 +162,7 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
         setSettingsOpen(true);
       }
     } catch {
-      setError('Could not save your private profile on this device. Please try again.');
+      setError("saveError");
     } finally {
       setSaving(false);
     }
@@ -184,16 +191,15 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   if (loadError) {
     return (
       <SafeAreaView style={styles.safe}>
-        <StatusBar barStyle="light-content" />
         <View style={styles.center}>
           <Text style={styles.brand}>AI MEMORY</Text>
-          <Text accessibilityRole="header" style={styles.title}>{ownerProfileEn.loadTitle}</Text>
+          <Text accessibilityRole="header" style={styles.title}>{c.recovery.loadTitle}</Text>
           <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.body}>
-            {ownerProfileEn.loadExplanation}
+            {c.recovery.loadExplanation}
           </Text>
-          <Pressable accessibilityRole="button" accessibilityLabel={ownerProfileEn.retryLoad}
+          <Pressable accessibilityRole="button" accessibilityLabel={c.recovery.retryLoad}
             onPress={retryProfileLoad} style={styles.primaryButton}>
-            <Text style={styles.primaryButtonText}>{ownerProfileEn.retryLoad}</Text>
+            <Text style={styles.primaryButtonText}>{c.recovery.retryLoad}</Text>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -203,10 +209,9 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   if (!ready) {
     return (
       <SafeAreaView style={styles.safe}>
-        <StatusBar barStyle="light-content" />
         <View style={styles.center}>
           <Text style={styles.brand}>AI MEMORY</Text>
-          <Text style={styles.loading}>Preparing your private space…</Text>
+          <Text style={styles.loading}>{c.profilePreparing}</Text>
         </View>
       </SafeAreaView>
     );
@@ -245,7 +250,6 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
 
     return (
       <SafeAreaView style={styles.safe}>
-        <StatusBar barStyle="light-content" />
         <KeyboardAvoidingView
           style={styles.safe}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -256,80 +260,79 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
             showsVerticalScrollIndicator={false}
           >
             <Text style={styles.brand}>AI MEMORY</Text>
-            <Text style={styles.title}>{isFirstRun ? 'Make this memory yours.' : 'Your private profile'}</Text>
+            <Text style={styles.title}>{isFirstRun ? c.createHeading : c.profileHeading}</Text>
             <Text style={styles.body}>
               {isFirstRun
-                ? 'Tell AI Memory who owns this phone. This profile stays on this device for now.'
-                : 'Update how AI Memory should address you. Your profile remains local on this device.'}
+                ? c.createIntro
+                : c.editIntro}
             </Text>
 
             <View style={styles.card}>
-              <Text style={styles.label}>YOUR NAME *</Text>
+              <Text style={styles.label}>{c.name}</Text>
               <TextInput
-                accessibilityLabel="Your full name"
+                accessibilityLabel={c.nameInput}
                 value={draft.name}
                 onChangeText={(name) => setDraft((current) => ({ ...current, name }))}
-                placeholder="Your full name"
-                placeholderTextColor="#727D89"
+                placeholder={c.nameInput}
+                placeholderTextColor={placeholderColor}
                 autoCapitalize="words"
                 autoCorrect={false}
                 returnKeyType="next"
                 style={styles.input}
               />
 
-              <Text style={styles.label}>WHAT SHOULD AI MEMORY CALL YOU?</Text>
+              <Text style={styles.label}>{c.preferred}</Text>
               <TextInput
-                accessibilityLabel="Preferred name or nickname"
+                accessibilityLabel={c.preferredInput}
                 value={draft.preferredName}
                 onChangeText={(preferredName) => setDraft((current) => ({ ...current, preferredName }))}
-                placeholder="First name or nickname"
-                placeholderTextColor="#727D89"
+                placeholder={c.preferredPlaceholder}
+                placeholderTextColor={placeholderColor}
                 autoCapitalize="words"
                 autoCorrect={false}
                 returnKeyType="next"
                 style={styles.input}
               />
 
-              <Text style={styles.label}>ROLE / ABOUT YOU</Text>
+              <Text style={styles.label}>{c.role}</Text>
               <TextInput
-                accessibilityLabel="Role or short description"
+                accessibilityLabel={c.roleInput}
                 value={draft.role}
                 onChangeText={(role) => setDraft((current) => ({ ...current, role }))}
-                placeholder="Founder, engineer, student…"
-                placeholderTextColor="#727D89"
+                placeholder={c.rolePlaceholder}
+                placeholderTextColor={placeholderColor}
                 returnKeyType="done"
                 style={styles.input}
               />
 
               <View style={styles.privacyBox}>
-                <Text style={styles.privacyTitle}>🔒 Private by default</Text>
+                <Text style={styles.privacyTitle}>{c.privateTitle}</Text>
                 <Text style={styles.privacyText}>
-                  This owner profile is stored locally and hidden behind the app lock.
-                </Text>
+                  {c.privateBody}</Text>
               </View>
 
-              {error ? <Text style={styles.error}>{error}</Text> : null}
+              {error ? <Text style={styles.error}>{c[error]}</Text> : null}
 
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={isFirstRun ? 'Create private owner profile' : 'Save owner profile changes'}
+                accessibilityLabel={isFirstRun ? c.createLabel : c.saveLabel}
                 onPress={() => void saveProfile()}
                 disabled={saveDisabled}
                 style={[styles.primaryButton, saveDisabled && styles.disabled]}
               >
                 <Text style={styles.primaryButtonText}>
-                  {saving ? 'Saving…' : isFirstRun ? 'Create my private profile' : 'Save changes'}
+                  {saving ? c.saving : isFirstRun ? c.create : c.save}
                 </Text>
               </Pressable>
 
               {!isFirstRun ? (
                 <Pressable
                   accessibilityRole="button"
-                  accessibilityLabel="Cancel editing owner profile"
+                  accessibilityLabel={c.cancelEdit}
                   onPress={cancelProfileEdit}
                   style={styles.secondaryButton}
                 >
-                  <Text style={styles.secondaryButtonText}>Cancel</Text>
+                  <Text style={styles.secondaryButtonText}>{c.cancel}</Text>
                 </Pressable>
               ) : null}
             </View>
@@ -348,118 +351,119 @@ export function OwnerProfileGate({ children }: OwnerProfileGateProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#0B0F14',
+    backgroundColor: theme.colors.background,
   },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 28,
+    padding: theme.metrics.cardPadding,
   },
   formWrap: {
     flexGrow: 1,
     justifyContent: 'center',
-    paddingHorizontal: 22,
+    paddingHorizontal: theme.metrics.screenGutter,
     paddingVertical: 28,
   },
   brand: {
-    color: '#7DE2C3',
-    fontSize: 12,
+    color: theme.colors.accent,
+    fontSize: theme.typography.meta.fontSize,
     fontWeight: '900',
     letterSpacing: 2,
     marginBottom: 12,
   },
   loading: {
-    color: '#A7B0BA',
-    fontSize: 15,
+    color: theme.colors.textSecondary,
+    fontSize: theme.typography.body.fontSize,
   },
   title: {
-    color: '#F4F7FA',
-    fontSize: 32,
-    lineHeight: 38,
+    color: theme.colors.text,
+    fontSize: theme.typography.hero.fontSize,
+    lineHeight: theme.typography.hero.lineHeight,
     fontWeight: '900',
   },
   body: {
-    color: '#98A3AF',
-    fontSize: 15,
-    lineHeight: 22,
+    color: theme.colors.textSecondary,
+    fontSize: theme.typography.body.fontSize,
+    lineHeight: theme.typography.body.lineHeight,
     marginTop: 10,
     marginBottom: 20,
   },
   card: {
-    backgroundColor: '#121820',
-    borderRadius: 22,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radii.card,
     borderWidth: 1,
-    borderColor: '#202B36',
-    padding: 17,
+    borderColor: theme.colors.border,
+    padding: theme.metrics.cardPadding,
   },
   label: {
-    color: '#7DE2C3',
-    fontSize: 10,
+    color: theme.colors.accent,
+    fontSize: theme.typography.meta.fontSize,
     fontWeight: '900',
     letterSpacing: 1.1,
     marginTop: 10,
     marginBottom: 7,
   },
   input: {
-    backgroundColor: '#0E141B',
-    borderRadius: 14,
+    minHeight: 48,
+    backgroundColor: theme.colors.input,
+    borderRadius: theme.radii.control,
     borderWidth: 1,
-    borderColor: '#293541',
-    color: '#F4F7FA',
-    fontSize: 15,
+    borderColor: theme.colors.controlBorder,
+    color: theme.colors.text,
+    fontSize: theme.typography.body.fontSize,
     paddingHorizontal: 13,
     paddingVertical: 12,
   },
   privacyBox: {
-    backgroundColor: '#10251F',
-    borderRadius: 14,
+    backgroundColor: theme.colors.surfaceRaised,
+    borderRadius: theme.radii.control,
     borderWidth: 1,
-    borderColor: '#315B4F',
+    borderColor: theme.colors.controlBorder,
     padding: 13,
     marginTop: 18,
   },
   privacyTitle: {
-    color: '#D9F5EC',
-    fontSize: 13,
+    color: theme.colors.text,
+    fontSize: theme.typography.meta.fontSize,
     fontWeight: '900',
   },
   privacyText: {
-    color: '#8FB4A9',
-    fontSize: 12,
-    lineHeight: 18,
+    color: theme.colors.textSecondary,
+    fontSize: theme.typography.meta.fontSize,
+    lineHeight: theme.typography.meta.lineHeight,
     marginTop: 5,
   },
   error: {
-    color: '#F2B8B5',
-    fontSize: 12,
-    lineHeight: 18,
+    color: theme.colors.danger,
+    fontSize: theme.typography.meta.fontSize,
+    lineHeight: theme.typography.meta.lineHeight,
     marginTop: 12,
   },
   primaryButton: {
-    backgroundColor: '#7DE2C3',
-    borderRadius: 15,
+    backgroundColor: theme.colors.accent,
+    borderRadius: theme.radii.control,
     alignItems: 'center',
     paddingVertical: 14,
     marginTop: 18,
   },
   primaryButtonText: {
-    color: '#07100D',
-    fontSize: 14,
+    color: theme.colors.onAccent,
+    fontSize: theme.typography.meta.fontSize,
     fontWeight: '900',
   },
   secondaryButton: {
-    borderRadius: 15,
+    borderRadius: theme.radii.control,
     alignItems: 'center',
     paddingVertical: 13,
     marginTop: 8,
   },
   secondaryButtonText: {
-    color: '#98A3AF',
-    fontSize: 13,
+    color: theme.colors.textSecondary,
+    fontSize: theme.typography.meta.fontSize,
     fontWeight: '800',
   },
   disabled: {
@@ -467,6 +471,6 @@ const styles = StyleSheet.create({
   },
   appWrap: {
     flex: 1,
-    backgroundColor: '#0B0F14',
+    backgroundColor: theme.colors.background,
   },
 });

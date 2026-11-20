@@ -1,10 +1,16 @@
+import { AppHeader } from './ui/AppHeader';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useI18n } from '../i18n/LanguageProvider';
+import { useTheme } from '../theme/ThemeProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
+import appConfig from '../../app.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   Share,
   StatusBar,
@@ -14,7 +20,6 @@ import {
   View,
 } from 'react-native';
 
-import { SCREEN_TOP_PADDING } from '../utils/screenInsets';
 
 type BugReportPanelProps = {
   onClose: () => void;
@@ -35,39 +40,43 @@ type BugReport = {
 };
 
 const STORAGE_KEY = '@ai-memory/bug-reports/v1';
-const APP_VERSION = '0.1.0';
+const APP_VERSION = appConfig.expo.version;
 const AREAS: BugArea[] = ['App lock', 'Owner profile', 'People', 'Search', 'Other'];
 
-function buildShareText(report: BugReport) {
+function buildShareText(report: BugReport, copy: ReturnType<typeof useI18n>['copy']['ui']['bug'], locale: string) {
   return [
-    'AI Memory bug report',
-    `Version: ${report.appVersion}`,
-    `Area: ${report.area}`,
-    `Time: ${report.createdAt}`,
-    report.reporterName ? `Reporter: ${report.reporterName}` : '',
+    copy.reportTitle,
+    `${copy.version}: ${report.appVersion}`,
+    `${copy.area}: ${copy.areas[report.area]}`,
+    `${copy.time}: ${new Date(report.createdAt).toLocaleString(locale)}`,
+    report.reporterName ? `${copy.reporter}: ${report.reporterName}` : '',
     '',
-    'What happened:',
+    copy.reportHappened,
     report.description,
     '',
-    'Steps to reproduce:',
-    report.steps || 'Not provided',
+    copy.reportSteps,
+    report.steps || copy.missing,
     '',
-    'Expected result:',
-    report.expected || 'Not provided',
+    copy.reportExpected,
+    report.expected || copy.missing,
     '',
-    'Privacy note: no saved people, memory notes, or conversations were attached automatically.',
+    copy.reportPrivacy,
   ]
     .filter((line) => line !== '')
     .join('\n');
 }
 
 export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelProps) {
+  const styles = useThemedStyles(createStyles);
+  const { theme, isDark } = useTheme();
+  const { copy: catalog, locale } = useI18n();
+  const copy = catalog.ui.bug;
   const [area, setArea] = useState<BugArea>('Other');
   const [description, setDescription] = useState('');
   const [steps, setSteps] = useState('');
   const [expected, setExpected] = useState('');
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState<'' | 'saved' | 'failed'>('');
 
   const canSubmit = useMemo(() => Boolean(description.trim()) && !saving, [description, saving]);
 
@@ -95,13 +104,13 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
       const next = [report, ...current].slice(0, 50);
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
 
-      setStatus('Saved privately on this device. Choose where you want to send it.');
+      setStatus('saved');
       await Share.share({
-        title: 'AI Memory bug report',
-        message: buildShareText(report),
+        title: copy.reportTitle,
+        message: buildShareText(report, copy, locale),
       });
     } catch {
-      setStatus('Could not save or open the share sheet. Your memories were not exposed.');
+      setStatus('failed');
     } finally {
       setSaving(false);
     }
@@ -109,32 +118,26 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
       <KeyboardAvoidingView style={styles.safe} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
           contentContainerStyle={styles.container}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <Pressable accessibilityRole="button" accessibilityLabel="Close bug report" onPress={onClose}>
-            <Text style={styles.back}>‹ Back</Text>
-          </Pressable>
+          <AppHeader onBack={onClose} backLabel={copy.back} accessibilityLabel={copy.close} />
 
-          <Text style={styles.brand}>AI MEMORY · BETA</Text>
-          <Text style={styles.title}>Found something weird?</Text>
-          <Text style={styles.body}>
-            Tell us what broke. The report is saved locally first, then you choose where to share it.
-          </Text>
+          <Text style={styles.brand}>{copy.brand}</Text>
+          <Text style={styles.title}>{copy.title}</Text>
+          <Text style={styles.body}>{copy.body}</Text>
 
           <View style={styles.privacyBox}>
-            <Text style={styles.privacyTitle}>🔒 No memory data attached</Text>
-            <Text style={styles.privacyText}>
-              People, notes and conversations are never added to a bug report automatically.
-            </Text>
+            <Text style={styles.privacyTitle}>{copy.privacyTitle}</Text>
+            <Text style={styles.privacyText}>{copy.privacyBody}</Text>
           </View>
 
           <View style={styles.card}>
-            <Text style={styles.label}>WHERE DID IT HAPPEN?</Text>
+            <Text style={styles.label}>{copy.where}</Text>
             <View style={styles.chips}>
               {AREAS.map((item) => (
                 <Pressable
@@ -144,113 +147,112 @@ export function BugReportPanel({ onClose, reporterName = '' }: BugReportPanelPro
                   onPress={() => setArea(item)}
                   style={[styles.chip, area === item && styles.chipActive]}
                 >
-                  <Text style={[styles.chipText, area === item && styles.chipTextActive]}>{item}</Text>
+                  <Text style={[styles.chipText, area === item && styles.chipTextActive]}>{copy.areas[item]}</Text>
                 </Pressable>
               ))}
             </View>
 
-            <Text style={styles.label}>WHAT HAPPENED? *</Text>
+            <Text style={styles.label}>{copy.happened}</Text>
             <TextInput
-              accessibilityLabel="Describe the bug"
+              accessibilityLabel={copy.describe}
               value={description}
               onChangeText={setDescription}
               multiline
-              placeholder="Example: the app asked for fingerprint twice after I came back from another app."
-              placeholderTextColor="#727D89"
+              placeholder={copy.descriptionPlaceholder}
+              placeholderTextColor={theme.colors.textSecondary}
               style={[styles.input, styles.multiline]}
             />
 
-            <Text style={styles.label}>HOW CAN WE REPEAT IT?</Text>
+            <Text style={styles.label}>{copy.repeat}</Text>
             <TextInput
-              accessibilityLabel="Steps to reproduce the bug"
+              accessibilityLabel={copy.stepsLabel}
               value={steps}
               onChangeText={setSteps}
               multiline
-              placeholder="1. Open AI Memory\n2. Go to...\n3. Tap..."
-              placeholderTextColor="#727D89"
+              placeholder={copy.stepsPlaceholder}
+              placeholderTextColor={theme.colors.textSecondary}
               style={[styles.input, styles.multilineSmall]}
             />
 
-            <Text style={styles.label}>WHAT SHOULD HAVE HAPPENED?</Text>
+            <Text style={styles.label}>{copy.expected}</Text>
             <TextInput
-              accessibilityLabel="Expected result"
+              accessibilityLabel={copy.expectedLabel}
               value={expected}
               onChangeText={setExpected}
               multiline
-              placeholder="Describe the result you expected."
-              placeholderTextColor="#727D89"
+              placeholder={copy.expectedPlaceholder}
+              placeholderTextColor={theme.colors.textSecondary}
               style={[styles.input, styles.multilineSmall]}
             />
 
-            {status ? <Text style={styles.status}>{status}</Text> : null}
+            {status ? <Text style={styles.status}>{copy[status]}</Text> : null}
 
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="Save and share bug report"
+              accessibilityLabel={copy.saveLabel}
               disabled={!canSubmit}
               onPress={() => void saveAndShare()}
               style={[styles.primaryButton, !canSubmit && styles.disabled]}
             >
-              <Text style={styles.primaryButtonText}>{saving ? 'Saving…' : 'Save & share report'}</Text>
+              <Text style={styles.primaryButtonText}>{saving ? copy.saving : copy.save}</Text>
             </Pressable>
           </View>
 
-          <Text style={styles.caption}>
-            Bug rewards can be connected later when public beta and user accounts are ready.
-          </Text>
+          <Text style={styles.caption}>{copy.caption}</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0B0F14' },
-  container: { flexGrow: 1, paddingHorizontal: 22, paddingTop: SCREEN_TOP_PADDING, paddingBottom: 42 },
-  back: { color: '#7DE2C3', fontSize: 15, fontWeight: '800', paddingVertical: 8, marginBottom: 12 },
-  brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 2, marginBottom: 10 },
-  title: { color: '#F4F7FA', fontSize: 31, lineHeight: 37, fontWeight: '900' },
-  body: { color: '#98A3AF', fontSize: 15, lineHeight: 22, marginTop: 10 },
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
+  safe: { flex: 1, backgroundColor: theme.colors.background },
+  container: { flexGrow: 1, paddingHorizontal: theme.metrics.screenGutter, paddingTop: theme.spacing.md, paddingBottom: 42 },
+  back: { color: theme.colors.accent, fontSize: theme.typography.body.fontSize, fontWeight: '800', paddingVertical: theme.spacing.sm, marginBottom: theme.spacing.md },
+  brand: { color: theme.colors.accent, fontSize: theme.typography.meta.fontSize, fontWeight: '900', letterSpacing: 2, marginBottom: theme.spacing.sm },
+  title: { color: theme.colors.text, fontSize: theme.typography.hero.fontSize, lineHeight: theme.typography.hero.lineHeight, fontWeight: '900' },
+  body: { color: theme.colors.textSecondary, fontSize: theme.typography.body.fontSize, lineHeight: theme.typography.body.lineHeight, marginTop: theme.spacing.sm },
   privacyBox: {
-    backgroundColor: '#10251F',
-    borderRadius: 16,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radii.card,
     borderWidth: 1,
-    borderColor: '#315B4F',
-    padding: 14,
-    marginTop: 18,
+    borderColor: theme.colors.border,
+    padding: theme.spacing.md,
+    marginTop: theme.metrics.cardPadding,
   },
-  privacyTitle: { color: '#D9F5EC', fontSize: 13, fontWeight: '900' },
-  privacyText: { color: '#8FB4A9', fontSize: 12, lineHeight: 18, marginTop: 5 },
+  privacyTitle: { color: theme.colors.text, fontSize: theme.typography.meta.fontSize, fontWeight: '900' },
+  privacyText: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight, marginTop: 5 },
   card: {
-    backgroundColor: '#121820',
-    borderRadius: 22,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.radii.card,
     borderWidth: 1,
-    borderColor: '#202B36',
-    padding: 17,
-    marginTop: 14,
+    borderColor: theme.colors.border,
+    padding: theme.metrics.cardPadding,
+    marginTop: theme.spacing.md,
   },
-  label: { color: '#7DE2C3', fontSize: 10, fontWeight: '900', letterSpacing: 1.1, marginTop: 12, marginBottom: 8 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  chip: { backgroundColor: '#0E141B', borderRadius: 999, borderWidth: 1, borderColor: '#293541', paddingHorizontal: 11, paddingVertical: 8 },
-  chipActive: { backgroundColor: '#17352D', borderColor: '#4B8877' },
-  chipText: { color: '#8995A1', fontSize: 11, fontWeight: '800' },
-  chipTextActive: { color: '#7DE2C3' },
+  label: { color: theme.colors.accent, fontSize: theme.typography.meta.fontSize, fontWeight: '900', letterSpacing: 1.1, marginTop: theme.spacing.md, marginBottom: theme.spacing.sm },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.spacing.sm },
+  chip: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', backgroundColor: theme.colors.input, borderRadius: theme.radii.pill, borderWidth: 1, borderColor: theme.colors.border, paddingHorizontal: 11, paddingVertical: theme.spacing.sm },
+  chipActive: { backgroundColor: theme.colors.surfaceRaised, borderColor: theme.colors.controlBorder },
+  chipText: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, fontWeight: '800' },
+  chipTextActive: { color: theme.colors.accent },
   input: {
-    backgroundColor: '#0E141B',
-    borderRadius: 14,
+    minHeight: theme.metrics.controlMinHeight,
+    backgroundColor: theme.colors.input,
+    borderRadius: theme.radii.control,
     borderWidth: 1,
-    borderColor: '#293541',
-    color: '#F4F7FA',
-    fontSize: 14,
-    lineHeight: 20,
+    borderColor: theme.colors.border,
+    color: theme.colors.text,
+    fontSize: theme.typography.meta.fontSize,
+    lineHeight: theme.typography.meta.lineHeight,
     paddingHorizontal: 13,
-    paddingVertical: 12,
+    paddingVertical: theme.spacing.md,
   },
   multiline: { minHeight: 110, textAlignVertical: 'top' },
   multilineSmall: { minHeight: 82, textAlignVertical: 'top' },
-  status: { color: '#9CC9BC', fontSize: 12, lineHeight: 18, marginTop: 14 },
-  primaryButton: { backgroundColor: '#7DE2C3', borderRadius: 15, alignItems: 'center', paddingVertical: 14, marginTop: 18 },
-  primaryButtonText: { color: '#07100D', fontSize: 14, fontWeight: '900' },
+  status: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight, marginTop: theme.spacing.md },
+  primaryButton: { backgroundColor: theme.colors.accent, borderRadius: theme.radii.control, alignItems: 'center', paddingVertical: theme.spacing.md, marginTop: theme.metrics.cardPadding },
+  primaryButtonText: { color: theme.colors.onAccent, fontSize: theme.typography.meta.fontSize, fontWeight: '900' },
   disabled: { opacity: 0.35 },
-  caption: { color: '#66727E', fontSize: 11, lineHeight: 17, textAlign: 'center', marginTop: 14, paddingHorizontal: 10 },
+  caption: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight, textAlign: 'center', marginTop: theme.spacing.md, paddingHorizontal: theme.spacing.sm },
 });

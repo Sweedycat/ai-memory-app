@@ -1,3 +1,4 @@
+const { createPresentation, pureSource } = require('./helpers/featurePresentation.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -10,7 +11,7 @@ function load(file, imports = {}) {
     name => { if (!(name in imports)) throw Error('Unexpected import ' + name); return imports[name]; }, module, module.exports);
   return module.exports;
 }
-const dates = load('src/utils/interactionDates.ts'), lifeModel = load('src/utils/lifeRecords.ts');
+const dates = pureSource('src/utils/interactionDates.ts'), lifeModel = load('src/utils/lifeRecords.ts');
 const assistant = load('src/utils/groundedAssistant.ts', { './interactionDates': dates, './lifeRecords': lifeModel });
 const strings = load('src/strings/assistant.ts'), copy = strings.assistantEn;
 const person = { id: 'synthetic-person', name: 'Synthetic Maya', role: 'Engineer', relationship: 'Synthetic context', notes: [],
@@ -24,7 +25,7 @@ function screen({ people = [], records = [], status = 'ready', locale = 'en' } =
   let cursor = 0, dirty = false, scheduled = [], output, mounted = true, exits = 0, reloads = 0;
   const life = { records, status, busy: false, async reload() { reloads++; life.status = 'ready'; dirty = true; } };
   const react = {
-    createElement(type, props, ...children) { return { type, props: { ...props, children } }; },
+    createElement(type, props, ...children) { return typeof type === 'function' ? type({ ...props, children }) : { type, props: { ...props, children } }; },
     useState(initial) { const index = cursor++; if (!(index in slots)) slots[index] = typeof initial === 'function' ? initial() : initial;
       return [slots[index], next => { assert.ok(mounted); slots[index] = typeof next === 'function' ? next(slots[index]) : next; dirty = true; }]; },
     useRef(initial) { return slots[cursor++] ??= { current: initial }; },
@@ -35,7 +36,9 @@ function screen({ people = [], records = [], status = 'ready', locale = 'en' } =
   native.StyleSheet = { create: value => value };
   native.AppState = { currentState: 'active', addEventListener: (_, callback) => { listeners.add(callback); return { remove() { listeners.delete(callback); } }; } };
   native.BackHandler = { addEventListener: (_, callback) => { backs.add(callback); return { remove() { backs.delete(callback); } }; } };
+  const presentation = createPresentation(load, react, native);
   const Panel = load('src/components/GroundedAssistantPanel.tsx', {
+    ...presentation.imports,
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
     '../hooks/useLifeRecords': { useLifeRecords: () => life }, '../utils/groundedAssistant': assistant,
     '../strings/assistant': strings, '../utils/screenInsets': { SCREEN_TOP_PADDING: 24 },

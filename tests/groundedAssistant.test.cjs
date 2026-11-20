@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
+const { loadPure } = require('./helpers/presentation.cjs');
 
 function load(file, imports = {}) {
   const local = { exports: {} };
@@ -11,7 +12,7 @@ function load(file, imports = {}) {
     name => { if (!Object.hasOwn(imports, name)) throw Error('Unexpected import: ' + name); return imports[name]; }, local, local.exports);
   return local.exports;
 }
-const dates = load('src/utils/interactionDates.ts');
+const dates = loadPure('src/utils/interactionDates.ts');
 const life = load('src/utils/lifeRecords.ts');
 const { answerSavedQuestion: answer } = load('src/utils/groundedAssistant.ts', {
   './interactionDates': dates, './lifeRecords': life,

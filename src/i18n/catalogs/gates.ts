@@ -1,0 +1,43 @@
+import { ownerProfileEn } from '../../strings/ownerProfile.en';
+type CopyShape<T> = T extends string ? string : { [K in keyof T]: CopyShape<T[K]> };
+const english = {
+  recovery: ownerProfileEn,
+  preparing: 'Preparing your privacy settings…', locked: 'Your memories are locked.',
+  lockedBody: 'Personal notes, conversations and follow-ups stay hidden until the phone owner authenticates.',
+  unlock: 'Unlock AI Memory', unlockButton: 'Unlock privately',
+  delayCaption: 'The app follows your selected privacy lock delay.',
+  cancel: 'Cancel', deviceUnlock: 'Use device unlock', disableLock: 'Turn off AI Memory app lock',
+  noEnrollment: 'Set up fingerprint, face unlock or a device screen lock first.',
+  authFailed: 'Authentication failed. Try again.', authUnavailable: 'Device authentication is not available right now.',
+  owner: 'Owner', profilePreparing: 'Preparing your private space…',
+  createHeading: 'Make this memory yours.', profileHeading: 'Your private profile',
+  createIntro: 'Tell AI Memory who owns this phone. This profile stays on this device for now.',
+  editIntro: 'Update how AI Memory should address you. Your profile remains local on this device.',
+  name: 'YOUR NAME *', nameInput: 'Your full name', preferred: 'WHAT SHOULD AI MEMORY CALL YOU?',
+  preferredInput: 'Preferred name or nickname', preferredPlaceholder: 'First name or nickname',
+  role: 'ROLE / ABOUT YOU', roleInput: 'Role or short description', rolePlaceholder: 'Founder, engineer, student…',
+  privateTitle: '🔒 Private by default', privateBody: 'This owner profile is stored locally and hidden behind the app lock.',
+  saveError: 'Could not save your private profile on this device. Please try again.',
+  createLabel: 'Create private owner profile', saveLabel: 'Save owner profile changes',
+  saving: 'Saving…', create: 'Create my private profile', save: 'Save changes', cancelEdit: 'Cancel editing owner profile',
+};
+export const gatesEn: CopyShape<typeof english> = english;
+export const gatesTr: typeof gatesEn = {
+  recovery: { loadTitle: 'Profiliniz açılamadı', loadExplanation: 'Profil verileri değiştirilmedi. Devam etmek için profilinizi yeniden yükleyin.', retryLoad: 'Profili yeniden yükle' },
+  preparing: 'Gizlilik ayarlarınız hazırlanıyor…', locked: 'Anılarınız kilitli.',
+  lockedBody: 'Kişisel notlar, konuşmalar ve takipler telefon sahibi kimliğini doğrulayana kadar gizli kalır.',
+  unlock: 'AI Memory kilidini aç', unlockButton: 'Güvenle kilidi aç', delayCaption: 'Uygulama seçtiğiniz gizlilik kilidi süresini kullanır.',
+  cancel: 'Vazgeç', deviceUnlock: 'Cihaz kilidini kullan', disableLock: 'AI Memory uygulama kilidini kapat',
+  noEnrollment: 'Önce parmak izi, yüz tanıma veya cihaz ekran kilidi ayarlayın.',
+  authFailed: 'Kimlik doğrulanamadı. Tekrar deneyin.', authUnavailable: 'Cihaz kimlik doğrulaması şu anda kullanılamıyor.',
+  owner: 'Sahip', profilePreparing: 'Özel alanınız hazırlanıyor…', createHeading: 'Bu hafızayı kendinize ait kılın.', profileHeading: 'Özel profiliniz',
+  createIntro: 'AI Memory’ye bu telefonun sahibini tanıtın. Profil şimdilik bu cihazda kalır.',
+  editIntro: 'AI Memory’nin size nasıl hitap edeceğini güncelleyin. Profiliniz bu cihazda yerel olarak kalır.',
+  name: 'ADINIZ *', nameInput: 'Adınız ve soyadınız', preferred: 'AI MEMORY SİZE NASIL HİTAP ETSİN?',
+  preferredInput: 'Tercih ettiğiniz ad veya takma ad', preferredPlaceholder: 'Ad veya takma ad',
+  role: 'ROLÜNÜZ / HAKKINIZDA', roleInput: 'Rol veya kısa açıklama', rolePlaceholder: 'Kurucu, mühendis, öğrenci…',
+  privateTitle: '🔒 Varsayılan olarak özel', privateBody: 'Sahip profili yerel olarak saklanır ve uygulama kilidiyle gizlenir.',
+  saveError: 'Özel profiliniz bu cihaza kaydedilemedi. Tekrar deneyin.',
+  createLabel: 'Özel sahip profili oluştur', saveLabel: 'Sahip profili değişikliklerini kaydet',
+  saving: 'Kaydediliyor…', create: 'Özel profilimi oluştur', save: 'Değişiklikleri kaydet', cancelEdit: 'Sahip profilini düzenlemekten vazgeç',
+};

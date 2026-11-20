@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
+const { loadPure } = require('./helpers/presentation.cjs');
 
 function load(file, imports = {}) {
   const local = { exports: {} };
@@ -14,8 +15,34 @@ function load(file, imports = {}) {
 const language = load('src/i18n/language.ts');
 const life = load('src/strings/lifeAdmin.ts');
 const assistant = load('src/strings/assistant.ts');
-const { catalog, catalogIssues } = load('src/i18n/catalog.ts', { '../strings/lifeAdmin': life, '../strings/assistant': assistant });
+const { catalog, catalogIssues } = load('src/i18n/catalog.ts', {
+  '../strings/lifeAdmin': life, '../strings/assistant': assistant,
+  './catalogs/app': loadPure('src/i18n/catalogs/app.ts'), './catalogs/ui': loadPure('src/i18n/catalogs/ui.ts'),
+  './catalogs/notifications': loadPure('src/i18n/catalogs/notifications.ts'),
+  './catalogs/generated': loadPure('src/i18n/catalogs/generated.ts'),
+});
 const formats = load('src/i18n/format.ts', { './language': language, '../utils/lifeRecords': load('src/utils/lifeRecords.ts') });
+
+test('existing screens do not introduce uncatalogued literal interface labels', () => {
+  const root = path.resolve(__dirname, '..');
+  function files(directory) { return fs.readdirSync(path.join(root, directory), { withFileTypes: true }).flatMap(entry =>
+    entry.isDirectory() ? files(path.join(directory, entry.name)) : entry.name.endsWith('.tsx') ? [path.join(directory, entry.name)] : []); }
+  const findings = [];
+  for (const file of ['App.tsx', ...files('src/components')]) {
+    const source = ts.createSourceFile(file, fs.readFileSync(path.join(root, file), 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+    function visit(node) {
+      if (ts.isJsxText(node)) {
+        const text = node.text.trim().replace(/\s+/g, ' ');
+        if (/\p{L}/u.test(text) && !/^AI MEMORY$/.test(text)) findings.push(`${file}: ${text}`);
+      }
+      if (ts.isJsxAttribute(node) && ['accessibilityLabel', 'accessibilityHint', 'placeholder', 'label', 'title'].includes(node.name.getText(source))
+        && node.initializer && ts.isStringLiteral(node.initializer)) findings.push(`${file}: ${node.name.getText(source)}=${node.initializer.text}`);
+      ts.forEachChild(node, visit);
+    }
+    visit(source);
+  }
+  assert.deepEqual(findings, []);
+});
 
 test('explicit choices override system locale; canonical BCP47 variants and unsupported/malformed fallback are predictable', () => {
   for (const locale of ['tr', 'tr-TR', 'TR-tr', 'tr-CY', 'tr-Latn-TR', 'tr-TR-u-nu-latn'])

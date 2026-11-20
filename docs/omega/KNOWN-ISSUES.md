@@ -7,8 +7,8 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
 | V3-A-04 | VERIFICATION_PENDING | Tested branch-scoped free hosted delivery | Revalidate path at qualifying app milestone; no APK for this docs task. |
 | V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
-| V3-B1-02 | IN_PROGRESS | Complete Turkish/English application flows | Complete language control and full catalog/flow audit; verify storage errors. |
-| V3-B2-01 | IN_PROGRESS | Centralized five free theme choices | Complete shared integration without duplicate theme screens. |
+| V3-B1-02 | VERIFICATION_PENDING | Complete Turkish/English application flows | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-B2-01 | VERIFICATION_PENDING | Centralized five free theme choices | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
 | V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
 | V3-C-03 | BLOCKED | Independent review and native recovery gate | Obtain review and authorized native evidence before activation. |
 | V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |

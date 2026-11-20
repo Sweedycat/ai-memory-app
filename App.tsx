@@ -7,9 +7,7 @@ import {
   Linking,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -20,22 +18,22 @@ import { useOwnerControls } from './src/components/OwnerProfileGate';
 import { MemorySaveNotice } from './src/components/MemorySaveNotice';
 import { DailyBriefingCard } from './src/components/DailyBriefingCard';
 import { LifeAdminPanel } from './src/components/LifeAdminPanel';
-import { lifeAdminCopy } from './src/strings/lifeAdmin';
 import { GroundedAssistantPanel } from './src/components/GroundedAssistantPanel';
-import { assistantCopy } from './src/strings/assistant';
 import { NOTEBOOK_PRODUCTION_ENABLED, useNotebookLifecycle } from './src/components/NotebookBoundary';
 import { NotebookPanel } from './src/components/NotebookPanel';
 import { PersonHistory } from './src/components/PersonHistory';
-import { personHistoryEn } from './src/strings/personHistory.en';
 import { latestDatedInteraction, recentPersonMemory } from './src/utils/personHistory';
-import { notebookEn } from './src/strings/notebook.en';
 import { mockPeople } from './src/data/mockPeople';
 import { usePersistentPeople, type PeopleSaveState } from './src/hooks/usePersistentPeople';
 import { MemoryFollowUp, MemoryPerson } from './src/types';
 import { buildMemoryBriefing } from './src/utils/buildMemoryBriefing';
 import { createInteractionTimestamp, formatInteractionDate } from './src/utils/interactionDates';
 import { planReminderEdit } from './src/utils/reminderEditDecision';
-import { SCREEN_TOP_PADDING } from './src/utils/screenInsets';
+import { useI18n } from './src/i18n/LanguageProvider';
+import { useTheme } from './src/theme/ThemeProvider';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppHeader } from './src/components/ui/AppHeader';
+import type { appEn } from './src/i18n/catalogs/app';
 import { normalizeStandardPhone } from './src/utils/standardPhone';
 import {
   cancelFollowUpNotification,
@@ -95,22 +93,22 @@ function sameCalendarDay(a: Date, b: Date) {
   );
 }
 
-function formatReminder(iso?: string) {
-  if (!iso) return 'No reminder';
+function formatReminder(iso: string | undefined, c: typeof appEn, locale: string) {
+  if (!iso) return c.noReminder;
 
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return 'No reminder';
+  if (Number.isNaN(date.getTime())) return c.noReminder;
 
   const now = new Date();
   const tomorrow = new Date(now);
   tomorrow.setDate(now.getDate() + 1);
 
-  const time = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  const dateText = date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  const time = date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
+  const dateText = date.toLocaleDateString(locale, { month: 'short', day: 'numeric' });
 
-  if (date.getTime() < now.getTime()) return `Overdue · ${dateText} · ${time}`;
-  if (sameCalendarDay(date, now)) return `Today · ${time}`;
-  if (sameCalendarDay(date, tomorrow)) return `Tomorrow · ${time}`;
+  if (date.getTime() < now.getTime()) return c.overdueReminder(dateText, time);
+  if (sameCalendarDay(date, now)) return c.todayReminder(time);
+  if (sameCalendarDay(date, tomorrow)) return c.tomorrowReminder(time);
   return `${dateText} · ${time}`;
 }
 
@@ -143,6 +141,10 @@ function samePerson(a: MemoryPerson | undefined, b: MemoryPerson) {
 }
 
 export default function App() {
+  const { copy, locale, language } = useI18n();
+  const c = copy.app;
+  const { theme } = useTheme();
+  const styles = useAppStyles();
   const [people, setPeople, isReady, loadError, saveState] = usePersistentPeople(mockPeople);
   const { openSettings } = useOwnerControls();
   const notebookLifecycle = useNotebookLifecycle();
@@ -213,6 +215,11 @@ export default function App() {
     [people, selectedId],
   );
 
+  const briefingText = useMemo(
+    () => briefing && selected ? buildMemoryBriefing(selected, new Date(), locale) : '',
+    [briefing, selected, locale],
+  );
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return people;
@@ -276,16 +283,16 @@ export default function App() {
   async function openContactAction(action: 'call' | 'sms' | 'whatsapp') {
     const raw = selected?.phone?.trim() ?? '';
     if (!/^\+?[0-9 ()-]+$/.test(raw)) {
-      Alert.alert('Check phone number', 'Use a phone number without extensions or letters.');
+      Alert.alert(c.checkPhone, c.phoneCharacters);
       return;
     }
     const number = raw.replace(/[ ()-]/g, '');
     if (!/^\+?[0-9]{3,15}$/.test(number)) {
-      Alert.alert('Check phone number', 'Enter a valid phone number.');
+      Alert.alert(c.checkPhone, c.validPhone);
       return;
     }
     if (action === 'whatsapp' && !/^\+[1-9][0-9]{6,14}$/.test(number)) {
-      Alert.alert('International number required', 'For WhatsApp, edit the number to include its country code, for example +90.');
+      Alert.alert(c.internationalRequired, c.whatsappCountry);
       return;
     }
     const url = action === 'call' ? 'tel:' + number :
@@ -293,7 +300,7 @@ export default function App() {
     try {
       await Linking.openURL(url);
     } catch {
-      Alert.alert('Could not open app', 'Check that a compatible app is installed.');
+      Alert.alert(c.openAppError, c.compatibleApp);
     }
   }
 
@@ -302,20 +309,20 @@ export default function App() {
     const name = selected.name.replace(/\s*\(AI Memory\)\s*$/i, '').trim() + ' (AI Memory)';
     const phone = selected.phone.trim();
     if (!/^\+?[0-9 ()-]+$/.test(phone) || !/^\+?[0-9]{3,15}$/.test(phone.replace(/[ ()-]/g, ''))) {
-      Alert.alert('Check phone number', 'Enter a valid phone number before exporting.');
+      Alert.alert(c.checkPhone, c.exportPhone);
       return;
     }
     if (Platform.OS !== 'android') {
-      Alert.alert('Not available', 'Contact export is currently available on Android.');
+      Alert.alert(c.unavailable, c.androidContacts);
       return;
     }
-    Alert.alert('Save to phone contacts?', 'Only the name, phone, company and role will be shared with your contacts app. Check for an existing contact before saving. Private notes stay in AI Memory.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Open contacts editor', onPress: () => {
+    Alert.alert(c.exportTitle, c.exportConsent, [
+      { text: c.cancel, style: 'cancel' },
+      { text: c.contactsEditor, onPress: () => {
         void IntentLauncher.startActivityAsync('android.intent.action.INSERT', {
           type: 'vnd.android.cursor.dir/contact',
           extra: { name, phone, company: selected.company ?? '', job_title: selected.role ?? '' },
-        }).catch(() => Alert.alert('Could not open contacts', 'Open your contacts app and try again.'));
+        }).catch(() => Alert.alert(c.contactsError, c.contactsRetry));
       } },
     ]);
   }
@@ -366,6 +373,7 @@ export default function App() {
 
     if (followUp.reminderAt) {
       const notificationId = await scheduleFollowUpNotification({
+        language,
         personId,
         personName,
         followUpId: followUp.id,
@@ -377,8 +385,8 @@ export default function App() {
         followUp.notificationId = notificationId;
       } else if (mounted.current && new Date(followUp.reminderAt).getTime() > Date.now()) {
         Alert.alert(
-          'Reminder saved',
-          'The follow-up was saved, but the phone could not schedule a notification. Check notification permission for AI Memory.',
+          c.reminderSaved,
+          c.scheduleUnavailable,
         );
       }
     }
@@ -392,7 +400,7 @@ export default function App() {
     try {
       phone = normalizeStandardPhone(form.phone);
     } catch {
-      Alert.alert('Check phone number', 'Enter a single-line phone number (3–20 digits) or leave it blank.');
+      Alert.alert(c.checkPhone, c.phoneFormat);
       return;
     }
 
@@ -410,8 +418,8 @@ export default function App() {
         role: form.role.trim() || undefined,
         company: form.company.trim() || undefined,
         phone,
-        relationship: form.relationship.trim() || 'New contact',
-        lastInteraction: 'No interactions yet',
+        relationship: form.relationship.trim() || c.newContact,
+        lastInteraction: c.noInteractionsValue,
         notes: form.note.trim() ? [form.note.trim()] : [],
         followUp,
         followUpHistory: [],
@@ -434,14 +442,14 @@ export default function App() {
     if (!selected || !mounted.current || operation.current || !form.name.trim()) return;
     const base = editBase.current;
     if (!base || selected.id !== base.id || !samePerson(latestPeople.current.find(person => person.id === base.id), base)) {
-      Alert.alert('Person changed', 'Your draft has been kept. Go back and reopen Edit to review the latest saved person before making changes.');
+      Alert.alert(c.personChanged, c.draftKept);
       return;
     }
     let phone: string | undefined;
     try {
       phone = normalizeStandardPhone(form.phone);
     } catch {
-      Alert.alert('Check phone number', 'Enter a single-line phone number (3–20 digits) or leave it blank.');
+      Alert.alert(c.checkPhone, c.phoneFormat);
       return;
     }
 
@@ -460,8 +468,8 @@ export default function App() {
 
     if (reminderPlan === 'invalid' || reminderPlan === 'expired') {
       Alert.alert(
-        'Choose a future reminder',
-        'This reminder time has passed. Select a new future time to set another alarm, or clear the reminder time.',
+        c.futureReminder,
+        c.pastReminder,
       );
       return;
     }
@@ -484,6 +492,7 @@ export default function App() {
         } else if (reminderPlan === 'schedule' && nextReminderAt) {
           // Schedule first: an error must never cancel a valid existing reminder.
           const newNotificationId = await scheduleFollowUpNotification({
+            language,
             personId: base.id,
             personName: nextName,
             followUpId: nextFollowUp.id,
@@ -497,8 +506,8 @@ export default function App() {
           }
           if (!newNotificationId) {
             Alert.alert(
-              'Reminder not updated',
-              'The phone could not schedule the new notification. Your previous reminder has not been cancelled. Check notification permissions and try again.',
+              c.reminderNotUpdated,
+              c.previousNotCancelled,
             );
             return;
           }
@@ -515,7 +524,7 @@ export default function App() {
         role: form.role.trim() || undefined,
         company: form.company.trim() || undefined,
         phone,
-        relationship: form.relationship.trim() || 'Contact',
+        relationship: form.relationship.trim() || c.contact,
         notes: firstNote ? [firstNote, ...base.notes.slice(1)] : base.notes.slice(1),
         followUp: nextFollowUp,
       };
@@ -523,7 +532,7 @@ export default function App() {
         person.id === base.id && samePerson(person, base) ? replacement : person), next => next.includes(replacement));
       if (!applied) {
         if (createdNotificationId) await cancelFollowUpNotification(createdNotificationId);
-        if (mounted.current) Alert.alert('Person changed', 'Your draft has been kept. Go back and reopen Edit to review the latest saved person before making changes.');
+        if (mounted.current) Alert.alert(c.personChanged, c.draftKept);
         return;
       }
 
@@ -540,7 +549,7 @@ export default function App() {
       }
 
       if (reminderPlan === 'schedule' && oldFollowUp?.reminderAt) {
-        Alert.alert('Reminder updated', 'The follow-up notification was scheduled for the new reminder time.');
+        Alert.alert(c.reminderUpdated, c.rescheduled);
       }
     } finally {
       finishOperation();
@@ -608,17 +617,17 @@ export default function App() {
     const base = selected;
 
     Alert.alert(
-      'Delete person?',
-      `${selected.name} and all saved interactions on this device will be removed.`,
+      c.deleteTitle,
+      c.deleteMessage(selected.name),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: c.cancel, style: 'cancel' },
         {
-          text: 'Delete',
+          text: c.delete,
           style: 'destructive',
           onPress: () => {
             if (!mounted.current || operation.current) return;
             if (!samePerson(latestPeople.current.find(person => person.id === base.id), base)) {
-              Alert.alert('Person changed', 'Review the latest saved person before deleting.');
+              Alert.alert(c.personChanged, c.reviewDelete);
               return;
             }
             if (!beginOperation('delete')) return;
@@ -686,7 +695,7 @@ export default function App() {
       setPickerMode(null);
 
       if (next.getTime() <= Date.now()) {
-        Alert.alert('Choose a future time', 'The reminder time needs to be in the future.');
+        Alert.alert(c.futureTime, c.futureTimeHelp);
         return;
       }
 
@@ -697,11 +706,9 @@ export default function App() {
   if (loadError) {
     return (
       <Page>
-        <Text style={styles.titleSmall}>Could not load saved memories</Text>
+        <Text style={styles.titleSmall}>{c.loadError}</Text>
         <Text style={styles.sub}>
-          AI Memory stopped before writing changes to protect your existing data.
-          Do not clear app storage or reinstall the app. Close and reopen AI Memory;
-          if this warning remains, seek help recovering the saved records.
+          {c.loadErrorHelp}
         </Text>
       </Page>
     );
@@ -710,8 +717,8 @@ export default function App() {
   if (!isReady) {
     return (
       <Page>
-        <Text style={styles.titleSmall}>Loading private memories…</Text>
-        <Text style={styles.sub}>Your saved people and notes are being restored on this device.</Text>
+        <Text style={styles.titleSmall}>{c.loading}</Text>
+        <Text style={styles.sub}>{c.loadingHelp}</Text>
       </Page>
     );
   }
@@ -740,36 +747,36 @@ export default function App() {
     return (
       <Page key={screen} saveState={saveState} busy={busy !== null}>
         <Back onPress={() => setScreen(isEdit ? 'detail' : 'home')} />
-        <Text style={styles.titleSmall}>{isEdit ? 'Edit person' : 'Add a person'}</Text>
+        <Text style={styles.titleSmall}>{isEdit ? c.editPerson : c.addPerson}</Text>
         <Text style={styles.sub}>
           {isEdit
-            ? 'Keep the profile accurate as your relationship and context change.'
-            : 'Save the context now so you do not have to rely on memory later.'}
+            ? c.editHelp
+            : c.addHelp}
         </Text>
 
         <Card>
-          <Field label="NAME *" value={form.name} editable={busy === null} onChange={(name) => setForm((current) => ({ ...current, name }))} />
-          <Field label="ROLE" value={form.role} editable={busy === null} onChange={(role) => setForm((current) => ({ ...current, role }))} />
-          <Field label="COMPANY" value={form.company} editable={busy === null} onChange={(company) => setForm((current) => ({ ...current, company }))} />
-          <Field label="PHONE NUMBER" value={form.phone} editable={busy === null} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
+          <Field label={c.nameLabel} value={form.name} editable={busy === null} onChange={(name) => setForm((current) => ({ ...current, name }))} />
+          <Field label={c.roleLabel} value={form.role} editable={busy === null} onChange={(role) => setForm((current) => ({ ...current, role }))} />
+          <Field label={c.companyLabel} value={form.company} editable={busy === null} onChange={(company) => setForm((current) => ({ ...current, company }))} />
+          <Field label={c.phoneLabel} value={form.phone} editable={busy === null} onChange={(phone) => setForm((current) => ({ ...current, phone }))} keyboardType="phone-pad" />
           <Text style={styles.muted}>
-            Saved in AI Memory, not in your phone Contacts automatically. You can separately export the contact from its profile. App Lock protects access to the app; its local records are not separately encrypted.
+            {c.phoneScope}
           </Text>
           <Field
-            label="HOW DO YOU KNOW THEM?"
+            label={c.relationshipLabel}
             editable={busy === null}
             value={form.relationship}
             onChange={(relationship) => setForm((current) => ({ ...current, relationship }))}
           />
           <Field
-            label={isEdit ? 'PRIMARY MEMORY' : 'FIRST MEMORY'}
+            label={isEdit ? c.primaryMemory : c.firstMemory}
             editable={busy === null}
             value={form.note}
             onChange={(note) => setForm((current) => ({ ...current, note }))}
             multiline
           />
           <Field
-            label="FOLLOW-UP"
+            label={c.followUpLabel}
             editable={busy === null}
             value={form.followUp}
             onChange={(followUp) => setForm((current) => ({ ...current, followUp }))}
@@ -780,32 +787,35 @@ export default function App() {
             <View style={styles.reminderBox}>
               <View style={styles.reminderHeader}>
                 <View style={styles.flex}>
-                  <Text style={styles.followUpLabel}>REMIND ME</Text>
-                  <Text style={styles.reminderValue}>{formatReminder(form.followUpReminderAt)}</Text>
+                  <Text style={styles.followUpLabel}>{c.remindMe}</Text>
+                  <Text style={styles.reminderValue}>{formatReminder(form.followUpReminderAt, c, locale)}</Text>
                 </View>
                 {form.followUpReminderAt ? (
                   <Pressable onPress={() => setReminder()} style={styles.clearReminder}>
-                    <Text style={styles.clearReminderText}>Clear</Text>
+                    <Text style={styles.clearReminderText}>{c.clear}</Text>
                   </Pressable>
                 ) : null}
               </View>
 
               {isEdit && form.followUpReminderAt && new Date(form.followUpReminderAt).getTime() <= Date.now() ? (
                 <Text style={styles.muted}>
-                  Previous reminder has passed. Choose a new future time to schedule it again.
+                  {c.previousPassed}
                 </Text>
               ) : null}
               <View style={styles.reminderChips}>
-                <ReminderChip label="In 10 minutes" onPress={() => setReminder(new Date(Date.now() + 10 * 60 * 1000))} />
-                <ReminderChip label="In 1 hour" onPress={() => setReminder(new Date(Date.now() + 60 * 60 * 1000))} />
-                <ReminderChip label="Tomorrow 09:00" onPress={() => setReminder(reminderAtTomorrow())} />
-                <ReminderChip label="In 3 days" onPress={() => setReminder(reminderAtDaysFromNow(3))} />
-                <ReminderChip label="Pick date & time" onPress={openCustomReminderPicker} />
+                <ReminderChip label={c.tenMinutes} onPress={() => setReminder(new Date(Date.now() + 10 * 60 * 1000))} />
+                <ReminderChip label={c.oneHour} onPress={() => setReminder(new Date(Date.now() + 60 * 60 * 1000))} />
+                <ReminderChip label={c.tomorrowNine} onPress={() => setReminder(reminderAtTomorrow())} />
+                <ReminderChip label={c.threeDays} onPress={() => setReminder(reminderAtDaysFromNow(3))} />
+                <ReminderChip label={c.pickDate} onPress={openCustomReminderPicker} />
               </View>
 
               {pickerMode ? (
                 <View style={styles.pickerWrap}>
                   <DateTimePicker
+                    locale={locale}
+                    themeVariant={theme.isDark ? 'dark' : 'light'}
+                    accentColor={theme.colors.accent}
                     value={pickerValue}
                     mode={pickerMode}
                     minimumDate={new Date()}
@@ -814,7 +824,7 @@ export default function App() {
                   />
                   {Platform.OS === 'ios' ? (
                     <Pressable style={styles.pickerDone} onPress={() => setPickerMode(null)}>
-                      <Text style={styles.pickerDoneText}>Done</Text>
+                      <Text style={styles.pickerDoneText}>{c.done}</Text>
                     </Pressable>
                   ) : null}
                 </View>
@@ -823,7 +833,7 @@ export default function App() {
           ) : null}
 
           <Action
-            label={busy === 'save' || busy === 'add' ? 'Saving…' : isEdit ? 'Save changes' : 'Save person'}
+            label={busy === 'save' || busy === 'add' ? c.saving : isEdit ? c.saveChanges : c.savePerson}
             onPress={isEdit ? () => void saveEditedPerson() : () => void addPerson()}
             disabled={!form.name.trim() || busy !== null}
           />
@@ -843,91 +853,93 @@ export default function App() {
           </View>
           <Text style={styles.profileName}>{selected.name}</Text>
           <Text style={styles.subCenter}>
-            {[selected.role, selected.company].filter(Boolean).join(' · ') || 'Contact'}
+            {[selected.role, selected.company].filter(Boolean).join(' · ') || c.contact}
           </Text>
           <Text style={styles.mutedCenter}>{selected.relationship}</Text>
-          {selected.phone ? <Text style={styles.mutedCenter}>Phone: {selected.phone}</Text> : null}
+          {selected.phone ? <Text style={styles.mutedCenter}>{c.phonePrefix} {selected.phone}</Text> : null}
           {selected.phone ? (
             <View style={styles.contactActions}>
-              <MiniAction label="Call" onPress={() => void openContactAction('call')} />
-              <MiniAction label="WhatsApp" onPress={() => void openContactAction('whatsapp')} />
-              <MiniAction label="SMS" onPress={() => void openContactAction('sms')} />
-              <MiniAction label="Save to contacts" onPress={exportContact} />
+              <MiniAction label={c.call} onPress={() => void openContactAction('call')} />
+              <MiniAction label={c.whatsapp} onPress={() => void openContactAction('whatsapp')} />
+              <MiniAction label={c.sms} onPress={() => void openContactAction('sms')} />
+              <MiniAction label={c.saveContacts} onPress={exportContact} />
             </View>
           ) : null}
           <View style={styles.profileActions}>
-            <MiniAction label="Edit" onPress={openEditPerson} disabled={busy !== null} />
-            <MiniAction label="Delete" onPress={deleteSelectedPerson} danger disabled={busy !== null} />
+            <MiniAction label={c.edit} onPress={openEditPerson} disabled={busy !== null} />
+            <MiniAction label={c.delete} onPress={deleteSelectedPerson} danger disabled={busy !== null} />
           </View>
         </View>
 
         <Card>
-          <Label text="WHAT TO REMEMBER" />
+          <Label text={c.rememberLabel} />
           {selected.notes.length ? (
             selected.notes.map((note, index) => (
               <Text key={`${note}-${index}`} style={styles.note}>• {note}</Text>
             ))
           ) : (
-            <Text style={styles.muted}>No memory notes yet.</Text>
+            <Text style={styles.muted}>{c.noNotes}</Text>
           )}
 
           <TextInput
+            accessibilityLabel={c.memoryPlaceholder}
             value={memoryText}
             onChangeText={setMemoryText}
             multiline
-            placeholder="Add another thing you want to remember..."
-            placeholderTextColor="#727D89"
+            placeholder={c.memoryPlaceholder}
+            placeholderTextColor={theme.colors.textMuted}
             style={[styles.input, styles.multilineSmall]}
           />
-          <OutlineAction label="Add memory note" onPress={() => void addMemoryNote()} disabled={!memoryText.trim() || busy !== null} />
+          <OutlineAction label={c.addNote} onPress={() => void addMemoryNote()} disabled={!memoryText.trim() || busy !== null} />
 
           {selected.followUp ? (
             <View style={styles.followUp}>
               <View style={styles.followUpTopRow}>
-                <Text style={styles.followUpLabel}>NEXT STEP</Text>
+                <Text style={styles.followUpLabel}>{c.nextStep}</Text>
                 <Text style={[
                   styles.followUpStatus,
                   reminderStatus(selected.followUp.reminderAt) === 'OVERDUE' && styles.followUpStatusOverdue,
                 ]}>
-                  {reminderStatus(selected.followUp.reminderAt)}
+                  {c.reminderStatuses[reminderStatus(selected.followUp.reminderAt)]}
                 </Text>
               </View>
               <Text style={styles.followUpText}>{selected.followUp.text}</Text>
-              <Text style={styles.followUpReminder}>⏰ {formatReminder(selected.followUp.reminderAt)}</Text>
+              <Text style={styles.followUpReminder}>⏰ {formatReminder(selected.followUp.reminderAt, c, locale)}</Text>
               <View style={styles.followUpActions}>
                 <Pressable onPress={() => void completeFollowUp()} disabled={busy !== null} style={[styles.followUpDone, busy !== null && styles.disabled]}>
-                  <Text style={styles.followUpDoneText}>✓ Mark completed</Text>
+                  <Text style={styles.followUpDoneText}>{c.markCompleted}</Text>
                 </Pressable>
                 <Pressable onPress={openEditPerson} disabled={busy !== null} style={[styles.followUpEdit, busy !== null && styles.disabled]}>
-                  <Text style={styles.followUpEditText}>Edit reminder</Text>
+                  <Text style={styles.followUpEditText}>{c.editReminder}</Text>
                 </Pressable>
               </View>
             </View>
           ) : (
-            <Text style={styles.followUpComplete}>No open follow-up.</Text>
+            <Text style={styles.followUpComplete}>{c.noFollowUp}</Text>
           )}
         </Card>
 
         <Card>
-          <Label text="MEMORY BRIEFING · LOCAL PREVIEW" />
-          <Text style={styles.cardTitle}>Who was this person?</Text>
+          <Label text={c.briefingLabel} />
+          <Text style={styles.cardTitle}>{c.whoPerson}</Text>
           <Text style={styles.body}>
-            {briefing || 'Build a quick briefing from the memories already saved for this person.'}
+            {briefingText || c.briefingHelp}
           </Text>
-          <OutlineAction label="Generate briefing" onPress={() => setBriefing(buildMemoryBriefing(selected))} />
+          <OutlineAction label={c.generateBriefing} onPress={() => setBriefing(buildMemoryBriefing(selected, new Date(), locale))} />
         </Card>
 
         <Card>
-          <Label text="NEW INTERACTION" />
+          <Label text={c.newInteraction} />
           <TextInput
+            accessibilityLabel={c.interactionPlaceholder}
             value={interactionText}
             onChangeText={setInteractionText}
             multiline
-            placeholder="What happened? What should you remember?"
-            placeholderTextColor="#727D89"
+            placeholder={c.interactionPlaceholder}
+            placeholderTextColor={theme.colors.textMuted}
             style={[styles.input, styles.multiline]}
           />
-          <Action label="Add interaction" onPress={() => void addInteraction()} disabled={!interactionText.trim() || busy !== null} />
+          <Action label={c.addInteraction} onPress={() => void addInteraction()} disabled={!interactionText.trim() || busy !== null} />
         </Card>
 
         <PersonHistory key={selected.id} interactions={selected.interactions} completed={selected.followUpHistory ?? []} />
@@ -939,49 +951,50 @@ export default function App() {
     <Page key="home" saveState={saveState} busy={busy !== null}>
       <View style={styles.hero}>
         <View style={styles.heroTop}>
-          <Text style={styles.brand}>AI MEMORY</Text>
+          <Text style={styles.brand}>{c.brand}</Text>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Open settings"
+            accessibilityLabel={c.openSettings}
             onPress={openSettings}
             style={styles.settingsButton}
           >
             <Text style={styles.settingsIcon}>⚙</Text>
           </Pressable>
         </View>
-        <Text style={styles.title}>Remember people. Remember context.</Text>
-        <Text style={styles.sub}>Your private social memory layer for conversations and follow-ups.</Text>
+        <Text style={styles.title}>{c.heroTitle}</Text>
+        <Text style={styles.sub}>{c.heroHelp}</Text>
       </View>
 
       <View style={styles.stats}>
-        <Stat value={people.length} label="People" />
-        <Stat value={people.reduce((sum, p) => sum + p.interactions.length, 0)} label="Interactions" />
-        <Stat value={openFollowUps.length} label="Open follow-ups" />
+        <Stat value={people.length} label={c.people} />
+        <Stat value={people.reduce((sum, p) => sum + p.interactions.length, 0)} label={c.interactions} />
+        <Stat value={openFollowUps.length} label={c.openFollowUps} />
       </View>
 
       <Card>
-        <Label text="SEARCH YOUR MEMORY" />
+        <Label text={c.searchLabel} />
         <TextInput
+          accessibilityLabel={c.searchLabel}
           value={query}
           onChangeText={setQuery}
-          placeholder="Name, company, note or conversation..."
-          placeholderTextColor="#727D89"
+          placeholder={c.searchPlaceholder}
+          placeholderTextColor={theme.colors.textMuted}
           style={styles.input}
         />
       </Card>
 
       {!query.trim() && <DailyBriefingCard people={people} onOpenPerson={openPerson} />}
-      <OutlineAction label={lifeAdminCopy(Intl.DateTimeFormat().resolvedOptions().locale).title} onPress={() => { setLifeTarget(undefined); setScreen('life'); }} />
-      <OutlineAction label={assistantCopy(Intl.DateTimeFormat().resolvedOptions().locale).title} onPress={() => setScreen('assistant')} />
-      {NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label={notebookEn.title} onPress={() => setScreen('notebook')} />}
+      <OutlineAction label={copy.lifeAdmin.title} onPress={() => { setLifeTarget(undefined); setScreen('life'); }} />
+      <OutlineAction label={copy.assistant.title} onPress={() => setScreen('assistant')} />
+      {NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label={c.notebookTitle} onPress={() => setScreen('notebook')} />}
 
       <View style={styles.sectionHeader}>
         <View>
-          <Text style={styles.sectionTitle}>People</Text>
-          <Text style={styles.muted}>{filtered.length} matching memories</Text>
+          <Text style={styles.sectionTitle}>{c.people}</Text>
+          <Text style={styles.muted}>{c.matchingMemories(filtered.length)}</Text>
         </View>
         <Pressable style={[styles.addButton, busy !== null && styles.disabled]} onPress={openAddPerson} disabled={busy !== null}>
-          <Text style={styles.addButtonText}>+ Add person</Text>
+          <Text style={styles.addButtonText}>{c.addPersonButton}</Text>
         </Pressable>
       </View>
 
@@ -993,40 +1006,40 @@ export default function App() {
             <Text style={styles.personMeta}>
               {[person.role, person.company].filter(Boolean).join(' · ') || person.relationship}
             </Text>
-            {person.phone ? <Text style={styles.muted}>Phone: {person.phone}</Text> : null}
+            {person.phone ? <Text style={styles.muted}>{c.phonePrefix} {person.phone}</Text> : null}
             {(person.role || person.company) && person.relationship ? (
               <Text style={styles.muted}>{person.relationship}</Text>
             ) : null}
             {person.notes[0] ? <Text style={styles.body} numberOfLines={2}>{person.notes[0]}</Text> : null}
             {person.followUp ? (
               <View>
-                <Text style={styles.followUpLabel}>NEXT STEP</Text>
+                <Text style={styles.followUpLabel}>{c.nextStep}</Text>
                 <Text style={styles.body} numberOfLines={2}>{person.followUp.text}</Text>
-                <Text style={styles.muted}>{formatReminder(person.followUp.reminderAt)}</Text>
+                <Text style={styles.muted}>{formatReminder(person.followUp.reminderAt, c, locale)}</Text>
               </View>
             ) : null}
-            <Text style={styles.muted}>{person.notes.length} {person.notes.length === 1 ? 'note' : 'notes'} · {person.interactions.length} {person.interactions.length === 1 ? 'interaction' : 'interactions'}</Text>
-            <Text style={styles.muted}>{personHistoryEn.latest}{person.interactions.length
-                ? formatInteractionDate(latestDatedInteraction(person.interactions)?.date)
-                : personHistoryEn.noInteractions}</Text>
+            <Text style={styles.muted}>{c.recordCounts(person.notes.length, person.interactions.length)}</Text>
+            <Text style={styles.muted}>{c.latest}{person.interactions.length
+                ? formatInteractionDate(latestDatedInteraction(person.interactions)?.date, locale)
+                : c.noInteractions}</Text>
           </View>
           <Text style={styles.chevron}>›</Text>
         </Pressable>
       ))}
 
-      {!filtered.length ? <Card><Text style={styles.muted}>No memories found.</Text></Card> : null}
+      {!filtered.length ? <Card><Text style={styles.muted}>{c.noMemories}</Text></Card> : null}
 
       <Card>
-        <Label text="FOLLOW-UPS" />
+        <Label text={c.followUps} />
         <Text style={styles.cardTitle}>
           {openFollowUps.length
-            ? `${openFollowUps.length} open follow-up${openFollowUps.length === 1 ? '' : 's'}.`
-            : 'You are caught up.'}
+            ? c.openFollowUpCount(openFollowUps.length)
+            : c.caughtUp}
         </Text>
         <Text style={styles.body}>
           {openFollowUps.length
-            ? 'Overdue and time-sensitive follow-ups are shown first.'
-            : 'No open follow-ups right now. Add one from any person profile.'}
+            ? c.followUpsHelp
+            : c.noFollowUpsHelp}
         </Text>
 
         {openFollowUps.slice(0, 3).map((person) => (
@@ -1046,11 +1059,11 @@ export default function App() {
                   styles.todayStatus,
                   reminderStatus(person.followUp?.reminderAt) === 'OVERDUE' && styles.todayStatusOverdue,
                 ]}>
-                  {reminderStatus(person.followUp?.reminderAt)}
+                  {c.reminderStatuses[reminderStatus(person.followUp?.reminderAt)]}
                 </Text>
               </View>
               <Text style={styles.todayText} numberOfLines={2}>{person.followUp?.text}</Text>
-              <Text style={styles.todayReminder}>{formatReminder(person.followUp?.reminderAt)}</Text>
+              <Text style={styles.todayReminder}>{formatReminder(person.followUp?.reminderAt, c, locale)}</Text>
             </View>
             <Text style={styles.todayChevron}>›</Text>
           </Pressable>
@@ -1059,14 +1072,14 @@ export default function App() {
         {recentMemory ? (
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel={`Open recent memory for ${recentMemory.person.name}`}
+            accessibilityLabel={c.openRecent(recentMemory.person.name)}
             onPress={() => openPerson(recentMemory.person.id)}
             style={styles.recentMemory}
           >
-            <Text style={styles.recentLabel}>{recentMemory.dated ? personHistoryEn.recentDated : personHistoryEn.recentUndated}</Text>
+            <Text style={styles.recentLabel}>{recentMemory.dated ? c.recentDated : c.recentUndated}</Text>
             <Text style={styles.recentName}>{recentMemory.person.name}</Text>
             <Text style={styles.recentText} numberOfLines={3}>{recentMemory.interaction.summary}</Text>
-            <Text style={styles.recentDate}>{formatInteractionDate(recentMemory.interaction.date)}</Text>
+            <Text style={styles.recentDate}>{formatInteractionDate(recentMemory.interaction.date, locale)}</Text>
           </Pressable>
         ) : null}
       </Card>
@@ -1075,41 +1088,36 @@ export default function App() {
 }
 
 function Page({ children, saveState, busy = false }: { children: React.ReactNode; saveState?: PeopleSaveState; busy?: boolean }) {
+  const styles = useAppStyles();
+  const { copy } = useI18n();
+  const c = copy.app;
+  const insets = useSafeAreaInsets();
   return (
-    <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="light-content" />
-      <ScrollView
-        contentContainerStyle={styles.container}
+    <View style={styles.safe}>      <ScrollView
+        contentContainerStyle={[styles.container, { paddingTop: insets.top + 12, paddingBottom: insets.bottom + 24 }]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {busy && <Text accessibilityRole="alert" style={styles.muted}>Updating person…</Text>}
+        {busy && <Text accessibilityRole="alert" style={styles.muted}>{c.updating}</Text>}
         {children}
       </ScrollView>
       {saveState && <MemorySaveNotice {...saveState} />}
-    </SafeAreaView>
+    </View>
   );
 }
 
 function Card({ children }: { children: React.ReactNode }) {
+  const styles = useAppStyles();
   return <View style={styles.card}>{children}</View>;
 }
 
 function Back({ onPress }: { onPress: () => void }) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel="Back to people"
-      onPress={onPress}
-      style={styles.backButton}
-      hitSlop={8}
-    >
-      <Text style={styles.back}>‹ People</Text>
-    </Pressable>
-  );
+  const { copy } = useI18n();
+  return <AppHeader onBack={onPress} backLabel={copy.app.people} accessibilityLabel={copy.app.backPeople} />;
 }
 
 function Label({ text }: { text: string }) {
+  const styles = useAppStyles();
   return <Text style={styles.label}>{text}</Text>;
 }
 
@@ -1121,17 +1129,22 @@ function Field({ label, value, onChange, multiline = false, keyboardType = 'defa
   keyboardType?: 'default' | 'phone-pad';
   editable?: boolean;
 }) {
+  const styles = useAppStyles();
+  const { copy, locale } = useI18n();
+  const c = copy.app;
+  const { theme } = useTheme();
   return (
     <View style={styles.field}>
       <Label text={label} />
       <TextInput
         value={value}
+        accessibilityLabel={label}
         editable={editable}
         onChangeText={onChange}
         multiline={multiline}
         keyboardType={keyboardType}
-        placeholder={`Enter ${label.toLowerCase().replace(' *', '')}`}
-        placeholderTextColor="#727D89"
+        placeholder={c.enterField(label.toLocaleLowerCase(locale).replace(' *', ''))}
+        placeholderTextColor={theme.colors.textMuted}
         style={[styles.input, multiline && styles.multiline]}
       />
     </View>
@@ -1139,6 +1152,7 @@ function Field({ label, value, onChange, multiline = false, keyboardType = 'defa
 }
 
 function ReminderChip({ label, onPress }: { label: string; onPress: () => void }) {
+  const styles = useAppStyles();
   return (
     <Pressable onPress={onPress} style={styles.reminderChip}>
       <Text style={styles.reminderChipText}>{label}</Text>
@@ -1147,6 +1161,7 @@ function ReminderChip({ label, onPress }: { label: string; onPress: () => void }
 }
 
 function Action({ label, onPress, disabled = false }: { label: string; onPress: () => void; disabled?: boolean }) {
+  const styles = useAppStyles();
   return (
     <Pressable onPress={onPress} disabled={disabled} style={[styles.action, disabled && styles.disabled]}>
       <Text style={styles.actionText}>{label}</Text>
@@ -1163,6 +1178,7 @@ function OutlineAction({
   onPress: () => void;
   disabled?: boolean;
 }) {
+  const styles = useAppStyles();
   return (
     <Pressable onPress={onPress} disabled={disabled} style={[styles.outline, disabled && styles.disabled]}>
       <Text style={styles.outlineText}>{label}</Text>
@@ -1171,6 +1187,7 @@ function OutlineAction({
 }
 
 function MiniAction({ label, onPress, danger = false, disabled = false }: { label: string; onPress: () => void; danger?: boolean; disabled?: boolean }) {
+  const styles = useAppStyles();
   return (
     <Pressable onPress={onPress} disabled={disabled} style={[styles.miniAction, danger && styles.miniActionDanger, disabled && styles.disabled]}>
       <Text style={[styles.miniActionText, danger && styles.miniActionTextDanger]}>{label}</Text>
@@ -1179,129 +1196,139 @@ function MiniAction({ label, onPress, danger = false, disabled = false }: { labe
 }
 
 function Stat({ value, label }: { value: number; label: string }) {
+  const styles = useAppStyles();
   return <View style={styles.stat}><Text style={styles.statValue}>{value}</Text><Text style={styles.muted}>{label}</Text></View>;
 }
 
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0B0F14' },
-  container: { padding: 20, paddingTop: SCREEN_TOP_PADDING, paddingBottom: 72, gap: 12 },
-  flex: { flex: 1 },
-  hero: { marginTop: 10, marginBottom: 8 },
-  heroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44, marginBottom: 4 },
-  brand: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', letterSpacing: 2 },
-  settingsButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#121820',
-    borderWidth: 1,
-    borderColor: '#293541',
-  },
-  settingsIcon: { color: '#AAB5BE', fontSize: 21, fontWeight: '900' },
-  title: { color: '#F4F7FA', fontSize: 34, lineHeight: 40, fontWeight: '800' },
-  titleSmall: { color: '#F4F7FA', fontSize: 30, fontWeight: '800', marginTop: 10 },
-  sub: { color: '#98A3AF', fontSize: 15, lineHeight: 22, marginTop: 8 },
-  subCenter: { color: '#A6B0BA', fontSize: 14, marginTop: 5, textAlign: 'center' },
-  muted: { color: '#9BA7B3', fontSize: 12, lineHeight: 18 },
-  mutedCenter: { color: '#9BA7B3', fontSize: 12, marginTop: 5, textAlign: 'center' },
-  card: { backgroundColor: '#121820', borderRadius: 20, borderWidth: 1, borderColor: '#202B36', padding: 16, marginTop: 2 },
-  label: { color: '#7DE2C3', fontSize: 10, fontWeight: '900', letterSpacing: 1.2, marginBottom: 8 },
-  cardTitle: { color: '#F4F7FA', fontSize: 18, fontWeight: '800' },
-  body: { color: '#A5AFB9', fontSize: 14, lineHeight: 21, marginTop: 8 },
-  input: { backgroundColor: '#0E141B', borderRadius: 14, borderWidth: 1, borderColor: '#293541', color: '#F4F7FA', fontSize: 15, paddingHorizontal: 13, paddingVertical: 12 },
-  multiline: { minHeight: 90, textAlignVertical: 'top' },
-  multilineSmall: { minHeight: 70, textAlignVertical: 'top', marginTop: 10 },
-  field: { marginBottom: 14 },
-  action: { backgroundColor: '#7DE2C3', borderRadius: 14, alignItems: 'center', paddingVertical: 14, marginTop: 10 },
-  disabled: { opacity: 0.35 },
-  actionText: { color: '#07100D', fontWeight: '900', fontSize: 14 },
-  outline: { borderRadius: 14, borderWidth: 1, borderColor: '#3E6A5E', alignItems: 'center', paddingVertical: 13, marginTop: 12 },
-  outlineText: { color: '#7DE2C3', fontWeight: '800' },
-  backButton: { alignSelf: 'flex-start', minHeight: 44, justifyContent: 'center' },
-  back: { color: '#7DE2C3', fontSize: 15, fontWeight: '800', paddingVertical: 8 },
-  stats: { flexDirection: 'row', gap: 9 },
-  stat: { flex: 1, backgroundColor: '#111820', borderRadius: 16, borderWidth: 1, borderColor: '#202A34', padding: 13 },
-  statValue: { color: '#F4F7FA', fontSize: 22, fontWeight: '900', marginBottom: 3 },
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 14, gap: 10 },
-  sectionTitle: { color: '#F4F7FA', fontSize: 22, fontWeight: '800' },
-  addButton: { backgroundColor: '#7DE2C3', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 9 },
-  addButtonText: { color: '#07100D', fontWeight: '900', fontSize: 12 },
-  personCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#111820', borderRadius: 18, borderWidth: 1, borderColor: '#1E2933', padding: 14 },
-  avatar: { width: 46, height: 46, borderRadius: 15, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  avatarText: { color: '#7DE2C3', fontWeight: '900', fontSize: 19 },
-  personName: { color: '#F4F7FA', fontSize: 16, fontWeight: '800' },
-  personMeta: { color: '#A7B0BA', fontSize: 13, marginTop: 3, marginBottom: 4 },
-  chevron: { color: '#66727E', fontSize: 27, marginLeft: 8 },
-  profile: { alignItems: 'center', paddingVertical: 18 },
-  avatarLarge: { width: 76, height: 76, borderRadius: 24, backgroundColor: '#19302B', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  avatarTextLarge: { color: '#7DE2C3', fontSize: 31, fontWeight: '900' },
-  profileName: { color: '#F4F7FA', fontSize: 27, fontWeight: '900', textAlign: 'center' },
-  contactActions: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 14 },
-  profileActions: { flexDirection: 'row', gap: 8, marginTop: 14 },
-  miniAction: { borderRadius: 999, borderWidth: 1, borderColor: '#355348', paddingHorizontal: 15, paddingVertical: 7 },
-  miniActionDanger: { borderColor: '#5B3437' },
-  miniActionText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
-  miniActionTextDanger: { color: '#F18B91' },
-  note: { color: '#BCC5CE', fontSize: 14, lineHeight: 21, marginBottom: 7 },
-  followUp: { backgroundColor: '#10251F', borderRadius: 14, padding: 13, marginTop: 12 },
-  followUpTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  followUpLabel: { color: '#67D9B6', fontSize: 9, fontWeight: '900', letterSpacing: 1.2, marginBottom: 5 },
-  followUpStatus: { color: '#7DE2C3', fontSize: 9, fontWeight: '900', letterSpacing: 0.8 },
-  followUpStatusOverdue: { color: '#F18B91' },
-  followUpText: { color: '#D9F5EC', lineHeight: 20 },
-  followUpReminder: { color: '#8FB4A9', fontSize: 11, fontWeight: '800', marginTop: 8 },
-  followUpActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10 },
-  followUpDone: { borderRadius: 10, borderWidth: 1, borderColor: '#315B4F', paddingHorizontal: 10, paddingVertical: 7 },
-  followUpDoneText: { color: '#7DE2C3', fontSize: 11, fontWeight: '900' },
-  followUpEdit: { borderRadius: 10, borderWidth: 1, borderColor: '#293541', paddingHorizontal: 10, paddingVertical: 7 },
-  followUpEditText: { color: '#AAB5BE', fontSize: 11, fontWeight: '900' },
-  followUpComplete: { color: '#9BA7B3', fontSize: 12, marginTop: 12 },
-  reminderBox: { backgroundColor: '#0E151B', borderRadius: 16, borderWidth: 1, borderColor: '#24323C', padding: 13, marginTop: 2, marginBottom: 8 },
-  reminderHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  reminderValue: { color: '#D9F5EC', fontSize: 13, fontWeight: '800', marginTop: 2 },
-  reminderChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 10 },
-  reminderChip: { backgroundColor: '#13231F', borderRadius: 999, borderWidth: 1, borderColor: '#315B4F', paddingHorizontal: 10, paddingVertical: 8 },
-  reminderChipText: { color: '#7DE2C3', fontSize: 11, fontWeight: '800' },
-  clearReminder: { paddingHorizontal: 8, paddingVertical: 6 },
-  clearReminderText: { color: '#F18B91', fontSize: 11, fontWeight: '800' },
-  pickerWrap: { backgroundColor: '#0B0F14', borderRadius: 14, marginTop: 10, overflow: 'hidden' },
-  pickerDone: { alignSelf: 'flex-end', paddingHorizontal: 14, paddingVertical: 9 },
-  pickerDoneText: { color: '#7DE2C3', fontWeight: '900' },
-  historyCard: { backgroundColor: '#10171E', borderRadius: 17, borderWidth: 1, borderColor: '#1D2832', padding: 15 },
-  historyDate: { color: '#7DE2C3', fontSize: 11, fontWeight: '900', marginBottom: 6 },
-  historyText: { color: '#C0C9D2', lineHeight: 20 },
-  source: { color: '#66727E', fontSize: 9, marginTop: 8, fontWeight: '800' },
-  todayRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#0E151B',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#223039',
-    padding: 12,
-    marginTop: 10,
-  },
-  todayDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#7DE2C3', marginRight: 11 },
-  todayDotOverdue: { backgroundColor: '#F18B91' },
-  todayTopRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
-  todayName: { color: '#E9EEF2', fontSize: 13, fontWeight: '900' },
-  todayStatus: { color: '#7DE2C3', fontSize: 9, fontWeight: '900', letterSpacing: 0.6 },
-  todayStatusOverdue: { color: '#F18B91' },
-  todayText: { color: '#8E9AA5', fontSize: 12, lineHeight: 18, marginTop: 3 },
-  todayReminder: { color: '#668F83', fontSize: 10, fontWeight: '800', marginTop: 5 },
-  todayChevron: { color: '#66727E', fontSize: 24, marginLeft: 8 },
-  recentMemory: {
-    backgroundColor: '#10251F',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#315B4F',
-    padding: 13,
-    marginTop: 12,
-  },
-  recentLabel: { color: '#67D9B6', fontSize: 9, fontWeight: '900', letterSpacing: 1.2 },
-  recentName: { color: '#E7F8F2', fontSize: 14, fontWeight: '900', marginTop: 6 },
-  recentText: { color: '#9FC2B8', fontSize: 12, lineHeight: 18, marginTop: 4 },
-  recentDate: { color: '#668F83', fontSize: 10, fontWeight: '800', marginTop: 8 },
-});
+type AppTheme = ReturnType<typeof useTheme>['theme'];
+
+function useAppStyles() {
+  const { theme } = useTheme();
+  return useMemo(() => createStyles(theme), [theme]);
+}
+
+function createStyles(theme: AppTheme) {
+  return StyleSheet.create({
+    safe: { flex: 1, backgroundColor: theme.colors.background },
+    container: { paddingHorizontal: theme.metrics.screenGutter, gap: theme.spacing.md },
+    flex: { flex: 1 },
+    hero: { marginTop: 10, marginBottom: 8 },
+    heroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: theme.metrics.controlMinHeight, marginBottom: 4 },
+    brand: { color: theme.colors.accent, fontSize: 12, fontWeight: '900', letterSpacing: 2 },
+    settingsButton: {
+      width: theme.metrics.controlMinHeight,
+      height: theme.metrics.controlMinHeight,
+      borderRadius: theme.radii.control,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.colors.surface,
+      borderWidth: 1,
+      borderColor: theme.colors.controlBorder,
+    },
+    settingsIcon: { color: theme.colors.textSecondary, fontSize: 21, fontWeight: '900' },
+    title: { ...theme.typography.hero, color: theme.colors.text, fontWeight: '800' },
+    titleSmall: { ...theme.typography.title, color: theme.colors.text, fontWeight: '800', marginTop: 10 },
+    sub: { ...theme.typography.body, color: theme.colors.textSecondary, marginTop: 8 },
+    subCenter: { ...theme.typography.body, color: theme.colors.textSecondary, marginTop: 5, textAlign: 'center' },
+    muted: { ...theme.typography.meta, color: theme.colors.textMuted, },
+    mutedCenter: { ...theme.typography.meta, color: theme.colors.textMuted, marginTop: 5, textAlign: 'center' },
+    card: { backgroundColor: theme.colors.surface, borderRadius: theme.radii.card, borderWidth: 1, borderColor: theme.colors.border, padding: theme.metrics.cardPadding, marginTop: 2 },
+    label: { color: theme.colors.accent, fontSize: 10, fontWeight: '900', letterSpacing: 1.2, marginBottom: 8 },
+    cardTitle: { ...theme.typography.section, color: theme.colors.text, fontWeight: '800' },
+    body: { ...theme.typography.body, color: theme.colors.textSecondary, marginTop: 8 },
+    input: { ...theme.typography.body, minHeight: theme.metrics.controlMinHeight, backgroundColor: theme.colors.input, borderRadius: theme.radii.control, borderWidth: 1, borderColor: theme.colors.controlBorder, color: theme.colors.text, paddingHorizontal: 13, paddingVertical: 12 },
+    multiline: { minHeight: 90, textAlignVertical: 'top' },
+    multilineSmall: { minHeight: 70, textAlignVertical: 'top', marginTop: 10 },
+    field: { marginBottom: 14 },
+    action: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', backgroundColor: theme.colors.accent, borderRadius: theme.radii.control, alignItems: 'center', paddingVertical: 14, marginTop: 10 },
+    disabled: { opacity: 0.35 },
+    actionText: { ...theme.typography.body, color: theme.colors.onAccent, fontWeight: '900', },
+    outline: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', borderRadius: theme.radii.control, borderWidth: 1, borderColor: theme.colors.controlBorder, alignItems: 'center', paddingVertical: 13, marginTop: 12 },
+    outlineText: { ...theme.typography.body, color: theme.colors.accent, fontWeight: '800' },
+    backButton: { alignSelf: 'flex-start', minHeight: theme.metrics.controlMinHeight, justifyContent: 'center' },
+    back: { color: theme.colors.accent, fontSize: 15, fontWeight: '800', paddingVertical: 8 },
+    stats: { flexDirection: 'row', gap: 9 },
+    stat: { flex: 1, backgroundColor: theme.colors.surface, borderRadius: 16, borderWidth: 1, borderColor: theme.colors.border, padding: 13 },
+    statValue: { ...theme.typography.section, color: theme.colors.text, fontWeight: '900', marginBottom: 3 },
+    sectionHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 14, gap: 10 },
+    sectionTitle: { ...theme.typography.section, color: theme.colors.text, fontWeight: '800' },
+    addButton: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', backgroundColor: theme.colors.accent, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 9 },
+    addButtonText: { color: theme.colors.onAccent, fontWeight: '900', fontSize: 12 },
+    personCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.colors.surface, borderRadius: theme.radii.card, borderWidth: 1, borderColor: theme.colors.border, padding: theme.metrics.cardPadding },
+    avatar: { width: 46, height: 46, borderRadius: 15, backgroundColor: theme.colors.successSurface, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+    avatarText: { color: theme.colors.accent, fontWeight: '900', fontSize: 19 },
+    personName: { ...theme.typography.body, color: theme.colors.text, fontWeight: '800' },
+    personMeta: { ...theme.typography.meta, color: theme.colors.textSecondary, marginTop: 3, marginBottom: 4 },
+    chevron: { color: theme.colors.textMuted, fontSize: 27, marginLeft: 8 },
+    profile: { alignItems: 'center', paddingVertical: 18 },
+    avatarLarge: { width: 76, height: 76, borderRadius: 24, backgroundColor: theme.colors.successSurface, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
+    avatarTextLarge: { color: theme.colors.accent, fontSize: 31, fontWeight: '900' },
+    profileName: { ...theme.typography.title, color: theme.colors.text, fontWeight: '900', textAlign: 'center' },
+    contactActions: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8, marginTop: 14 },
+    profileActions: { flexDirection: 'row', gap: 8, marginTop: 14 },
+    miniAction: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', borderRadius: theme.radii.pill, borderWidth: 1, borderColor: theme.colors.controlBorder, paddingHorizontal: 15, paddingVertical: 7 },
+    miniActionDanger: { borderColor: theme.colors.danger },
+    miniActionText: { ...theme.typography.meta, color: theme.colors.accent, fontWeight: '900' },
+    miniActionTextDanger: { color: theme.colors.danger },
+    note: { ...theme.typography.body, color: theme.colors.textSecondary, marginBottom: 7 },
+    followUp: { backgroundColor: theme.colors.successSurface, borderRadius: theme.radii.control, padding: 13, marginTop: 12 },
+    followUpTopRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+    followUpLabel: { ...theme.typography.meta, color: theme.colors.accent, fontWeight: '900', letterSpacing: 1.2, marginBottom: 5 },
+    followUpStatus: { ...theme.typography.meta, color: theme.colors.accent, fontWeight: '900', letterSpacing: 0.8 },
+    followUpStatusOverdue: { color: theme.colors.danger },
+    followUpText: { ...theme.typography.body, color: theme.colors.text, },
+    followUpReminder: { ...theme.typography.meta, color: theme.colors.textSecondary, fontWeight: '800', marginTop: 8 },
+    followUpActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginTop: 10 },
+    followUpDone: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', borderRadius: 10, borderWidth: 1, borderColor: theme.colors.controlBorder, paddingHorizontal: 10, paddingVertical: 7 },
+    followUpDoneText: { ...theme.typography.meta, color: theme.colors.accent, fontWeight: '900' },
+    followUpEdit: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', borderRadius: 10, borderWidth: 1, borderColor: theme.colors.controlBorder, paddingHorizontal: 10, paddingVertical: 7 },
+    followUpEditText: { ...theme.typography.meta, color: theme.colors.textSecondary, fontWeight: '900' },
+    followUpComplete: { ...theme.typography.meta, color: theme.colors.textMuted, marginTop: 12 },
+    reminderBox: { backgroundColor: theme.colors.input, borderRadius: 16, borderWidth: 1, borderColor: theme.colors.border, padding: 13, marginTop: 2, marginBottom: 8 },
+    reminderHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
+    reminderValue: { ...theme.typography.body, color: theme.colors.text, fontWeight: '800', marginTop: 2 },
+    reminderChips: { flexDirection: 'row', flexWrap: 'wrap', gap: 7, marginTop: 10 },
+    reminderChip: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', backgroundColor: theme.colors.successSurface, borderRadius: theme.radii.pill, borderWidth: 1, borderColor: theme.colors.controlBorder, paddingHorizontal: 10, paddingVertical: 8 },
+    reminderChipText: { ...theme.typography.meta, color: theme.colors.accent, fontWeight: '800' },
+    clearReminder: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', paddingHorizontal: 8, paddingVertical: 6 },
+    clearReminderText: { ...theme.typography.meta, color: theme.colors.danger, fontWeight: '800' },
+    pickerWrap: { backgroundColor: theme.colors.background, borderRadius: theme.radii.control, marginTop: 10, overflow: 'hidden' },
+    pickerDone: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', alignSelf: 'flex-end', paddingHorizontal: 14, paddingVertical: 9 },
+    pickerDoneText: { color: theme.colors.accent, fontWeight: '900' },
+    historyCard: { backgroundColor: theme.colors.surface, borderRadius: 17, borderWidth: 1, borderColor: theme.colors.border, padding: 15 },
+    historyDate: { color: theme.colors.accent, fontSize: 11, fontWeight: '900', marginBottom: 6 },
+    historyText: { color: theme.colors.textSecondary, lineHeight: 20 },
+    source: { color: theme.colors.textMuted, fontSize: 9, marginTop: 8, fontWeight: '800' },
+    todayRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.colors.input,
+      borderRadius: theme.radii.control,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      padding: 12,
+      marginTop: 10,
+    },
+    todayDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: theme.colors.accent, marginRight: 11 },
+    todayDotOverdue: { backgroundColor: theme.colors.danger },
+    todayTopRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
+    todayName: { ...theme.typography.body, color: theme.colors.text, fontWeight: '900' },
+    todayStatus: { ...theme.typography.meta, color: theme.colors.accent, fontWeight: '900', letterSpacing: 0.6 },
+    todayStatusOverdue: { color: theme.colors.danger },
+    todayText: { ...theme.typography.meta, color: theme.colors.textSecondary, marginTop: 3 },
+    todayReminder: { ...theme.typography.meta, color: theme.colors.textMuted, fontWeight: '800', marginTop: 5 },
+    todayChevron: { color: theme.colors.textMuted, fontSize: 24, marginLeft: 8 },
+    recentMemory: {
+      backgroundColor: theme.colors.successSurface,
+      borderRadius: 15,
+      borderWidth: 1,
+      borderColor: theme.colors.controlBorder,
+      padding: 13,
+      marginTop: 12,
+    },
+    recentLabel: { ...theme.typography.meta, color: theme.colors.accent, fontWeight: '900', letterSpacing: 1.2 },
+    recentName: { ...theme.typography.body, color: theme.colors.text, fontWeight: '900', marginTop: 6 },
+    recentText: { ...theme.typography.meta, color: theme.colors.textSecondary, marginTop: 4 },
+    recentDate: { ...theme.typography.meta, color: theme.colors.textMuted, fontWeight: '800', marginTop: 8 },
+  });
+}

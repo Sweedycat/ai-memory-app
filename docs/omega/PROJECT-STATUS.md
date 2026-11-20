@@ -11,7 +11,7 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |
 | V3-F | BLOCKED | Commercial and broader product readiness | Close encryption/recovery/localization/design/device blockers. |
 
-B2 App/provider/theme/preferences/dependency WIP preserved and unverified. Life records and six grounded local questions already exist (E2-01/E3-01); old absence claims are archived. Notebook remains false. Sensitive local plaintext is a critical commercial blocker.
+B2 App/provider/theme/preferences/dependency implementation is frozen; scoped checks passed, integrated/review/release/device gates pending. Life records and six grounded local questions already exist (E2-01/E3-01); old absence claims are archived. Notebook remains false. Sensitive local plaintext is a critical commercial blocker.
 ## Historical archive (superseded status snapshot)
 
 # Project status

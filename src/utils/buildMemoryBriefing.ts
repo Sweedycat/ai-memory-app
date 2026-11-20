@@ -1,9 +1,11 @@
 import { MemoryPerson, type MemoryInteraction } from '../types';
+import { generatedCopy } from '../i18n/catalogs/generated';
 import { formatInteractionDate, interactionInstant } from './interactionDates';
 
-export function buildMemoryBriefing(person: MemoryPerson, now = new Date()): string {
+export function buildMemoryBriefing(person: MemoryPerson, now = new Date(), locale = 'en'): string {
   if (!Number.isFinite(now.getTime())) throw new Error('Invalid briefing date');
-  const identity = [person.role, person.company].filter(Boolean).join(' at ');
+  const copy = generatedCopy(locale).briefing;
+  const identity = [person.role, person.company].filter(Boolean).join(copy.identitySeparator);
   let latest: MemoryInteraction | undefined, firstUndated: MemoryInteraction | undefined, firstFuture: MemoryInteraction | undefined;
   let latestTime = -Infinity;
   for (const item of person.interactions) {
@@ -12,19 +14,19 @@ export function buildMemoryBriefing(person: MemoryPerson, now = new Date()): str
     else if (time > now.getTime()) firstFuture ??= item;
     else if (time > latestTime) { latest = item; latestTime = time; }
   }
-  const interaction = latest ? `Last dated interaction (${formatInteractionDate(latest.date)}): ${latest.summary}`
-    : firstUndated ? `Saved interaction (date not recorded): ${firstUndated.summary}`
-      : firstFuture ? `Saved interaction (future date, needs review): ${firstFuture.summary}` : '';
+  const interaction = latest ? copy.dated(formatInteractionDate(latest.date, locale), latest.summary)
+    : firstUndated ? copy.undated(firstUndated.summary)
+      : firstFuture ? copy.future(firstFuture.summary) : '';
   const notes = person.notes.slice(0, 2).join(' ');
 
   const parts = [
-    `${person.name}${identity ? ` is ${identity}` : ''}.`,
-    person.relationship ? `Context: ${person.relationship}.` : '',
+    copy.identity(person.name, identity),
+    person.relationship ? copy.context(person.relationship) : '',
     interaction,
-    firstUndated ? 'Some interaction dates are not recorded; the latest interaction cannot be confirmed.' : '',
-    firstFuture ? 'Future-dated interactions need review.' : '',
-    notes ? `Remember: ${notes}` : '',
-    person.followUp && !person.followUp.completedAt ? `Next step: ${person.followUp.text}.` : '',
+    firstUndated ? copy.uncertainDates : '',
+    firstFuture ? copy.futureReview : '',
+    notes ? copy.remember(notes) : '',
+    person.followUp && !person.followUp.completedAt ? copy.nextStep(person.followUp.text) : '',
   ].filter(Boolean);
 
   return parts.join(' ');

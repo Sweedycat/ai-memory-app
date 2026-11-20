@@ -1,3 +1,7 @@
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useI18n } from '../i18n/LanguageProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {
   createContext,
@@ -12,8 +16,6 @@ import {
   AppState,
   AppStateStatus,
   Pressable,
-  SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -76,8 +78,12 @@ function normalizeSettings(value: unknown): PrivacySettings {
 }
 
 export function PrivacyGate({ children }: PrivacyGateProps) {
+  const { copy } = useI18n();
+  const c = copy.ui.gates;
+  const copyRef = useRef(c); copyRef.current = c;
+  const styles = useThemedStyles(createStyles);
   const [locked, setLocked] = useState(true);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<'' | 'noEnrollment' | 'authFailed' | 'authUnavailable'>('');
   const [settings, setSettings] = useState<PrivacySettings>(DEFAULT_SETTINGS);
   const [settingsReady, setSettingsReady] = useState(false);
 
@@ -165,21 +171,21 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
 
     try {
       const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Unlock AI Memory',
-        cancelLabel: 'Cancel',
-        fallbackLabel: 'Use device unlock',
+        promptMessage: copyRef.current.unlock,
+        cancelLabel: copyRef.current.cancel,
+        fallbackLabel: copyRef.current.deviceUnlock,
         disableDeviceFallback: false,
       });
 
       if (result.success) {
         applyLocked(false);
       } else if (result.error === 'not_enrolled') {
-        setMessage('Set up fingerprint, face unlock or a device screen lock first.');
+        setMessage("noEnrollment");
       } else if (result.error !== 'user_cancel' && result.error !== 'system_cancel') {
-        setMessage('Authentication failed. Try again.');
+        setMessage("authFailed");
       }
     } catch {
-      setMessage('Device authentication is not available right now.');
+      setMessage("authUnavailable");
     } finally {
       authenticating.current = false;
     }
@@ -196,9 +202,9 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
 
         try {
           const result = await LocalAuthentication.authenticateAsync({
-            promptMessage: 'Turn off AI Memory app lock',
-            cancelLabel: 'Cancel',
-            fallbackLabel: 'Use device unlock',
+            promptMessage: copyRef.current.disableLock,
+            cancelLabel: copyRef.current.cancel,
+            fallbackLabel: copyRef.current.deviceUnlock,
             disableDeviceFallback: false,
           });
 
@@ -354,10 +360,9 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   if (!settingsReady) {
     content = (
       <SafeAreaView style={styles.safe}>
-        <StatusBar barStyle="light-content" />
         <View style={styles.container}>
           <Text style={styles.brand}>AI MEMORY</Text>
-          <Text style={styles.body}>Preparing your privacy settings…</Text>
+          <Text style={styles.body}>{c.preparing}</Text>
         </View>
       </SafeAreaView>
     );
@@ -366,30 +371,27 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   } else {
     content = (
       <SafeAreaView style={styles.safe}>
-        <StatusBar barStyle="light-content" />
         <View style={styles.container}>
           <View style={styles.iconWrap} accessibilityElementsHidden>
             <Text style={styles.icon}>🔒</Text>
           </View>
           <Text style={styles.brand}>AI MEMORY</Text>
-          <Text style={styles.title}>Your memories are locked.</Text>
+          <Text style={styles.title}>{c.locked}</Text>
           <Text style={styles.body}>
-            Personal notes, conversations and follow-ups stay hidden until the phone owner authenticates.
-          </Text>
+            {c.lockedBody}</Text>
 
-          {message ? <Text style={styles.message}>{message}</Text> : null}
+          {message ? <Text style={styles.message}>{c[message]}</Text> : null}
 
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Unlock AI Memory"
+            accessibilityLabel={c.unlock}
             style={styles.button}
             onPress={() => void unlock()}
           >
-            <Text style={styles.buttonText}>Unlock privately</Text>
+            <Text style={styles.buttonText}>{c.unlockButton}</Text>
           </Pressable>
           <Text style={styles.caption}>
-            The app follows your selected privacy lock delay.
-          </Text>
+            {c.delayCaption}</Text>
         </View>
       </SafeAreaView>
     );
@@ -402,16 +404,16 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#0B0F14',
+    backgroundColor: theme.colors.background,
   },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 28,
+    paddingHorizontal: theme.metrics.screenGutter,
   },
   iconWrap: {
     width: 82,
@@ -419,61 +421,61 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#13231F',
+    backgroundColor: theme.colors.surfaceRaised,
     borderWidth: 1,
-    borderColor: '#315B4F',
+    borderColor: theme.colors.controlBorder,
     marginBottom: 24,
   },
   icon: {
     fontSize: 34,
   },
   brand: {
-    color: '#7DE2C3',
-    fontSize: 12,
+    color: theme.colors.accent,
+    fontSize: theme.typography.meta.fontSize,
     fontWeight: '900',
     letterSpacing: 2,
     marginBottom: 12,
   },
   title: {
-    color: '#F4F7FA',
-    fontSize: 29,
-    lineHeight: 35,
+    color: theme.colors.text,
+    fontSize: theme.typography.hero.fontSize,
+    lineHeight: theme.typography.hero.lineHeight,
     fontWeight: '900',
     textAlign: 'center',
   },
   body: {
-    color: '#98A3AF',
-    fontSize: 15,
-    lineHeight: 22,
+    color: theme.colors.textSecondary,
+    fontSize: theme.typography.body.fontSize,
+    lineHeight: theme.typography.body.lineHeight,
     textAlign: 'center',
     marginTop: 12,
     maxWidth: 380,
   },
   message: {
-    color: '#F2B8B5',
-    fontSize: 13,
-    lineHeight: 19,
+    color: theme.colors.danger,
+    fontSize: theme.typography.meta.fontSize,
+    lineHeight: theme.typography.meta.lineHeight,
     textAlign: 'center',
     marginTop: 18,
   },
   button: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: '#7DE2C3',
-    borderRadius: 16,
+    backgroundColor: theme.colors.accent,
+    borderRadius: theme.radii.control,
     alignItems: 'center',
     paddingVertical: 15,
     marginTop: 28,
   },
   buttonText: {
-    color: '#07100D',
+    color: theme.colors.onAccent,
     fontWeight: '900',
-    fontSize: 15,
+    fontSize: theme.typography.body.fontSize,
   },
   caption: {
-    color: '#66727E',
-    fontSize: 11,
-    lineHeight: 16,
+    color: theme.colors.textSecondary,
+    fontSize: theme.typography.meta.fontSize,
+    lineHeight: theme.typography.meta.lineHeight,
     textAlign: 'center',
     marginTop: 14,
   },

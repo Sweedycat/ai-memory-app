@@ -1,3 +1,6 @@
+import { useI18n } from '../i18n/LanguageProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
 import * as Application from 'expo-application';
 import * as IntentLauncher from 'expo-intent-launcher';
 import * as Notifications from 'expo-notifications';
@@ -22,9 +25,12 @@ const supportsExactAlarms =
  * provide AlarmManager.canScheduleExactAlarms() to JavaScript.
  */
 export function ReminderPermissionActions() {
+  const styles = useThemedStyles(createStyles);
+  const { copy: catalog, language } = useI18n();
+  const copy = catalog.ui.reminder;
   const [notificationGranted, setNotificationGranted] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState<'' | 'manageMessage' | 'enableMessage' | 'allowedMessage' | 'deniedMessage' | 'failedMessage' | 'identifyMessage' | 'reviewMessage' | 'alarmFailedMessage'>('');
 
   const refresh = useCallback(async () => {
     try {
@@ -50,25 +56,25 @@ export function ReminderPermissionActions() {
     try {
       // Android 13+ requires a notification channel before requesting permission.
       // Use the same follow-up channel as the actual reminder scheduler.
-      await ensurePrivateFollowUpChannel();
+      await ensurePrivateFollowUpChannel(language);
       const status = await Notifications.getPermissionsAsync();
       if (status.granted) {
         await Linking.openSettings();
-        setMessage('You can manage AI Memory notification settings here.');
+        setMessage('manageMessage');
       } else if (!status.canAskAgain) {
         await Linking.openSettings();
-        setMessage('Enable notifications for AI Memory in the phone settings.');
+        setMessage('enableMessage');
       } else {
         const response = await Notifications.requestPermissionsAsync();
         setNotificationGranted(response.granted);
         setMessage(
           response.granted
-            ? 'Notifications are allowed. You can now schedule a test reminder.'
-            : 'Notifications remain off. You can enable them in your phone settings.',
+            ? 'allowedMessage'
+            : 'deniedMessage',
         );
       }
     } catch {
-      setMessage('Could not open notification permissions. Open Settings > Apps > AI Memory > Notifications.');
+      setMessage('failedMessage');
     } finally {
       setBusy(false);
       await refresh();
@@ -82,7 +88,7 @@ export function ReminderPermissionActions() {
     try {
       const id = Application.applicationId;
       if (!id) {
-        setMessage('Could not identify this installation. Open phone Settings > Apps > Special access > Alarms & reminders.');
+        setMessage('identifyMessage');
         return;
       }
       await IntentLauncher.startActivityAsync(
@@ -90,10 +96,10 @@ export function ReminderPermissionActions() {
         { data: `package:${id}` },
       );
       setMessage(
-        'Review the Alarms & reminders switch in Android settings. Returning here does not confirm that access was granted.',
+        'reviewMessage',
       );
     } catch {
-      setMessage('Open phone Settings > Apps > Special access > Alarms & reminders and enable AI Memory.');
+      setMessage('alarmFailedMessage');
     } finally {
       setBusy(false);
     }
@@ -103,76 +109,72 @@ export function ReminderPermissionActions() {
     <View style={styles.wrap}>
       <View style={styles.row}>
         <View style={styles.flex}>
-          <Text style={styles.heading}>1. Notifications</Text>
+          <Text style={styles.heading}>{copy.heading}</Text>
           <Text style={styles.body}>
             {notificationGranted === true
-              ? 'Allowed: Android can display reminder notifications.'
+              ? copy.allowed
               : notificationGranted === false
-                ? 'Not allowed: reminders may not appear.'
-                : 'Checking your notification permission…'}
+                ? copy.denied
+                : copy.checking}
           </Text>
         </View>
       </View>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Allow or manage notifications"
+        accessibilityLabel={copy.allowLabel}
         disabled={busy}
         onPress={() => void allowNotifications()}
         style={[styles.button, busy && styles.disabled]}
       >
         <Text style={styles.buttonText}>
-          {notificationGranted ? 'Manage notification settings' : 'Allow notifications'}
+          {notificationGranted ? copy.manage : copy.allow}
         </Text>
       </Pressable>
 
       {supportsExactAlarms ? (
         <>
           <View style={styles.separator} />
-          <Text style={styles.heading}>2. Precise alarms and reminders</Text>
-          <Text style={styles.body}>
-            For more timely reminders, Android needs separate Alarms & reminders access.
-            Switch it on in the system screen. This is not the same as notification permission.
-          </Text>
+          <Text style={styles.heading}>{copy.alarmHeading}</Text>
+          <Text style={styles.body}>{copy.alarmBody}</Text>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Open Android alarms and reminders special access"
+            accessibilityLabel={copy.alarmLabel}
             disabled={busy}
             onPress={() => void openExactAlarmAccess()}
             style={[styles.button, busy && styles.disabled]}
           >
-            <Text style={styles.buttonText}>Open Alarms & reminders access</Text>
+            <Text style={styles.buttonText}>{copy.alarmOpen}</Text>
           </Pressable>
-          <Text style={styles.note}>
-            Android controls this permission. AI Memory cannot enable it for you
-            or confirm its current state here. Reminders may still be delayed by the system.
-          </Text>
+          <Text style={styles.note}>{copy.alarmNote}</Text>
         </>
       ) : null}
 
-      {message ? <Text accessibilityRole="alert" style={styles.message}>{message}</Text> : null}
+      {message ? <Text accessibilityRole="alert" style={styles.message}>{copy[message]}</Text> : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  wrap: { marginTop: 12 },
-  row: { flexDirection: 'row', gap: 10 },
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
+  wrap: { marginTop: theme.spacing.md },
+  row: { flexDirection: 'row', gap: theme.spacing.sm },
   flex: { flex: 1 },
-  heading: { color: '#F4F7FA', fontSize: 14, fontWeight: '900', marginBottom: 6 },
-  body: { color: '#98A3AF', fontSize: 12, lineHeight: 19 },
+  heading: { color: theme.colors.text, fontSize: theme.typography.meta.fontSize, fontWeight: '900', marginBottom: theme.spacing.sm },
+  body: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight },
   button: {
-    borderRadius: 13,
+    minHeight: theme.metrics.controlMinHeight,
+    justifyContent: 'center',
+    borderRadius: theme.radii.control,
     borderWidth: 1,
-    borderColor: '#4B8877',
-    backgroundColor: '#17352D',
-    paddingVertical: 12,
-    paddingHorizontal: 12,
+    borderColor: theme.colors.controlBorder,
+    backgroundColor: theme.colors.surfaceRaised,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
     alignItems: 'center',
     marginTop: 11,
   },
-  buttonText: { color: '#7DE2C3', fontSize: 12, fontWeight: '900', textAlign: 'center' },
+  buttonText: { color: theme.colors.accent, fontSize: theme.typography.meta.fontSize, fontWeight: '900', textAlign: 'center' },
   disabled: { opacity: 0.5 },
-  separator: { height: 1, backgroundColor: '#293541', marginVertical: 17 },
-  note: { color: '#8C98A4', fontSize: 11, lineHeight: 17, marginTop: 10 },
-  message: { color: '#E5C98F', fontSize: 12, lineHeight: 18, marginTop: 13 },
+  separator: { height: 1, backgroundColor: theme.colors.border, marginVertical: theme.metrics.cardPadding },
+  note: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight, marginTop: theme.spacing.sm },
+  message: { color: theme.colors.warning, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight, marginTop: 13 },
 });

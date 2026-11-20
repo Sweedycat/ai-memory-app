@@ -100,9 +100,15 @@ test('invalid stored phone type fails closed, instead of silently dropping or ov
 for (const [label, lineEnding] of [['LF', '\n'], ['CRLF', '\r\n']]) {
   test(`UI explains app-only phone and accurately discloses current local security (${label})`, () => {
     const app = fs.readFileSync(path.join(root, 'App.tsx'), 'utf8').replace(/\r?\n/g, lineEnding);
-    assert.ok(app.includes('PHONE NUMBER'));
-    assert.ok(app.includes('not in your phone Contacts'));
-    assert.ok(app.includes('local records are not separately encrypted'));
+    const { appEn, appTr } = load('src/i18n/catalogs/app.ts');
+    assert.equal(appEn.phoneLabel, 'PHONE NUMBER');
+    assert.equal(appTr.phoneLabel, 'TELEFON NUMARASI');
+    assert.ok(appEn.phoneScope.includes('not in your phone Contacts'));
+    assert.ok(appEn.phoneScope.includes('local records are not separately encrypted'));
+    assert.ok(appTr.phoneScope.includes('telefon rehberinize otomatik olarak eklenmez'));
+    assert.ok(appTr.phoneScope.includes('yerel kayıtlar ayrıca şifrelenmez'));
+    assert.match(app, /label=\{c\.phoneLabel\}/);
+    assert.match(app, /\{c\.phoneScope\}/);
     assert.match(app, /phone: selected\.phone \?\? ''/);
     assert.match(app, /phone,\r?\n\s+relationship: form\.relationship/);
     assert.match(app, /normalizeStandardPhone\(form\.phone\)/);

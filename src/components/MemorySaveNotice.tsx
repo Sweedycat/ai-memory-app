@@ -1,10 +1,14 @@
+import { useI18n } from '../i18n/LanguageProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { PeopleSaveState } from '../hooks/usePersistentPeople';
-import { en } from '../strings/en';
 
 export function MemorySaveNotice({ status, retry }: PeopleSaveState) {
-  const copy = en.memorySave;
+  const styles = useThemedStyles(createStyles);
+  const { copy: catalog } = useI18n();
+  const copy = catalog.ui.memorySave;
   if (status === 'idle') return null;
   return (
     <View style={styles.notice}>
@@ -22,10 +26,10 @@ export function MemorySaveNotice({ status, retry }: PeopleSaveState) {
   );
 }
 
-const styles = StyleSheet.create({
-  notice: { marginHorizontal: 16, marginBottom: 12, padding: 16, gap: 8, borderWidth: 1, borderColor: '#8B6E45', borderRadius: 16, backgroundColor: '#211D17' },
-  title: { color: '#FFE4B8', fontSize: 16, fontWeight: '700' },
-  body: { color: '#E0D5C5', fontSize: 14, lineHeight: 21 },
-  button: { minHeight: 48, justifyContent: 'center', alignSelf: 'flex-start', paddingHorizontal: 12, borderRadius: 10, backgroundColor: '#3D3324' },
-  action: { color: '#FFE4B8', fontWeight: '700', fontSize: 15 },
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
+  notice: { marginHorizontal: theme.metrics.cardPadding, marginBottom: theme.spacing.md, padding: theme.metrics.cardPadding, gap: theme.spacing.sm, borderWidth: 1, borderColor: theme.colors.warning, borderRadius: theme.radii.card, backgroundColor: theme.colors.warningSurface },
+  title: { color: theme.colors.warning, fontSize: theme.typography.body.fontSize, fontWeight: '700' },
+  body: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.body.lineHeight },
+  button: { minHeight: theme.metrics.controlMinHeight, justifyContent: 'center', alignSelf: 'flex-start', paddingHorizontal: theme.spacing.md, borderRadius: theme.radii.control, backgroundColor: theme.colors.surfaceRaised },
+  action: { color: theme.colors.warning, fontWeight: '700', fontSize: theme.typography.body.fontSize },
 });

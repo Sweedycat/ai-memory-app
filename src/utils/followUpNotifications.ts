@@ -1,5 +1,7 @@
 import { Platform } from 'react-native';
 import * as Notifications from 'expo-notifications';
+import { notificationCopy } from '../i18n/catalogs/notifications';
+import type { Language } from '../i18n/language';
 import {
   buildPrivateFollowUpContent,
   PRIVATE_FOLLOW_UP_CHANNEL_ID,
@@ -14,11 +16,11 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export async function ensurePrivateFollowUpChannel(): Promise<void> {
+export async function ensurePrivateFollowUpChannel(language: Language = 'en'): Promise<void> {
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync(PRIVATE_FOLLOW_UP_CHANNEL_ID, {
-      name: 'Private follow-up reminders',
-      description: 'Reminders with personal details hidden from the notification preview',
+      name: notificationCopy[language].channel,
+      description: notificationCopy[language].description,
       importance: Notifications.AndroidImportance.HIGH,
       lockscreenVisibility: Notifications.AndroidNotificationVisibility.PRIVATE,
       vibrationPattern: [0, 250, 150, 250],
@@ -26,8 +28,8 @@ export async function ensurePrivateFollowUpChannel(): Promise<void> {
   }
 }
 
-async function ensureNotificationPermission(): Promise<boolean> {
-  await ensurePrivateFollowUpChannel();
+async function ensureNotificationPermission(language: Language): Promise<boolean> {
+  await ensurePrivateFollowUpChannel(language);
 
   const current = await Notifications.getPermissionsAsync();
   if (current.granted) return true;
@@ -42,6 +44,7 @@ export async function scheduleFollowUpNotification(args: {
   followUpId: string;
   text: string;
   reminderAt: string;
+  language?: Language;
 }): Promise<string | null> {
   const reminderDate = new Date(args.reminderAt);
   if (Number.isNaN(reminderDate.getTime()) || reminderDate.getTime() <= Date.now()) {
@@ -49,7 +52,7 @@ export async function scheduleFollowUpNotification(args: {
   }
 
   try {
-    const allowed = await ensureNotificationPermission();
+    const allowed = await ensureNotificationPermission(args.language ?? 'en');
     if (!allowed) return null;
 
     const trigger: Notifications.DateTriggerInput =
@@ -68,11 +71,12 @@ export async function scheduleFollowUpNotification(args: {
       content: buildPrivateFollowUpContent({
         personId: args.personId,
         followUpId: args.followUpId,
+        language: args.language,
       }),
       trigger,
     });
-  } catch (error) {
-    console.warn('Could not schedule follow-up notification', error);
+  } catch {
+    console.warn('follow-up-scheduling-unavailable');
     return null;
   }
 }
@@ -82,7 +86,7 @@ export async function cancelFollowUpNotification(notificationId?: string): Promi
 
   try {
     await Notifications.cancelScheduledNotificationAsync(notificationId);
-  } catch (error) {
-    console.warn('Could not cancel follow-up notification', error);
+  } catch {
+    console.warn('follow-up-cancellation-unavailable');
   }
 }

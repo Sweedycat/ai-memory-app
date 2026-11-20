@@ -1,3 +1,7 @@
+import { useI18n } from '../i18n/LanguageProvider';
+import { useTheme } from '../theme/ThemeProvider';
+import { useThemedStyles } from '../theme/useThemedStyles';
+import type { ThemeTokens } from '../theme/tokens';
 import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Pressable, StyleSheet, Text, View, Switch, TextInput } from 'react-native';
@@ -12,6 +16,10 @@ import { BackupCryptoSelfTestError, runSyntheticBackupCryptoSelfTest } from '../
  * crash-safe restore have passed the release gate.
  */
 export function BackupSafetyDiagnostics() {
+  const styles = useThemedStyles(createStyles);
+  const { theme } = useTheme();
+  const { copy: catalog } = useI18n();
+  const copy = catalog.ui.backup;
   const [frequency, setFrequency] = useState<'Off' | 'Daily' | 'Weekly' | 'Monthly'>('Off');
   const [wifiOnly, setWifiOnly] = useState(true);
   const [loaded, setLoaded] = useState(false);
@@ -44,13 +52,13 @@ export function BackupSafetyDiagnostics() {
   const [confirmation, setConfirmation] = useState<'idle' | 'passed' | 'failed'>('idle');
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<'untested' | 'passed' | 'failed'>('untested');
-  const [failedStage, setFailedStage] = useState('');
+  const [failedStage, setFailedStage] = useState<keyof typeof copy.stages>('unknown');
 
   async function runCheck() {
     if (checking) return;
     setChecking(true);
     setResult('untested');
-    setFailedStage('');
+    setFailedStage('unknown');
     try {
       await runSyntheticBackupCryptoSelfTest();
       setResult('passed');
@@ -64,40 +72,36 @@ export function BackupSafetyDiagnostics() {
 
   return (
     <View style={styles.card}>
-      <Text style={styles.label}>PRIVATE BACKUP · EXPERIMENTAL</Text>
-      <Text style={styles.heading}>Encrypted Google Drive backup</Text>
-      <Text style={styles.description}>
-        Backup and restore are not yet available. Your real people and memories
-        remain on this phone. When enabled, backups will be encrypted before
-        leaving the device and require a separate recovery key.
-      </Text>
-      <Text style={styles.heading}>Backup setup preview</Text>
-      <Text style={styles.description}>Google account: Not connected</Text>
-      <Text style={styles.description}>Last backup: Never</Text>
-      <Text style={styles.description}>Recovery key: Not configured</Text>
+      <Text style={styles.label}>{copy.label}</Text>
+      <Text style={styles.heading}>{copy.title}</Text>
+      <Text style={styles.description}>{copy.description}</Text>
+      <Text style={styles.heading}>{copy.setup}</Text>
+      <Text style={styles.description}>{copy.account}</Text>
+      <Text style={styles.description}>{copy.last}</Text>
+      <Text style={styles.description}>{copy.key}</Text>
       <Pressable accessibilityRole="button" style={styles.button} onPress={() => {
         setPractice(!practice); setEntered(''); setConfirmation('idle');
       }}>
-        <Text style={styles.buttonText}>{practice ? 'Close recovery practice' : 'Practice recovery key setup'}</Text>
+        <Text style={styles.buttonText}>{practice ? copy.closePractice : copy.practice}</Text>
       </Pressable>
       {practice && <View>
-        <Text style={styles.description}>TEST ONLY — public example key. Never enter a real recovery key here. Nothing is saved.</Text>
+        <Text style={styles.description}>{copy.exampleNotice}</Text>
         <Text selectable style={styles.status}>{formatBackupRecoveryKey(fixture)}</Text>
-        <TextInput accessibilityLabel="Example recovery key confirmation" value={entered}
+        <TextInput accessibilityLabel={copy.exampleLabel} value={entered}
           onChangeText={value => { setEntered(value); setConfirmation('idle'); }}
           autoCapitalize="none" autoCorrect={false} maxLength={71}
-          style={styles.input} placeholder="Enter example key" placeholderTextColor="#8997A3" />
+          style={styles.input} placeholder={copy.examplePlaceholder} placeholderTextColor={theme.colors.textSecondary} />
         <Pressable accessibilityRole="button" style={styles.button} onPress={() => {
           setConfirmation(matchesRecoveryKeyConfirmation(fixture, entered) ? 'passed' : 'failed');
           setEntered('');
         }}>
-          <Text style={styles.buttonText}>Confirm example key</Text>
+          <Text style={styles.buttonText}>{copy.confirm}</Text>
         </Pressable>
-        <Text style={styles.status}>{confirmation === 'passed' ? 'Example confirmation passed. Real recovery remains disabled.' : confirmation === 'failed' ? 'Example key did not match. Try again.' : 'Confirm the public example to practice recovery.'}</Text>
+        <Text style={styles.status}>{confirmation === 'passed' ? copy.confirmationPassed : confirmation === 'failed' ? copy.confirmationFailed : copy.confirmationIdle}</Text>
       </View>}
-      <Text style={styles.description}>Preferences are saved on this device only. No account is connected and no backup is scheduled or uploaded.</Text>
-      {saveError && <Text style={styles.status}>Preferences could not be loaded or saved. Backup remains disabled.</Text>}
-      <Text style={styles.description}>Automatic backup frequency</Text>
+      <Text style={styles.description}>{copy.preferences}</Text>
+      {saveError && <Text style={styles.status}>{copy.saveError}</Text>}
+      <Text style={styles.description}>{copy.frequency}</Text>
       <View style={styles.options}>
         {(['Off', 'Daily', 'Weekly', 'Monthly'] as const).map((option) => (
           <Pressable key={option} accessibilityRole="radio"
@@ -105,54 +109,56 @@ export function BackupSafetyDiagnostics() {
             disabled={!loaded}
             onPress={() => setFrequency(option)}
             style={[styles.option, frequency === option && styles.selected]}>
-            <Text style={styles.buttonText}>{option}</Text>
+            <Text style={styles.buttonText}>{copy.frequencies[option]}</Text>
           </Pressable>
         ))}
       </View>
       <View style={styles.options}>
-        <Text style={styles.description}>Wi-Fi only (preview)</Text>
-        <Switch accessibilityLabel="Wi-Fi only preview" disabled={!loaded} value={wifiOnly} onValueChange={setWifiOnly} />
+        <Text style={styles.description}>{copy.wifi}</Text>
+        <Switch accessibilityLabel={copy.wifiLabel} disabled={!loaded} value={wifiOnly} onValueChange={setWifiOnly} />
       </View>
-      <Text style={styles.description}>Backup now and restore will become available after secure account and recovery setup.</Text>
+      <Text style={styles.description}>{copy.future}</Text>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Check synthetic backup encryption"
+        accessibilityLabel={copy.checkLabel}
         disabled={checking}
         onPress={() => void runCheck()}
         style={[styles.button, checking && styles.disabled]}
       >
         <Text style={styles.buttonText}>
-          {checking ? 'Checking encryption…' : 'Check encryption on this phone'}
+          {checking ? copy.checking : copy.check}
         </Text>
       </Pressable>
       <Text style={styles.status}>
         {result === 'passed'
-          ? 'Synthetic encryption, decryption, wrong-key and tamper checks passed. No personal data was used.'
+          ? copy.passed
           : result === 'failed'
-            ? `Encryption check failed at ${failedStage}. Backup remains disabled; no personal data was touched.`
-            : 'Optional diagnostic using synthetic data only. Does not create a backup.'}
+            ? copy.failed(copy.stages[failedStage])
+            : copy.untested}
       </Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: ThemeTokens) => StyleSheet.create({
   card: {
-    backgroundColor: '#121820', borderRadius: 20, borderWidth: 1,
-    borderColor: '#202B36', padding: 16, marginBottom: 12,
+    backgroundColor: theme.colors.surface, borderRadius: theme.radii.card, borderWidth: 1,
+    borderColor: theme.colors.border, padding: theme.metrics.cardPadding, marginBottom: theme.spacing.md,
   },
-  label: { color: '#7DE2C3', fontSize: 10, fontWeight: '900', letterSpacing: 1.2, marginBottom: 12 },
-  heading: { color: '#F4F7FA', fontSize: 17, fontWeight: '800' },
-  description: { color: '#8997A3', fontSize: 12, lineHeight: 19, marginTop: 8 },
+  label: { color: theme.colors.accent, fontSize: theme.typography.meta.fontSize, fontWeight: '900', letterSpacing: 1.2, marginBottom: theme.spacing.md },
+  heading: { color: theme.colors.text, fontSize: theme.typography.section.fontSize, fontWeight: '800' },
+  description: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight, marginTop: theme.spacing.sm },
   button: {
-    marginTop: 15, paddingVertical: 12, alignItems: 'center',
-    borderWidth: 1, borderColor: '#315B4F', borderRadius: 12,
+    minHeight: theme.metrics.controlMinHeight,
+    justifyContent: 'center',
+    marginTop: theme.spacing.md, paddingVertical: theme.spacing.md, alignItems: 'center',
+    borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radii.control,
   },
-  buttonText: { color: '#7DE2C3', fontSize: 12, fontWeight: '900' },
-  options: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, marginTop: 8 },
-  option: { padding: 8, borderWidth: 1, borderColor: '#315B4F', borderRadius: 8 },
-  selected: { backgroundColor: '#20483D' },
+  buttonText: { color: theme.colors.accent, fontSize: theme.typography.meta.fontSize, fontWeight: '900' },
+  options: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: theme.spacing.sm, marginTop: theme.spacing.sm },
+  option: { minHeight: theme.metrics.controlMinHeight, minWidth: theme.metrics.controlMinHeight, alignItems: 'center', justifyContent: 'center', padding: theme.spacing.sm, borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radii.control },
+  selected: { backgroundColor: theme.colors.surfaceRaised },
   disabled: { opacity: 0.5 },
-  input: { color: '#F4F7FA', borderWidth: 1, borderColor: '#315B4F', borderRadius: 8, padding: 10, marginTop: 8 },
-  status: { color: '#9BABB4', fontSize: 11, lineHeight: 17, marginTop: 10 },
+  input: { color: theme.colors.text, borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radii.control, padding: theme.spacing.sm, marginTop: theme.spacing.sm },
+  status: { color: theme.colors.textSecondary, fontSize: theme.typography.meta.fontSize, lineHeight: theme.typography.meta.lineHeight, marginTop: theme.spacing.sm },
 });

@@ -5,17 +5,17 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
 | V3-A-01 | VERIFIED | Source, PR, policy and exact-SHA CI audit | Preserve historical evidence. |
-| V3-A-02 | VERIFICATION_PENDING | Single registry and sanitized recovery checkpoint | Principal review, local validation, docs-only checkpoint/push and exact-SHA CI. |
+| V3-A-02 | VERIFIED | Single registry and sanitized recovery checkpoint | Maintain registry and synchronized continuation after meaningful progress. |
 | V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
 | V3-A-04 | VERIFICATION_PENDING | Tested branch-scoped free hosted delivery | Revalidate path at qualifying app milestone; no APK for this docs task. |
 | V3-A-05 | IMPLEMENTED | Quota stop and bounded handoff | Apply official limits privately; finish safe checkpoint without inferred allowance. |
 | V3-B1-01 | VERIFIED | Localization and preference foundation | Integrate actual application via B1-02. |
-| V3-B1-02 | IN_PROGRESS | Complete Turkish/English application flows | Complete language control and full catalog/flow audit; verify storage errors. |
-| V3-B2-01 | IN_PROGRESS | Centralized five free theme choices | Complete shared integration without duplicate theme screens. |
-| V3-B2-02 | PENDING | Theme previews, immediate apply and persistence | Implement and verify preview/selection/failure/restart/system-change paths. |
-| V3-B2-03 | PENDING | Shared components and functional Settings (former B3) | Integrate functional Settings hierarchy and shared components. |
-| V3-B2-04 | PENDING | Founder layout/navigation defects (former B3) | Reproduce with synthetic inputs; correct priority defects and target device checklist. |
-| V3-B2-05 | PENDING | Review, tests, APK_READY and founder acceptance | Complete implementation gates; await founder feedback before next major increment. |
+| V3-B1-02 | VERIFICATION_PENDING | Complete Turkish/English application flows | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-B2-01 | VERIFICATION_PENDING | Centralized five free theme choices | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-B2-02 | VERIFICATION_PENDING | Theme previews, immediate apply and persistence | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-B2-03 | VERIFICATION_PENDING | Shared components and functional Settings (former B3) | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-B2-04 | VERIFICATION_PENDING | Founder layout/navigation defects (former B3) | Finish current frozen-diff verification, preserve records and disabled sensitive gates. |
+| V3-B2-05 | IN_PROGRESS | Review, tests, APK_READY and founder acceptance | Read integrated test result and independent findings; do not start next major user-facing milestone. |
 | V3-C-01 | PENDING | All-domain AEAD/platform key lifecycle | Prepare independently reviewable threat model and domain/key contracts. |
 | V3-C-02 | PENDING | Synthetic non-destructive migration and rollback | Prototype fabricated migration fixtures and durable failure recovery. |
 | V3-C-03 | BLOCKED | Independent review and native recovery gate | Obtain review and authorized native evidence before activation. |
@@ -38,7 +38,7 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | V3-F-01 | VERIFICATION_PENDING | Onboarding/profile/App Lock/privacy/permission lifecycle | Reproduce lifecycle/read failures synthetically before scoped fixes. |
 | V3-F-02 | VERIFICATION_PENDING | Safe bug reports, redaction and failure/version UX | Diagnose fabricated corruption/concurrency/redaction without owner data. |
 | V3-F-03 | PENDING | Measured offline/accessibility/performance/storage | Measure risk-based bottlenecks after integrated UI checkpoint. |
-| V3-F-04 | PENDING | Safe upgrades, versions and retained records | Verify next candidate metadata; 0.2.0/code3 is planned only after gates, not assigned. |
+| V3-F-04 | PENDING | Safe upgrades, versions and retained records | Verify reviewed/published B2 source and exact CI before hosted build; installed-device identity remains unverified. |
 | V3-F-05 | PENDING | Independent Free/Plus/Pro/Business entitlement contracts | Prepare disabled contract within approved scope. |
 | V3-F-06 | BLOCKED | Play/StoreKit/Patreon/website payment readiness | Keep providers disabled pending founder/financial/security gates. |
 | V3-F-07 | BLOCKED | Bootstrap-first financial/store/legal readiness | Prepare evidence and founder decisions without purchases or promises. |

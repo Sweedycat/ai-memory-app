@@ -1,3 +1,4 @@
+const { createPresentation } = require('./helpers/featurePresentation.cjs');
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -26,7 +27,7 @@ function screen(lifecycle, { state = 'active', createId = async () => 'new-synth
     appListeners.add(callback); return { remove() { appListeners.delete(callback); } };
   } };
   const react = {
-    createElement(type, props, ...children) { return { type, props: { ...props, children } }; },
+    createElement(type, props, ...children) { return typeof type === 'function' ? type({ ...props, children }) : { type, props: { ...props, children } }; },
     useState(initial) {
       const index = cursor++;
       if (!(index in slots)) slots[index] = typeof initial === 'function' ? initial() : initial;
@@ -48,7 +49,9 @@ function screen(lifecycle, { state = 'active', createId = async () => 'new-synth
   native.BackHandler = { addEventListener: (_, callback) => {
     backListeners.add(callback); return { remove() { backListeners.delete(callback); } };
   } };
+  const presentation = createPresentation(load, react, native);
   const component = load('src/components/NotebookPanel.tsx', {
+    ...presentation.imports,
     react: { __esModule: true, default: react, ...react }, 'react-native': native,
     '../utils/notebookEditor': editorModule, '../utils/personalNotebook': h.model,
     '../utils/notebookNavigation': navigation, '../utils/screenInsets': { SCREEN_TOP_PADDING: 24 },
@@ -229,5 +232,5 @@ test('production Notebook flag stays off and protects both route and entry point
   const boundary = fs.readFileSync(path.join(__dirname, '../src/components/NotebookBoundary.tsx'), 'utf8');
   assert.match(boundary, /NOTEBOOK_PRODUCTION_ENABLED = false/);
   assert.match(app, /screen === 'notebook' && NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle/);
-  assert.match(app, /NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label=\{notebookEn.title\}/);
+  assert.match(app, /NOTEBOOK_PRODUCTION_ENABLED && notebookLifecycle && <OutlineAction label=\{c.notebookTitle\}/);
 });
