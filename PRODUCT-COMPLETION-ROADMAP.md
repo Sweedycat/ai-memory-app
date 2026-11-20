@@ -13,14 +13,14 @@
 
 | ID | Status | Scope | Exact next action |
 | --- | --- | --- | --- |
-| V32-TRACKING | IN_PROGRESS | V3.2 recovery, founder evidence, policy and durable registry | Validate and push sanitized V3.2 starting checkpoint |
-| BUG-B2-001 | PENDING | Application-wide unsaved-change protection | Complete App and other editable-flow guard children; review/integrate/retest |
-| BUG-B2-001-A | PENDING | People creation/edit/notes/interactions/follow-up/reminder navigation guards | Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration |
-| BUG-B2-001-B | PENDING | Profile, report, Life, gated Notebook and future form protection | Audit existing component guards and implement missing navigation/save failure protection |
-| BUG-B2-004 | PENDING | Global status-bar scrolling viewport repair | Inspect viewport versus content padding; repair shared boundary and all routes |
-| BUG-B2-005 | PENDING | Global navigation-bar and bottom action safe area repair | Repair shared bottom viewport handling alongside status-bar audit |
-| UX-B2-001 | PENDING | Shared digital 24-hour reminder HH/MM entry | Build shared digital entry/model and tests; Principal integrates App reminder picker |
-| UX-B2-002 | PENDING | Accessible boolean switches and wording polish | Polish App Lock control within current approved identity; test cancelled/failed changes |
+| V32-TRACKING | VERIFIED | V3.2 recovery, founder evidence, policy and durable registry | Validate and push sanitized V3.2 starting checkpoint |
+| BUG-B2-001 | IN_PROGRESS | Application-wide unsaved-change protection | Complete App and other editable-flow guard children; review/integrate/retest |
+| BUG-B2-001-A | VERIFICATION_PENDING | People creation/edit/notes/interactions/follow-up/reminder navigation guards | Inspect existing local implementation, finish missing verification; do not restart completed source work. |
+| BUG-B2-001-B | VERIFICATION_PENDING | Profile, report, Life, gated Notebook and future form protection | Inspect existing local implementation, finish missing verification; do not restart completed source work. |
+| BUG-B2-004 | VERIFICATION_PENDING | Global status-bar scrolling viewport repair | Inspect existing local implementation, finish missing verification; do not restart completed source work. |
+| BUG-B2-005 | VERIFICATION_PENDING | Global navigation-bar and bottom action safe area repair | Inspect existing local implementation, finish missing verification; do not restart completed source work. |
+| UX-B2-001 | VERIFICATION_PENDING | Shared digital 24-hour reminder HH/MM entry | Inspect existing local implementation, finish missing verification; do not restart completed source work. |
+| UX-B2-002 | VERIFICATION_PENDING | Accessible boolean switches and wording polish | Inspect existing local implementation, finish missing verification; do not restart completed source work. |
 
 ## Retained detailed V3 inventory (historical descriptions; registry controls current status)
 

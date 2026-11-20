@@ -15,10 +15,10 @@
     ]
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-20T20:15:59.772Z",
+  "updatedAt": "2026-11-20T20:40:19.789Z",
   "branch": "development/omega-commercial-mvp",
-  "sourceCheckpoint": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-  "workingTree": "One authorized hosted B2 APK run acknowledged; no application WIP. This follow-up records build/continuation evidence only; no further attempt or interactive Gradle wait.",
+  "sourceCheckpoint": "83214faab9125a237b256b6fb03005bc2078447a",
+  "workingTree": "Local V3.2 repair source/tests survive on disk. Do not discard/reset or restart implemented work. Read workUnit ownership/checks, inspect actual diff and finish verification; current public source checkpoint is 83214faab9125a237b256b6fb03005bc2078447a.",
   "evidenceProvenance": "Historical A/B1 evidence supplied by Principal and records; no historical rerun/network by registry writer. Current custom Product & Release Engineer invocation confirmed by Principal.",
   "states": [
     "PENDING",
@@ -2430,10 +2430,10 @@
         "Record all founder pass/fail/unverified paths without B2 acceptance",
         "Validate schema/unique IDs/dependencies/current summaries and push before implementation"
       ],
-      "status": "IN_PROGRESS",
+      "status": "VERIFIED",
       "role": "Principal Architect",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-      "sourceSHA": null,
+      "sourceSHA": "83214faab9125a237b256b6fb03005bc2078447a",
       "completed": [],
       "remaining": [
         "Validate and push sanitized V3.2 starting checkpoint"
@@ -2478,7 +2478,7 @@
         "Successful persistent save before navigation; failed saves retain input and retry without duplicates/stale overwrite",
         "No plaintext draft writes, App Lock weakening or OS-process-death durability claim"
       ],
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "role": "Principal Architect",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
@@ -2525,13 +2525,16 @@
         "Save failure/stale baseline/rapid double action keep edits; successful save acknowledged before exit",
         "Preserve existing reminders and duplicate/cancellation guards"
       ],
-      "status": "PENDING",
+      "status": "VERIFICATION_PENDING",
       "role": "Software Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
-      "completed": [],
+      "completed": [
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+      ],
       "remaining": [
-        "Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration"
+        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
+        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
       ],
       "blockers": [],
       "evidence": {
@@ -2554,8 +2557,9 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Inspect actual App handlers and People writer acknowledgment; implement bounded guard integration",
-      "updatedAt": "2026-11-20T20:15:59.772Z"
+      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
+      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
       "id": "BUG-B2-001-B",
@@ -2570,13 +2574,16 @@
         "Reuse existing secure recovery/revision checks; provide all localized exit choices where applicable",
         "No warnings for unchanged state, no implicit discard/save or plaintext draft persistence"
       ],
-      "status": "PENDING",
+      "status": "VERIFICATION_PENDING",
       "role": "Software Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
-      "completed": [],
+      "completed": [
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+      ],
       "remaining": [
-        "Audit existing component guards and implement missing navigation/save failure protection"
+        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
+        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
       ],
       "blockers": [],
       "evidence": {
@@ -2599,8 +2606,9 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Audit existing component guards and implement missing navigation/save failure protection",
-      "updatedAt": "2026-11-20T20:15:59.772Z"
+      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
+      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
       "id": "BUG-B2-004",
@@ -2615,13 +2623,16 @@
         "Content cannot scroll beneath visible status icons; actual native insets, no double padding",
         "Preserve edge-to-edge, theme/status appearance, font scaling, orientation and keyboard accessibility"
       ],
-      "status": "PENDING",
+      "status": "VERIFICATION_PENDING",
       "role": "Android Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
-      "completed": [],
+      "completed": [
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+      ],
       "remaining": [
-        "Inspect viewport versus content padding; repair shared boundary and all routes"
+        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
+        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
       ],
       "blockers": [],
       "evidence": {
@@ -2644,8 +2655,9 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Inspect viewport versus content padding; repair shared boundary and all routes",
-      "updatedAt": "2026-11-20T20:15:59.772Z"
+      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
+      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
       "id": "BUG-B2-005",
@@ -2659,13 +2671,16 @@
         "Scrollable/fixed bottom content stays above gesture/three-button bars and keyboard",
         "No clipped actions, excessive blank areas or double insets across all themes/screens"
       ],
-      "status": "PENDING",
+      "status": "VERIFICATION_PENDING",
       "role": "Android Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
-      "completed": [],
+      "completed": [
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+      ],
       "remaining": [
-        "Repair shared bottom viewport handling alongside status-bar audit"
+        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
+        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
       ],
       "blockers": [],
       "evidence": {
@@ -2687,8 +2702,9 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Repair shared bottom viewport handling alongside status-bar audit",
-      "updatedAt": "2026-11-20T20:15:59.772Z"
+      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
+      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
       "id": "UX-B2-001",
@@ -2704,13 +2720,16 @@
         "TR/EN,all free themes,large text/TalkBack; invalid times never silently normalized",
         "Preserve dates/timezones/permissions/privacy; midnight/date/DST/edit/cancel/duplicate tests; reuse for future Life reminders"
       ],
-      "status": "PENDING",
+      "status": "VERIFICATION_PENDING",
       "role": "Android Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
-      "completed": [],
+      "completed": [
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+      ],
       "remaining": [
-        "Build shared digital entry/model and tests; Principal integrates App reminder picker"
+        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
+        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
       ],
       "blockers": [],
       "evidence": {
@@ -2734,8 +2753,9 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Build shared digital entry/model and tests; Principal integrates App reminder picker",
-      "updatedAt": "2026-11-20T20:15:59.772Z"
+      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
+      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
       "id": "UX-B2-002",
@@ -2750,13 +2770,16 @@
         "Retain auth/write-before-apply,all themes,free appearances and clear natural TR/EN",
         "No redesign or meaning changes to stored records"
       ],
-      "status": "PENDING",
+      "status": "VERIFICATION_PENDING",
       "role": "UI/UX Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
       "sourceSHA": null,
-      "completed": [],
+      "completed": [
+        "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet."
+      ],
       "remaining": [
-        "Polish App Lock control within current approved identity; test cancelled/failed changes"
+        "Finish new focused failure/navigation checks and qualified frozen-diff review.",
+        "Complete full regression/TS/Doctor, reviewed source push/exact-SHA CI and corrected APK/native acceptance."
       ],
       "blockers": [],
       "evidence": {
@@ -2779,8 +2802,9 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Polish App Lock control within current approved identity; test cancelled/failed changes",
-      "updatedAt": "2026-11-20T20:15:59.772Z"
+      "nextAction": "Inspect existing local implementation, finish missing verification; do not restart completed source work.",
+      "updatedAt": "2026-11-20T20:40:19.789Z",
+      "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
       "id": "V3-A-06",
@@ -2869,7 +2893,8 @@
     "runResult": "success",
     "verificationLevel": "Actual CI aapt/apksigner/sha256sum logs and artifact metadata; no independent binary download yet",
     "apkSha256": "cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6",
-    "artifactZipDigest": "sha256:8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5"
+    "artifactZipDigest": "sha256:8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5",
+    "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository."
   },
   "latestPublishedCheckpoint": "c41410e938004677f0b2a78a70b407bb908ea13b",
   "founderDeviceEvidence": {
@@ -2915,5 +2940,43 @@
       "Language updates for previously scheduled notifications",
       "Exact timing under every native scheduling condition"
     ]
+  },
+  "workUnit": {
+    "baselineSHA": "83214faab9125a237b256b6fb03005bc2078447a",
+    "tasks": [
+      "BUG-B2-001-A",
+      "BUG-B2-001-B",
+      "BUG-B2-004",
+      "BUG-B2-005",
+      "UX-B2-001",
+      "UX-B2-002"
+    ],
+    "state": "Implementation exists in local working tree; focused regression and independent review still in progress. No corrected APK/version assigned.",
+    "ownership": {
+      "Principal": "Shared navigation hook/catalog,Profile/BugReport/Settings,registry/integration",
+      "SoftwareEngineer": "App/People persistence ACK/input fencing and related tests; additional parent-flow tests only",
+      "AndroidEngineer": "Root/safe viewport,digital entry,Life/Notebook UI and corresponding tests"
+    },
+    "checks": [
+      "Android first unit34focused passed, source/typecheck passed",
+      "App/People54focused passed including pending-writer remount chain",
+      "Parent existing Profile/BugReport/Settings21focused passed",
+      "Android second unit62focused passed; final typecheck result pending"
+    ],
+    "remaining": [
+      "Finish newly added failure/navigation tests",
+      "Freeze full source diff and obtain qualified independent review",
+      "Full regression/strict TS/Doctor/exact-SHA CI",
+      "Assign next verified version/code; one free hosted APK; binary checks and targeted founder acceptance"
+    ],
+    "privacy": "No plaintext draft persistence, real migration,Notebookactivation,device access or paid operation."
+  },
+  "currentApprovalAccounting": {
+    "scope": "V3.2 through initial recovery checkpoint",
+    "explicitEscalationCalls": 1,
+    "newSavedNarrowRules": 1,
+    "manualPopupTotal": null,
+    "repetitiveBusinessQuestions": 0,
+    "asOf": "2026-11-20T20:40:19.789Z"
   }
 }
