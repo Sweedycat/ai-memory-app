@@ -1,0 +1,2019 @@
+{
+  "schemaVersion": 1,
+  "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
+  "updatedAt": "2026-11-20T03:07:44.387Z",
+  "branch": "development/omega-commercial-mvp",
+  "sourceCheckpoint": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+  "workingTree": "Interrupted B2 App/index/dependency/i18n/theme/preferences WIP preserved; no current WIP test/review/CI/APK claim.",
+  "evidenceProvenance": "Historical A/B1 evidence supplied by Principal and records; no historical rerun/network by registry writer. Current custom Product & Release Engineer invocation confirmed by Principal.",
+  "states": [
+    "PENDING",
+    "IN_PROGRESS",
+    "DEFERRED",
+    "BLOCKED",
+    "IMPLEMENTED",
+    "VERIFICATION_PENDING",
+    "VERIFIED",
+    "APK_READY",
+    "DEVICE_ACCEPTANCE_PENDING",
+    "COMPLETED"
+  ],
+  "approvalAccounting": {
+    "historicalTotal": null,
+    "currentResumedTaskNewRequests": 0,
+    "asOf": "2026-11-20"
+  },
+  "policy": {
+    "quota": "<=1% mandatory stop; <=5% no new long tasks/unnecessary agents; unknown official telemetry one bounded milestone then stop; no inferred allowance or automatic reset resume.",
+    "appearances": [
+      "classic (default)",
+      "modern",
+      "light",
+      "dark",
+      "system"
+    ],
+    "themesAlwaysFree": true,
+    "notebookProductionEnabled": false,
+    "commercial": "Sensitive People/Life/profile plaintext is a critical blocker; App Lock is not encryption.",
+    "activation": "No task state activates real migration/restore/transfer/Notebook/payments/AI/installation/production."
+  },
+  "tasks": [
+    {
+      "id": "V3-A",
+      "parent": null,
+      "title": "Governance and engineering integration",
+      "dependencies": [],
+      "acceptance": [
+        "Audited exact source, single registry, operational roles and safe hosted delivery."
+      ],
+      "status": "VERIFICATION_PENDING",
+      "role": "Principal Architect",
+      "completed": [
+        "A checkpoint and historical exact-SHA CI passed."
+      ],
+      "remaining": [
+        "Complete registry checkpoint and remaining role/trigger validation."
+      ],
+      "blockers": [],
+      "sourceSHA": "a2cb5daf960cad2d2301680a4b445caea027b688",
+      "evidence": {
+        "automated": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44630570465",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44630570445"
+        ],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "A checkpoint and historical exact-SHA CI passed."
+        ]
+      },
+      "nextAction": "Complete registry checkpoint and remaining role/trigger validation.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Governance and engineering integration",
+      "deviceAcceptance": {
+        "required": false,
+        "criteria": [],
+        "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
+      }
+    },
+    {
+      "id": "V3-A-01",
+      "parent": "V3-A",
+      "title": "Source, PR, policy and exact-SHA CI audit",
+      "dependencies": [],
+      "acceptance": [
+        "Audited source/evidence with current versus historical boundaries."
+      ],
+      "status": "VERIFIED",
+      "role": "Principal Architect",
+      "completed": [
+        "A checkpoint passed both workflows."
+      ],
+      "remaining": [
+        "Preserve historical evidence."
+      ],
+      "blockers": [],
+      "sourceSHA": "a2cb5daf960cad2d2301680a4b445caea027b688",
+      "evidence": {
+        "automated": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44630570465",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44630570445"
+        ],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "A checkpoint passed both workflows."
+        ]
+      },
+      "nextAction": "Preserve historical evidence.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Source, PR, policy and exact-SHA CI audit",
+      "deviceAcceptance": {
+        "required": false,
+        "criteria": [],
+        "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
+      }
+    },
+    {
+      "id": "V3-A-02",
+      "parent": "V3-A",
+      "title": "Single registry and sanitized recovery checkpoint",
+      "dependencies": [
+        "V3-A-01"
+      ],
+      "acceptance": [
+        "Validated IDs/dependencies/status/schema; synchronized English records and retained requirements; docs checkpoint before substantial App work."
+      ],
+      "status": "VERIFICATION_PENDING",
+      "role": "Product & Release Engineer",
+      "completed": [
+        "Registry and projections prepared."
+      ],
+      "remaining": [
+        "Principal review, local validation, docs-only checkpoint/push and exact-SHA CI."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Registry and projections prepared."
+        ]
+      },
+      "nextAction": "Principal review, local validation, docs-only checkpoint/push and exact-SHA CI.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Single registry and sanitized recovery checkpoint",
+      "deviceAcceptance": {
+        "required": false,
+        "criteria": [],
+        "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
+      }
+    },
+    {
+      "id": "V3-A-03",
+      "parent": "V3-A",
+      "title": "Native roles, scoped tools and approval reuse",
+      "dependencies": [
+        "V3-A-01"
+      ],
+      "acceptance": [
+        "Actual supported discovery/invocation for both roles; no recursive delegation, invented totals or private identifiers."
+      ],
+      "status": "VERIFICATION_PENDING",
+      "role": "Automation & Integration Engineer",
+      "completed": [
+        "Historical discovery13; current-host product_release_engineer invocation succeeded."
+      ],
+      "remaining": [
+        "Revalidate Automation & Integration Engineer only when needed and authorized."
+      ],
+      "blockers": [
+        "Automation role invocation not revalidated on current host."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Historical discovery13; current-host product_release_engineer invocation succeeded."
+        ]
+      },
+      "nextAction": "Revalidate Automation & Integration Engineer only when needed and authorized.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Native roles, scoped tools and approval reuse",
+      "deviceAcceptance": {
+        "required": false,
+        "criteria": [],
+        "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
+      }
+    },
+    {
+      "id": "V3-A-04",
+      "parent": "V3-A",
+      "title": "Tested branch-scoped free hosted delivery",
+      "dependencies": [
+        "V3-A-01"
+      ],
+      "acceptance": [
+        "One build per reviewed checkpoint after exact-SHA CI; current artifact metadata before higher code; immediate run link/no Gradle polling."
+      ],
+      "status": "VERIFICATION_PENDING",
+      "role": "DevOps Engineer",
+      "completed": [
+        "Hosted pipeline source checkpoint exists; A internal APK skipped."
+      ],
+      "remaining": [
+        "Revalidate path at qualifying app milestone; no APK for this docs task."
+      ],
+      "blockers": [
+        "B2 lacks review/checkpoint/CI."
+      ],
+      "sourceSHA": "a2cb5daf960cad2d2301680a4b445caea027b688",
+      "evidence": {
+        "automated": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44630570465",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44630570445"
+        ],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Hosted pipeline source checkpoint exists; A internal APK skipped."
+        ]
+      },
+      "nextAction": "Revalidate path at qualifying app milestone; no APK for this docs task.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Tested branch-scoped free hosted delivery",
+      "deviceAcceptance": {
+        "required": false,
+        "criteria": [],
+        "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
+      }
+    },
+    {
+      "id": "V3-A-05",
+      "parent": "V3-A",
+      "title": "Quota stop and bounded handoff",
+      "dependencies": [],
+      "acceptance": [
+        "Permanent <=1% stop; <=5% no new long tasks/unnecessary agents; unknown official allowance: one bounded milestone then stop; no reset autoresume."
+      ],
+      "status": "IMPLEMENTED",
+      "role": "Principal Architect",
+      "completed": [
+        "Policy preserved; historical approval total unknown; resumed registry task requested no new approvals as of snapshot."
+      ],
+      "remaining": [
+        "Apply official limits privately; finish safe checkpoint without inferred allowance."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Policy preserved; historical approval total unknown; resumed registry task requested no new approvals as of snapshot."
+        ]
+      },
+      "nextAction": "Apply official limits privately; finish safe checkpoint without inferred allowance.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Quota stop and bounded handoff",
+      "deviceAcceptance": {
+        "required": false,
+        "criteria": [],
+        "reason": "Internal governance/integration task; artifact/device gates belong to qualifying app increment."
+      }
+    },
+    {
+      "id": "V3-B",
+      "parent": null,
+      "title": "Bilingual app, five free appearances and functional Settings",
+      "dependencies": [
+        "V3-A-02"
+      ],
+      "acceptance": [
+        "Complete TR/EN, shared theme/component system, Settings, founder defects and acceptance."
+      ],
+      "status": "IN_PROGRESS",
+      "role": "Principal Architect",
+      "completed": [
+        "B1 foundation verified; interrupted B2 WIP preserved."
+      ],
+      "remaining": [
+        "Complete bounded B2 integration and focused gates."
+      ],
+      "blockers": [
+        "B2 WIP untested/unreviewed/no APK."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "B1 foundation verified; interrupted B2 WIP preserved."
+        ]
+      },
+      "nextAction": "Complete bounded B2 integration and focused gates.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Bilingual app, five free appearances and functional Settings",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-B1-01",
+      "parent": "V3-B",
+      "title": "Localization and preference foundation",
+      "dependencies": [
+        "V3-A-01"
+      ],
+      "acceptance": [
+        "Typed catalogs, system default, validated persisted language and safe read/write failures; locale formatting."
+      ],
+      "status": "VERIFIED",
+      "role": "Software Engineer",
+      "completed": [
+        "Unwired foundation at B1 checkpoint."
+      ],
+      "remaining": [
+        "Integrate actual application via B1-02."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [
+          "Reported B1 checkpoint: 467 tests, 465 passed, 2 Windows skips, 0 failures; 18 focused core tests."
+        ],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44635443807",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44635443790"
+        ],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Unwired foundation at B1 checkpoint."
+        ]
+      },
+      "nextAction": "Integrate actual application via B1-02.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Localization and preference foundation",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-B1-02",
+      "parent": "V3-B",
+      "title": "Complete Turkish/English application flows",
+      "dependencies": [
+        "V3-B1-01",
+        "V3-A-02"
+      ],
+      "acceptance": [
+        "Gates/onboarding/People/Life/assistant/Settings/reports/alerts/errors/empty/loading/date states complete; no mixed labels or translated personal records."
+      ],
+      "status": "IN_PROGRESS",
+      "role": "Software Engineer",
+      "completed": [
+        "Provider/catalog/App integration WIP preserved."
+      ],
+      "remaining": [
+        "Complete language control and full catalog/flow audit; verify storage errors."
+      ],
+      "blockers": [
+        "Current WIP not tested/reviewed."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Provider/catalog/App integration WIP preserved."
+        ]
+      },
+      "nextAction": "Complete language control and full catalog/flow audit; verify storage errors.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Complete Turkish/English application flows",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-B2-01",
+      "parent": "V3-B",
+      "title": "Centralized five free theme choices",
+      "dependencies": [
+        "V3-A-02"
+      ],
+      "acceptance": [
+        "Classic/default black-mint, modern navy-periwinkle, light, dark and system; centralized tokens/shared screens; no entitlement."
+      ],
+      "status": "IN_PROGRESS",
+      "role": "UI/UX Engineer",
+      "completed": [
+        "All directions founder approved; provider/theme/preferences WIP exists."
+      ],
+      "remaining": [
+        "Complete shared integration without duplicate theme screens."
+      ],
+      "blockers": [
+        "WIP not tested/reviewed."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "All directions founder approved; provider/theme/preferences WIP exists."
+        ]
+      },
+      "nextAction": "Complete shared integration without duplicate theme screens.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Centralized five free theme choices",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-B2-02",
+      "parent": "V3-B",
+      "title": "Theme previews, immediate apply and persistence",
+      "dependencies": [
+        "V3-B2-01",
+        "V3-B1-02"
+      ],
+      "acceptance": [
+        "Appearance > Theme previews; immediate apply; safe persistence/restart; system device changes; original bytes retained on read failure; all free."
+      ],
+      "status": "PENDING",
+      "role": "Software Engineer",
+      "completed": [],
+      "remaining": [
+        "Implement and verify preview/selection/failure/restart/system-change paths."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Implement and verify preview/selection/failure/restart/system-change paths.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Theme previews, immediate apply and persistence",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-B2-03",
+      "parent": "V3-B",
+      "title": "Shared components and functional Settings (former B3)",
+      "dependencies": [
+        "V3-B1-02",
+        "V3-B2-01"
+      ],
+      "acceptance": [
+        "Shared typography/icons/buttons/cards/navigation/spacing/safe areas/accessibility; real profile/language/appearance/permissions/privacy/notification/assistant/report/backup submenus; no dummy controls."
+      ],
+      "status": "PENDING",
+      "role": "UI/UX Engineer",
+      "completed": [],
+      "remaining": [
+        "Integrate functional Settings hierarchy and shared components."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Integrate functional Settings hierarchy and shared components.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Shared components and functional Settings (former B3)",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-B2-04",
+      "parent": "V3-B",
+      "title": "Founder layout/navigation defects (former B3)",
+      "dependencies": [
+        "V3-B2-03"
+      ],
+      "acceptance": [
+        "Reproduce mixed labels/styles, oversized Back, margins/cards/keyboard/navigation/insets; font/TalkBack/gesture and three-button checks in all themes."
+      ],
+      "status": "PENDING",
+      "role": "Android Engineer",
+      "completed": [
+        "Founder observations retained; reproduction/fix not established."
+      ],
+      "remaining": [
+        "Reproduce with synthetic inputs; correct priority defects and target device checklist."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Founder observations retained; reproduction/fix not established."
+        ]
+      },
+      "nextAction": "Reproduce with synthetic inputs; correct priority defects and target device checklist.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Founder layout/navigation defects (former B3)",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-B2-05",
+      "parent": "V3-B",
+      "title": "Review, tests, APK_READY and founder acceptance",
+      "dependencies": [
+        "V3-B1-02",
+        "V3-B2-02",
+        "V3-B2-03",
+        "V3-B2-04",
+        "V3-A-04"
+      ],
+      "acceptance": [
+        "Design/TR-EN/security/automated checks, independent frozen review, checkpoint/exact-SHA CI, ready trigger, actual APK verification and focused Samsung acceptance."
+      ],
+      "status": "PENDING",
+      "role": "Product & Release Engineer",
+      "completed": [],
+      "remaining": [
+        "Complete implementation gates; await founder feedback before next major increment."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Complete implementation gates; await founder feedback before next major increment.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Review, tests, APK_READY and founder acceptance",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-C",
+      "parent": null,
+      "title": "App-wide encryption and safe migration",
+      "dependencies": [],
+      "acceptance": [
+        "Independent AEAD/platform-key design and recoverable migration across all sensitive domains; real activation gated."
+      ],
+      "status": "BLOCKED",
+      "role": "Security Engineer",
+      "completed": [
+        "People/Life/profile AsyncStorage remains plaintext; Notebook is separate."
+      ],
+      "remaining": [
+        "Prepare architecture and synthetic recovery."
+      ],
+      "blockers": [
+        "Critical commercial blocker; independent/native evidence absent."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "People/Life/profile AsyncStorage remains plaintext; Notebook is separate."
+        ]
+      },
+      "nextAction": "Prepare architecture and synthetic recovery.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "App-wide encryption and safe migration",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-C-01",
+      "parent": "V3-C",
+      "title": "All-domain AEAD/platform key lifecycle",
+      "dependencies": [],
+      "acceptance": [
+        "People/Life/profile/preferences/media coverage, platform-backed keys, creation/loss/revoke/OS backup lifecycle; no hardcoded/substitute keys/plaintext diagnostics; lock is not encryption."
+      ],
+      "status": "PENDING",
+      "role": "Security Engineer",
+      "completed": [],
+      "remaining": [
+        "Prepare independently reviewable threat model and domain/key contracts."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Prepare independently reviewable threat model and domain/key contracts.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "All-domain AEAD/platform key lifecycle",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-C-02",
+      "parent": "V3-C",
+      "title": "Synthetic non-destructive migration and rollback",
+      "dependencies": [
+        "V3-C-01"
+      ],
+      "acceptance": [
+        "Independent all-domain recovery snapshot before writes, valid originals retained until verified recovery, atomic rollback for interruption/low disk/corruption/concurrency/empty legacy data."
+      ],
+      "status": "PENDING",
+      "role": "Data Engineer",
+      "completed": [],
+      "remaining": [
+        "Prototype fabricated migration fixtures and durable failure recovery."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Prototype fabricated migration fixtures and durable failure recovery.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Synthetic non-destructive migration and rollback",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-C-03",
+      "parent": "V3-C",
+      "title": "Independent review and native recovery gate",
+      "dependencies": [
+        "V3-C-02"
+      ],
+      "acceptance": [
+        "Qualified frozen-diff review; wrong key/tamper/key loss/low disk/process death/lock/restart/new-device recovery and owner acceptance before real migration."
+      ],
+      "status": "BLOCKED",
+      "role": "Independent Reviewer",
+      "completed": [],
+      "remaining": [
+        "Obtain review and authorized native evidence before activation."
+      ],
+      "blockers": [
+        "Physical recovery and owner activation gate absent."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Obtain review and authorized native evidence before activation.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Independent review and native recovery gate",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D",
+      "parent": null,
+      "title": "Encrypted backups, Drive, recovery and Notebook",
+      "dependencies": [
+        "V3-C-01"
+      ],
+      "acceptance": [
+        "Full coverage/manual recovery before automatic backup; user-owned storage; native Notebook security and explicit gates."
+      ],
+      "status": "BLOCKED",
+      "role": "Data Engineer",
+      "completed": [
+        "Experimental envelope/transport/diagnostic/review helpers exist."
+      ],
+      "remaining": [
+        "Finish full-domain manual recovery before live transport."
+      ],
+      "blockers": [
+        "Manual/native recovery absent."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Experimental envelope/transport/diagnostic/review helpers exist."
+        ]
+      },
+      "nextAction": "Finish full-domain manual recovery before live transport.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Encrypted backups, Drive, recovery and Notebook",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D1-01",
+      "parent": "V3-D",
+      "title": "Versioned full backup coverage",
+      "dependencies": [
+        "V3-C-01"
+      ],
+      "acceptance": [
+        "Profile, People/phone/notes/interactions/history/follow-ups, Life/history/next dates, Notebook, portable language/appearance/assistant/notification preferences, reviewed security choices and bounded media manifest; exclude keys/tokens/device/alarm IDs."
+      ],
+      "status": "PENDING",
+      "role": "Data Engineer",
+      "completed": [
+        "V1 owner/People plus separate Notebook review; Life/preferences incomplete."
+      ],
+      "remaining": [
+        "Design bounded versioned complete snapshot and legacy compatibility."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "V1 owner/People plus separate Notebook review; Life/preferences incomplete."
+        ]
+      },
+      "nextAction": "Design bounded versioned complete snapshot and legacy compatibility.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Versioned full backup coverage",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D1-02",
+      "parent": "V3-D",
+      "title": "Manual encrypted export/import and recovery key UX",
+      "dependencies": [
+        "V3-D1-01"
+      ],
+      "acceptance": [
+        "AES-256-GCM random 256-bit key/fresh 12-byte nonce/full 16-byte tag; encrypted envelope only; separate 64-hex key confirmation/loss instructions; explicit consent."
+      ],
+      "status": "PENDING",
+      "role": "Software Engineer",
+      "completed": [
+        "Partial cipher/envelope/key-format/native synthetic diagnostic."
+      ],
+      "remaining": [
+        "Implement synthetic consent/file/key/archive UX; no real transfers before gates."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Partial cipher/envelope/key-format/native synthetic diagnostic."
+        ]
+      },
+      "nextAction": "Implement synthetic consent/file/key/archive UX; no real transfers before gates.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Manual encrypted export/import and recovery key UX",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D1-03",
+      "parent": "V3-D",
+      "title": "Authenticated preview, conflict selection and durable restore",
+      "dependencies": [
+        "V3-D1-02",
+        "V3-C-02"
+      ],
+      "acceptance": [
+        "Authenticate before JSON/version/types/IDs/duplicate/limits validation; source/time/count/match comparison; explicit restore; all-domain rollback; no old device alarm IDs; review future reminders."
+      ],
+      "status": "PENDING",
+      "role": "Data Engineer",
+      "completed": [
+        "Review/admission/generation/Notebook candidates are not production restore."
+      ],
+      "remaining": [
+        "Test wrong key/tamper/unknown/corrupt/duplicate/low disk/interrupted writes/rollback/key loss."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Review/admission/generation/Notebook candidates are not production restore."
+        ]
+      },
+      "nextAction": "Test wrong key/tamper/unknown/corrupt/duplicate/low disk/interrupted writes/rollback/key loss.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Authenticated preview, conflict selection and durable restore",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D1-04",
+      "parent": "V3-D",
+      "title": "Manual recovery, retention and safe device migration acceptance",
+      "dependencies": [
+        "V3-D1-03",
+        "V3-C-03"
+      ],
+      "acceptance": [
+        "Independent review and authorized native full-domain recovery/new-device key/retained-data acceptance."
+      ],
+      "status": "BLOCKED",
+      "role": "QA Engineer",
+      "completed": [],
+      "remaining": [
+        "Prepare synthetic native recovery checklist; keep real restore/export disabled."
+      ],
+      "blockers": [
+        "Native recovery/retention gates unmet."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Prepare synthetic native recovery checklist; keep real restore/export disabled.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Manual recovery, retention and safe device migration acceptance",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D2-01",
+      "parent": "V3-D",
+      "title": "Drive consent, tokens and user-quota transport",
+      "dependencies": [
+        "V3-D1-04"
+      ],
+      "acceptance": [
+        "Minimum drive.appdata; purpose consent/revoke/wrong account/expiry/quota/resume; verified free commercial/privacy/no auto billing terms."
+      ],
+      "status": "PENDING",
+      "role": "Automation & Integration Engineer",
+      "completed": [
+        "Injected list/upload/download/resumable builders only; no live connection."
+      ],
+      "remaining": [
+        "Review contracts without linking accounts or sending records."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Injected list/upload/download/resumable builders only; no live connection."
+        ]
+      },
+      "nextAction": "Review contracts without linking accounts or sending records.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Drive consent, tokens and user-quota transport",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D2-02",
+      "parent": "V3-D",
+      "title": "Verified archives, retention and opt-in automation",
+      "dependencies": [
+        "V3-D2-01"
+      ],
+      "acceptance": [
+        "Manual recovery/retention/device acceptance before automatic scheduling; preserve good archive; opt-out stops; truthful failure notifications."
+      ],
+      "status": "BLOCKED",
+      "role": "Data Engineer",
+      "completed": [],
+      "remaining": [
+        "Close manual gates before enabling background backup."
+      ],
+      "blockers": [
+        "Manual recovery/native retention gates unmet."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Close manual gates before enabling background backup.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Verified archives, retention and opt-in automation",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D2-03",
+      "parent": "V3-D",
+      "title": "Bounded streaming and Android large-archive evidence",
+      "dependencies": [
+        "V3-D1-03"
+      ],
+      "acceptance": [
+        "Encrypted streaming/bounded staging/authenticated restore; actual Android synthetic 100 MB/1 GB/3 GB with network/token/quota/memory/power/storage failures."
+      ],
+      "status": "PENDING",
+      "role": "Performance Engineer",
+      "completed": [
+        "Logical 3 GiB simulations and multipart guard do not prove product large-file support."
+      ],
+      "remaining": [
+        "Design bounded resource and failure measurements."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Logical 3 GiB simulations and multipart guard do not prove product large-file support."
+        ]
+      },
+      "nextAction": "Design bounded resource and failure measurements.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Bounded streaming and Android large-archive evidence",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-D3-01",
+      "parent": "V3-D",
+      "title": "Disabled Notebook and native acceptance",
+      "dependencies": [
+        "V3-C-01"
+      ],
+      "acceptance": [
+        "SQLite/SecureStore/key mismatch/loss/checkpoint/conflict/dirty Back/biometric/lifecycle/low disk/recovery evidence, independent review and explicit activation approval."
+      ],
+      "status": "BLOCKED",
+      "role": "Android Engineer",
+      "completed": [
+        "Encrypted Notebook foundation/editor/session tests exist; production flag false."
+      ],
+      "remaining": [
+        "Preserve false gate; execute only authorized native synthetic plan."
+      ],
+      "blockers": [
+        "Android durability/key/recovery/activation evidence absent."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Encrypted Notebook foundation/editor/session tests exist; production flag false."
+        ]
+      },
+      "nextAction": "Preserve false gate; execute only authorized native synthetic plan.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Disabled Notebook and native acceptance",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E",
+      "parent": null,
+      "title": "People, Life and grounded intelligence",
+      "dependencies": [
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "Preserve delivered foundations; compatible new schemas/search/reminders with encryption/backup coverage."
+      ],
+      "status": "PENDING",
+      "role": "Principal Architect",
+      "completed": [
+        "People/Life/six local questions exist."
+      ],
+      "remaining": [
+        "Prioritize founder corrections before next major product increment."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "People/Life/six local questions exist."
+        ]
+      },
+      "nextAction": "Prioritize founder corrections before next major product increment.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "People, Life and grounded intelligence",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E1-01",
+      "parent": "V3-E",
+      "title": "People/history/contact/follow-up preservation",
+      "dependencies": [],
+      "acceptance": [
+        "Preserve create/edit/profile/context/phone/notes/interactions/search/history/date uncertainty/one follow-up/completion/stale-edit guards and explicit phone/contact actions; no automatic Contacts write."
+      ],
+      "status": "IMPLEMENTED",
+      "role": "Software Engineer",
+      "completed": [
+        "Existing implementation and synthetic inventory."
+      ],
+      "remaining": [
+        "Target changed integration regressions and retained-record device acceptance."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Existing implementation and synthetic inventory."
+        ]
+      },
+      "nextAction": "Target changed integration regressions and retained-record device acceptance.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "People/history/contact/follow-up preservation",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E1-02",
+      "parent": "V3-E",
+      "title": "Multiple commitments/tags/merge/matching",
+      "dependencies": [
+        "V3-C-02",
+        "V3-D1-01",
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "Compatible IDs/history/legacy schemas, multiple commitments/tags/merge/ambiguity decisions with encrypted persistence/search/backup."
+      ],
+      "status": "PENDING",
+      "role": "Software Engineer",
+      "completed": [],
+      "remaining": [
+        "Design synthetic compatibility and conflict fixtures."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Design synthetic compatibility and conflict fixtures.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Multiple commitments/tags/merge/matching",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E1-03",
+      "parent": "V3-E",
+      "title": "Optional encrypted photos/attachments",
+      "dependencies": [
+        "V3-C-03",
+        "V3-D2-03"
+      ],
+      "acceptance": [
+        "Purpose opt-in/deny/revoke, encrypted media/resource limits/deletion/retention/authenticated backup."
+      ],
+      "status": "DEFERRED",
+      "role": "Android Engineer",
+      "completed": [],
+      "remaining": [
+        "Keep inactive until scoped owner instruction and recovery gates."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Keep inactive until scoped owner instruction and recovery gates.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Optional encrypted photos/attachments",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E2-01",
+      "parent": "V3-E",
+      "title": "Life eight-category records/agenda/history preservation",
+      "dependencies": [],
+      "acceptance": [
+        "Preserve search/edit/delete/completion/explicit confirmed renewal; no invented dates or silent scheduling."
+      ],
+      "status": "IMPLEMENTED",
+      "role": "Software Engineer",
+      "completed": [
+        "Life/store/persistence/panel foundations documented."
+      ],
+      "remaining": [
+        "Verify changed locale/theme/timezone/durability paths; date-only agenda is not alarms."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Life/store/persistence/panel foundations documented."
+        ]
+      },
+      "nextAction": "Verify changed locale/theme/timezone/durability paths; date-only agenda is not alarms.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Life eight-category records/agenda/history preservation",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E2-02",
+      "parent": "V3-E",
+      "title": "Private Life reminders and durable People/Life reconciliation",
+      "dependencies": [
+        "V3-C-02",
+        "V3-D1-01",
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "Explicit time/multiple lead times/private routing and durable expected-state/outbox; create/edit/cancel/complete/reboot/DST/timezone/permission/process-death/duplicate tests."
+      ],
+      "status": "PENDING",
+      "role": "Android Engineer",
+      "completed": [
+        "People guards exist; disk/native side effects nontransactional; Life alarms absent."
+      ],
+      "remaining": [
+        "Design durable reconciliation and synthetic native-failure contracts."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "People guards exist; disk/native side effects nontransactional; Life alarms absent."
+        ]
+      },
+      "nextAction": "Design durable reconciliation and synthetic native-failure contracts.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Private Life reminders and durable People/Life reconciliation",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E3-01",
+      "parent": "V3-E",
+      "title": "Six grounded local questions/source links preservation",
+      "dependencies": [],
+      "acceptance": [
+        "Actual records only, six fixed questions/briefings/source links/unknowns/duplicate-name clarification; no unrestricted AI claim."
+      ],
+      "status": "IMPLEMENTED",
+      "role": "AI Engineer",
+      "completed": [
+        "groundedAssistant/panel/dailyBriefing foundation documented."
+      ],
+      "remaining": [
+        "Target changed integration and physical readability."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "groundedAssistant/panel/dailyBriefing foundation documented."
+        ]
+      },
+      "nextAction": "Target changed integration and physical readability.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Six grounded local questions/source links preservation",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E3-02",
+      "parent": "V3-E",
+      "title": "Unified allowed-domain retrieval and local query interpretation",
+      "dependencies": [
+        "V3-E1-02",
+        "V3-E2-01",
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "People/Life and explicitly allowed Notebook, local parsing/ranking/ambiguity/source links/assistant names/modular providers; confirm before writes."
+      ],
+      "status": "PENDING",
+      "role": "AI Engineer",
+      "completed": [
+        "Substring search and fixed questions are partial foundation."
+      ],
+      "remaining": [
+        "Design fabricated domain/permission/truthfulness contracts."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Substring search and fixed questions are partial foundation."
+        ]
+      },
+      "nextAction": "Design fabricated domain/permission/truthfulness contracts.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Unified allowed-domain retrieval and local query interpretation",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-E3-03",
+      "parent": "V3-E",
+      "title": "Optional AI/camera/voice/face/wearables",
+      "dependencies": [
+        "V3-C-03",
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "Disabled provider-independent interfaces; purpose consent/capture/external-processing/security/financial gates; no mandatory paid AI/consumer ChatGPT backend."
+      ],
+      "status": "DEFERRED",
+      "role": "AI Engineer",
+      "completed": [],
+      "remaining": [
+        "Keep inactive; research only under explicit scoped instruction."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Keep inactive; research only under explicit scoped instruction.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Optional AI/camera/voice/face/wearables",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F",
+      "parent": null,
+      "title": "Commercial and broader product readiness",
+      "dependencies": [
+        "V3-C-03",
+        "V3-D1-04",
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "Onboarding/offline/storage/accessibility/performance/errors/version/privacy/store/provider and physical gates; no invented pricing/revenue/promises."
+      ],
+      "status": "BLOCKED",
+      "role": "Product & Release Engineer",
+      "completed": [
+        "Policies and partial foundations exist; no commercial readiness."
+      ],
+      "remaining": [
+        "Close encryption/recovery/localization/design/device blockers."
+      ],
+      "blockers": [
+        "Commercial security/recovery/device gates open."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Policies and partial foundations exist; no commercial readiness."
+        ]
+      },
+      "nextAction": "Close encryption/recovery/localization/design/device blockers.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Commercial and broader product readiness",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F-01",
+      "parent": "V3-F",
+      "title": "Onboarding/profile/App Lock/privacy/permission lifecycle",
+      "dependencies": [
+        "V3-B1-02",
+        "V3-B2-03"
+      ],
+      "acceptance": [
+        "Complete functional TR/EN first use/settings; auth/background/deny/revoke/read-failure bytes/write-before-apply/no gate bypass."
+      ],
+      "status": "VERIFICATION_PENDING",
+      "role": "Android Engineer",
+      "completed": [
+        "Owner/privacy/auth foundations exist; PrivacyGate read-default behavior requires investigation."
+      ],
+      "remaining": [
+        "Reproduce lifecycle/read failures synthetically before scoped fixes."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Owner/privacy/auth foundations exist; PrivacyGate read-default behavior requires investigation."
+        ]
+      },
+      "nextAction": "Reproduce lifecycle/read failures synthetically before scoped fixes.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Onboarding/profile/App Lock/privacy/permission lifecycle",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F-02",
+      "parent": "V3-F",
+      "title": "Safe bug reports, redaction and failure/version UX",
+      "dependencies": [
+        "V3-B1-02"
+      ],
+      "acceptance": [
+        "No private/raw diagnostics; share consent/cancel; corruption/concurrency/full disk/version/retention safety."
+      ],
+      "status": "VERIFICATION_PENDING",
+      "role": "Software Engineer",
+      "completed": [
+        "Reports exist; non-array default/latest-50 behavior needs investigation."
+      ],
+      "remaining": [
+        "Diagnose fabricated corruption/concurrency/redaction without owner data."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Reports exist; non-array default/latest-50 behavior needs investigation."
+        ]
+      },
+      "nextAction": "Diagnose fabricated corruption/concurrency/redaction without owner data.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Safe bug reports, redaction and failure/version UX",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F-03",
+      "parent": "V3-F",
+      "title": "Measured offline/accessibility/performance/storage",
+      "dependencies": [
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "Bounded rendering/search/serialization/storage; TalkBack/font/keyboard/insets/all themes; offline useful with no paid AI; native evidence separate."
+      ],
+      "status": "PENDING",
+      "role": "Performance Engineer",
+      "completed": [],
+      "remaining": [
+        "Measure risk-based bottlenecks after integrated UI checkpoint."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": []
+      },
+      "nextAction": "Measure risk-based bottlenecks after integrated UI checkpoint.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Measured offline/accessibility/performance/storage",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F-04",
+      "parent": "V3-F",
+      "title": "Safe upgrades, versions and retained records",
+      "dependencies": [
+        "V3-A-04",
+        "V3-B2-05"
+      ],
+      "acceptance": [
+        "Actual metadata, preserved package/signing, strictly increasing code, owner version cadence; unresolved hotfix/equality wording retained; separate install/recovery/no reset authority."
+      ],
+      "status": "PENDING",
+      "role": "Android Engineer",
+      "completed": [
+        "Latest actual GitHub Test build logs: source 5b679b35a535ab723739a7b31d71ceeaa2b75acf, version 0.1.0/code2."
+      ],
+      "remaining": [
+        "Verify next candidate metadata; 0.2.0/code3 is planned only after gates, not assigned."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [
+          {
+            "classification": "historical actual build-tools logs re-inspected by Principal; no repeated binary download",
+            "sourceSHA": "5b679b35a535ab723739a7b31d71ceeaa2b75acf",
+            "run": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44565432466",
+            "artifact": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44565432466/artifacts/14552436266",
+            "package": "com.sweedycat.aimemory.githubtest",
+            "versionName": "0.1.0",
+            "versionCode": 2,
+            "certificateSHA256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+            "fileSHA256": "1478dd14018c759a8807730234b1bc7e606e5137d03c249c627e1054b63e5446",
+            "installedCompatibility": "UNVERIFIED"
+          }
+        ],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Latest actual GitHub Test build logs: source 5b679b35a535ab723739a7b31d71ceeaa2b75acf, version 0.1.0/code2."
+        ]
+      },
+      "nextAction": "Verify next candidate metadata; 0.2.0/code3 is planned only after gates, not assigned.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Safe upgrades, versions and retained records",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F-05",
+      "parent": "V3-F",
+      "title": "Independent Free/Plus/Pro/Business entitlement contracts",
+      "dependencies": [
+        "V3-C-03"
+      ],
+      "acceptance": [
+        "Verified provider-independent grants, records retained on expiry, no artificial Free degradation; all appearances free."
+      ],
+      "status": "PENDING",
+      "role": "Software Engineer",
+      "completed": [
+        "Policies only; no live entitlement product."
+      ],
+      "remaining": [
+        "Prepare disabled contract within approved scope."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Policies only; no live entitlement product."
+        ]
+      },
+      "nextAction": "Prepare disabled contract within approved scope.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Independent Free/Plus/Pro/Business entitlement contracts",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F-06",
+      "parent": "V3-F",
+      "title": "Play/StoreKit/Patreon/website payment readiness",
+      "dependencies": [
+        "V3-F-05"
+      ],
+      "acceptance": [
+        "Current regional terms/eligibility/versioned price/fee/security/compliance; no raw cards/client grants/duplicate billing/automatic provider cancellation."
+      ],
+      "status": "BLOCKED",
+      "role": "Product & Release Engineer",
+      "completed": [
+        "Strategy exists; live linking/checkout/webhooks/prices/promotions disabled."
+      ],
+      "remaining": [
+        "Keep providers disabled pending founder/financial/security gates."
+      ],
+      "blockers": [
+        "No live activation or verified financial/provider readiness."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Strategy exists; live linking/checkout/webhooks/prices/promotions disabled."
+        ]
+      },
+      "nextAction": "Keep providers disabled pending founder/financial/security gates.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Play/StoreKit/Patreon/website payment readiness",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F-07",
+      "parent": "V3-F",
+      "title": "Bootstrap-first financial/store/legal readiness",
+      "dependencies": [
+        "V3-F-06",
+        "V3-D1-04"
+      ],
+      "acceptance": [
+        "No paid services/trial obligations before settled revenue and explicit approval; reserves/stressed costs/hard controls; free commercial/privacy/limits/exhaustion verified; store/legal/support obligations."
+      ],
+      "status": "BLOCKED",
+      "role": "Product & Release Engineer",
+      "completed": [
+        "Existing financial/payment policies retained."
+      ],
+      "remaining": [
+        "Prepare evidence and founder decisions without purchases or promises."
+      ],
+      "blockers": [
+        "Security/recovery/device/provider/financial gates open."
+      ],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Existing financial/payment policies retained."
+        ]
+      },
+      "nextAction": "Prepare evidence and founder decisions without purchases or promises.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Bootstrap-first financial/store/legal readiness",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    },
+    {
+      "id": "V3-F-08",
+      "parent": "V3-F",
+      "title": "Cloud accounts/sync/web/desktop/iOS/B2B direction",
+      "dependencies": [
+        "V3-C-03",
+        "V3-D1-04"
+      ],
+      "acceptance": [
+        "Local-first consent/key/free-service gates; cloud auth distinct from local profile; broader platforms/CRM/deal dossiers require separate scope and evidence."
+      ],
+      "status": "DEFERRED",
+      "role": "Principal Architect",
+      "completed": [
+        "Direction/proposals/portable source only."
+      ],
+      "remaining": [
+        "Keep inactive; draft branches are not delivered products."
+      ],
+      "blockers": [],
+      "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
+      "evidence": {
+        "automated": [],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": [],
+        "implementation": [
+          "Direction/proposals/portable source only."
+        ]
+      },
+      "nextAction": "Keep inactive; draft branches are not delivered products.",
+      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "description": "Cloud accounts/sync/web/desktop/iOS/B2B direction",
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Identify actual source/APK candidate; installation separately authorized.",
+          "Use synthetic new test inputs; preserve retained records and original bytes.",
+          "Founder Samsung Galaxy S26 Ultra observations targeted to this task acceptance; record expected/observed behavior.",
+          "Applicable changed paths: restart/reopen, denial/revocation, App Lock/privacy, native delivery/durability/recovery, fonts/TalkBack/keyboard/insets and all five themes.",
+          "Automated/CI/APK evidence cannot substitute physical acceptance."
+        ]
+      }
+    }
+  ],
+  "localValidation": {
+    "at": "2026-11-20T03:07:44.387Z",
+    "result": "PASS",
+    "checks": [
+      "JSON roundtrip",
+      "45 unique stable IDs",
+      "all parents/dependencies exist",
+      "dependency DAG acyclic",
+      "all states in declared enum",
+      "required metadata/evidence/device acceptance fields present"
+    ],
+    "scope": "Local docs/schema validation only; no app tests, review, new CI, build or physical acceptance."
+  }
+}

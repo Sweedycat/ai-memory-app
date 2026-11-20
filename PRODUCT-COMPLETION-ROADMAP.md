@@ -1,3 +1,20 @@
+# Product requirement inventory — V3.1
+
+[TASK-REGISTRY.json](docs/omega/TASK-REGISTRY.json) is the **sole current task/status authority**. This file retains the detailed V3 requirements, backup coverage matrix, security risks and physical acceptance inventory. Earlier implementation descriptions below are historical evidence, not an alternate status queue. Owner instructions and topic policies still govern permissions.
+
+Snapshot 2026-11-20: B1 source `48cd226ebc03e3cd14383a4d57636ce08a599166` verified at its checkpoint; interrupted B2 WIP untested/unreviewed/no APK. Current-host Product & Release Engineer invoked; Automation & Integration Engineer validation open. All five appearances approved and permanently free. Former B3 scope remains B2-03/B2-04. No B2 physical acceptance or commercial readiness.
+
+| ID | Status | Scope | Next action |
+| --- | --- | --- | --- |
+| V3-A | VERIFICATION_PENDING | Governance and engineering integration | Complete registry checkpoint and remaining role/trigger validation. |
+| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
+| V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
+| V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
+| V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |
+| V3-F | BLOCKED | Commercial and broader product readiness | Close encryption/recovery/localization/design/device blockers. |
+
+## Retained detailed V3 inventory (historical descriptions; registry controls current status)
+
 # AI Memory product completion roadmap — Master Development V3
 
 Updated 2026-11-20. Starting source `be4e9bf421aaedfd71369dab741c16f2293bc630`, branch `development/omega-commercial-mvp`; local/remote matched, clean tree. Engineering records are English; founder reports and focused device checklists are Turkish. Git preserves the earlier audit. No completion percentages, launch promises or production approval.
@@ -56,7 +73,7 @@ Historical synthetic evidence below refers to existing tests/validation and prio
 | App Lock/device authentication/background privacy | Implemented | Privacy write-before-apply and lifecycle tests; full gate/native acceptance open; UI lock is not encryption |
 | Local bug report/share sheet/approved attachments | Partially implemented | Report source exists; corruption/concurrency/version/redaction and approved attachments incomplete |
 | Centralized English/Turkish/system default/user preference | Partially implemented | Life/assistant bilingual catalogs; other English catalogs/literals; no unified persisted app language |
-| Shared design/components/safe areas/accessibility/themes | Partially implemented | Insets/current styles/tests; founder reports mixed styles, oversized Back, card/margin/keyboard/inset issues; visual direction needs approval |
+| Shared design/components/safe areas/accessibility/themes | Partially implemented | Insets/current styles/tests; founder reports mixed styles, oversized Back, card/margin/keyboard/inset issues; all directions approved; integration/device acceptance pending |
 | People/Life/profile/preferences persistence | Implemented | Serialized writer, read-error blocking and life readback/base conflicts; no app-level authenticated encryption or proven independent native recovery |
 | Application-wide encryption and safe plaintext migration | Not implemented | V3 critical commercial blocker; Notebook foundation does not migrate People/Life/profile |
 | Independent Notebook title/content/dates/search/edit/delete | Implemented but disabled | Notebook panel/editor/session tests; NOTEBOOK_PRODUCTION_ENABLED=false; actual Android security/recovery and explicit activation approval required |

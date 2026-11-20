@@ -1,3 +1,24 @@
+# Current continuation
+
+Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
+
+| ID | Status | Scope | Next action |
+| --- | --- | --- | --- |
+| V3-A-02 | VERIFICATION_PENDING | Single registry and sanitized recovery checkpoint | Principal review, local validation, docs-only checkpoint/push and exact-SHA CI. |
+| V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
+| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
+| V3-B1-02 | IN_PROGRESS | Complete Turkish/English application flows | Complete language control and full catalog/flow audit; verify storage errors. |
+| V3-B2-01 | IN_PROGRESS | Centralized five free theme choices | Complete shared integration without duplicate theme screens. |
+
+1. Reinspect owner scope, AGENTS, branch/full HEAD/status; preserve WIP.
+2. Principal validates/reviews this sanitized docs checkpoint before substantial App work. Principal owns application/policy/Git integration.
+3. Resume B1-02/B2-01 through B2-05 in a bounded increment; focused checks/frozen review/checkpoint/exact-SHA CI.
+4. Prepare APK_READY after gates; if one hosted run is triggered, publish URL immediately and stop waiting/polling Gradle. Verify binary separately.
+5. Await founder Samsung observations before next major increment. Apply quota stop; no automatic resume.
+
+Baseline `48cd226ebc03e3cd14383a4d57636ce08a599166`; A source `a2cb5daf960cad2d2301680a4b445caea027b688`. Registry writer performed no network/install/build/device/commit/push action. B2 WIP has no validation claim.
+## Historical archive (superseded status snapshot)
+
 # Exact continuation
 
 ## Current Phase 4 checkpoint

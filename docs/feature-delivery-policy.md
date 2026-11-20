@@ -9,6 +9,17 @@ verification, device acceptance and commercial readiness are separate evidence.
 
 ## Mandatory delivery cycle
 
+V3.1 makes [TASK-REGISTRY.json](omega/TASK-REGISTRY.json) the single task-status
+authority. Register work and push a sanitized checkpoint before substantial
+implementation; synchronize human-readable summaries after progress. Recover
+actual interrupted work, specialist output, dependency and CI state before
+continuing. Never repeat verified work or mark COMPLETED before all applicable
+criteria (including required founder device acceptance) pass. Record independent
+implementation, automated, APK and physical evidence with exact source references.
+At or below 5% in either official usage window, start no new long-running task or
+unnecessary specialist session; preserve checkpoints early. The mandatory stop at
+or below 1%, zero spending and no automatic reset/resume remain unchanged.
+
 For each completed user-facing feature or significant UI/UX milestone:
 
 1. Complete the authorized implementation with observable acceptance criteria.

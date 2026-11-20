@@ -1,3 +1,18 @@
+# Current decisions and preserved ambiguities
+
+Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
+
+| ID | Status | Scope | Next action |
+| --- | --- | --- | --- |
+| V3-A-02 | VERIFICATION_PENDING | Single registry and sanitized recovery checkpoint | Principal review, local validation, docs-only checkpoint/push and exact-SHA CI. |
+| V3-A-03 | VERIFICATION_PENDING | Native roles, scoped tools and approval reuse | Revalidate Automation & Integration Engineer only when needed and authorized. |
+| V3-A-05 | IMPLEMENTED | Quota stop and bounded handoff | Apply official limits privately; finish safe checkpoint without inferred allowance. |
+| V3-B2-01 | IN_PROGRESS | Centralized five free theme choices | Complete shared integration without duplicate theme screens. |
+| V3-C-01 | PENDING | All-domain AEAD/platform key lifecycle | Prepare independently reviewable threat model and domain/key contracts. |
+
+V3.1 keeps one JSON authority and existing DECISION-LOG/APK-STATUS names; no duplicate DECISIONS/RELEASE-STATUS. Former B3 is B2-03/B2-04. All five appearances approved/permanently free; approval is not implementation/device acceptance. Current-host product_release_engineer invoked successfully; automation role remains unverified. Third-position version/versionCode equality ambiguities remain unresolved. No price/production promise/self-approval of critical changes.
+## Historical archive (superseded status snapshot)
+
 # Engineering decision log
 
 This is an index of approved decisions, not new financial/legal approval.

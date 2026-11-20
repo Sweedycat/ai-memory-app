@@ -1,3 +1,19 @@
+# Current roadmap
+
+Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
+
+| ID | Status | Scope | Next action |
+| --- | --- | --- | --- |
+| V3-A | VERIFICATION_PENDING | Governance and engineering integration | Complete registry checkpoint and remaining role/trigger validation. |
+| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
+| V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
+| V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
+| V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |
+| V3-F | BLOCKED | Commercial and broader product readiness | Close encryption/recovery/localization/design/device blockers. |
+
+Full requirements/security/backup/device matrix remains in [root inventory](../../PRODUCT-COMPLETION-ROADMAP.md). Former B3 scope is retained in B2-03/B2-04.
+## Historical archive (superseded status snapshot)
+
 # Approved roadmap
 
 Master Development V3 (2026-11-20) is the current priority source. Follow the

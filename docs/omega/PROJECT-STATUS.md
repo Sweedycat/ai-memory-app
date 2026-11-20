@@ -1,3 +1,19 @@
+# Current project status
+
+Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
+
+| ID | Status | Scope | Next action |
+| --- | --- | --- | --- |
+| V3-A | VERIFICATION_PENDING | Governance and engineering integration | Complete registry checkpoint and remaining role/trigger validation. |
+| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
+| V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
+| V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
+| V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |
+| V3-F | BLOCKED | Commercial and broader product readiness | Close encryption/recovery/localization/design/device blockers. |
+
+B2 App/provider/theme/preferences/dependency WIP preserved and unverified. Life records and six grounded local questions already exist (E2-01/E3-01); old absence claims are archived. Notebook remains false. Sensitive local plaintext is a critical commercial blocker.
+## Historical archive (superseded status snapshot)
+
 # Project status
 
 Phase4 engineering update (2026-11-19): portable detector/source bootstrap,

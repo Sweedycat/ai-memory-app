@@ -94,6 +94,36 @@ All three visual directions are approved and must be retained: Theme A is the de
 
 ## 10. Mandatory verification before completion
 
+### Permanent V3.1 recovery and task tracking
+
+The founder's V3.1 directive requires recovery from the actual interrupted state,
+not a restart. Read [the authoritative task registry](docs/omega/TASK-REGISTRY.json)
+at every session start, reconcile branch/full HEAD, staged/unstaged/new files,
+specialist results, dependencies and exact-SHA CI, and resume unfinished B2 work
+first. Preserve valid unfinished and unrelated work; repeat only missing or
+invalidated verification. Register every task before implementation and push
+sanitized checkpoints before substantial new work and after meaningful progress.
+Never assume an interrupted operation succeeded or silently drop a mandatory task.
+
+Use stable task IDs, parent milestones/dependencies, acceptance criteria, role,
+completed/remaining work, blockers, source SHA, test/CI evidence, applicable device
+requirements, exact next action and updated timestamp. Separate PENDING,
+IN_PROGRESS, DEFERRED, BLOCKED, IMPLEMENTED, VERIFICATION_PENDING, VERIFIED,
+APK_READY, DEVICE_ACCEPTANCE_PENDING and COMPLETED. COMPLETED requires all
+applicable criteria, including founder acceptance when required. Synchronize
+human-readable roadmap/progress/handoff/decisions/issues/release/approval records
+from this single registry using existing canonical locations. Keep historical
+evidence explicitly historical; do not manufacture completion, approval counts,
+quota or live ChatGPT-to-Omega integration claims.
+
+Persist continuation records throughout execution: active milestone/task, exact
+branch/SHA, uncommitted paths/ownership, satisfied and remaining criteria, checks
+and exact next action. Review avoidable approval repetition, reuse only supported
+narrow authorized operations, and record observed statistics with unknown history
+clearly marked. No broad permission grants or sandbox bypass. Finish B2 and its
+review/CI/hosted APK readiness before the next major user-facing increment;
+required physical acceptance remains a separate founder gate.
+
 - Before changes, inspect branch, full HEAD, working-tree status, governing documents, and affected architecture. Verify task-specific preconditions; if cleanliness or an exact baseline is required and differs, stop without resetting/stashing owner work.
 - Before declaring completion, inspect the entire resulting diff and new files, confirm only authorized paths changed, check whitespace/conflict markers and internal policy consistency, and recheck branch, HEAD, and Git status. Run applicable tests/checks and report exact outcomes and omissions.
 - Scale checks to the authorized change. Documentation-only governance work requires source/policy review, consistency review, and Git verification; it does not require an APK build or app tests. Do not install packages, alter dependencies, build, or access devices when the task prohibits them.
@@ -106,6 +136,9 @@ The founder's 2026-11-19 replacement policy applies equally to reliable official
 - Above 10%: normal authorized development.
 - Above 5% through 10%: smaller, controlled milestones.
 - Above 2% through 5%: finish existing tasks and validate changes.
+- At or below 5% in either official window: do not start new long-running tasks
+  or unnecessary specialist sessions; prioritize safe checkpoints/continuity and
+  perform only small bounded operations with sufficient allowance.
 - Above 1% through 2%: finalize safe checkpoints, GitHub synchronization, exact-SHA CI verification and handoff.
 - At or below 1%: mandatory stop. Backend usage denial also requires stopping, regardless of displayed percentages.
 - Apply the most restrictive observed window. Begin final checkpoint preparation earlier whenever needed to avoid interrupted writes or incomplete handoffs.

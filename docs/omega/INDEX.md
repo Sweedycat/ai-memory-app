@@ -1,3 +1,19 @@
+# Omega knowledge center
+
+Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the sole current task/status authority. This is a synchronized projection; owner instructions/topic policies govern permissions. Historical material below is archived and cannot schedule work or override current status.
+
+| ID | Status | Scope | Next action |
+| --- | --- | --- | --- |
+| V3-A | VERIFICATION_PENDING | Governance and engineering integration | Complete registry checkpoint and remaining role/trigger validation. |
+| V3-B | IN_PROGRESS | Bilingual app, five free appearances and functional Settings | Complete bounded B2 integration and focused gates. |
+| V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
+| V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
+| V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |
+| V3-F | BLOCKED | Commercial and broader product readiness | Close encryption/recovery/localization/design/device blockers. |
+
+Read [registry](TASK-REGISTRY.json), [progress](PROGRESS.md), [handoff](HANDOFF.md), [issues](KNOWN-ISSUES.md), [queue](TASK-QUEUE.md), [roadmap](ROADMAP.md), [project status](PROJECT-STATUS.md), [APK evidence](APK-STATUS.md), [decisions](DECISION-LOG.md), [approvals](APPROVAL-LOG.md). Change registry first, then synchronize projections in the same checkpoint. Existing TEST-STATUS/compatibility logs are historical evidence indexes, not alternate current task authorities. Retain root inventory and financial/payment/backup/branch policies.
+## Historical archive (superseded status snapshot)
+
 # Omega engineering knowledge center
 
 AI Memory is a phone-first, local-first personal memory application. This
