@@ -15,10 +15,10 @@
     ]
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-20T03:47:45.370Z",
+  "updatedAt": "2026-11-20T03:50:24.780Z",
   "branch": "development/omega-commercial-mvp",
   "sourceCheckpoint": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
-  "workingTree": "B2 implementation committed/pushed and exact-SHA full/portability CI successful; application source frozen. Release-evidence docs only; no APK/device acceptance yet.",
+  "workingTree": "One authorized hosted B2 APK run acknowledged; no application WIP. This follow-up records build/continuation evidence only; no further attempt or interactive Gradle wait.",
   "evidenceProvenance": "Historical A/B1 evidence supplied by Principal and records; no historical rerun/network by registry writer. Current custom Product & Release Engineer invocation confirmed by Principal.",
   "states": [
     "PENDING",
@@ -34,11 +34,11 @@
   ],
   "approvalAccounting": {
     "historicalTotal": null,
-    "currentResumedTaskNewRequests": 4,
-    "asOf": "2026-11-20T03:47:45.370Z",
-    "definition": "Four explicit require_escalated Git calls observed through B2 source push; three saved narrow command rules observed, including a host-approved registry-sync command. Manual popup total is not exposed; zero repeated business-authorization questions.",
-    "newSavedNarrowRules": 4,
-    "manualPopupTotal": null
+    "currentResumedTaskNewRequests": 7,
+    "newSavedNarrowRules": 6,
+    "manualPopupTotal": null,
+    "asOf": "2026-11-20T03:50:24.780Z",
+    "definition": "Observed before final handoff synchronization:7 explicit require_escalated Git calls and6 saved narrow command-rule events. These are tool events, not manual-popup/business-approval counts; manual UI total is not exposed. Zero repetitive business-authorization questions."
   },
   "policy": {
     "quota": "<=1% mandatory stop; <=5% no new long tasks/unnecessary agents; unknown official telemetry one bounded milestone then stop; no inferred allowance or automatic reset resume.",
@@ -329,7 +329,7 @@
           "B1 foundation verified; interrupted B2 WIP preserved."
         ]
       },
-      "nextAction": "One hosted APK attempt, actual binary verification, then targeted founder acceptance.",
+      "nextAction": "After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting.",
       "updatedAt": "2026-11-20T03:07:44.387Z",
       "description": "Bilingual app, five free appearances and functional Settings",
       "deviceAcceptance": {
@@ -667,7 +667,8 @@
       "completed": [
         "Scoped App49, feature62, core41, Settings3 and gate2 synthetic tests passed at their recorded intermediate scopes.",
         "Doctor21/21 passed with Expo57 safe-area/system-ui dependencies; final integrated typecheck passed.",
-        "Reviewed implementation committed/pushed at aa7565cadc5737fca1581eb1ed52c4f499e45348"
+        "Reviewed implementation committed/pushed at aa7565cadc5737fca1581eb1ed52c4f499e45348",
+        "Exact-SHA source CI succeeded; one hosted run acknowledged at https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253 from c41410e938004677f0b2a78a70b407bb908ea13b."
       ],
       "remaining": [
         "Verify exact-SHA CI, prepare hosted APK readiness and verify actual binary.",
@@ -684,13 +685,15 @@
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
         ],
-        "apk": [],
+        "apk": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253 (build triggered only; actual APK verification pending)"
+        ],
         "device": [],
         "commercial": [],
         "implementation": []
       },
-      "nextAction": "Trigger existing one-attempt hosted path, publish run link immediately and stop interactive build waiting.",
-      "updatedAt": "2026-11-20T03:45:55.531Z",
+      "nextAction": "After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting.",
+      "updatedAt": "2026-11-20T03:50:24.780Z",
       "description": "Review, tests, APK_READY and founder acceptance",
       "deviceAcceptance": {
         "required": true,
@@ -2085,7 +2088,7 @@
     "scope": "Local docs/schema validation only; no app tests, review, new CI, build or physical acceptance."
   },
   "delivery": {
-    "state": "APK_READY",
+    "state": "BUILD_TRIGGERED",
     "implementationSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
     "ci": [
       "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
@@ -2096,11 +2099,14 @@
     "package": "com.sweedycat.aimemory.githubtest",
     "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
     "workflow": ".github/workflows/android-preview-apk.yml",
-    "trigger": "One empty development-branch commit with exact subject build: preview APK [APK_READY], no body; do not rerun.",
+    "trigger": "ALREADY TRIGGERED ONCE. Do not create another marker or rerun. After completion inspect actual APK metadata/signature/hash; do not claim APK_VERIFIED yet.",
     "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
-    "buildSHA": null,
-    "runURL": null,
+    "buildSHA": "c41410e938004677f0b2a78a70b407bb908ea13b",
+    "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253",
     "installedCompatibility": "UNVERIFIED",
-    "physicalAcceptance": "PENDING"
-  }
+    "physicalAcceptance": "PENDING",
+    "observedWorkflowStatus": "in_progress",
+    "artifactURL": null
+  },
+  "latestPublishedCheckpoint": "c41410e938004677f0b2a78a70b407bb908ea13b"
 }

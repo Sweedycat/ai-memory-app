@@ -2,12 +2,12 @@
 
 [TASK-REGISTRY.json](docs/omega/TASK-REGISTRY.json) is the **sole current task/status authority**. This file retains the detailed V3 requirements, backup coverage matrix, security risks and physical acceptance inventory. Earlier implementation descriptions below are historical evidence, not an alternate status queue. Owner instructions and topic policies still govern permissions.
 
-Snapshot 2026-11-20: B1 source `48cd226ebc03e3cd14383a4d57636ce08a599166` verified at its checkpoint; B2 source integrated/frozen with scoped tests; final regression/review/new CI/APK/device evidence pending. Current-host Product & Release Engineer invoked; Both new role types invoked on the current host. All five appearances approved and permanently free. Former B3 scope remains B2-03/B2-04. No B2 physical acceptance or commercial readiness.
+Snapshot 2026-11-20: B1 source `48cd226ebc03e3cd14383a4d57636ce08a599166` verified at its checkpoint; B2 source reviewed/tested and exact-SHA CI passed; hosted build c41410e938004677f0b2a78a70b407bb908ea13b triggered once; APK verification/device acceptance pending. Current-host Product & Release Engineer invoked; Both new role types invoked on the current host. All five appearances approved and permanently free. Former B3 scope remains B2-03/B2-04. No B2 physical acceptance or commercial readiness.
 
 | ID | Status | Scope | Next action |
 | --- | --- | --- | --- |
 | V3-A | VERIFIED | Governance and engineering integration | Preserve verified checkpoint and narrow operational boundaries. |
-| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | One hosted APK attempt, actual binary verification, then targeted founder acceptance. |
+| V3-B | DEVICE_ACCEPTANCE_PENDING | Bilingual app, five free appearances and functional Settings | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
 | V3-C | BLOCKED | App-wide encryption and safe migration | Prepare architecture and synthetic recovery. |
 | V3-D | BLOCKED | Encrypted backups, Drive, recovery and Notebook | Finish full-domain manual recovery before live transport. |
 | V3-E | PENDING | People, Life and grounded intelligence | Prioritize founder corrections before next major product increment. |

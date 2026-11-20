@@ -15,7 +15,7 @@ Current snapshot: 2026-11-20. [TASK-REGISTRY.json](TASK-REGISTRY.json) is the so
 | V3-B2-02 | VERIFIED | Theme previews, immediate apply and persistence | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-B2-03 | VERIFIED | Shared components and functional Settings (former B3) | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
 | V3-B2-04 | VERIFIED | Founder layout/navigation defects (former B3) | Targeted founder device acceptance after verified hosted artifact; do not start next major feature. |
-| V3-B2-05 | APK_READY | Review, tests, APK_READY and founder acceptance | Trigger existing one-attempt hosted path, publish run link immediately and stop interactive build waiting. |
+| V3-B2-05 | APK_READY | Review, tests, APK_READY and founder acceptance | After hosted run completes, inspect actual APK/package/version/code/certificate/SHA-256, then targeted founder acceptance. No new build/retry or interactive waiting. |
 | V3-C-01 | PENDING | All-domain AEAD/platform key lifecycle | Prepare independently reviewable threat model and domain/key contracts. |
 | V3-C-02 | PENDING | Synthetic non-destructive migration and rollback | Prototype fabricated migration fixtures and durable failure recovery. |
 | V3-C-03 | BLOCKED | Independent review and native recovery gate | Obtain review and authorized native evidence before activation. |
