@@ -25,7 +25,7 @@ evidence; Android hardware behavior remains an acceptance gate.
 | People, phones, notes, interactions, commitments, follow-ups/history | `src/hooks/usePersistentPeople.ts:8`, `src/utils/normalizeStoredPeople.ts` / @ai-memory/people-v1 | Plaintext JSON; shared single writer and failure retry. Preserve exact raw bytes independently of normalization. No aggregate transaction or cross-process CAS. |
 | Life records and previous revision/history | `src/utils/lifeRecordStore.ts:3` / @ai-memory/life-records-v1 | Plaintext versioned document; validation, queue, comparison and readback. Advisory comparison is not native CAS. |
 | Owner profile | `src/components/OwnerProfileGate.tsx:49` / @ai-memory/owner-profile/v1 | Plaintext; failed reads block content, baseline/readback protect saves. |
-| Privacy/App Lock policy | `src/components/PrivacyGate.tsx:45,64,137` / @ai-memory/privacy-settings/v1 | Plaintext. Read errors select lock-enabled defaults, not an established authentication bypass. Partially invalid objects can retain lock-disabled=false policy semantics; permissive normalization and concealed read failure require repair before migration. |
+| Privacy/App Lock policy | `src/components/PrivacyGate.tsx:45,64,137` / @ai-memory/privacy-settings/v1 | Plaintext. Read errors select lock-enabled defaults, not an established authentication bypass. Partially invalid objects can retain `appLockEnabled:false` despite another invalid field; permissive normalization and concealed read failure require repair before migration. |
 | Language and appearance | `src/i18n/languageStore.ts:5`, `src/theme/appearanceStore.ts:5`, `src/preferences/enumPreferenceStore.ts` | Plaintext; validated serialized preference writes/readback. Preserve explicit system/default selection. These non-content preferences may remain outside the encrypted content vault so locked screens can use the selected language/theme; include them in recovery coverage. |
 | Bug reports | `src/components/BugReportPanel.tsx:45,128` / @ai-memory/bug-reports/v1 | Plaintext free text/reporter; bounded history and retry identity. Treat as sensitive; explicit Share remains a separate external-disclosure consent boundary, never an automatic diagnostic attachment. |
 | Backup preferences | `src/components/BackupSafetyDiagnostics.tsx:29,45` / ai-memory.backup.preferences.v1 | Plaintext; empty raw string treated as absent, mount canonicalizes/writes. Must not become a migration read/repair path. Actual automatic backup is not implemented. |
@@ -111,6 +111,22 @@ Do not change backup configuration or delete existing copies in this checkpoint.
 
 ## Non-destructive migration state machine
 
+Backend routing is part of the native transaction protocol, not a UI preference.
+Every reader/writer must consult one authoritative migration journal on startup.
+Before commit only the fenced legacy backend is authoritative; after commit only
+the authenticated active vault generation is authoritative. Reconcile uncertain
+journal states before exposing content. Missing/inaccessible keys, inconsistent
+markers and ambiguous commits block access; never fall back to old plaintext.
+Legacy writers must remain fenced after commit, including a second process or
+late callback. These adapter/backend guarantees are not implemented yet.
+
+Privacy bootstrap must avoid a circular trust dependency: a valid plaintext
+legacy policy may guide the pre-migration UI, but cannot authorize an encrypted
+vault session. Owner-authenticated key access precedes validation of encrypted
+policy; only authenticated policy may later permit lock-disabled content access.
+Unknown policy remains blocked with non-destructive retry. BUG-C-001 and the
+native session protocol must be reviewed before C-key-and-storage activation.
+
 1. **BLOCKED/PREFLIGHT:** explicit owner session/consent; supported schemas;
    source sizes; adequate storage; readable existing keys; no pending Notebook
    recovery; writer authority for every affected domain. Failure changes nothing.
@@ -120,8 +136,18 @@ Do not change backup configuration or delete existing copies in this checkpoint.
    protocol must be reviewed before real writes; otherwise stop.
 3. **CAPTURED:** snapshot allowlisted original raw values, including absent versus
    empty, whitespace, unknown/legacy content and all affected policy/preferences.
-   Preserve Notebook database/ciphertext separately with its existing key binding;
-   do not insert keys into portable data. Read failure aborts capture.
+   Raw preservation is not schema admission: malformed strings may be preserved
+   losslessly while later migration refuses to use them. Read failure aborts
+   capture; do not fabricate absent data.
+   Keep Notebook database/ciphertext and its existing key binding intact. For
+   independently recoverable portable content, separately authenticate and
+   re-encrypt every active/previous/draft/recovery candidate under the recovery
+   key, including the metadata needed to present unresolved candidates for explicit
+   review. Do not insert the local key into normal archive data. Independent
+   recovery must validate logical content without the old SecureStore; ciphertext
+   alone does not meet this gate. Unsupported/corrupt Notebook state blocks
+   migration. This conversion/reconstitution contract and its tests are pending;
+   no automatic candidate selection or journal resolution is authorized.
 4. **RECOVERY_VERIFIED:** encrypt and durably stage the lossless recovery artifact;
    verify independent recovery and owner key confirmation as above. Never write
    a plaintext rollback file. No source deletion or rewrite.
@@ -161,6 +187,39 @@ all-domain recovery archive or cryptographic implementation. Notebook, filesyste
 native journal and portable-notification conversion are explicit later contracts.
 Do not feed its plaintext in-memory value into disk, logs, exports or backup until
 the independently reviewed encrypted recovery path exists.
+
+### C-preservation contract registered before implementation
+
+The pure version1 manifest has exactly `kind`, `version`, `entries`; each of nine
+entries has only `key` and `raw` (string or null). The allowlist is the exact
+storage keys in the first eight table rows above: People, Life, owner, privacy,
+language, appearance, bug reports, backup preferences and permission marker.
+Unknown, extra, duplicate or missing domains/fields fail. Reorder into one fixed
+canonical order; copy inputs without normalizing their content. A null value means
+a confirmed absent key, not failed IO. The caller must establish that distinction.
+
+Per raw value limit: 8,388,608 UTF-16 code units. Entire serialized manifest:
+33,554,432 UTF-8 bytes including JSON escaping and structural overhead. These are
+conservative prototype admission ceilings, not claims about product capacity.
+Count in bounded chunks without splitting surrogate pairs; include JSON escaping
+so lone surrogates/control characters round-trip exactly as JS strings. Fail if
+required encoding capability is unavailable. Decode must check serialized bounds
+before parsing; structural bounds still apply after parsing. No storage reader,
+native/crypto imports, normalization, notification replay or key fields exist.
+The pure contract preserves strings returned by AsyncStorage, not raw SQLite
+file pages or an independently recoverable Notebook. Future sources require a
+versioned schema change, not silent allowlist expansion.
+
+### Independent design review
+
+Security Engineer reviewed the frozen first design at SHA256
+`9e5079988c0bb979c50ce98c8d080d92c73e52e720c2893fd3f108e1377f565d`.
+Disposition permits only the pure C-preservation checkpoint after explicit bounds;
+it does not approve complete migration or activation. High findings required
+independent Notebook recovery and authoritative backend routing; the additions
+above define their intended direction, with implementation/native evidence still
+pending. Medium policy-bootstrap and raw-preservation/admission distinctions are
+now explicit. A new frozen review is required for each implementation boundary.
 
 ## Audit findings retained in the registry
 
