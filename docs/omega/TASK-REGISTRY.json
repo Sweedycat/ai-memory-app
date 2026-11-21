@@ -16,7 +16,7 @@
     "historicalSourceCommit": "aa7565cadc5737fca1581eb1ed52c4f499e45348"
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-21T07:49:20.612Z",
+  "updatedAt": "2026-11-21T07:56:40.791Z",
   "branch": "development/omega-commercial-mvp",
   "sourceCheckpoint": "f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08",
   "workingTree": "Reviewed implementation/version delta committed and pushed; one hosted build triggered. This documentation evidence checkpoint does not trigger another APK.",
@@ -907,9 +907,12 @@
       ],
       "status": "IN_PROGRESS",
       "role": "Security Engineer",
-      "completed": [],
+      "completed": [
+        "Source-referenced sensitive storage inventory,nativekey/backup findings and proposed non-destructive migration design prepared."
+      ],
       "remaining": [
-        "Prepare independently reviewable threat model and domain/key contracts."
+        "Independent frozen design review and follow-up implementation checkpoints",
+        "Reviewed actual app-wide AEAD/platform-key lifecycle and native acceptance"
       ],
       "blockers": [],
       "sourceSHA": "48cd226ebc03e3cd14383a4d57636ce08a599166",
@@ -920,7 +923,9 @@
         "device": [],
         "commercial": [],
         "implementation": [],
-        "independentReview": []
+        "independentReview": [
+          "SecurityEngineer read-only source audit at1a579b54665396caea6758178287cf988f4eb2d7:platform-protected wrappingkey not JSDEK/nonexportability;keyloss/SecureStoredeletion/backupcoverage/nativegates documented."
+        ]
       },
       "nextAction": "Audit actual storage/key/encryption boundaries; produce independently reviewed non-destructive design before implementation.",
       "updatedAt": "2026-11-21T07:49:20.612Z",
@@ -948,9 +953,10 @@
         "V3-C-01"
       ],
       "acceptance": [
-        "Independent all-domain recovery snapshot before writes, valid originals retained until verified recovery, atomic rollback for interruption/low disk/corruption/concurrency/empty legacy data."
+        "Independent all-domain recovery snapshot before writes, valid originals retained until verified recovery, atomic rollback for interruption/low disk/corruption/concurrency/empty legacy data.",
+        "First bounded unit: pure in-memory manifest of all9current AsyncStorage keys,explicit absent/exactstring values;unknown/duplicate/missing domains and unbounded UTF8 rejected;no normalization/IO/activation. Not a complete Notebook/all-domain recovery snapshot."
       ],
-      "status": "PENDING",
+      "status": "IN_PROGRESS",
       "role": "Data Engineer",
       "completed": [],
       "remaining": [
@@ -967,8 +973,8 @@
         "implementation": [],
         "independentReview": []
       },
-      "nextAction": "Prototype fabricated migration fixtures and durable failure recovery.",
-      "updatedAt": "2026-11-20T03:07:44.387Z",
+      "nextAction": "Review docs/local-encryption-design.md; after approval implement pure C-preservation contract only, then qualified frozen implementation review.",
+      "updatedAt": "2026-11-21T07:56:40.791Z",
       "description": "Synthetic non-destructive migration and rollback",
       "deviceAcceptance": {
         "required": true,
@@ -980,7 +986,7 @@
           "Automated/CI/APK evidence cannot substitute physical acceptance."
         ]
       },
-      "startingSHA": null,
+      "startingSHA": "1a579b54665396caea6758178287cf988f4eb2d7",
       "commercialAcceptance": [
         "Required physical/security/recovery/provider gates before commercial readiness; no completion inferred from CI."
       ]
@@ -3077,6 +3083,54 @@
       ],
       "nextAction": "Preserve completed scoped B2 behavior; no repeat required.",
       "updatedAt": "2026-11-21T07:49:20.612Z"
+    },
+    {
+      "id": "BUG-C-001",
+      "parent": "V3-C",
+      "title": "Strict privacy policy load and non-destructive retry",
+      "description": "PrivacyGate masks unreadable settings with lock-enabled defaults and accepts partially invalid objects containing appLockEnabled:false. This is not a demonstrated generic read-error authentication bypass. Preserve unknown bytes and refuse policy publication until strict supported validation succeeds.",
+      "dependencies": [
+        "V3-C-01"
+      ],
+      "acceptance": [
+        "Distinguish successful absence,valid current/supported legacy policy,invalid bytes and readfailure",
+        "Unreadable/invalid policy keeps privatechildren unmounted and controls unavailable;localized explicit retry without storage writes/reset",
+        "Preserve valid lock-disabled and lock-enabled behavior,background/auth/save-before-apply;fence stale/unmounted/duplicate reads",
+        "Independent security review,negative/regression tests and focused device acceptance"
+      ],
+      "status": "PENDING",
+      "role": "Software Engineer",
+      "completed": [
+        "Source audit and independent security review identified medium validation/recovery gap; no fix yet."
+      ],
+      "remaining": [
+        "Register bounded implementation ownership;strict parser/load state/localized retry",
+        "Focused failure/lifecycle/security tests,independent review,exact-SHA CI and targeted device acceptance"
+      ],
+      "blockers": [],
+      "startingSHA": "1a579b54665396caea6758178287cf988f4eb2d7",
+      "sourceSHA": null,
+      "evidence": {
+        "automated": [],
+        "independentReview": [
+          "SecurityEngineer source audit: PrivacyGate64-77,136-150;DEFAULT_SETTINGS is lock-enabled. No writes/tests."
+        ],
+        "ci": [],
+        "apk": [],
+        "device": [],
+        "commercial": []
+      },
+      "deviceAcceptance": {
+        "required": true,
+        "criteria": [
+          "Invalid/readfailed policy never exposes privatecontent;retry/auth/restart/denial preserve policy and records"
+        ]
+      },
+      "commercialAcceptance": [
+        "No hidden policy reset or implicit overwrite of corrupt/unknown settings"
+      ],
+      "nextAction": "After reviewed PhaseC design,implement smallest strict-load preservation repair before real migration.",
+      "updatedAt": "2026-11-21T07:56:40.791Z"
     }
   ],
   "localValidation": {
@@ -3199,13 +3253,13 @@
     ]
   },
   "workUnit": {
-    "baselineSHA": "1403314d6d6a7c403ca145bdc5e0acb86c809f40",
+    "baselineSHA": "1a579b54665396caea6758178287cf988f4eb2d7",
     "tasks": [
       "V3-C-01",
       "V3-C-02",
-      "V3-C-03"
+      "BUG-C-001"
     ],
-    "state": "PhaseC audit and design registered before implementation; no runtime changes.",
+    "state": "Storage/key audit completed; frozen design independent review in progress; synthetic preservation unit registered before code.",
     "ownership": {
       "Principal": "Registry,policy reconciliation,audit/design integration",
       "DataEngineer": "Read-only storage-domain and migration reuse inventory",
@@ -3213,14 +3267,15 @@
     },
     "checks": [
       "Localclean1403314; exactSHAfull44875137431 andportability44875136857success",
-      "Completed B2 artifactCI identity/signature/hash verified; founderPASS10/10 recorded"
+      "Completed B2 artifactCI identity/signature/hash verified; founderPASS10/10 recorded",
+      "DataEngineer source inventory and SecurityEngineer native/key audit complete; no appdata or tests accessed"
     ],
     "remaining": [
-      "All sensitive storage/plaintext paths and existing migration primitive inventory",
-      "Reviewed Android key/biometric/recovery threat model and non-destructive migration state machine",
-      "Independent security review; then bounded synthetic-only implementation checkpoint if design permits"
+      "Resolve frozen design security review findings",
+      "Pure nine-domain AsyncStorage preservation manifest/tests,without IO/nativecrypto/runtime wiring",
+      "Strict privacy-policy repair BUG-C-001 and complete crypto/key/native/migration stages remain"
     ],
-    "nextAction": "Audit actual storage/key/encryption boundaries; produce independently reviewed non-destructive design before implementation.",
+    "nextAction": "Review docs/local-encryption-design.md; after approval implement pure C-preservation contract only, then qualified frozen implementation review.",
     "privacy": "No real user data/key access,real migration,securityflagactivation,APK or paid operation."
   },
   "currentApprovalAccounting": {
@@ -3329,5 +3384,18 @@
       "Physical Profile/report/Life/gated Notebook unsaved-flow coverage",
       "Encryption/migration/backup/Notebook acceptance"
     ]
+  },
+  "phaseCAudit": {
+    "document": "docs/local-encryption-design.md",
+    "baselineSHA": "1a579b54665396caea6758178287cf988f4eb2d7",
+    "review": "PENDING frozen design review",
+    "knownIssues": [
+      "BUG-C-001 strict privacy load",
+      "Backup preferences empty-string overwrite and mountwrite;permissionmarker unknown overwrite",
+      "Lossy owner/People-only backup snapshot;legacy nondeterministic normalization",
+      "No cross-process writer fence or all-domain nativecommit/independent rollback",
+      "Native SecureStore/key-loss/backup/device-transfer acceptance incomplete"
+    ],
+    "activation": "DISABLED;no realmigration/keychanges/Notebookactivation/plaintextdrafts/paidops"
   }
 }
