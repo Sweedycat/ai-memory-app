@@ -50,8 +50,8 @@ Policy sources: [README](README.md), [branch and version policy](docs/branch-pol
 ## 07. Preserve owner-defined versioning
 
 - The founder's 2026-11-21 clarification supersedes the former display-version cadence: development builds use `0.0.x-dev`; the first public release is planned as `0.1.0`; reserve `1.0.0` for a future product-maturity milestone. Earlier second-position/third-position statements are historical, not current build instructions. No public release is authorized by this plan.
-- The next eligible corrected B2 candidate is `0.0.4-dev` / Android versionCode `4`, subject to actual artifact history and identity checks. A lower display version than a historical development artifact does not lower the independent integer Android versionCode. Never trigger an APK solely for a display-version change.
-- The latest CI-verified GitHub Test artifact is `0.2.0` / code `3` (run44670257253), following historical `0.1.0`/code2 and `0.0.2`/code1. The previous unbuilt `0.3.0`/code4 proposal is superseded. No installed binary provenance or B2 acceptance is implied. Do not rename an installed app or bump versions for documentation or each source commit. Keep `app.json`, `package.json`, and `package-lock.json` consistent; keep `main` unchanged until approval.
+- The verified corrected B2 artifact is `0.0.4-dev` / Android versionCode `4`. Future candidates require actual artifact history and identity checks before a strictly higher code is assigned. A lower display version than a historical development artifact does not lower the independent integer Android versionCode. Never trigger an APK solely for a display-version change.
+- The latest CI-verified GitHub Test artifact is `0.0.4-dev` / code `4` (run44874930574, artifact14695688034), following historical `0.2.0`/code3, `0.1.0`/code2 and `0.0.2`/code1. The previous unbuilt `0.3.0` proposal is superseded. Founder-reported B2 acceptance is recorded separately from independently unmeasured installed binary provenance. Do not rename an installed app or bump versions for documentation or each source commit. Keep `app.json`, `package.json`, and `package-lock.json` consistent; keep `main` unchanged until approval.
 - Android `versionCode` is separate from the visible version. The branch policy requires it to monotonically increase; the upgrade checklist says "not lower" and prefers a strictly higher value. Preserve this wording discrepancy without deciding whether equality is permitted. Do not change or approve an update code based on an unresolved interpretation; obtain owner clarification if a proposed build depends on it.
 
 ## 08. Android APK upgrade and signing safety
@@ -103,6 +103,13 @@ coherent progress/failures frequently instead of relying on a final response.
 Reconcile actual local/remote state and surviving work after interruption. Never
 restart verified work or silently omit mandatory work. Keep parent states aligned
 with required children and explicit blocker/resolution/role/reopening conditions.
+
+The founder reported corrected B2 PASS10/10 on Samsung Galaxy S26 Ultra on
+2026-11-21 and explicitly authorized Phase C. Record these scoped observations
+and close only satisfied tasks; broader TalkBack/all-screen and recovery criteria
+remain tracked. Phase C may proceed through reviewed audit/design and synthetic
+checkpoints, without treating B2 acceptance as encryption, migration, Notebook
+activation or native recovery approval.
 
 Founder-reported S26 Ultra observations on the 0.2.0 candidate are scoped evidence,
 not proof of installed binary provenance or complete B2 acceptance. Preserve the

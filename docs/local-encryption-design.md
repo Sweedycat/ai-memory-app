@@ -98,6 +98,19 @@ affected source value and obtain explicit owner key confirmation. A boolean such
 as restoreAdmission.durableRollbackReady is not this evidence. Key-loss UX must
 explain that an archive without its recovery key cannot restore data.
 
+Keep two recovery contracts distinct. The encrypted **installation-local raw
+rollback artifact** preserves original strings, including existing same-device
+notification IDs; it is never a portable export. The separately versioned
+**portable recovery archive** preserves supported personal content and reminder
+intent, excludes all raw keys/credentials/device-specific notification IDs, and
+uses reviewed explicit mappings. Unsupported or unknown fields must block
+migration admission until preservation is defined; never silently drop them.
+Prove independent decryption of local rollback without the vault key, and prove
+portable recovery of all supported content without the original installation.
+The raw manifest below is only an input to the local contract; encrypting it does
+not make it an approved portable backup. Both conversions/verification remain
+unimplemented gates.
+
 ## Android backup and transfer boundary
 
 Pinned SecureStore plugin XML includes shared preferences and excludes SecureStore
@@ -206,6 +219,12 @@ so lone surrogates/control characters round-trip exactly as JS strings. Fail if
 required encoding capability is unavailable. Decode must check serialized bounds
 before parsing; structural bounds still apply after parsing. No storage reader,
 native/crypto imports, normalization, notification replay or key fields exist.
+The serialized decoder accepts only the exact canonical encoder output. Reject
+noncanonical whitespace, field/key ordering, alternate escapes and duplicate JSON
+member names rather than accepting JSON.parse's last-member-wins ambiguity.
+The builder/validator may reorder structured entry inputs into canonical order;
+raw personal strings, including JSON-looking text with duplicate members inside
+the string, are never parsed or normalized by this utility.
 The pure contract preserves strings returned by AsyncStorage, not raw SQLite
 file pages or an independently recoverable Notebook. Future sources require a
 versioned schema change, not silent allowlist expansion.
