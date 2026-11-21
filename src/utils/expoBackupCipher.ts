@@ -75,6 +75,7 @@ export async function generateBackupRecoveryKey(): Promise<string> {
 
 export async function createExpoAesGcmCipher(
   recoveryKeyHex: string,
+  additionalAuthenticatedData?: string,
 ): Promise<Aes256GcmBackupCipher> {
   // Deliberately require a 256-bit CSPRNG-created recovery key, NOT a user
   // password and NOT a weak, unsalted hash of a password.
@@ -82,6 +83,16 @@ export async function createExpoAesGcmCipher(
     throw new Error('A 256-bit recovery key is required');
   }
 
+  // Optional local-vault context is captured before awaiting key import. Keep
+  // existing backup/Notebook options identical when this argument is omitted.
+  let aad: Uint8Array | null = null;
+  if (additionalAuthenticatedData !== undefined) {
+    if (typeof additionalAuthenticatedData !== 'string' || !additionalAuthenticatedData.length ||
+        additionalAuthenticatedData.length > 4096) throw new Error('Invalid encryption context');
+    aad = new TextEncoder().encode(additionalAuthenticatedData);
+    if (aad.byteLength > 4096 || decodeUtf8Strict(aad) !== additionalAuthenticatedData)
+      throw new Error('Invalid encryption context');
+  }
   const key = await AESEncryptionKey.import(recoveryKeyHex, 'hex');
 
   return {
@@ -91,6 +102,7 @@ export async function createExpoAesGcmCipher(
       const sealed = await aesEncryptAsync(bytes, key, {
         nonce: { length: 12 },
         tagLength: 16,
+        ...(aad ? { additionalData: aad.slice() } : {}),
       });
       const combined = await sealed.combined('base64');
       if (typeof combined !== 'string') {
@@ -109,7 +121,10 @@ export async function createExpoAesGcmCipher(
           tagLength: 16,
         });
         stage = 'native-aes';
-        const encoded = await aesDecryptAsync(sealed, key, { output: 'base64' });
+        const encoded = await aesDecryptAsync(sealed, key, {
+          output: 'base64',
+          ...(aad ? { additionalData: aad.slice() } : {}),
+        });
         stage = 'base64-output';
         if (typeof encoded !== 'string') throw new Error('Unexpected AES output');
         const plaintext = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));

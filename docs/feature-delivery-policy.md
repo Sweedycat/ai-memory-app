@@ -1,7 +1,8 @@
 # Permanent feature delivery and device acceptance policy
 
 Founder version clarification (2026-11-21): development `0.0.x-dev`, verified
-B2 `0.0.4-dev`/code4; registered BUG-C-001 proposes `0.0.5-dev`/code5.
+B2 `0.0.4-dev`/code4; security checkpoint `0.0.5-dev`/code5 is now verified
+and founder-reported PASS8/8, without encryption/native-fault acceptance.
 First public release planned `0.1.0`, maturity
 `1.0.0` reserved. This supersedes earlier display cadence and the unbuilt0.3.0
 proposal. Android integer versionCode must strictly increase; preserve package,
