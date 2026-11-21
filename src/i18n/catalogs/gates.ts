@@ -2,6 +2,9 @@ import { ownerProfileEn } from '../../strings/ownerProfile.en';
 type CopyShape<T> = T extends string ? string : { [K in keyof T]: CopyShape<T[K]> };
 const english = {
   recovery: ownerProfileEn,
+  privacyLoadTitle: 'Your privacy settings could not be opened',
+  privacyLoadExplanation: 'Your saved settings have not been changed. Reload them to continue; your memories remain hidden.',
+  retryPrivacyLoad: 'Reload privacy settings',
   preparing: 'Preparing your privacy settings…', locked: 'Your memories are locked.',
   lockedBody: 'Personal notes, conversations and follow-ups stay hidden until the phone owner authenticates.',
   unlock: 'Unlock AI Memory', unlockButton: 'Unlock privately',
@@ -23,6 +26,9 @@ const english = {
 };
 export const gatesEn: CopyShape<typeof english> = english;
 export const gatesTr: typeof gatesEn = {
+  privacyLoadTitle: 'Gizlilik ayarlarınız açılamadı',
+  privacyLoadExplanation: 'Kayıtlı ayarlarınız değiştirilmedi. Devam etmek için yeniden yükleyin; anılarınız gizli kalır.',
+  retryPrivacyLoad: 'Gizlilik ayarlarını yeniden yükle',
   recovery: { loadTitle: 'Profiliniz açılamadı', loadExplanation: 'Profil verileri değiştirilmedi. Devam etmek için profilinizi yeniden yükleyin.', retryLoad: 'Profili yeniden yükle' },
   preparing: 'Gizlilik ayarlarınız hazırlanıyor…', locked: 'Anılarınız kilitli.',
   lockedBody: 'Kişisel notlar, konuşmalar ve takipler telefon sahibi kimliğini doğrulayana kadar gizli kalır.',

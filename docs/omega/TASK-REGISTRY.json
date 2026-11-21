@@ -16,7 +16,7 @@
     "historicalSourceCommit": "aa7565cadc5737fca1581eb1ed52c4f499e45348"
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-21T08:13:53.394Z",
+  "updatedAt": "2026-11-21T08:22:05.936Z",
   "branch": "development/omega-commercial-mvp",
   "sourceCheckpoint": "f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08",
   "workingTree": "Reviewed implementation/version delta committed and pushed; one hosted build triggered. This documentation evidence checkpoint does not trigger another APK.",
@@ -969,9 +969,13 @@
       "evidence": {
         "automated": [
           "Finalfocused14/14PASS;strictTSPASS;whitespacePASS",
-          "Pre-decoder-correctionfull634total/632pass/0fail/2Windows-skips; superseded for finalmodule by new finalfullrun"
+          "Pre-decoder-correctionfull634total/632pass/0fail/2Windows-skips; superseded for finalmodule by new finalfullrun",
+          "FINALfrozenpuremanifestfull636total634pass0fail2skip;exactcc03b31full/portabilityCI success."
         ],
-        "ci": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44883839961",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44883839911"
+        ],
         "apk": [],
         "device": [],
         "commercial": [],
@@ -3107,22 +3111,27 @@
         "Independent security review,negative/regression tests and focused device acceptance",
         "Current/historical841318b record hasbothfields; strictvalidboolean and0/30/60/300,unknown/duplicatefields invalid;read-onlyretrywithstale/unmounted/duplicatefence;preservevaliddisabled policy."
       ],
-      "status": "IN_PROGRESS",
+      "status": "VERIFICATION_PENDING",
       "role": "Software Engineer",
       "completed": [
-        "Source audit and independent security review identified medium validation/recovery gap; no fix yet."
+        "Source audit and independent security review identified medium validation/recovery gap; no fix yet.",
+        "Strict256-charactercurrentpolicyparser;null-onlydefault;duplicate/unknown/invalidfieldsblocked;privatechildrenunmountedoninvalid/unavailableread;read-onlyTR/ENretry;stale/StrictMode/unmount/backgroundguards;validenabled/disabledpolicyretained."
       ],
       "remaining": [
-        "Register bounded implementation ownership;strict parser/load state/localized retry",
-        "Focused failure/lifecycle/security tests,independent review,exact-SHA CI and targeted device acceptance"
+        "SuccessfulpublishedexactSHAfull/Doctor/TSandWindows+UbuntuportabilityCI",
+        "Oneverifiedhosted0.0.5-dev/code5APK,targetedfounderacceptance"
       ],
       "blockers": [],
       "startingSHA": "20a589376625801315d7bbf695fe6b5c8a6886dc",
       "sourceSHA": null,
       "evidence": {
-        "automated": [],
+        "automated": [
+          "Focused30/30PASS,strictTypeScriptPASS,metadata8/8PASS,whitespacePASS",
+          "FINALWindowsfull649total/647passed/0failed/2existingplatformskips;focused30/30andmetadata8/8PASS;strictTSPASS."
+        ],
         "independentReview": [
-          "SecurityEngineer source audit: PrivacyGate64-77,136-150;DEFAULT_SETTINGS is lock-enabled. No writes/tests."
+          "SecurityEngineer source audit: PrivacyGate64-77,136-150;DEFAULT_SETTINGS is lock-enabled. No writes/tests.",
+          "QualifiedSecurityEngineer,noimplementationauthorship,no blockingsecurityfinding. Original13filedigestc25c2699fefc1bd48c39d772294a8b65330c7554415e3aee003c165307c304ee; subsequentlow-severitycurrentbranch-policyhistorylinecorrectedbyPrincipal;criticalsourcehashesunchanged."
         ],
         "ci": [],
         "apk": [],
@@ -3138,8 +3147,8 @@
       "commercialAcceptance": [
         "No hidden policy reset or implicit overwrite of corrupt/unknown settings"
       ],
-      "nextAction": "AssignedSoftwareEngineer implements onlyPrivacyGate,privacySettingsLoad helper,gatescatalog and2focusedtestfiles afterthischeckpoint. QualifiedSecurityEngineer reviewsfrozenimplementation.",
-      "updatedAt": "2026-11-21T08:13:53.394Z"
+      "nextAction": "Finishfullregression,pushreviewedcheckpoint,verifyexactSHACIthenonehostedAPK; nointeractiveGradlewaiting.",
+      "updatedAt": "2026-11-21T08:22:05.936Z"
     }
   ],
   "localValidation": {
@@ -3153,66 +3162,30 @@
     "scope": "Registry/source-policy consistency; not device or commercial acceptance."
   },
   "delivery": {
-    "state": "ACCEPTED",
-    "implementationSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
-    "ci": [
-      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
-      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
-    ],
-    "expectedVersion": "0.0.4-dev",
-    "expectedVersionCode": 4,
+    "state": "VERIFICATION_PENDING",
+    "implementationSHA": null,
+    "ci": [],
+    "expectedVersion": "0.0.5-dev",
+    "expectedVersionCode": 5,
+    "actualVersion": null,
+    "actualVersionCode": null,
     "package": "com.sweedycat.aimemory.githubtest",
     "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
     "workflow": ".github/workflows/android-preview-apk.yml",
-    "trigger": "Exactly one empty request commit pushed with existing approved subject build: preview APK [APK_READY]; request label is historical trigger syntax, not actual artifact readiness.",
+    "trigger": "AfterexactSHAqualityCI,oneemptybuild: preview APK [APK_READY] request;immediateURL,noGradlewaiting/reruns.",
     "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
-    "buildSHA": "f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08",
-    "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574",
+    "buildSHA": null,
+    "runURL": null,
+    "artifactURL": null,
+    "artifactId": null,
+    "apkSha256": null,
+    "artifactZipDigest": null,
+    "runResult": null,
+    "observedWorkflowStatus": "NOT_TRIGGERED",
+    "verificationLevel": "Reviewedprivacyrepairpasseslocalchecks;exactSHACIandactualartifactpending.",
+    "physicalAcceptance": "PENDING_BUG-C-001",
     "installedCompatibility": "UNVERIFIED",
-    "physicalAcceptance": "FOUNDER_REPORTED_B2_PASS10/10_2026-11-21",
-    "observedWorkflowStatus": "completed",
-    "artifactURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574/artifacts/14695688034",
-    "artifactId": 14695688034,
-    "runResult": "success",
-    "verificationLevel": "Actual completed CI apksigner/aapt/sha256sum output verifies one signer/historicalcertificate/package0.0.4-dev/code4 and APK hash; artifact metadata verifies ZIP digest/source association. No independent installed binary measurement.",
-    "apkSha256": "bf76880407fa98622dd34b43e5ea01c40d0830bfe66f0514354794d35eabd258",
-    "artifactZipDigest": "sha256:59034c60c9463ffdf67ea9edbc659708db9f54f8fa75778c97bb4a9dbd7327cc",
-    "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository.",
-    "historicalArtifact": {
-      "state": "APK_VERIFIED",
-      "implementationSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
-      "ci": [
-        "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
-        "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
-      ],
-      "expectedVersion": "0.2.0",
-      "expectedVersionCode": 3,
-      "package": "com.sweedycat.aimemory.githubtest",
-      "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
-      "workflow": ".github/workflows/android-preview-apk.yml",
-      "trigger": "Previous attempt complete. Do not repeat it. Corrected source requires its own reviewed/CI-verified one-attempt hosted build.",
-      "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
-      "buildSHA": "c41410e938004677f0b2a78a70b407bb908ea13b",
-      "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253",
-      "installedCompatibility": "UNVERIFIED",
-      "physicalAcceptance": "NOT_ACCEPTED",
-      "observedWorkflowStatus": "in_progress",
-      "artifactURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253/artifacts/14600286231",
-      "artifactId": 14600286231,
-      "runResult": "success",
-      "verificationLevel": "Actual CI aapt/apksigner/sha256sum logs and artifact metadata; no independent binary download yet",
-      "apkSha256": "cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6",
-      "artifactZipDigest": "sha256:8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5",
-      "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository."
-    },
-    "attemptsThisIncrement": 1,
-    "buildSourceCI": {
-      "full": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930604",
-      "portability": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930646",
-      "observed": "Full44874930604 and portability44874930646 success at exactf29cec0 source."
-    },
-    "actualVersion": "0.0.4-dev",
-    "actualVersionCode": 4
+    "attemptsThisIncrement": 0
   },
   "latestPublishedCheckpoint": "f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08",
   "founderDeviceEvidence": {
@@ -3264,7 +3237,7 @@
     "tasks": [
       "BUG-C-001"
     ],
-    "state": "Purepreservationlocalchecks/reviewpassed; strictprivacyloadrepairregisteredbeforecode.",
+    "state": "Reviewedprivacyrepairfinalfullpassed;readytopublishandverifyexactSHACI.",
     "ownership": {
       "SoftwareEngineer": "PrivacyGate.tsx,privacySettingsLoad.ts,gates.ts,privacyGatePresentation.test.cjs,privacySettingsLoad.test.cjs",
       "Principal": "Registry/design/integration and proposed0.0.5-dev/code5 metadata/workflowtests; preserve identity/signing.",
@@ -3274,12 +3247,10 @@
       "Manifestfinal636total/634passed/0failed/2Windows-skips;strictTS/focused14passed;independentreviewno remainingpureutilityblocker"
     ],
     "remaining": [
-      "ExactpublishedSHAmanifestCI",
-      "Strictprivacypolicyloadrepair,negative/lifecycletests,independentreview/fullTS/Doctor/CI",
-      "Ifqualifyinguser-facingrepaircomplete,onehostedAPKwithstrictlynewcode;targetedfounderacceptance",
-      "Encryption/key/recovery/backend/migrationnativegates remain"
+      "SuccessfulpublishedexactSHAfull/Doctor/TSandWindows+UbuntuportabilityCI",
+      "Oneverifiedhosted0.0.5-dev/code5APK,targetedfounderacceptance"
     ],
-    "nextAction": "AssignedSoftwareEngineer implements onlyPrivacyGate,privacySettingsLoad helper,gatescatalog and2focusedtestfiles afterthischeckpoint. QualifiedSecurityEngineer reviewsfrozenimplementation.",
+    "nextAction": "Finishfullregression,pushreviewedcheckpoint,verifyexactSHACIthenonehostedAPK; nointeractiveGradlewaiting.",
     "deliveryProposal": {
       "reason": "Qualifying user-facing fail-closed privacy loading repair; no APK solely for version-name change.",
       "version": "0.0.5-dev",
@@ -3293,11 +3264,11 @@
     }
   },
   "currentApprovalAccounting": {
-    "scope": "PhaseC audit/preservation through review",
+    "scope": "PhaseCaudit+preservation+privacyrepair",
     "manualPopupTotal": null,
     "repetitiveBusinessQuestions": 0,
-    "hostControls": "Required narrow host permissions preserved; historical total not reconstructed.",
-    "asOf": "2026-11-21T08:09:04.074Z"
+    "hostControls": "Narrowmandatoryhostapprovalsreused;no broadgrantorpolicybypass.",
+    "asOf": "2026-11-21T08:22:05.936Z"
   },
   "verificationResume": {
     "baselineSHA": "0cfa66ed2961d450469655fde913820feed264de",
@@ -3414,7 +3385,7 @@
   },
   "phaseCPreservation": {
     "baselineSHA": "20a589376625801315d7bbf695fe6b5c8a6886dc",
-    "status": "VERIFICATION_PENDING",
+    "status": "VERIFIED",
     "paths": [
       "src/utils/legacyStorageManifest.ts",
       "tests/legacyStorageManifest.test.cjs"
@@ -3429,8 +3400,100 @@
     "independentReview": "SecurityEngineer authorednone; duplicateJSONmember findingclosed byexactcanonicalserializationcomparison; no remainingblocker for purein-memoryutility only. No crypto/migration/auth/activationapproval.",
     "runtime": "No runtimeimports,wiring,IO,nativecrypto,keys,flag/version/package/signaturechanges. Plaintextmanifest remainsinmemory only; notportablebackup or completedrecovery.",
     "remaining": [
-      "Published exact-SHA full/portability CI pending.",
       "Realcryptography/keylifecycle/independentrecovery/nativebackend/routing/privacypolicyrepair,migrationanddeviceacceptance remain"
+    ],
+    "sourceCommit": "cc03b31eb5ba88904c9d43669176fd6ac40a0865",
+    "ci": [
+      {
+        "url": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44883839961",
+        "result": "success",
+        "scope": "FullNotebookfoundationchecks includingDoctor/TS/fullunits"
+      },
+      {
+        "url": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44883839911",
+        "result": "success",
+        "scope": "Windows+Ubuntu portability"
+      }
     ]
+  },
+  "phaseCPrivacyRepair": {
+    "baselineSHA": "35fc0f4c5176036c734ab0b3a8584a17bff1f362",
+    "status": "VERIFICATION_PENDING",
+    "implementation": "Strict256-charactercurrentpolicyparser;null-onlydefault;duplicate/unknown/invalidfieldsblocked;privatechildrenunmountedoninvalid/unavailableread;read-onlyTR/ENretry;stale/StrictMode/unmount/backgroundguards;validenabled/disabledpolicyretained.",
+    "sourceHashes": {
+      "privacyGate": "a171e6c510d337b48c0b0aeded85ccfef7f3acf5f51ebc14b63c8db5c7f57bb0",
+      "loader": "df8ef6d624459ace6a2b9912037b65d897112f7107c6818cde00e53fb8726931"
+    },
+    "independentReview": "QualifiedSecurityEngineer,noimplementationauthorship,no blockingsecurityfinding. Original13filedigestc25c2699fefc1bd48c39d772294a8b65330c7554415e3aee003c165307c304ee; subsequentlow-severitycurrentbranch-policyhistorylinecorrectedbyPrincipal;criticalsourcehashesunchanged.",
+    "automated": [
+      "Focused30/30PASS,strictTypeScriptPASS,metadata8/8PASS,whitespacePASS",
+      "FINALWindowsfullserial649total/647passed/0failed/2existingplatformskips."
+    ],
+    "proposedVersion": "0.0.5-dev",
+    "proposedVersionCode": 5,
+    "physicalAcceptance": "PENDING;actualforeground-authcallbackordering,devicefallback,denial,background/restartandretainedsettings requiretargetedfounderacceptance.",
+    "activation": "No localencryption/key/migration/Notebook/backup/productionactivation."
+  },
+  "acceptedB2Delivery": {
+    "state": "ACCEPTED",
+    "implementationSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
+    "ci": [
+      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+    ],
+    "expectedVersion": "0.0.4-dev",
+    "expectedVersionCode": 4,
+    "package": "com.sweedycat.aimemory.githubtest",
+    "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+    "workflow": ".github/workflows/android-preview-apk.yml",
+    "trigger": "Exactly one empty request commit pushed with existing approved subject build: preview APK [APK_READY]; request label is historical trigger syntax, not actual artifact readiness.",
+    "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
+    "buildSHA": "f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08",
+    "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574",
+    "installedCompatibility": "UNVERIFIED",
+    "physicalAcceptance": "FOUNDER_REPORTED_B2_PASS10/10_2026-11-21",
+    "observedWorkflowStatus": "completed",
+    "artifactURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574/artifacts/14695688034",
+    "artifactId": 14695688034,
+    "runResult": "success",
+    "verificationLevel": "Actual completed CI apksigner/aapt/sha256sum output verifies one signer/historicalcertificate/package0.0.4-dev/code4 and APK hash; artifact metadata verifies ZIP digest/source association. No independent installed binary measurement.",
+    "apkSha256": "bf76880407fa98622dd34b43e5ea01c40d0830bfe66f0514354794d35eabd258",
+    "artifactZipDigest": "sha256:59034c60c9463ffdf67ea9edbc659708db9f54f8fa75778c97bb4a9dbd7327cc",
+    "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository.",
+    "historicalArtifact": {
+      "state": "APK_VERIFIED",
+      "implementationSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
+      "ci": [
+        "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
+        "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
+      ],
+      "expectedVersion": "0.2.0",
+      "expectedVersionCode": 3,
+      "package": "com.sweedycat.aimemory.githubtest",
+      "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
+      "workflow": ".github/workflows/android-preview-apk.yml",
+      "trigger": "Previous attempt complete. Do not repeat it. Corrected source requires its own reviewed/CI-verified one-attempt hosted build.",
+      "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
+      "buildSHA": "c41410e938004677f0b2a78a70b407bb908ea13b",
+      "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253",
+      "installedCompatibility": "UNVERIFIED",
+      "physicalAcceptance": "NOT_ACCEPTED",
+      "observedWorkflowStatus": "in_progress",
+      "artifactURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253/artifacts/14600286231",
+      "artifactId": 14600286231,
+      "runResult": "success",
+      "verificationLevel": "Actual CI aapt/apksigner/sha256sum logs and artifact metadata; no independent binary download yet",
+      "apkSha256": "cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6",
+      "artifactZipDigest": "sha256:8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5",
+      "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository."
+    },
+    "attemptsThisIncrement": 1,
+    "buildSourceCI": {
+      "full": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930604",
+      "portability": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930646",
+      "observed": "Full44874930604 and portability44874930646 success at exactf29cec0 source."
+    },
+    "actualVersion": "0.0.4-dev",
+    "actualVersionCode": 4
   }
 }

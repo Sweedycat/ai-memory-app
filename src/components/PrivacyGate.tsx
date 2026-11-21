@@ -23,16 +23,17 @@ import {
 } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { persistPrivacySettingBeforeApplying } from '../utils/privacySettingsPersistence';
+import {
+  DEFAULT_PRIVACY_SETTINGS,
+  loadPrivacySettings,
+  type LockDelaySeconds,
+  type PrivacySettings,
+} from '../utils/privacySettingsLoad';
+
+export type { LockDelaySeconds } from '../utils/privacySettingsLoad';
 
 type PrivacyGateProps = {
   children: React.ReactNode;
-};
-
-export type LockDelaySeconds = 0 | 30 | 60 | 300;
-
-type PrivacySettings = {
-  appLockEnabled: boolean;
-  lockDelaySeconds: LockDelaySeconds;
 };
 
 type PrivacyControls = PrivacySettings & {
@@ -43,11 +44,7 @@ type PrivacyControls = PrivacySettings & {
 };
 
 const STORAGE_KEY = '@ai-memory/privacy-settings/v1';
-const DEFAULT_SETTINGS: PrivacySettings = {
-  appLockEnabled: true,
-  lockDelaySeconds: 0,
-};
-const VALID_DELAYS: LockDelaySeconds[] = [0, 30, 60, 300];
+const DEFAULT_SETTINGS = DEFAULT_PRIVACY_SETTINGS;
 
 const PrivacyControlsContext = createContext<PrivacyControls>({
   ...DEFAULT_SETTINGS,
@@ -61,23 +58,6 @@ export function usePrivacyControls() {
   return useContext(PrivacyControlsContext);
 }
 
-function normalizeSettings(value: unknown): PrivacySettings {
-  if (!value || typeof value !== 'object') return DEFAULT_SETTINGS;
-
-  const candidate = value as Partial<PrivacySettings>;
-  const delay = VALID_DELAYS.includes(candidate.lockDelaySeconds as LockDelaySeconds)
-    ? (candidate.lockDelaySeconds as LockDelaySeconds)
-    : DEFAULT_SETTINGS.lockDelaySeconds;
-
-  return {
-    appLockEnabled:
-      typeof candidate.appLockEnabled === 'boolean'
-        ? candidate.appLockEnabled
-        : DEFAULT_SETTINGS.appLockEnabled,
-    lockDelaySeconds: delay,
-  };
-}
-
 export function PrivacyGate({ children }: PrivacyGateProps) {
   const { copy } = useI18n();
   const c = copy.ui.gates;
@@ -87,7 +67,12 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   const [message, setMessage] = useState<'' | 'noEnrollment' | 'authFailed' | 'authUnavailable'>('');
   const [settings, setSettings] = useState<PrivacySettings>(DEFAULT_SETTINGS);
   const [settingsReady, setSettingsReady] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
+  const alive = useRef(false);
+  const loading = useRef(false);
+  const loadGeneration = useRef(0);
+  const settingsReadyRef = useRef(false);
   const authenticating = useRef(false);
   const lockedRef = useRef(true);
   const settingsRef = useRef<PrivacySettings>(DEFAULT_SETTINGS);
@@ -116,50 +101,55 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   }, []);
 
   const persistSettings = useCallback(async (next: PrivacySettings) => {
+    if (!alive.current || !settingsReadyRef.current || loading.current) throw new Error('Privacy settings unavailable');
     // Fail closed: do not reflect privacy changes if storing them fails.
     await persistPrivacySettingBeforeApplying(
       next,
       (serialized) => AsyncStorage.setItem(STORAGE_KEY, serialized),
       (saved) => {
+        if (!alive.current || !settingsReadyRef.current || loading.current) return;
         settingsRef.current = saved;
         setSettings(saved);
       },
     );
   }, []);
 
-  useEffect(() => {
-    let mounted = true;
-
-    async function loadSettings() {
-      let next = DEFAULT_SETTINGS;
-
-      try {
-        const raw = await AsyncStorage.getItem(STORAGE_KEY);
-        if (raw) next = normalizeSettings(JSON.parse(raw));
-      } catch {
-        next = DEFAULT_SETTINGS;
-      }
-
-      if (!mounted) return;
-
-      settingsRef.current = next;
-      setSettings(next);
-      setSettingsReady(true);
-
-      if (!next.appLockEnabled) {
-        applyLocked(false);
-      }
+  const readSettings = useCallback(async () => {
+    if (!alive.current || loading.current || settingsReadyRef.current) return;
+    const generation = ++loadGeneration.current;
+    loading.current = true;
+    settingsReadyRef.current = false;
+    setSettingsReady(false);
+    setLoadError(false);
+    applyLocked(true);
+    const result = await loadPrivacySettings(() => AsyncStorage.getItem(STORAGE_KEY));
+    if (!alive.current || generation !== loadGeneration.current) return;
+    loading.current = false;
+    if (!result.ok) {
+      setLoadError(true);
+      return;
     }
-
-    void loadSettings();
-
-    return () => {
-      mounted = false;
-    };
+    settingsRef.current = result.settings;
+    setSettings(result.settings);
+    settingsReadyRef.current = true;
+    setSettingsReady(true);
+    if (!result.settings.appLockEnabled) applyLocked(false);
   }, [applyLocked]);
+
+  useEffect(() => {
+    alive.current = true;
+    void readSettings();
+    return () => {
+      alive.current = false;
+      settingsReadyRef.current = false;
+      loading.current = false;
+      loadGeneration.current += 1;
+    };
+  }, [readSettings]);
 
   const unlock = useCallback(async () => {
     if (
+      !alive.current || !settingsReadyRef.current || loading.current || appState.current !== 'active' ||
       authenticating.current ||
       !lockedRef.current ||
       !settingsRef.current.appLockEnabled
@@ -178,6 +168,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
         disableDeviceFallback: false,
       });
 
+      if (!alive.current || !settingsReadyRef.current || appState.current !== 'active') return;
       if (result.success) {
         applyLocked(false);
       } else if (result.error === 'not_enrolled') {
@@ -186,7 +177,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
         setMessage("authFailed");
       }
     } catch {
-      setMessage("authUnavailable");
+      if (alive.current && settingsReadyRef.current) setMessage("authUnavailable");
     } finally {
       authenticating.current = false;
     }
@@ -194,11 +185,11 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
 
   const setAppLockEnabled = useCallback(
     async (enabled: boolean) => {
-      if (!settingsReady) return false;
+      if (!alive.current || !settingsReadyRef.current || loading.current) return false;
       if (enabled === settingsRef.current.appLockEnabled) return true;
 
       if (!enabled) {
-        if (authenticating.current) return false;
+        if (authenticating.current || appState.current !== 'active') return false;
         authenticating.current = true;
 
         try {
@@ -209,7 +200,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
             disableDeviceFallback: false,
           });
 
-          if (!result.success) return false;
+          if (!result.success || !alive.current || !settingsReadyRef.current || appState.current !== 'active') return false;
         } catch {
           return false;
         } finally {
@@ -224,6 +215,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
 
       try {
         await persistSettings(next);
+        if (!alive.current || !settingsReadyRef.current) return false;
         clearLockTimer();
         clearResumeTimer();
         backgroundAt.current = null;
@@ -234,11 +226,12 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
         return false;
       }
     },
-    [applyLocked, clearLockTimer, clearResumeTimer, persistSettings, settingsReady],
+    [applyLocked, clearLockTimer, clearResumeTimer, persistSettings],
   );
 
   const setLockDelaySeconds = useCallback(
     async (seconds: LockDelaySeconds) => {
+      if (!alive.current || !settingsReadyRef.current || loading.current) return;
       const next: PrivacySettings = {
         ...settingsRef.current,
         lockDelaySeconds: seconds,
@@ -249,6 +242,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
   );
 
   const lockNow = useCallback(() => {
+    if (!alive.current || !settingsReadyRef.current || loading.current) return;
     if (!settingsRef.current.appLockEnabled) return;
     clearLockTimer();
     clearResumeTimer();
@@ -277,7 +271,7 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
       const previousState = appState.current;
       appState.current = nextState;
 
-      if (authenticating.current) return;
+      if (!alive.current || !settingsReadyRef.current || loading.current || authenticating.current) return;
 
       const currentSettings = settingsRef.current;
 
@@ -363,7 +357,14 @@ export function PrivacyGate({ children }: PrivacyGateProps) {
       <SafeAreaView edges={[]} style={styles.safe}>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.brand}>AI MEMORY</Text>
-          <Text style={styles.body}>{c.preparing}</Text>
+          {loadError ? <>
+            <Text style={styles.title}>{c.privacyLoadTitle}</Text>
+            <Text style={styles.body}>{c.privacyLoadExplanation}</Text>
+            <Pressable accessibilityRole="button" accessibilityLabel={c.retryPrivacyLoad}
+              style={styles.button} onPress={() => void readSettings()}>
+              <Text style={styles.buttonText}>{c.retryPrivacyLoad}</Text>
+            </Pressable>
+          </> : <Text style={styles.body}>{c.preparing}</Text>}
         </ScrollView>
       </SafeAreaView>
     );

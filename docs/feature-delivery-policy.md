@@ -1,7 +1,8 @@
 # Permanent feature delivery and device acceptance policy
 
-Founder version clarification (2026-11-21): development `0.0.x-dev`, next eligible
-corrected B2 `0.0.4-dev`/code4; first public release planned `0.1.0`, maturity
+Founder version clarification (2026-11-21): development `0.0.x-dev`, verified
+B2 `0.0.4-dev`/code4; registered BUG-C-001 proposes `0.0.5-dev`/code5.
+First public release planned `0.1.0`, maturity
 `1.0.0` reserved. This supersedes earlier display cadence and the unbuilt0.3.0
 proposal. Android integer versionCode must strictly increase; preserve package,
 signing and data. No APK solely for a version-name change. B2 acceptance remains

@@ -27,10 +27,10 @@ authorize equal/lower milestone update codes or third-position reinterpretation.
 
 ## Current founder version policy (2026-11-21)
 
-- Development builds use `0.0.x-dev`. The next eligible corrected B2 candidate is `0.0.4-dev` / Android versionCode `4`.
+- Development builds use `0.0.x-dev`. The accepted B2 artifact is `0.0.4-dev` / Android versionCode `4`; registered BUG-C-001 privacy-load repair proposes `0.0.5-dev`/code5 after its quality gates. Source metadata is not a produced APK.
 - The first public release is planned as `0.1.0`; reserve `1.0.0` for a future product-maturity milestone. Neither is authorization to publish.
 - This explicit founder decision supersedes the older display-version cadence below, including the unbuilt `0.3.0` proposal. Keep those statements only as historical decisions.
-- Android updates use the independent, strictly increasing integer versionCode, unchanged package and signing identity. Latest verified GitHub Test artifact is `0.2.0`/code3 (run44670257253); the proposed code4 exceeds it. Installed identity remains unverified and separately gated before installation.
+- Android updates use the independent, strictly increasing integer versionCode, unchanged package and signing identity. Latest verified GitHub Test artifact is `0.0.4-dev`/code4 (run44874930574); the proposed privacy repair code5 exceeds it. Installed identity remains unverified and separately gated before installation.
 - Keep all manifests consistent. No APK solely for renaming a version; the corrected B2 feature increment still requires tests, independent review, exact-SHA CI and founder device acceptance.
 
 ## Historical owner-defined version numbering (superseded)

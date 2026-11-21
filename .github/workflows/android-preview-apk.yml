@@ -71,9 +71,9 @@ jobs:
           if (config.android?.package !== 'com.sweedycat.aimemory.githubtest') throw Error('Unexpected APK package');
           if (!/^0\.0\.(?:0|[1-9]\d*)-dev$/.test(config.version) || pkg.version !== config.version ||
               lock.version !== config.version || lock.packages?.['']?.version !== config.version) throw Error('Inconsistent APK version');
-          // Last verified delivered candidate: 0.2.0 / code 3. Recheck the latest
+          // Last verified delivered candidate: 0.0.4-dev / code 4. Recheck the latest
           // actual artifact before every increment; this floor is not release history.
-          if (!Number.isSafeInteger(config.android.versionCode) || config.android.versionCode <= 3) throw Error('APK update code must exceed verified baseline 3');
+          if (!Number.isSafeInteger(config.android.versionCode) || config.android.versionCode <= 4) throw Error('APK update code must exceed verified baseline 4');
           console.log('version=' + config.version);
           console.log('version_code=' + config.android.versionCode);
           CHECKPOINT
