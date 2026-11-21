@@ -16,7 +16,7 @@
     "historicalSourceCommit": "aa7565cadc5737fca1581eb1ed52c4f499e45348"
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-21T09:17:28.249Z",
+  "updatedAt": "2026-11-21T09:20:03.757Z",
   "branch": "development/omega-commercial-mvp",
   "sourceCheckpoint": "2a8124b6670a6ace105575c93bbec22fef769fa4",
   "workingTree": "Reviewed source and one empty hosted request committed/pushed; final documentation checkpoint records acknowledged run. No local source changes remain.",
@@ -3565,6 +3565,22 @@
       "Independentinstalledbinarymeasurement",
       "Nativecorruptpolicy/storagefaultinjection/retry",
       "Application-wideencryption/Keystorekeyrecovery/migration/Notebookactivation"
+    ]
+  },
+  "phaseCAADFoundation": {
+    "baselineSHA": "57ae4c20e33c639ac193dba51dfe87c9c84d860e",
+    "status": "IN_PROGRESS",
+    "designReview": "IndependentSecurityEngineer: no blocker for boundedC-AADonly; designSHA2563ad3f4ef9c05fbd4eff88c2abb5d93d4304a97f250c39c075de3b35386a19496. No native/migrationactivationapproval.",
+    "paths": [
+      "src/utils/expoBackupCipher.ts",
+      "src/utils/localEncryptionContext.ts",
+      "tests/expoBackupCipher.test.cjs",
+      "tests/localEncryptionContext.test.cjs"
+    ],
+    "scope": "OptionalimmutableAAD<=4096UTF8bytes,strictpureASCIIcontext;legacyomittedAADunchanged;noIO/keylifecycleimplementation/envelopeparser/migration.",
+    "remaining": [
+      "Implementation/negativecrypto tests",
+      "Qualifiedfrozencodereview/fullregression/TS/exactSHACI"
     ]
   }
 }

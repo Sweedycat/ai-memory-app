@@ -261,3 +261,47 @@ now explicit. A new frozen review is required for each implementation boundary.
   hardware protection is conditional and needs actual KeyInfo evidence.
 - [Android Auto Backup](https://developer.android.com/identity/data/autobackup):
   verify explicit generated cloud/device-transfer rules rather than defaults.
+
+## Controlled C-AAD foundation (registered 2026-11-21)
+
+The accepted 0.0.5-dev security checkpoint does not approve encryption or native
+fault recovery. Existing storage inventory is unchanged apart from the reviewed
+read-only privacy loader. This unit implements no storage, key creation,
+Keystore option change, Notebook conversion, envelope parser or migration.
+
+Key lifecycle remains the contract above: a platform-protected stored data key,
+separate existing Notebook namespace, no replacement on missing/corrupt/inaccessible
+keys, independent recovery before activation. Native biometric/credential alias
+policy, hardware security level, backup rules and invalidation remain physical
+gates; do not change requireAuthentication or claim a non-exportable JS data key.
+
+The bounded code change adds optional **nonempty UTF-8 AAD, at most4096bytes** to
+the existing `createExpoAesGcmCipher`. Capture the encoded bytes before asynchronous
+key import and copy for each native call. An omitted argument keeps existing
+backup/Notebook options and combined nonce/ciphertext/tag format unchanged.
+Encrypt and decrypt must use the exact same AAD; never retry without AAD or another
+key/context after failure. Retain AES-256-GCM, random12byte nonce,16byte tag and
+strict authenticated UTF-8 decoding. This is a primitive contract, not a bounded
+local envelope/large-data implementation.
+
+A separate pure `localEncryptionContext.ts` builds canonical ASCII JSON-array
+AAD from strict own data fields: version1, domain, schemaVersion1, vaultId,
+keyId and generationId. IDs are32lowercasehex characters; domains are only current
+People/Life/owner/privacy/bug-reports/Notebook. Bind fixed kind
+`ai-memory-local-vault` plus all fields in a fixed order. Reject extra/missing/
+duplicate structured fields, accessors, unsupported version/schema/domain and
+malformed IDs. The context contains no names, personal text or encryption keys.
+
+The future trusted reader supplies the expected context from authenticated native
+authority; it must not trust fields taken only from an unverified archive. Domain,
+schema, vault/key and generation substitutions must fail authentication. Replaying
+the same valid blob under its original context remains possible: no rollback or
+anti-replay guarantee is claimed without the future durable authority protocol.
+
+Tests use only synthetic keys/data and Node's established AES-GCM behind the
+documented Expo bridge contract. Cover unchanged legacy behavior, cross-context
+and wrong-key rejection, tampering/truncation, Unicode, fresh nonces, input bounds
+and immutable capture. Independent frozen design/implementation review, focused
+regression, strict TypeScript and exact-SHA CI precede publication. Actual Android
+Keystore/AAD and full migration acceptance remain pending. No APK/version bump is
+required for this unwired internal foundation.
