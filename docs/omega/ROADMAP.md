@@ -1,32 +1,29 @@
 <!-- OMEGA_CURRENT_START -->
-# Current B2 verification checkpoint
+# Corrected B2 hosted delivery handoff
 
-Generated from [TASK-REGISTRY.json](TASK-REGISTRY.json);55 stable tasks preserved. B2 is NOT ACCEPTED.
+Generated from [TASK-REGISTRY.json](TASK-REGISTRY.json);55stable tasks retained. **BUILD_RUNNING; B2 NOT ACCEPTED.**
 
-Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.
+Verified source `a63120a17dd2a99fe0ae21dcb1bd7c334525a21b`: [full CI](https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055) SUCCESS622total/621passed/0failed/1Windows-only skip,Doctor21/21,strictTypeScriptPASS; [Windows+Ubuntu portability](https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001) SUCCESS. Local Windows622total/620passed/0failed/2existing platform skips. Phone source-regex failures replaced with stronger actual App edit/create/legacy/invalid/clear/preservation coverage; no App runtime changes this delta. Independent frozen10-file review digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018 found no blockers; prior P3 stale workflow comment fixed.
 
-Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b.
+One authorized free [hosted APK run44874930574](https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574), source `f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08`, identical Git tree to verified source. Expected **0.0.4-dev/code4**, packagecom.sweedycat.aimemory.githubtest; expected historical certificateSHA256fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c. Artifact destinationai-memory-isolated-standalone-apk/app-release.apk,7dayretention. No new artifact/hash/signature/installed-compatibility claim. Build-source full44874930604/portability44874930646 observed running at acknowledgment. The trigger subject contains historical APK_READY syntax; actual state is BUILD_RUNNING. No retry or Gradle polling.
 
-Founder version policy: development0.0.x-dev; next eligible corrected B2 **0.0.4-dev/code4**. First public0.1.0 planned,1.0.0 reserved for maturity. Prior0.3.0 proposal superseded; package/signing/data unchanged. Historical0.2.0/code3 APK remains historical. No new artifact or installed-identity claim.
+Next: On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry. Publish actual artifact only after aapt/apksigner/hash/source verification. Founder target: unsaved choices/save failure+retry; all system bars/keyboard/font/themes; HH/MM exactminute/midnight/edit/cancel; private reminders/navigation; App Lock switch/authentication; retained People/notes/history. Preserve passed0.2.0 observations. No PhaseC or next major increment before founder acceptance.
 
-Next: Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. Then verify actual APK identity/integrity and request focused S26 Ultra acceptance: unsaved choices/save failure/retry; system bars/keyboard/fonts/all themes; numeric HH/MM/midnight/edit/cancel; private reminder delivery/navigation; App Lock switch/authentication; retained People/notes/history. Preserve passed0.2.0 observations. No PhaseC until founder acceptance.
+Founder version policy: development0.0.x-dev; first public0.1.0 planned;1.0.0 reserved for maturity. Supersedes unbuilt0.3.0proposal. Android integercode4>latestverified3; package/signing unchanged; installedidentity UNVERIFIED. No APK solely for version-name change. No installation/data reset/main-preview merge/production or sensitiveactivation. Plaintext sensitive storage remains commercial blocker. Additional expenditure0; new business approval questions0; manual host popup total unknown.
 
-Security: no runtime/crypto/migration/feature-gate changes this delta. Sensitive plaintext remains a commercial blocker; Notebook and real backup/restore stay gated. Additional spend0. New business approval questions0; manual host popup total unknown.
-
-| Task | Status | Next action |
+| Task | Status | Remaining |
 | --- | --- | --- |
-| V3-B | IN_PROGRESS | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| V3-B2-04 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| V3-B2-05 | BLOCKED | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| V32-TRACKING | VERIFIED | Maintain55 stable IDs and synchronize new source/CI/artifact evidence. |
-| BUG-B2-001 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| BUG-B2-001-A | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| BUG-B2-001-B | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| BUG-B2-004 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| BUG-B2-005 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| UX-B2-001 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| UX-B2-002 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
-| BUG-B2-006 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| V3-B | IN_PROGRESS | Corrected binary verification and applicable founder acceptance |
+| V3-B2-04 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+| V3-B2-05 | BLOCKED | Corrected binary verification and applicable founder acceptance |
+| BUG-B2-001 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+| BUG-B2-001-A | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+| BUG-B2-001-B | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+| BUG-B2-004 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+| BUG-B2-005 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+| UX-B2-001 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+| UX-B2-002 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+| BUG-B2-006 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
 <!-- OMEGA_CURRENT_END -->
 
 ## Historical checkpoint records (superseded status)

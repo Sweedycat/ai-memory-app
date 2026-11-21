@@ -2,23 +2,24 @@
   "schemaVersion": 2,
   "b2Verification": {
     "baselineSHA": "93bd8029f50b0386636ea447ee2fd92406a80c13",
-    "sourceCommit": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
-    "sourceLocator": "Reviewed implementation commit aa7565cadc5737fca1581eb1ed52c4f499e45348; read exact-SHA CI before APK_READY.",
-    "automated": "Windows Node24.19.0: final serial regression512 total/510 passed/2 existing platform skips/0 failed; strict TypeScript passed; Expo Doctor21/21 passed. Initial regression had2 negative-fixture failures, corrected without weakening assertions; focused APK8/8 passed.",
+    "sourceCommit": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
+    "sourceLocator": "Reviewed implementation69f9f2b plus verified phone/version deltaa63120a17dd2a99fe0ae21dcb1bd7c334525a21b; hosted sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 has identical Git tree. Actual new APK pending.",
+    "automated": "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded. Linux Node22 exact-SHA CI622total/621passed/0failed/1Windows-only skip; Doctor21/21/typecheckpass; portabilitybothOSsuccess.",
     "independentReview": "Independent Reviewer authored none;69-file frozen source diff digest42bfd3e3405fc03e2283e35c131ef2df3ee6b66d777fa5ac8d6ec2dca3b9cf93; P1 negative fixtures corrected/rechecked, no remaining blocker. Not physical/production approval.",
-    "candidate": "Corrected B2 next eligible0.0.4-dev/code4; actual artifact and founder acceptance pending.",
+    "candidate": "BUILD_RUNNING0.0.4-dev/code4,run44874930574. Not APK_READY or accepted.",
     "physical": "Founder-reported 2026-11-20 candidate paths passed/failed as recorded in founderDeviceEvidence; B2 NOT ACCEPTED and installed provenance unverified.",
     "nativeRoles": "Current-host product_release_engineer and automation_integration_engineer each successfully invoked. This is not authenticated connector or live ChatGPT management integration evidence.",
     "ci": [
-      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
-      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
-    ]
+      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+    ],
+    "historicalSourceCommit": "aa7565cadc5737fca1581eb1ed52c4f499e45348"
   },
   "authority": "Sole current task/status authority; human summaries are synchronized projections. Owner instructions/topic policies govern permissions and requirements.",
-  "updatedAt": "2026-11-21T06:12:36.662Z",
+  "updatedAt": "2026-11-21T06:19:58.788Z",
   "branch": "development/omega-commercial-mvp",
-  "sourceCheckpoint": "69f9f2bdb1191451ff7a5b40a3d4006641cd0935",
-  "workingTree": "V3.2 repair source/tests included in this checkpoint; no discarded owner data or work.",
+  "sourceCheckpoint": "f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08",
+  "workingTree": "Reviewed implementation/version delta committed and pushed; one hosted build triggered. This documentation evidence checkpoint does not trigger another APK.",
   "evidenceProvenance": "Historical A/B1 evidence supplied by Principal and records; no historical rerun/network by registry writer. Current custom Product & Release Engineer invocation confirmed by Principal.",
   "states": [
     "PENDING",
@@ -362,8 +363,8 @@
         ],
         "independentReview": []
       },
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "description": "Bilingual app, five free appearances and functional Settings",
       "deviceAcceptance": {
         "required": true,
@@ -686,26 +687,31 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
-      "sourceSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "evidence": {
         "automated": [
           "Windows Node24.19.0: final serial regression512 total/510 passed/2 existing platform skips/0 failed; strict TypeScript passed; Expo Doctor21/21 passed. Initial regression had2 negative-fixture failures, corrected without weakening assertions; focused APK8/8 passed.",
           "Independent Reviewer authored none;69-file frozen source diff digest42bfd3e3405fc03e2283e35c131ef2df3ee6b66d777fa5ac8d6ec2dca3b9cf93; P1 negative fixtures corrected/rechecked, no remaining blocker. Not physical/production approval.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "ci": [
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036",
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44817881888",
-          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44817882127"
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44817882127",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
         ],
-        "apk": [],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": [],
         "implementation": [
@@ -715,8 +721,8 @@
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ]
       },
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "description": "Founder layout/navigation defects (former B3)",
       "deviceAcceptance": {
         "required": true,
@@ -765,27 +771,31 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
-      "sourceSHA": "aa7565cadc5737fca1581eb1ed52c4f499e45348",
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "evidence": {
         "automated": [
           "Windows Node24.19.0: final serial regression512 total/510 passed/2 existing platform skips/0 failed; strict TypeScript passed; Expo Doctor21/21 passed. Initial regression had2 negative-fixture failures, corrected without weakening assertions; focused APK8/8 passed.",
           "Independent Reviewer authored none;69-file frozen source diff digest42bfd3e3405fc03e2283e35c131ef2df3ee6b66d777fa5ac8d6ec2dca3b9cf93; P1 negative fixtures corrected/rechecked, no remaining blocker. Not physical/production approval.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "ci": [
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036",
           "https://github.com/Sweedycat/ai-memory-app/actions/runs/44817881888",
-          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44817882127"
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44817882127",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
         ],
         "apk": [
-          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253 (build triggered only; actual APK verification pending)"
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44670257253 (build triggered only; actual APK verification pending)",
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
         ],
         "device": [],
         "commercial": [],
@@ -794,8 +804,8 @@
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ]
       },
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "description": "Review, tests, APK_READY and founder acceptance",
       "deviceAcceptance": {
         "required": true,
@@ -2506,30 +2516,36 @@
       "status": "VERIFICATION_PENDING",
       "role": "Principal Architect",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-      "sourceSHA": null,
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "completed": [
         "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings.",
         "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
       "evidence": {
         "automated": [
           "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "independentReview": [
           "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct.",
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ],
-        "ci": [],
-        "apk": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+        ],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": []
       },
@@ -2547,8 +2563,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z"
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z"
     },
     {
       "id": "BUG-B2-001-A",
@@ -2566,7 +2582,7 @@
       "status": "VERIFICATION_PENDING",
       "role": "Software Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-      "sourceSHA": null,
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "completed": [
         "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
         "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings.",
@@ -2574,23 +2590,29 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
       "evidence": {
         "automated": [
           "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "independentReview": [
           "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct.",
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ],
-        "ci": [],
-        "apk": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+        ],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": []
       },
@@ -2606,8 +2628,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2626,7 +2648,7 @@
       "status": "VERIFICATION_PENDING",
       "role": "Software Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-      "sourceSHA": null,
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "completed": [
         "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
         "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings.",
@@ -2634,23 +2656,29 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
       "evidence": {
         "automated": [
           "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "independentReview": [
           "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct.",
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ],
-        "ci": [],
-        "apk": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+        ],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": []
       },
@@ -2666,8 +2694,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2686,7 +2714,7 @@
       "status": "VERIFICATION_PENDING",
       "role": "Android Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-      "sourceSHA": null,
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "completed": [
         "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
         "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings.",
@@ -2694,23 +2722,29 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
       "evidence": {
         "automated": [
           "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "independentReview": [
           "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct.",
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ],
-        "ci": [],
-        "apk": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+        ],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": []
       },
@@ -2726,8 +2760,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2745,7 +2779,7 @@
       "status": "VERIFICATION_PENDING",
       "role": "Android Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-      "sourceSHA": null,
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "completed": [
         "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
         "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings.",
@@ -2753,23 +2787,29 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
       "evidence": {
         "automated": [
           "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "independentReview": [
           "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct.",
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ],
-        "ci": [],
-        "apk": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+        ],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": []
       },
@@ -2784,8 +2824,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2805,7 +2845,7 @@
       "status": "VERIFICATION_PENDING",
       "role": "Android Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-      "sourceSHA": null,
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "completed": [
         "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
         "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings.",
@@ -2813,23 +2853,29 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
       "evidence": {
         "automated": [
           "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "independentReview": [
           "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct.",
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ],
-        "ci": [],
-        "apk": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+        ],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": []
       },
@@ -2846,8 +2892,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2866,7 +2912,7 @@
       "status": "VERIFICATION_PENDING",
       "role": "UI/UX Engineer",
       "startingSHA": "69d8fd899d81bdae65ffd80442d4af80579c6e82",
-      "sourceSHA": null,
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "completed": [
         "Local implementation present; focused checks in workUnit. Not committed/reviewed/physically accepted yet.",
         "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings.",
@@ -2874,23 +2920,29 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
       "evidence": {
         "automated": [
           "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "independentReview": [
           "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct.",
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ],
-        "ci": [],
-        "apk": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+        ],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": []
       },
@@ -2906,8 +2958,8 @@
       "commercialAcceptance": [
         "No data loss, privacy regression, artificial Free restriction or unverified readiness claim."
       ],
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z",
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z",
       "implementationBaselineSHA": "83214faab9125a237b256b6fb03005bc2078447a"
     },
     {
@@ -2976,7 +3028,7 @@
       "status": "VERIFICATION_PENDING",
       "role": "Software Engineer",
       "startingSHA": "64b2d064d180f51705949b9279a37e2a9c3994fa",
-      "sourceSHA": null,
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
       "completed": [
         "Source-level gap identified before independent review; not claimed device reproduction",
         "V3.2 implementation and focused synthetic regressions complete; qualified frozen source review has no blocking findings.",
@@ -2984,23 +3036,29 @@
         "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
       ],
       "remaining": [
-        "Successful exact-SHA CI and one verified corrected hosted APK",
-        "Targeted founder physical acceptance where applicable"
+        "Actual corrected APK identity/integrity verification",
+        "Applicable targeted founder physical acceptance"
       ],
       "blockers": [
-        "Exact-SHA CI/new corrected artifact/founder acceptance pending."
+        "Hosted binary not yet verified; founder acceptance pending."
       ],
       "evidence": {
         "automated": [
           "Final strict TypeScript exit0; parent focused47/47 pass; App focused84 then final affected58/58 pass; Life42/42 pass. Overlapping suites are not additive.",
-          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded."
+          "Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.",
+          "Exact-SHA Linux Node22 CI622total/621passed/0failed/1Windows-only skip,Doctor21/21,typecheckpass; Windows+Ubuntu portabilitysuccess."
         ],
         "independentReview": [
           "Independent Reviewer: no remaining blocking source finding; prior P1 immediate-event draft races and P2 oversized report candidate fixed. Baseline83214fa; reviewed27source/config files SHA256663c161480600d7676b1f7f857a64e1417829e98ed58e1013c48ac3a25c736f9. P3 stale workflow comment code2 remains; executable floor3 is correct.",
           "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
         ],
-        "ci": [],
-        "apk": [],
+        "ci": [
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+          "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
+        ],
+        "apk": [
+          "BUILD_RUNNING https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574 sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08 expected0.0.4-dev/code4; actual binary unverified."
+        ],
         "device": [],
         "commercial": []
       },
@@ -3015,12 +3073,12 @@
       "commercialAcceptance": [
         "No lost reminder edits, silent clock normalization, duplicate schedule or fabricated acceptance"
       ],
-      "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build.",
-      "updatedAt": "2026-11-21T06:12:36.662Z"
+      "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry.",
+      "updatedAt": "2026-11-21T06:19:58.788Z"
     }
   ],
   "localValidation": {
-    "at": "2026-11-21T06:12:36.662Z",
+    "at": "2026-11-21T06:19:58.788Z",
     "result": "PASS",
     "checks": [
       "55stable unique IDs preserved",
@@ -3032,28 +3090,28 @@
     "scope": "Registry/source-policy consistency; not device or commercial acceptance."
   },
   "delivery": {
-    "state": "VERIFICATION_PENDING",
-    "implementationSHA": "69f9f2bdb1191451ff7a5b40a3d4006641cd0935",
+    "state": "BUILD_RUNNING",
+    "implementationSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
     "ci": [
-      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669846988",
-      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44669847036"
+      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+      "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001"
     ],
     "expectedVersion": "0.0.4-dev",
     "expectedVersionCode": 4,
     "package": "com.sweedycat.aimemory.githubtest",
     "certificateSha256": "fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c",
     "workflow": ".github/workflows/android-preview-apk.yml",
-    "trigger": "After final required checks and exact-SHA CI, exactly one empty commit subject build: preview APK [APK_READY] on development branch; publish run immediately, no Gradle polling.",
+    "trigger": "Exactly one empty request commit pushed with existing approved subject build: preview APK [APK_READY]; request label is historical trigger syntax, not actual artifact readiness.",
     "artifact": "ai-memory-isolated-standalone-apk/app-release.apk",
-    "buildSHA": null,
-    "runURL": null,
+    "buildSHA": "f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08",
+    "runURL": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574",
     "installedCompatibility": "UNVERIFIED",
     "physicalAcceptance": "NOT_ACCEPTED",
-    "observedWorkflowStatus": "NOT_TRIGGERED",
+    "observedWorkflowStatus": "in_progress",
     "artifactURL": null,
     "artifactId": null,
     "runResult": null,
-    "verificationLevel": "Corrected source locally verified and independently reviewed; new binary not yet built. Historical artifact evidence is in historicalArtifact.",
+    "verificationLevel": "Source checkpoint verified. Build request has identical Git tree to verified commit; build workflow verify job gates Android compilation. New artifact/package/signature/hash still unverified.",
     "apkSha256": null,
     "artifactZipDigest": null,
     "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository.",
@@ -3083,9 +3141,15 @@
       "apkSha256": "cb45c6bb22c7255f27c39b51fb84e08ed62fa89811c562cd7a4397ad651ff6b6",
       "artifactZipDigest": "sha256:8c35e89987b5c0d43d123eb892e0fd762ffe22280e95d4f6767b9f4fa5f31ae5",
       "connectorRetrieval": "Previous artifact retrieved through authorized GitHub artifact connector; no local independent APK parsing claimed and no signed download capability published in repository."
+    },
+    "attemptsThisIncrement": 1,
+    "buildSourceCI": {
+      "full": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930604",
+      "portability": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930646",
+      "observed": "in_progress at build acknowledgment; no claimed success"
     }
   },
-  "latestPublishedCheckpoint": "c41410e938004677f0b2a78a70b407bb908ea13b",
+  "latestPublishedCheckpoint": "f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08",
   "founderDeviceEvidence": {
     "reportedAt": "2026-11-20",
     "source": "Founder directive V3.2; reported observations, not agent-operated device tests",
@@ -3142,7 +3206,7 @@
       "UX-B2-001",
       "UX-B2-002"
     ],
-    "state": "B2 release delta implemented, locally verified and independently reviewed; checkpoint publication/exact-SHA CI pending.",
+    "state": "BUILD_RUNNING; reviewed exact-SHA CI passed. Artifact and founder acceptance pending.",
     "ownership": {
       "Principal": "Shared navigation hook/catalog,Profile/BugReport/Settings,registry/integration",
       "SoftwareEngineer": "App/People persistence ACK/input fencing and related tests; additional parent-flow tests only",
@@ -3153,21 +3217,21 @@
       "Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b."
     ],
     "remaining": [
-      "Publish reviewed checkpoint and verify exact-SHA full/portability CI",
-      "One free hosted APK0.0.4-dev/code4; actual binary metadata/signature/hash verification",
-      "Targeted founder acceptance; no PhaseC advancement"
+      "Let hosted build finish independently; do not poll Gradle or trigger another build",
+      "Read completed run/artifact only when available; verify source/package/version/code/certificate/APK SHA256 and archive digest",
+      "Provide verified artifact and targeted founder device checklist; record acceptance before PhaseC"
     ],
     "privacy": "No plaintext draft persistence, real migration,Notebookactivation,device access or paid operation.",
     "latestContinuationBase": "ec7905d7d998bbed191fbb94930d2d6fa0b94663",
-    "nextAction": "Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build."
+    "nextAction": "On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry."
   },
   "currentApprovalAccounting": {
-    "scope": "Resumed B2 verification session through reviewed checkpoint",
-    "explicitEscalationCalls": 2,
+    "scope": "Resumed verification through one hosted request and durable handoff",
+    "explicitEscalationCalls": 4,
     "newSavedNarrowRules": 1,
     "manualPopupTotal": null,
     "repetitiveBusinessQuestions": 0,
-    "asOf": "2026-11-21T06:12:36.662Z"
+    "asOf": "2026-11-21T06:19:58.788Z"
   },
   "verificationResume": {
     "baselineSHA": "0cfa66ed2961d450469655fde913820feed264de",
@@ -3180,6 +3244,28 @@
     "versionPolicy": "Founder2026-11-21:0.0.x-dev development; first public0.1.0 planned;1.0.0 maturity reserved;0.0.4-dev/code4 proposed B2. Previous0.3.0 display proposal superseded.",
     "history": "Bounded branch run history confirms latest successful APK44670257253 sourcec41410e938004677f0b2a78a70b407bb908ea13b,0.2.0/code3. No newer successful APK observed; actual installed identity remains unverified.",
     "financial": "Repositorypublic freshly verified; existing standardubuntu-latest pipeline. Official https://docs.github.com/en/actions/concepts/billing-and-usage states standard public runner usage free; no EAS/paid runner/new service or billing configuration. Existing artifact retention7days. Additional spend0.",
-    "updatedAt": "2026-11-21T06:12:36.662Z"
+    "updatedAt": "2026-11-21T06:12:36.662Z",
+    "verifiedCommit": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
+    "ci": {
+      "sourceSHA": "a63120a17dd2a99fe0ae21dcb1bd7c334525a21b",
+      "full": {
+        "url": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055",
+        "result": "success",
+        "tests": 622,
+        "passed": 621,
+        "failed": 0,
+        "skipped": 1,
+        "doctor": "21/21",
+        "typecheck": "pass"
+      },
+      "portability": {
+        "url": "https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001",
+        "result": "success",
+        "platforms": [
+          "ubuntu-latest",
+          "windows-latest"
+        ]
+      }
+    }
   }
 }
