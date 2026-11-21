@@ -1,3 +1,11 @@
+# Resumed B2 verification work unit
+
+Baseline69f9f2bdb1191451ff7a5b40a3d4006641cd0935, local/remote clean and equal. Original55 tasks preserved. CI44817882127 failed only stale phone source regex LF/CRLF (619total,616pass,2fail,1skip); Doctor21/21 and typecheck passed. Portability44817881888 success.
+
+Next: preserve disclosure assertions; add actual App phone mapping/edit/save/invalid/legacy regressions, approve development version0.0.4-dev/code4 in canonical policy/config/workflow validation, qualified review and missing integrated checks. One free hosted APK only after exact-SHA CI. No installation/B2 acceptance/PhaseC.
+
+## Previous checkpoint (historical)
+
 # V3.2 reviewed implementation checkpoint
 
 Canonical authority: [TASK-REGISTRY.json](TASK-REGISTRY.json),55 tasks; original45 IDs preserved. B2 is NOT ACCEPTED.
