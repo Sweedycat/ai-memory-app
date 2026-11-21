@@ -25,7 +25,15 @@ authorize equal/lower milestone update codes or third-position reinterpretation.
   historical. Do not activate real migration without review/recoverability/device gates.
 - The backup snapshot module is only in-memory schema validation. Encryption, Drive, and restore are not implemented.
 
-## Owner-defined version numbering
+## Current founder version policy (2026-11-21)
+
+- Development builds use `0.0.x-dev`. The next eligible corrected B2 candidate is `0.0.4-dev` / Android versionCode `4`.
+- The first public release is planned as `0.1.0`; reserve `1.0.0` for a future product-maturity milestone. Neither is authorization to publish.
+- This explicit founder decision supersedes the older display-version cadence below, including the unbuilt `0.3.0` proposal. Keep those statements only as historical decisions.
+- Android updates use the independent, strictly increasing integer versionCode, unchanged package and signing identity. Latest verified GitHub Test artifact is `0.2.0`/code3 (run44670257253); the proposed code4 exceeds it. Installed identity remains unverified and separately gated before installation.
+- Keep all manifests consistent. No APK solely for renaming a version; the corrected B2 feature increment still requires tests, independent review, exact-SHA CI and founder device acceptance.
+
+## Historical owner-defined version numbering (superseded)
 
 - Format: `FIRST.SECOND.THIRD` (for example `0.0.2`). This is an intentional project-specific release policy.
 - **Second number:** even a light user-facing feature/update increments the middle number and resets the third to zero. Example: `0.0.2 → 0.1.0`, then `0.2.0`.
@@ -35,7 +43,7 @@ authorize equal/lower milestone update codes or third-position reinterpretation.
 - Android `versionCode` is **separate** from these visible version strings and must monotonically increase for an in-place APK update, with the same application ID/signing identity; verify current installed versionCode and signing before any deployment.
 - Do not release a build as a safe in-place upgrade without prior-device-data preservation checks. Never uninstall or clear data to make the version update work.
 
-## Version numbering policy
+## Historical version numbering policy (superseded)
 
 - Display version has three numeric positions, read **left-to-right**: `MAJOR.MINOR.PATCH`.
 - Owner-selected cadence: **very light feature/update** increments the **second position** (e.g. `0.0.2 → 0.1.0`); a **major leap / large-scale release** increments the **first position** (e.g. `0.1.0 → 1.0.0`). Reset less significant positions to zero when a higher position increases.

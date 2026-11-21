@@ -1,5 +1,12 @@
 # Permanent feature delivery and device acceptance policy
 
+Founder version clarification (2026-11-21): development `0.0.x-dev`, next eligible
+corrected B2 `0.0.4-dev`/code4; first public release planned `0.1.0`, maturity
+`1.0.0` reserved. This supersedes earlier display cadence and the unbuilt0.3.0
+proposal. Android integer versionCode must strictly increase; preserve package,
+signing and data. No APK solely for a version-name change. B2 acceptance remains
+pending; no Phase C advancement before founder acceptance.
+
 Founder decisions, 2026-11-19 and Master Development V3, 2026-11-20. AGENTS.md Rules 08-10 and 17 govern this policy.
 It supersedes earlier requirements to ask repeatedly for ordinary milestone APK
 approval; all privacy, data-preservation, installation, production and financial

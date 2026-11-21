@@ -109,9 +109,8 @@ for (const [label, lineEnding] of [['LF', '\n'], ['CRLF', '\r\n']]) {
     assert.ok(appTr.phoneScope.includes('yerel kayıtlar ayrıca şifrelenmez'));
     assert.match(app, /label=\{c\.phoneLabel\}/);
     assert.match(app, /\{c\.phoneScope\}/);
-    assert.match(app, /phone: selected\.phone \?\? ''/);
-    assert.match(app, /phone,\r?\n\s+relationship: form\.relationship/);
-    assert.match(app, /normalizeStandardPhone\(form\.phone\)/);
+    // Real App edit/create/save/invalid/legacy mapping is exercised in
+    // personFollowUpConcurrency.test.cjs; do not couple it to local variable names.
     // No separate secret phone/vault field: App Lock covers the whole AI Memory address book.
     assert.doesNotMatch(app, /secretPhone|privatePhone|confidentialPhone/);
   });

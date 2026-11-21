@@ -59,6 +59,45 @@ const person = {
 };
 const other = { ...person, id: 'other-synthetic', name: 'Other Synthetic', followUp: undefined };
 
+test('App prepopulates, edits and clears a formatted phone without changing retained memory or reminders', async t => {
+  const ui = screen(); t.after(ui.unmount); await ui.flush();
+  const original = { ...ui.person, role: 'Synthetic role', company: 'Synthetic company', phone: '+1 (202) 555-0104' };
+  ui.replace(ui.people.map(item => item.id === original.id ? original : item)); await ui.flush();
+  await ui.open(); await ui.press('Edit');
+  assert.equal(ui.field(appCatalog.appEn.phoneLabel).props.value, original.phone);
+  await ui.input(appCatalog.appEn.phoneLabel, '  +44 (20) 7946 0104  '); await ui.press('Save changes');
+  assert.deepEqual(ui.person, { ...original, phone: '+44 (20) 7946 0104' });
+  assert.equal(JSON.parse(ui.raw).find(item => item.id === original.id).phone, '+44 (20) 7946 0104');
+  await ui.press('Edit'); await ui.input(appCatalog.appEn.phoneLabel, '  '); await ui.press('Save changes');
+  assert.deepEqual(ui.person, { ...original, phone: undefined });
+  assert.equal(Object.hasOwn(JSON.parse(ui.raw).find(item => item.id === original.id), 'phone'), false);
+  assert.equal(ui.calls.length, 0); assert.ok(ui.alarms.has('synthetic-old-alarm'));
+});
+
+test('App legacy phone stays empty and an invalid edit preserves stored bytes, draft and native reminders', async t => {
+  const ui = screen(); t.after(ui.unmount); await ui.open(); await ui.press('Edit');
+  assert.equal(ui.field(appCatalog.appEn.phoneLabel).props.value, '');
+  const original = ui.raw, writes = ui.writes;
+  await ui.input(appCatalog.appEn.phoneLabel, 'invalid synthetic phone'); await ui.press('Save changes');
+  assert.equal(ui.alerts.at(-1).title, appCatalog.appEn.checkPhone);
+  assert.equal(ui.field(appCatalog.appEn.phoneLabel).props.value, 'invalid synthetic phone');
+  assert.equal(ui.raw, original); assert.equal(ui.writes, writes); assert.equal(ui.calls.length, 0);
+});
+
+test('App creation validates phone before storage or scheduling and persists exact normalized input on retry', async t => {
+  const ui = screen(); t.after(ui.unmount); await ui.flush(); await ui.add();
+  await ui.input(appCatalog.appEn.nameLabel, 'Synthetic Phone Creation');
+  await ui.input(appCatalog.appEn.phoneLabel, '123\n999');
+  const original = ui.raw, writes = ui.writes;
+  await ui.press(appCatalog.appEn.savePerson);
+  assert.equal(ui.raw, original); assert.equal(ui.writes, writes); assert.equal(ui.calls.length, 0);
+  assert.equal(ui.field(appCatalog.appEn.phoneLabel).props.value, '123\n999');
+  await ui.input(appCatalog.appEn.phoneLabel, ' +90 (555) 010 04 04 '); await ui.press(appCatalog.appEn.savePerson);
+  const saved = JSON.parse(ui.raw).filter(item => item.name === 'Synthetic Phone Creation');
+  assert.equal(saved.length, 1); assert.equal(saved[0].phone, '+90 (555) 010 04 04');
+  assert.equal(ui.people.length, 3); assert.equal(ui.writes, writes + 1); assert.equal(ui.calls.length, 0);
+});
+
 // Real App handlers, people hook, validation and save queue. React rendering,
 // AsyncStorage and native notifications are simulated; no Android claim.
 function screen({ cancelGate, scheduleGate, writeGate, scheduleResult = 'synthetic-new-alarm', failWrites = false,

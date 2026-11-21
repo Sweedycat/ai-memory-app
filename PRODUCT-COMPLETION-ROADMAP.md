@@ -1,3 +1,36 @@
+<!-- OMEGA_CURRENT_START -->
+# Current B2 verification checkpoint
+
+Generated from [TASK-REGISTRY.json](docs/omega/TASK-REGISTRY.json);55 stable tasks preserved. B2 is NOT ACCEPTED.
+
+Windows Node24: full serial622 total,620passed,0failed,2existing platform skips; strict TypeScript exit0; Expo Doctor21/21 exit0. Phone runtime3/3 passed; prior phone regex failures LF/CRLF fixed using behavioral coverage, no assertion semantics discarded.
+
+Qualified Independent Reviewer, frozen10-file delta from 0cfa66ed2961d450469655fde913820feed264de, digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018: no blocking findings; prior P3 code2 workflow comment corrected to3. App/runtime source unchanged from reviewed69f9f2b.
+
+Founder version policy: development0.0.x-dev; next eligible corrected B2 **0.0.4-dev/code4**. First public0.1.0 planned,1.0.0 reserved for maturity. Prior0.3.0 proposal superseded; package/signing/data unchanged. Historical0.2.0/code3 APK remains historical. No new artifact or installed-identity claim.
+
+Next: Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. Then verify actual APK identity/integrity and request focused S26 Ultra acceptance: unsaved choices/save failure/retry; system bars/keyboard/fonts/all themes; numeric HH/MM/midnight/edit/cancel; private reminder delivery/navigation; App Lock switch/authentication; retained People/notes/history. Preserve passed0.2.0 observations. No PhaseC until founder acceptance.
+
+Security: no runtime/crypto/migration/feature-gate changes this delta. Sensitive plaintext remains a commercial blocker; Notebook and real backup/restore stay gated. Additional spend0. New business approval questions0; manual host popup total unknown.
+
+| Task | Status | Next action |
+| --- | --- | --- |
+| V3-B | IN_PROGRESS | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| V3-B2-04 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| V3-B2-05 | BLOCKED | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| V32-TRACKING | VERIFIED | Maintain55 stable IDs and synchronize new source/CI/artifact evidence. |
+| BUG-B2-001 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| BUG-B2-001-A | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| BUG-B2-001-B | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| BUG-B2-004 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| BUG-B2-005 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| UX-B2-001 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| UX-B2-002 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+| BUG-B2-006 | VERIFICATION_PENDING | Commit/push reviewed delta; verify full and portability CI for that exact SHA before one hosted build. |
+<!-- OMEGA_CURRENT_END -->
+
+## Historical roadmap evidence
+
 # Product completion inventory - V3.2
 
 [docs/omega/TASK-REGISTRY.json](docs/omega/TASK-REGISTRY.json) is the sole current task/evidence authority. Original45 tasks retained;54 total. All detailed inherited requirements below are retained. B2 NOT ACCEPTED: founder0.2.0 paths passed selectively, input-loss/system-bar defects failed, digital HH/MM entry requested. See [current progress](docs/omega/PROGRESS.md) for exact reported scope and unverified cases.

@@ -69,9 +69,9 @@ jobs:
           const lock = JSON.parse(fs.readFileSync('package-lock.json', 'utf8'));
           const config = require('./app.config.js')({ config: app });
           if (config.android?.package !== 'com.sweedycat.aimemory.githubtest') throw Error('Unexpected APK package');
-          if (!/^\d+\.\d+\.\d+$/.test(config.version) || pkg.version !== config.version ||
+          if (!/^0\.0\.(?:0|[1-9]\d*)-dev$/.test(config.version) || pkg.version !== config.version ||
               lock.version !== config.version || lock.packages?.['']?.version !== config.version) throw Error('Inconsistent APK version');
-          // Last verified/reported delivered candidate: code 2. Recheck the latest
+          // Last verified delivered candidate: 0.2.0 / code 3. Recheck the latest
           // actual artifact before every increment; this floor is not release history.
           if (!Number.isSafeInteger(config.android.versionCode) || config.android.versionCode <= 3) throw Error('APK update code must exceed verified baseline 3');
           console.log('version=' + config.version);
