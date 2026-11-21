@@ -1,29 +1,11 @@
 <!-- OMEGA_CURRENT_START -->
-# Corrected B2 hosted delivery handoff
+# B2 founder acceptance; Phase C audit active
 
-Generated from [TASK-REGISTRY.json](TASK-REGISTRY.json);55stable tasks retained. **BUILD_RUNNING; B2 NOT ACCEPTED.**
+Canonical55task registry preserved. Founder2026-11-21 S26Ultra **B2 PASS10/10**: Existing records preserved; Unsaved new-person changes protected; Unsaved person edits protected; Top/bottom system safe areas; Large font accessibility; Digital time entry; Invalid time and picker exit handling; Reminder delivery and notification privacy; App Lock toggle; Theme and language persistence. Evidence is founder-reported, scoped to tested B2 paths; installed binary provenance not independently measured. Broader TalkBack/all-screen/gesture/three-button/gated-flow criteria remain visible; only individually satisfied tasks closed. Explicit founder authorization permits PhaseC despite those retained wider acceptance matrices.
 
-Verified source `a63120a17dd2a99fe0ae21dcb1bd7c334525a21b`: [full CI](https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514055) SUCCESS622total/621passed/0failed/1Windows-only skip,Doctor21/21,strictTypeScriptPASS; [Windows+Ubuntu portability](https://github.com/Sweedycat/ai-memory-app/actions/runs/44874514001) SUCCESS. Local Windows622total/620passed/0failed/2existing platform skips. Phone source-regex failures replaced with stronger actual App edit/create/legacy/invalid/clear/preservation coverage; no App runtime changes this delta. Independent frozen10-file review digest7d4cc82cddda93dbb037e0909c09fee6914ecc5688f2a16c2a57dc04e252e018 found no blockers; prior P3 stale workflow comment fixed.
+B2 actual CI artifact [14695688034](https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574/artifacts/14695688034), sourcef29cec0b3a5c032bbc0f68f7084fb0360bb1ab08,run44874930574SUCCESS,0.0.4-dev/code4,packagecom.sweedycat.aimemory.githubtest,certificateSHA256fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c,APKhashbf76880407fa98622dd34b43e5ea01c40d0830bfe66f0514354794d35eabd258. Actual aapt/apksigner/hash joblogs verified; ZIPdigestsha256:59034c60c9463ffdf67ea9edbc659708db9f54f8fa75778c97bb4a9dbd7327cc.
 
-One authorized free [hosted APK run44874930574](https://github.com/Sweedycat/ai-memory-app/actions/runs/44874930574), source `f29cec0b3a5c032bbc0f68f7084fb0360bb1ab08`, identical Git tree to verified source. Expected **0.0.4-dev/code4**, packagecom.sweedycat.aimemory.githubtest; expected historical certificateSHA256fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c. Artifact destinationai-memory-isolated-standalone-apk/app-release.apk,7dayretention. No new artifact/hash/signature/installed-compatibility claim. Build-source full44874930604/portability44874930646 observed running at acknowledgment. The trigger subject contains historical APK_READY syntax; actual state is BUILD_RUNNING. No retry or Gradle polling.
-
-Next: On authorized continuation or completion evidence, inspect run44874930574 once; verify binary if successful, otherwise record failure without retry. Publish actual artifact only after aapt/apksigner/hash/source verification. Founder target: unsaved choices/save failure+retry; all system bars/keyboard/font/themes; HH/MM exactminute/midnight/edit/cancel; private reminders/navigation; App Lock switch/authentication; retained People/notes/history. Preserve passed0.2.0 observations. No PhaseC or next major increment before founder acceptance.
-
-Founder version policy: development0.0.x-dev; first public0.1.0 planned;1.0.0 reserved for maturity. Supersedes unbuilt0.3.0proposal. Android integercode4>latestverified3; package/signing unchanged; installedidentity UNVERIFIED. No APK solely for version-name change. No installation/data reset/main-preview merge/production or sensitiveactivation. Plaintext sensitive storage remains commercial blocker. Additional expenditure0; new business approval questions0; manual host popup total unknown.
-
-| Task | Status | Remaining |
-| --- | --- | --- |
-| V3-B | IN_PROGRESS | Corrected binary verification and applicable founder acceptance |
-| V3-B2-04 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
-| V3-B2-05 | BLOCKED | Corrected binary verification and applicable founder acceptance |
-| BUG-B2-001 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
-| BUG-B2-001-A | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
-| BUG-B2-001-B | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
-| BUG-B2-004 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
-| BUG-B2-005 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
-| UX-B2-001 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
-| UX-B2-002 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
-| BUG-B2-006 | VERIFICATION_PENDING | Corrected binary verification and applicable founder acceptance |
+PhaseC V3-C-01 IN_PROGRESS: startingbaseline1403314d6d6a7c403ca145bdc5e0acb86c809f40. Audit source-referenced storage/encryption boundaries,keys/AndroidKeystore/biometric/recovery/backup; prepare non-destructive migration design and independent security review before implementation. Preserve all records, validemptydata,privacy/package/signing/free themes/localization. No real migration/activation/production/paid operations. Next: Audit actual storage/key/encryption boundaries; produce independently reviewed non-destructive design before implementation.
 <!-- OMEGA_CURRENT_END -->
 
 ## Historical checkpoint records (superseded status)
